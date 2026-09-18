@@ -2376,9 +2376,10 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   min-height:0;
   margin:18px var(--page-gutter) 0;
   padding:18px 18px 20px;
+  position:relative;
   display:grid;
   grid-template-columns:minmax(0,1fr);
-  grid-template-rows:auto auto auto auto auto auto auto;
+  grid-template-rows:auto auto auto auto auto;
   row-gap:14px;
   align-content:start;
 }
@@ -2396,13 +2397,13 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   margin:0;
   font-family:var(--display);
   text-transform:uppercase;
-  font-size:clamp(34px,8.8vw,54px);
-  line-height:.96;
+  font-size:var(--challenge-title-size);
+  line-height:1.05;
 }
 .mc00-copy .support-copy{
-  margin:6px 0 0;
-  font-size:clamp(19px,4.6vw,27px);
-  line-height:1.18;
+  margin:5px 0 0;
+  font-size:var(--challenge-support-size);
+  line-height:var(--challenge-support-line);
   color:#b2d2df;
 }
 .mc00-visual-wrap{display:flex;justify-content:center;}
@@ -2431,16 +2432,27 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 }
 .mc00-scan-beam{
   position:absolute;
-  top:8px;
-  bottom:8px;
-  left:50%;
-  width:72px;
-  transform:translateX(-50%);
-  background:linear-gradient(180deg,transparent 0%,rgba(126,236,255,.1) 18%,rgba(126,236,255,.55) 50%,rgba(126,236,255,.1) 82%,transparent 100%);
-  box-shadow:0 0 26px rgba(71,210,249,.18);
+  z-index:4;
+  left:7%;
+  right:7%;
+  top:8%;
+  height:3px;
+  border-radius:999px;
+  background:linear-gradient(90deg,transparent,rgba(172,245,255,.9) 14%,#e8fdff 50%,rgba(172,245,255,.9) 86%,transparent);
+  box-shadow:0 0 8px rgba(126,236,255,.95),0 0 24px rgba(71,210,249,.55),0 0 44px rgba(71,210,249,.22);
   mix-blend-mode:screen;
   pointer-events:none;
-  animation:mc00Beam 2.3s ease-in-out infinite;
+  animation:mc00Beam 2.2s ease-in-out infinite;
+}
+.mc00-scan-beam::before{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  top:-18px;
+  height:38px;
+  background:linear-gradient(180deg,transparent,rgba(91,222,255,.18) 45%,rgba(91,222,255,.08) 60%,transparent);
+  filter:blur(1px);
 }
 .mc00-status-line{
   min-height:20px;
@@ -2490,12 +2502,32 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   letter-spacing:.04em;
   color:#d7f8ff;
 }
-.mc00-complete{
+.mc00-complete-popup{
+  position:absolute;
+  z-index:20;
+  left:22px;
+  right:22px;
+  top:50%;
+  transform:translateY(-50%);
   display:grid;
   justify-items:center;
-  gap:8px;
-  padding-top:4px;
+  gap:12px;
+  padding:20px 18px 18px;
   text-align:center;
+  background:linear-gradient(180deg,rgba(8,43,62,.98),rgba(4,25,38,.98));
+  border-color:rgba(88,209,244,.7);
+  box-shadow:0 18px 60px rgba(0,0,0,.48),0 0 32px rgba(63,194,234,.12),inset 0 0 26px rgba(63,194,234,.06);
+}
+.mc00-complete-popup[hidden]{display:none;}
+.mc00-complete-popup .btn{width:100%;}
+.mc00-card.is-complete::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:15;
+  border-radius:inherit;
+  background:rgba(1,14,23,.46);
+  pointer-events:none;
 }
 .mc00-complete-icon{
   width:66px;
@@ -2509,30 +2541,20 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   line-height:1;
   box-shadow:0 0 22px rgba(77,210,249,.12), inset 0 0 16px rgba(77,210,249,.06);
 }
-.mc00-complete h2{
+.mc00-complete-popup h2{
   margin:0;
   font-family:var(--display);
   text-transform:uppercase;
   font-size:26px;
   line-height:1;
 }
-.mc00-complete p{
-  margin:0;
-  color:#a9c8d5;
-  line-height:1.45;
-}
-.setup-page.mc00-page .setup-actions{margin-top:2px;}
-.setup-page.mc00-page #mc00Continue:disabled{
-  opacity:.56;
-  filter:saturate(.78);
-}
 .setup-page.mc00-page .mc00-card.is-complete .mc00-scan-beam{
-  animation-duration:3.4s;
-  opacity:.52;
+  animation-play-state:paused;
+  opacity:.25;
 }
 @keyframes mc00Beam{
-  0%,100%{transform:translateX(-50%) translateY(-7%);opacity:.55;}
-  50%{transform:translateX(-50%) translateY(7%);opacity:.92;}
+  0%,100%{top:8%;opacity:.65;}
+  50%{top:90%;opacity:1;}
 }
 
 @media (max-width:390px){
@@ -2544,5 +2566,16 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   .mc00-page .mc00-card .kicker{font-size:11px;}
   .mc00-sleigh-visual{min-height:184px;}
   .mc00-status-line{font-size:12px;}
-  .mc00-complete h2{font-size:23px;}
+  .mc00-complete-popup{left:16px;right:16px;padding:18px 16px 16px;}
+  .mc00-complete-popup h2{font-size:23px;}
+}
+
+/* Shared masthead: keep a little more air beneath the Mission Control mark. */
+.radar-page>.topbar,
+.mission-shell>.topbar,
+.setup-page>.topbar{
+  padding-bottom:16px;
+}
+@media(max-height:740px){
+  .topbar,.radar-page>.topbar,.mission-shell>.topbar,.setup-page>.topbar{padding-bottom:12px;}
 }

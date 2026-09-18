@@ -32,8 +32,7 @@
       { at: 40, text: 'Comms: scanning' },
       { at: 54, text: 'Comms: offline' },
       { at: 70, text: 'Navigation: scanning' },
-      { at: 84, text: 'Navigation: offline' },
-      { at: 100, text: 'Scan complete' }
+      { at: 84, text: 'Navigation: offline' }
     ];
 
     let progressValue = 0;
@@ -52,14 +51,12 @@
         stopMc00Scan();
         card.classList.add('is-complete');
         complete.hidden = false;
-        button.disabled = false;
       }
     };
 
     paint();
     card.classList.remove('is-complete');
     complete.hidden = true;
-    button.disabled = true;
 
     mc00ScanTimer = setInterval(()=>{
       progressValue = Math.min(100, progressValue + 1);
