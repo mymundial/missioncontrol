@@ -107,12 +107,12 @@
     if(step==='mc00-live'||step==='mc00-demo'){
       const systems=[
         {key:'power',label:'Power',status:'Standby'},
-        {key:'comms',label:'Comms',status:'Standby'},
-        {key:'core',label:'Core',status:'Standby'},
-        {key:'control',label:'Control',status:'Standby'},
         {key:'propulsion',label:'Propulsion',status:'Standby'},
+        {key:'comms',label:'Comms',status:'Standby'},
         {key:'response',label:'Response',status:'Standby'},
+        {key:'core',label:'Core',status:'Standby'},
         {key:'navigation',label:'Navigation',status:'Standby'},
+        {key:'control',label:'Control',status:'Standby'},
         {key:'launch',label:'Launch',status:'Standby'}
       ];
       return `<section class="onboard with-masthead setup-page mc00-page">${setupHeader}<div class="onboard-card panel mc00-card" data-mc00-mode="${step}"><div class="mc00-copy"><h1>System Scan</h1><p class="support-copy">Santa-1 Sleigh Recovery</p></div><div class="mc00-visual-wrap"><div class="mc00-sleigh-frame"><div class="sleigh-visual sleigh-stage-1 mc00-sleigh-visual"><div class="sleigh-glow" aria-hidden="true"></div><img class="sleigh-art" src="./assets/sleigh-stage-1.webp" alt="Santa-1 sleigh system scan visual"><div class="mc00-scan-beam" aria-hidden="true"></div></div></div></div>${systemStatusBank(systems,'mc00-system-bank','mc00')}<div class="mc00-progress-row"><div class="mc00-progress" role="progressbar" aria-label="System scan progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="mc00ProgressFill"></span></div><strong id="mc00ProgressValue">0%</strong></div><div class="mc00-complete-popup panel" id="mc00CompleteBlock" hidden><div class="mc00-complete-icon" aria-hidden="true">✓</div><h2>Scan Complete</h2><button class="btn primary wide" id="mc00Continue" data-mc00-continue="${step}">Continue</button></div></div></section>`;
@@ -207,7 +207,7 @@
   }
   function missionInstruction(type){
     return ({
-      activation:'Vehicle energy generated on track has created enough power to initiate Santa-1’s recovery.',
+      activation:'Kinetic energy generated on track has created enough power to initiate Santa-1’s recovery.',
       diagnostics:'Capture the engineering data needed for Santa-1.',
       radio:'Tune the receiver to 87.7 FM and establish a link with ELF FM.',
       commsrelay:'Relay the transmission and restore Santa-1 communications.',
@@ -265,7 +265,6 @@
         <div class="mc01-transfer-meta"><span>Energy Transfer</span><strong id="mc01TransferValue">0%</strong></div>
         <div class="mc01-transfer-track"><i id="mc01TransferFill"></i></div>
       </div>
-      <div class="mc01-recovery-state" id="mc01RecoveryState" hidden><span>Recovery Initiated</span><strong>Santa-1 at 10%</strong></div>
     </div>`;
   }
 

@@ -19,8 +19,7 @@
     const stateValue=document.getElementById('mc01State');
     const transferValue=document.getElementById('mc01TransferValue');
     const transferFill=document.getElementById('mc01TransferFill');
-    const recoveryState=document.getElementById('mc01RecoveryState');
-    if(!panel||!stateLabel||!stateValue||!transferValue||!transferFill||!recoveryState) return;
+    if(!panel||!stateLabel||!stateValue||!transferValue||!transferFill) return;
 
     stopMc01Activation();
 
@@ -37,7 +36,6 @@
       setProgress(progress);
     };
 
-    recoveryState.hidden=true;
     setStage('detected','Circuit Energy','Detected',0);
     ping(560,.08,.025);
 
@@ -55,7 +53,6 @@
 
     mc01Later(()=>{
       setStage('recovery','Recovery Sequence','Initiated',100);
-      recoveryState.hidden=false;
       ping(880,.14,.05);
       haptic([30,35,70]);
     },3150);
