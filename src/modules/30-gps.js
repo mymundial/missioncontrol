@@ -1,0 +1,116 @@
+  function startGpsWatch(){
+    if(gpsWatchId!==null||!navigator.geolocation) return;
+    gpsWatchId=navigator.geolocation.watchPosition(pos=>processGps(normalisePosition(pos)),err=>{
+      state.gpsCondition=err.code===1?'DENIED':'WAITING';save();updateRadarLive();
+    },{enableHighAccuracy:true,maximumAge:1000,timeout:15000});
+  }
+  function normalisePosition(pos){return {lat:pos.coords.latitude,lng:pos.coords.longitude,accuracy:pos.coords.accuracy,timestamp:pos.timestamp||Date.now()};}
+  function processGps(fix,force=false){
+    if(!fix||!Number.isFinite(fix.lat)||!Number.isFinite(fix.lng)) return;
+    lastGps=fix;
+    state.gpsAccuracy=fix.accuracy;state.gpsCondition=gpsCondition(fix.accuracy);
+    if(IS_ADMIN){updateAdminGps();return;}
+    if(!state.onboarded||state.mode!=='live'){save();return;}
+    if(state.missionOpen){save();return;}
+    const cp=current();
+    if(!cp){state.targetVisible=false;state.targetInRange=false;state.distance=null;save();updateRadarLive();return;}
+    const cfg=activeConfig(cp);
+    const d=distanceMetres(fix.lat,fix.lng,cfg.lat,cfg.lng);
+    const bearing=bearingDegrees(fix.lat,fix.lng,cfg.lat,cfg.lng);
+    state.distance=d;state.bearing=bearing;
+    const now=Date.now();
+    const accuracy=Number(fix.accuracy);
+    const reliable=Number.isFinite(accuracy)&&accuracy<=ACTIVATION_ACCURACY_MAX;
+    const passReliable=Number.isFinite(accuracy)&&accuracy<=PASS_ACCURACY_MAX;
+    const detectable=Number.isFinite(accuracy)&&accuracy<=DETECTION_ACCURACY_MAX&&d<=cfg.detectionRadius;
+    const exitRadius=(cfg.activationRadius||30)+35;
+    const nextCp=nextRouteCheckpoint(state.routeIndex);
+    const nextCfg=activeConfig(nextCp);
+    const nextDistance=nextCfg&&nextCfg.geofence!==false?distanceMetres(fix.lat,fix.lng,nextCfg.lat,nextCfg.lng):Infinity;
+
+    // Passing because the following checkpoint is nearby is intentionally much
+    // stricter than ordinary detection. This avoids overlapping detection zones
+    // skipping a mission: the next checkpoint must be close to its activation
+    // zone, the current checkpoint must clearly be behind us, and the evidence
+    // must persist across multiple good fixes.
+    const nextPassRadius=nextCfg?(nextCfg.activationRadius||30)+20:0;
+    const strongNextEvidence=Boolean(
+      nextCfg&&
+      Number.isFinite(accuracy)&&accuracy<=NEXT_PASS_ACCURACY_MAX&&
+      nextDistance<=nextPassRadius&&
+      d>exitRadius+15
+    );
+    if(strongNextEvidence){
+      if(!nextPassSince) nextPassSince=now;
+    } else nextPassSince=null;
+    const nextPassConfirmed=Boolean(nextPassSince&&now-nextPassSince>=NEXT_PASS_DWELL_MS);
+
+    const registerActivationFix=()=>{
+      if(reliable&&d<=cfg.activationRadius){
+        if(!activationSince) activationSince=now;
+        activationHits++;
+        return activationHits>=ACTIVATION_HITS_REQUIRED&&now-activationSince>=ACTIVATION_DWELL_MS;
+      }
+      activationHits=0;activationSince=null;
+      return false;
+    };
+
+    if(cp.type==='activation'){
+      state.targetVisible=detectable;state.targetInRange=false;
+      const activationConfirmed=registerActivationFix();
+      save();updateRadarLive();
+      if(activationConfirmed||nextPassConfirmed) triggerCircuitEntry();
+      return;
+    }
+
+    if(!inRangeLatched){
+      state.targetVisible=detectable;
+      if(registerActivationFix()){
+        inRangeLatched=true;state.targetVisible=true;state.targetInRange=true;unlockMission(cp.id);ping(700,.08,.04);haptic(30);
+      }
+    } else {
+      state.targetVisible=true;state.targetInRange=true;
+      // Do not advance a checkpoint on a weak GPS fix. The guest must remain
+      // outside the exit radius with a reasonably accurate fix for the full
+      // dwell period before the route moves on.
+      if(passReliable&&d>exitRadius){
+        if(!outsideSince) outsideSince=now;
+        if(now-outsideSince>=PASS_DWELL_MS){passCurrentCheckpoint('exit radius');if(lastGps)setTimeout(()=>processGps(lastGps,true),25);return;}
+      } else outsideSince=null;
+    }
+
+    if(nextPassConfirmed&&!state.targetInRange){
+      passCurrentCheckpoint('next checkpoint confirmed');
+      if(lastGps)setTimeout(()=>processGps(lastGps,true),25);
+      return;
+    }
+    save();updateRadarLive();
+  }
+
+  function updateRadarLive(){
+    if(IS_ADMIN||state.nav!=='radar'||state.missionOpen) return;
+    updateCommsBadge();
+    const cp=current(); const cfg=activeConfig(cp);
+    const gpsValue=document.querySelector('.status-cell:first-child .status-value');
+    if(gpsValue){const condition=state.mode==='demo'?'DEMO':state.gpsCondition;gpsValue.textContent=condition;gpsValue.className=`status-value gps-${condition.toLowerCase()}`;}
+    const sleighValue=document.querySelector('.status-cell:nth-child(2) .status-value'); if(sleighValue)sleighValue.textContent=`${recovery()}%`;
+    const checkpointValue=document.querySelector('.status-cell:last-child .status-value');
+    if(checkpointValue){const d=distanceToActivation(cp,state.distance);checkpointValue.textContent=!cp?'COMPLETE':state.targetVisible&&Number.isFinite(d)?`${Math.round(d)} M`:'SEARCHING';}
+    const target=document.querySelector('.target-dot');
+    if(target&&cp&&cfg){
+      const radial=state.targetInRange?5:Math.max(8,Math.min(39,(Number.isFinite(state.distance)?state.distance/cfg.detectionRadius:1)*39));
+      const ang=(Number.isFinite(state.bearing)?state.bearing:0)-90;
+      const x=50+Math.cos(toRad(ang))*radial, y=50+Math.sin(toRad(ang))*radial;
+      target.style.left=`${x}%`;target.style.top=`${y}%`;target.classList.toggle('hidden',!state.targetVisible);
+    }
+    const msg=document.getElementById('radarMessage'); if(!msg)return;
+    const holder=document.createElement('div');holder.innerHTML=radarMessage(cp).trim();const fresh=holder.firstElementChild;
+    if(!fresh)return;
+    if(msg.innerHTML!==fresh.innerHTML||msg.className!==fresh.className){
+      msg.className=fresh.className;msg.innerHTML=fresh.innerHTML;
+      const b=msg.querySelector('[data-start-mission]');if(b)b.addEventListener('click',()=>openMission(b.dataset.startMission));
+      const read=msg.querySelector('[data-read-messages]');if(read)read.addEventListener('click',()=>{markAllMessagesRead();set({nav:'comms'});});
+      const dismiss=msg.querySelector('[data-dismiss-messages]');if(dismiss)dismiss.addEventListener('click',dismissMessageAlert);
+    }
+  }
+
