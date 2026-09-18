@@ -270,12 +270,51 @@
 
   function diagnosticsBody(){
     const sensors=[
-      {name:'Aero',key:'aero',viz:`<svg viewBox="0 0 120 70" role="presentation"><path class="aero-car" d="M50 18h20l8 10 4 23H38l4-23 8-10Z"/><path class="aero-flow f1" d="M4 15 C26 12 29 8 45 8 S82 9 116 15"/><path class="aero-flow f2" d="M2 35 C22 35 28 24 41 24 S79 24 118 35"/><path class="aero-flow f3" d="M4 55 C26 58 31 62 47 62 S83 60 116 55"/></svg>`},
-      {name:'Stability',key:'stability',viz:`<svg viewBox="0 0 120 70" role="presentation"><line class="stability-horizon" x1="10" y1="35" x2="110" y2="35"/><g class="stability-body"><path d="M42 20h36l8 15-8 15H42L34 35l8-15Z"/><line x1="60" y1="15" x2="60" y2="55"/><line x1="29" y1="35" x2="91" y2="35"/><circle cx="60" cy="35" r="4"/></g><circle class="stability-lock" cx="60" cy="35" r="27"/></svg>`},
-      {name:'Power',key:'power',viz:'<span></span><span></span><span></span><span></span><span></span>'},
-      {name:'Control',key:'control',viz:`<svg viewBox="0 0 120 70" role="presentation"><path class="control-trace trace-a" d="M8 23 C24 7 34 39 50 23 S75 7 92 23 S105 33 114 23"/><path class="control-trace trace-b" d="M8 47 C24 31 34 63 50 47 S75 31 92 47 S105 57 114 47"/><line class="control-lock" x1="12" y1="35" x2="108" y2="35"/></svg>`},
-      {name:'Traction',key:'traction',viz:`<svg viewBox="20 8 80 54" role="presentation"><path class="traction-car" d="M49 13h22l8 12v20l-8 12H49l-8-12V25l8-12Z"/><rect class="patch p1" x="29" y="17" width="14" height="13" rx="5"/><rect class="patch p2" x="77" y="17" width="14" height="13" rx="5"/><rect class="patch p3" x="29" y="40" width="14" height="13" rx="5"/><rect class="patch p4" x="77" y="40" width="14" height="13" rx="5"/><path class="traction-drive" d="M60 18v34"/></svg>`},
-      {name:'Recovery',key:'recovery',viz:'<i class="recovery-ring"></i><b></b>'}
+      {name:'Aero',key:'aero',viz:`<svg viewBox="0 0 120 70" role="presentation">
+        <path class="aero-car" d="M48 20h24l10 9 3 18-9 7H44l-9-7 3-18 10-9Z"/>
+        <path class="aero-flow aero-flow-1" d="M2 13 C22 9 31 10 44 16 C54 20 67 20 78 16 C91 11 102 11 118 15"/>
+        <path class="aero-flow aero-flow-2" d="M1 31 C22 28 29 24 41 25 C52 26 68 26 81 24 C95 22 104 26 119 30"/>
+        <path class="aero-flow aero-flow-3" d="M1 49 C23 53 31 52 44 47 C55 43 66 43 79 47 C92 52 103 53 119 49"/>
+        <circle class="aero-particle aero-p1" cx="15" cy="13" r="2"/><circle class="aero-particle aero-p2" cx="14" cy="31" r="2"/><circle class="aero-particle aero-p3" cx="14" cy="49" r="2"/>
+      </svg>`},
+      {name:'Stability',key:'stability',viz:`<svg viewBox="0 0 120 70" role="presentation">
+        <line class="stability-horizon" x1="8" y1="52" x2="112" y2="52"/>
+        <g class="stability-chassis">
+          <path class="stability-shell" d="M37 28h46l8 13-9 7H38l-9-7 8-13Z"/>
+          <circle class="stability-wheel left" cx="42" cy="50" r="5"/><circle class="stability-wheel right" cx="78" cy="50" r="5"/>
+          <line class="stability-spring left" x1="42" y1="36" x2="42" y2="46"/><line class="stability-spring right" x1="78" y1="36" x2="78" y2="46"/>
+        </g>
+        <line class="stability-centre" x1="60" y1="12" x2="60" y2="58"/>
+        <circle class="stability-lock" cx="60" cy="36" r="25"/><circle class="stability-point" cx="60" cy="36" r="3"/>
+      </svg>`},
+      {name:'Power',key:'power',viz:`<svg viewBox="0 0 120 70" role="presentation">
+        <path class="power-baseline" d="M5 53H115"/>
+        <path class="power-trace-shadow" d="M6 50 L20 48 L30 43 L38 47 L47 30 L55 41 L65 18 L74 34 L83 12 L92 27 L102 9 L115 16"/>
+        <path class="power-trace" d="M6 50 L20 48 L30 43 L38 47 L47 30 L55 41 L65 18 L74 34 L83 12 L92 27 L102 9 L115 16"/>
+        <circle class="power-hotspot" cx="102" cy="9" r="4"/>
+        <g class="power-output-bars"><rect x="8" y="57" width="12" height="5"/><rect x="24" y="54" width="12" height="8"/><rect x="40" y="51" width="12" height="11"/><rect x="56" y="47" width="12" height="15"/><rect x="72" y="43" width="12" height="19"/><rect x="88" y="38" width="12" height="24"/></g>
+      </svg>`},
+      {name:'Control',key:'control',viz:`<svg viewBox="0 0 120 70" role="presentation">
+        <path class="control-path control-path-left" d="M7 35 C20 16 37 12 51 24"/>
+        <path class="control-path control-path-right" d="M113 35 C100 54 83 58 69 46"/>
+        <g class="control-wheel">
+          <circle cx="60" cy="35" r="22"/><circle cx="60" cy="35" r="5"/>
+          <line x1="60" y1="13" x2="60" y2="30"/><line x1="40" y1="43" x2="55" y2="37"/><line x1="80" y1="43" x2="65" y2="37"/>
+        </g>
+        <path class="control-angle" d="M38 18 A29 29 0 0 1 83 19"/><circle class="control-marker" cx="60" cy="7" r="2.5"/>
+      </svg>`},
+      {name:'Traction',key:'traction',viz:`<svg viewBox="0 0 120 70" role="presentation">
+        <path class="traction-car" d="M50 13h20l9 11v22l-9 11H50l-9-11V24l9-11Z"/>
+        <rect class="traction-wheel w1" x="31" y="18" width="12" height="14" rx="4"/><rect class="traction-wheel w2" x="77" y="18" width="12" height="14" rx="4"/><rect class="traction-wheel w3" x="31" y="39" width="12" height="14" rx="4"/><rect class="traction-wheel w4" x="77" y="39" width="12" height="14" rx="4"/>
+        <ellipse class="traction-contact c1" cx="37" cy="25" rx="10" ry="5"/><ellipse class="traction-contact c2" cx="83" cy="25" rx="10" ry="5"/><ellipse class="traction-contact c3" cx="37" cy="46" rx="10" ry="5"/><ellipse class="traction-contact c4" cx="83" cy="46" rx="10" ry="5"/>
+        <path class="traction-drive" d="M60 17v36"/>
+      </svg>`},
+      {name:'Response',key:'response',viz:`<svg viewBox="0 0 120 70" role="presentation">
+        <circle class="response-ring response-ring-a" cx="60" cy="35" r="23"/><circle class="response-ring response-ring-b" cx="60" cy="35" r="15"/>
+        <circle class="response-core" cx="60" cy="35" r="5"/>
+        <path class="response-in" d="M6 35H48"/><path class="response-out" d="M72 35H114"/>
+        <circle class="response-pulse response-pulse-in" cx="10" cy="35" r="3"/><circle class="response-pulse response-pulse-out" cx="110" cy="35" r="3"/>
+      </svg>`}
     ];
     return `<div class="mission-instrument panel diagnostics-panel"><div class="sensor-grid diagnostics-grid">${sensors.map((x,i)=>`<button class="sensor sensor-${x.key}" data-sensor="${i}" data-diagnostic="${x.key}"><div class="sensor-head"><span class="num">0${i+1}</span><span class="name">${x.name}</span></div><div class="sensor-viz viz-${x.key}" aria-hidden="true">${x.viz}</div><div class="state">Ready to scan</div></button>`).join('')}</div></div><button class="btn primary wide" id="diagComplete" disabled>Confirm Performance Data</button>`;
   }
