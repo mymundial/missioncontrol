@@ -31,7 +31,8 @@
       { key:'control', start:42, end:53 },
       { key:'propulsion', start:55, end:66 },
       { key:'response', start:68, end:79 },
-      { key:'navigation', start:81, end:92 }
+      { key:'navigation', start:81, end:91 },
+      { key:'launch', start:93, end:99, final:'blocked' }
     ];
 
     let progressValue = 0;
@@ -58,7 +59,7 @@
           ? 'standby'
           : progressValue < system.end
             ? 'checking'
-            : 'offline';
+            : (system.final || 'offline');
         setSystemState(system.key,nextState);
       });
 
@@ -70,7 +71,6 @@
     };
 
     scanSystems.forEach(system=>setSystemState(system.key,'standby'));
-    setSystemState('launch','blocked');
     paint();
     card.classList.remove('is-complete');
     complete.hidden = true;

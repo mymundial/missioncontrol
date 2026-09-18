@@ -458,7 +458,7 @@
         {key:'propulsion',label:'Propulsion',status:'Standby'},
         {key:'response',label:'Response',status:'Standby'},
         {key:'navigation',label:'Navigation',status:'Standby'},
-        {key:'launch',label:'Launch',status:'Blocked',state:'blocked'}
+        {key:'launch',label:'Launch',status:'Standby'}
       ];
       return `<section class="onboard with-masthead setup-page mc00-page">${setupHeader}<div class="onboard-card panel mc00-card" data-mc00-mode="${step}"><div class="mc00-copy"><h1>System Scan</h1><p class="support-copy">Santa-1 Sleigh Recovery</p></div><div class="mc00-visual-wrap"><div class="mc00-sleigh-frame"><div class="sleigh-visual sleigh-stage-1 mc00-sleigh-visual"><div class="sleigh-glow" aria-hidden="true"></div><img class="sleigh-art" src="./assets/sleigh-stage-1.webp" alt="Santa-1 sleigh system scan visual"><div class="mc00-scan-beam" aria-hidden="true"></div></div></div></div>${systemStatusBank(systems,'mc00-system-bank','mc00')}<div class="mc00-progress-row"><div class="mc00-progress" role="progressbar" aria-label="System scan progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="mc00ProgressFill"></span></div><strong id="mc00ProgressValue">0%</strong></div><div class="mc00-complete-popup panel" id="mc00CompleteBlock" hidden><div class="mc00-complete-icon" aria-hidden="true">✓</div><h2>Scan Complete</h2><button class="btn primary wide" id="mc00Continue" data-mc00-continue="${step}">Continue</button></div></div></section>`;
     }
@@ -902,7 +902,8 @@
       { key:'control', start:42, end:53 },
       { key:'propulsion', start:55, end:66 },
       { key:'response', start:68, end:79 },
-      { key:'navigation', start:81, end:92 }
+      { key:'navigation', start:81, end:91 },
+      { key:'launch', start:93, end:99, final:'blocked' }
     ];
 
     let progressValue = 0;
@@ -929,7 +930,7 @@
           ? 'standby'
           : progressValue < system.end
             ? 'checking'
-            : 'offline';
+            : (system.final || 'offline');
         setSystemState(system.key,nextState);
       });
 
@@ -941,7 +942,6 @@
     };
 
     scanSystems.forEach(system=>setSystemState(system.key,'standby'));
-    setSystemState('launch','blocked');
     paint();
     card.classList.remove('is-complete');
     complete.hidden = true;
