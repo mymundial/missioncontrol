@@ -203,6 +203,9 @@
     if(cp.type==='activation'){
       return `<div class="mission-head mc01-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><h1>Circuit Entry</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
     }
+    if(cp.type==='spirit'){
+      return `<div class="mission-head spirit-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><h1>Spirit Core</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
+    }
     return `<div class="mission-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><h1>${cp.mission}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
   }
   function missionInstruction(type){
@@ -212,7 +215,7 @@
       radio:'Tune the receiver to 87.7 FM and establish a link with ELF FM.',
       commsrelay:'Relay the transmission and restore Santa-1 communications.',
       power:'Reach maximum velocity and capture racing power for Santa-1.',
-      spirit:'Build a stable charging rhythm until all five energy cells are full.',
+      spirit:'Balance the energy feeds and stabilise the Spirit Core.',
       placeholder:'This checkpoint is reserved while the final installation game is developed.',
       artifacts:'Clear the unstable artefacts and stabilise the Starstream.',
       comet:'Lock 10 directional signals to restore Santa-1’s guidance path.',
@@ -369,7 +372,37 @@
       <button class="btn primary wide power-accelerator" id="powerAccelerator">Press &amp; Hold to Accelerate</button>
     </div>`;
   }
-  function spiritBody(){return `<div class="mission-instrument panel spirit-panel"><div class="signal-state spirit-stability" id="spiritState">Charge stability · balancing</div><div class="tanks-wrap" id="tanksWrap"><div class="tanks">${[0,1,2,3,4].map(i=>`<div class="tank ${i===0?'active':''}" data-tank="${i}"><div class="tank-smoke" aria-hidden="true"><i></i><i></i><i></i></div><div class="tank-spout"></div><div class="tank-vessel"><div class="tank-glass"></div><div class="tank-fill"></div><div class="tank-cap"></div></div></div>`).join('')}</div></div><div class="spirit-instruction">Alternate tap A + B to fill the energy tanks.</div><div class="ab"><button class="charge" data-charge="A">A</button><button class="charge" data-charge="B">B</button></div></div>`}
+  function spiritBody(){
+    const tankCells=side=>Array.from({length:3},(_,i)=>`<div class="spirit-tank-cell" data-spirit-tank="${side}-${i}"><span class="spirit-tank-energy"></span><i></i><b></b></div>`).join('');
+    const meterSegments=Array.from({length:10},()=>'<i></i>').join('');
+    const stageDots=Array.from({length:5},(_,i)=>`<i data-spirit-stage-dot="${i}"></i>`).join('');
+    return `<div class="mission-instrument panel spirit-panel" id="spiritRig" data-stage="0">
+      <div class="spirit-apparatus">
+        <div class="spirit-bank spirit-bank-left" aria-hidden="true">
+          <div class="spirit-vent"><i></i><i></i><i></i></div>
+          <div class="spirit-tank-stack">${tankCells('left')}</div>
+          <div class="spirit-meter spirit-meter-left" id="spiritMeterLeft">${meterSegments}<span></span></div>
+        </div>
+        <div class="spirit-core-rig" aria-hidden="true">
+          <span class="spirit-pipe pipe-left"></span><span class="spirit-pipe pipe-right"></span>
+          <div class="spirit-core" id="spiritCore"><i class="spirit-core-shell"></i><i class="spirit-vortex vortex-a"></i><i class="spirit-vortex vortex-b"></i><i class="spirit-core-flare"></i><b></b></div>
+        </div>
+        <div class="spirit-bank spirit-bank-right" aria-hidden="true">
+          <div class="spirit-vent"><i></i><i></i><i></i></div>
+          <div class="spirit-tank-stack">${tankCells('right')}</div>
+          <div class="spirit-meter spirit-meter-right" id="spiritMeterRight">${meterSegments}<span></span></div>
+        </div>
+      </div>
+      <div class="spirit-balance-readout"><span>Feed Balance</span><strong id="spiritState">Hold control</strong></div>
+      <div class="spirit-balance-control" id="spiritBalanceControl" role="slider" tabindex="0" aria-label="Balance energy feeds" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+        <div class="spirit-balance-track"><span class="spirit-target-zone" id="spiritTarget"></span><i class="spirit-balance-mid"></i><b class="spirit-balance-knob" id="spiritKnob"></b></div>
+        <span class="spirit-balance-arrow left" aria-hidden="true">‹</span><span class="spirit-balance-arrow right" aria-hidden="true">›</span>
+      </div>
+      <div class="spirit-stage-row"><div><span>Core Charge</span><strong><b id="spiritStageNumber">01</b> / 05</strong></div><em id="spiritStageName">Ignition</em></div>
+      <div class="spirit-stage-progress" id="spiritStageProgress" aria-hidden="true">${stageDots}</div>
+      <div class="spirit-instruction" id="spiritInstruction">Drag the control to keep both energy feeds balanced.</div>
+    </div>`;
+  }
   function placeholderBody(cp){const location=cp?.location||'Checkpoint';return `<div class="mission-instrument panel" style="text-align:center;padding:30px 18px"><div class="onboard-icon">?</div><div class="kicker">${location} / Creative Hold</div><h2 style="font-family:var(--display);text-transform:uppercase;font-size:28px;margin:8px 0">Mission TBC</h2><p class="sub">This checkpoint is reserved while the final installation game is developed. GPS activation, route progression and completion behaviour remain active for testing.</p><button class="btn primary wide" style="margin-top:16px" id="completePlaceholder">Complete Demo Step</button></div>`}
   function artifactBody(){
     return `<div class="mission-instrument panel artifact-panel">
