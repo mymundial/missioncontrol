@@ -1,3 +1,15 @@
+# Silverstone Mission Control — Pass 7-00-00
+
+## MC-00 system scan + masthead cleanup
+
+- Adds a new MC-00 onboarding screen that sits immediately after **Start Mission** or **Quick Demo**.
+- The MC-00 screen uses the existing Mission Control UI language: shared masthead, panel styling, Santa-1 visual, one live diagnostic line, a vertical scan beam and a horizontal 0–100% progress bar.
+- Replaces the previous side-callout scan layout with a cleaner single-focus composition.
+- Routes **Start Mission → MC-00 → Mission Briefing → Mission Audio → Enable Live Radar**.
+- Routes **Quick Demo → MC-00 → Demo Mode → Radar**.
+- Removes the global **Santa's Sleigh Recovery** strapline from the masthead / landing treatment so mission and page titles carry the context instead.
+- Rebuilds the production `dist/` package.
+
 # Silverstone Mission Control — Pass 6.83
 
 ## JavaScript modularisation (Pass D)

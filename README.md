@@ -1,11 +1,18 @@
-# Silverstone Mission Control — Pass 6.84
+# Silverstone Mission Control — Pass 7-00-00
 
-Pass 6.84 is the **final production-audit baseline** following the infrastructure, asset, CSS and JavaScript cleanup passes.
+Pass 7-00-00 builds on the 6.84 production-audit baseline and introduces the new **MC-00 system scan** onboarding flow plus the global masthead strapline cleanup.
+
+## This pass
+
+- Adds **MC-00 / System Scan** immediately after **Start Mission** and **Quick Demo**.
+- Uses a simplified scan composition: Santa-1 visual, vertical scan beam, single live diagnostic line, and horizontal 0–100% progress bar.
+- Removes **Santa's Sleigh Recovery** from the shared masthead / landing logo treatment.
+- Keeps the streamlined source structure introduced by Passes A–E and rebuilds `dist/`.
 
 ## Production status
 
-- Production `dist/`: **6,642,092 bytes (~6.33 MiB), 39 files**.
-- Runtime output is **byte-for-byte identical to Pass 6.83**; this pass does not intentionally change UI, mission logic, GPS behaviour, audio behaviour, saved-state behaviour or gameplay.
+- Production `dist/`: **6,650,571 bytes (~6.34 MiB), 39 files**.
+- This pass intentionally changes the guest onboarding UI/flow by adding MC-00 and removing the shared masthead strapline; the remaining mission logic, GPS behaviour, audio behaviour, saved-state behaviour and gameplay stay aligned with the 6.84 baseline.
 - All deployed assets/fonts are referenced; no dead production files were found.
 - No PNG/JPEG/WAV/TTF/OTF or temporary test files are shipped in `dist/`.
 - Runtime images are WebP/SVG, audio is MP3, and fonts are WOFF2.

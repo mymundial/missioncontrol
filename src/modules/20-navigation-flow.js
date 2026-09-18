@@ -16,6 +16,7 @@
       if(b.dataset.onboard==='demo-continue'){ continueDemoExperience(); return; }
       set({bootDone:b.dataset.onboard});
     }));
+    document.querySelectorAll('[data-mc00-continue]').forEach(b=>b.addEventListener('click',()=>continueMc00Sequence(b.dataset.mc00Continue)));
     document.querySelectorAll('[data-audio]').forEach(b=>b.addEventListener('click',()=>{const on=b.dataset.audio==='on';set({audio:on,bootDone:'location'});if(on){ensureAudio();ping(660,.1,.03);}}));
     document.querySelectorAll('[data-location]').forEach(b=>b.addEventListener('click',()=>{
       if(b.dataset.location==='demo'){startDemoExperience();return;}

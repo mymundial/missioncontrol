@@ -1,6 +1,6 @@
   function startDemoExperience(){
     clearDemo();
-    state={...defaults,onboarded:false,audio:state.audio,bootDone:'demo-scan',mode:'demo',nav:'radar',completed:[],available:[],routeIndex:1,gpsCondition:'DEMO'};
+    state={...defaults,onboarded:false,audio:state.audio,bootDone:'mc00-demo',mode:'demo',nav:'radar',completed:[],available:[],routeIndex:1,gpsCondition:'DEMO'};
     save();
     render();
     ping(480,.07,.025);

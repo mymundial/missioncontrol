@@ -383,7 +383,7 @@
     const unread=id==='comms'?unreadCount():0;
     return `<button data-nav="${id}" class="${state.nav===id?'active':''}"><span class="ico">${navIcon(id)}${unread?`<span class="nav-badge">${unread>9?'9+':unread}</span>`:''}</span><span>${label}</span></button>`;
   }
-  function topBar(){ return `<header class="topbar">${brand()}<img class="mission-control-logo" src="./assets/mission-control-logo.webp" alt="Mission Control"><div class="masthead-strap">Santa's Sleigh Recovery</div></header>`; }
+  function topBar(){ return `<header class="topbar">${brand()}<img class="mission-control-logo" src="./assets/mission-control-logo.webp" alt="Mission Control"></header>`; }
   function statusStrip(){
     const cp=current();
     const activationDistance=distanceToActivation(cp,state.distance);
@@ -421,7 +421,13 @@
     if(IS_ADMIN){ renderAdmin(); return; }
     if(cleanupMission){ cleanupMission(); cleanupMission=null; }
     stopStatic();
-    if(!state.onboarded){ app.innerHTML=shell(renderLaunch(),false); bindGlobal(); return; }
+    stopMc00Scan();
+    if(!state.onboarded){
+      app.innerHTML=shell(renderLaunch(),false);
+      bindGlobal();
+      bindMc00Scan(state.bootDone);
+      return;
+    }
     if(state.missionOpen){ app.innerHTML=shell(renderMission(state.missionOpen),false); bindGlobal(); bindMission(state.missionOpen); return; }
     if(state.nav==='comms') markAllMessagesRead();
     renderNavShell();
@@ -438,11 +444,12 @@
     }
   }
   function renderLaunch(){
-    if(state.bootDone===false) return `<section class="hero"><div class="hero-content"><img class="hero-logo hero-logo-stacked" src="./assets/silverstone-logo-landing.webp" alt="Silverstone"><img class="hero-mission-logo" src="./assets/mission-control-logo.webp" alt="Mission Control"><div class="strap">Santa's Sleigh Recovery</div><div class="hero-actions"><button class="btn primary" data-onboard="brief">Start Mission</button><button class="btn secondary" data-onboard="demo">Quick Demo</button></div></div></section>`;
+    if(state.bootDone===false) return `<section class="hero"><div class="hero-content"><img class="hero-logo hero-logo-stacked" src="./assets/silverstone-logo-landing.webp" alt="Silverstone"><img class="hero-mission-logo" src="./assets/mission-control-logo.webp" alt="Mission Control"><div class="hero-actions"><button class="btn primary" data-onboard="mc00-live">Start Mission</button><button class="btn secondary" data-onboard="demo">Quick Demo</button></div></div></section>`;
     return renderOnboardStep(state.bootDone);
   }
   function renderOnboardStep(step){
     const setupHeader=topBar();
+    if(step==='mc00-live'||step==='mc00-demo') return `<section class="onboard with-masthead setup-page mc00-page">${setupHeader}<div class="onboard-card panel mc00-card" data-mc00-mode="${step}"><div class="mc00-card-head"><div class="kicker">MC-00 / System Scan</div></div><div class="mc00-copy"><h1>System Scan</h1><p class="support-copy">Scanning Santa-1</p></div><div class="mc00-visual-wrap"><div class="mc00-sleigh-frame"><div class="mc00-scan-beam" aria-hidden="true"></div><div class="sleigh-visual sleigh-stage-1 mc00-sleigh-visual"><div class="sleigh-glow" aria-hidden="true"></div><img class="sleigh-art" src="./assets/sleigh-stage-1.webp" alt="Santa-1 sleigh system scan visual"></div></div></div><div class="mc00-status-line" id="mc00StatusLine" aria-live="polite">Initialising scan</div><div class="mc00-progress-row"><div class="mc00-progress" role="progressbar" aria-label="System scan progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="mc00ProgressFill"></span></div><strong id="mc00ProgressValue">0%</strong></div><div class="mc00-complete" id="mc00CompleteBlock" hidden><div class="mc00-complete-icon" aria-hidden="true">✓</div><h2>Scan Complete</h2><p>Santa-1 systems are offline and ready for recovery.</p></div><div class="setup-actions"><button class="btn primary wide" id="mc00Continue" data-mc00-continue="${step}" disabled>Continue</button></div></div></section>`;
     if(step==='brief') return `<section class="onboard with-masthead setup-page briefing-page">${setupHeader}<div class="onboard-card panel setup-card"><div class="onboard-icon setup-icon"><span class="setup-icon-glyph"><img src="./assets/mission-briefing-icon.svg" alt=""></span></div><h1>Mission Briefing</h1><p class="support-copy">Santa-1 has lost power. Energy signatures have been detected around the circuit. Locate each source, complete its mission and restore the sleigh.</p><div class="setup-actions"><button class="btn primary wide" data-onboard="audio">Continue</button></div></div></section>`;
     if(step==='audio') return `<section class="onboard with-masthead setup-page audio-page">${setupHeader}<div class="onboard-card panel setup-card"><div class="onboard-icon setup-icon"><span class="setup-icon-glyph"><img src="./assets/mission-audio-icon.webp" alt=""></span></div><h1>Mission Audio</h1><p class="support-copy">Mission Control uses proximity alerts, system sounds and live transmissions. Audio can be muted at any time.</p><div class="setup-actions stack"><button class="btn primary wide" data-audio="on">Enable Mission Audio</button><button class="btn secondary wide" data-audio="off">Continue Without Audio</button></div></div></section>`;
     if(step==='demo-scan') return `<section class="onboard with-masthead setup-page demo-scan-page">${setupHeader}<div class="onboard-card panel setup-card demo-scan-card"><div class="onboard-icon setup-icon demo-system-icon" aria-hidden="true"><span class="demo-scan-radar"><span></span></span></div><h1>DEMO MODE</h1><p class="support-copy">The demo will simulate checkpoint proximity in the same order as the live route. Your first target is <strong>Mission 01 · Circuit Entry</strong> at Village.</p><div class="setup-actions"><button class="btn primary wide" data-onboard="demo-continue">Continue to Radar</button></div></div></section>`;
@@ -726,6 +733,7 @@
       if(b.dataset.onboard==='demo-continue'){ continueDemoExperience(); return; }
       set({bootDone:b.dataset.onboard});
     }));
+    document.querySelectorAll('[data-mc00-continue]').forEach(b=>b.addEventListener('click',()=>continueMc00Sequence(b.dataset.mc00Continue)));
     document.querySelectorAll('[data-audio]').forEach(b=>b.addEventListener('click',()=>{const on=b.dataset.audio==='on';set({audio:on,bootDone:'location'});if(on){ensureAudio();ping(660,.1,.03);}}));
     document.querySelectorAll('[data-location]').forEach(b=>b.addEventListener('click',()=>{
       if(b.dataset.location==='demo'){startDemoExperience();return;}
@@ -829,6 +837,80 @@
     navigator.geolocation.getCurrentPosition(pos=>{
       state={...state,onboarded:true,mode:'live',nav:'radar',routeIndex:normaliseRouteIndex(state.routeIndex||ROUTE_START_INDEX),gpsAccuracy:pos.coords.accuracy,gpsCondition:gpsCondition(pos.coords.accuracy)};save();ensureOpeningMessage();render();startGpsWatch();processGps(normalisePosition(pos),true);
     },()=>toast('Location permission is required for Live Radar.'),{enableHighAccuracy:true,timeout:10000,maximumAge:0});
+  }
+  let mc00ScanTimer = null;
+  let mc00ScanRaf = null;
+
+  function stopMc00Scan(){
+    if(mc00ScanTimer){ clearInterval(mc00ScanTimer); mc00ScanTimer = null; }
+    if(mc00ScanRaf){ cancelAnimationFrame(mc00ScanRaf); mc00ScanRaf = null; }
+  }
+
+  function continueMc00Sequence(mode){
+    stopMc00Scan();
+    const nextStep = mode==='mc00-demo' ? 'demo-scan' : 'brief';
+    set({ bootDone: nextStep });
+  }
+
+  function bindMc00Scan(step){
+    if(step!=='mc00-live' && step!=='mc00-demo') return;
+    const card = document.querySelector('.mc00-card');
+    const bar = document.getElementById('mc00ProgressFill');
+    const value = document.getElementById('mc00ProgressValue');
+    const status = document.getElementById('mc00StatusLine');
+    const progress = document.querySelector('.mc00-progress');
+    const complete = document.getElementById('mc00CompleteBlock');
+    const button = document.getElementById('mc00Continue');
+    if(!card || !bar || !value || !status || !progress || !complete || !button) return;
+
+    stopMc00Scan();
+
+    const script = [
+      { at: 0, text: 'Initialising scan' },
+      { at: 12, text: 'Power: scanning' },
+      { at: 24, text: 'Power: offline' },
+      { at: 40, text: 'Comms: scanning' },
+      { at: 54, text: 'Comms: offline' },
+      { at: 70, text: 'Navigation: scanning' },
+      { at: 84, text: 'Navigation: offline' },
+      { at: 100, text: 'Scan complete' }
+    ];
+
+    let progressValue = 0;
+    let lastText = '';
+
+    const paint = ()=>{
+      bar.style.width = `${progressValue}%`;
+      value.textContent = `${progressValue}%`;
+      progress.setAttribute('aria-valuenow', String(progressValue));
+      const line = script.reduce((active, item)=>progressValue >= item.at ? item : active, script[0]);
+      if(line.text !== lastText){
+        lastText = line.text;
+        status.textContent = line.text;
+      }
+      if(progressValue >= 100){
+        stopMc00Scan();
+        card.classList.add('is-complete');
+        complete.hidden = false;
+        button.disabled = false;
+      }
+    };
+
+    paint();
+    card.classList.remove('is-complete');
+    complete.hidden = true;
+    button.disabled = true;
+
+    mc00ScanTimer = setInterval(()=>{
+      progressValue = Math.min(100, progressValue + 1);
+      paint();
+      if(progressValue === 100){
+        ping(860,.12,.05);
+        haptic([20,35,65]);
+      } else if(progressValue % 18 === 0){
+        ping(620 + (progressValue * 2), .05, .02);
+      }
+    }, 45);
   }
   function startGpsWatch(){
     if(gpsWatchId!==null||!navigator.geolocation) return;
@@ -948,7 +1030,7 @@
 
   function startDemoExperience(){
     clearDemo();
-    state={...defaults,onboarded:false,audio:state.audio,bootDone:'demo-scan',mode:'demo',nav:'radar',completed:[],available:[],routeIndex:1,gpsCondition:'DEMO'};
+    state={...defaults,onboarded:false,audio:state.audio,bootDone:'mc00-demo',mode:'demo',nav:'radar',completed:[],available:[],routeIndex:1,gpsCondition:'DEMO'};
     save();
     render();
     ping(480,.07,.025);
