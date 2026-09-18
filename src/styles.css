@@ -2590,14 +2590,18 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .mc00-copy{
   width:100%;
   justify-self:stretch;
+  display:grid;
+  justify-items:center;
   text-align:center;
 }
 .mc00-copy h1,
 .mc00-copy .support-copy{
   width:100%;
+  margin-left:auto;
+  margin-right:auto;
   text-align:center;
 }
-.mc00-copy h1{font-size:var(--challenge-title-size);}
+.mc00-copy h1{font-size:var(--challenge-title-size);margin-bottom:8px;}
 
 /* Four data columns: system | status | system | status. */
 .system-status-bank{
@@ -2651,10 +2655,11 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 }
 .system-status-item.is-checking .system-status-value{color:#74ddfb;}
 .system-status-item.is-offline .system-node{
-  border-color:rgba(127,160,173,.5);
-  background:radial-gradient(circle at 42% 38%,rgba(112,138,149,.2),rgba(8,28,39,.96) 68%);
+  border-color:rgba(255,122,122,.78);
+  background:radial-gradient(circle at 40% 36%,#ffd8d8 0 8%,#ff8a8a 20%,#c63a45 48%,#611725 74%,#26030e 100%);
+  box-shadow:0 0 7px rgba(255,86,101,.34),0 0 14px rgba(255,86,101,.16),inset 0 0 7px rgba(255,236,236,.2);
 }
-.system-status-item.is-offline .system-status-value{color:#8ba7b2;}
+.system-status-item.is-offline .system-status-value{color:#ff979e;}
 .system-status-item.is-online .system-node,
 .system-status-item.is-clear .system-node{
   border-color:rgba(114,216,244,.72);
@@ -2664,10 +2669,11 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .system-status-item.is-online .system-status-value,
 .system-status-item.is-clear .system-status-value{color:#8fe5fb;}
 .system-status-item.is-blocked .system-node{
-  border-color:rgba(111,139,151,.46);
-  background:radial-gradient(circle at 40% 35%,rgba(79,103,114,.16),rgba(4,22,32,.96) 68%);
+  border-color:rgba(255,122,122,.78);
+  background:radial-gradient(circle at 40% 36%,#ffd8d8 0 8%,#ff8a8a 20%,#c63a45 48%,#611725 74%,#26030e 100%);
+  box-shadow:0 0 7px rgba(255,86,101,.34),0 0 14px rgba(255,86,101,.16),inset 0 0 7px rgba(255,236,236,.2);
 }
-.system-status-item.is-blocked .system-status-value{color:#7795a1;}
+.system-status-item.is-blocked .system-status-value{color:#ff979e;}
 @keyframes systemNodePulse{50%{filter:brightness(1.35);transform:scale(1.08)}}
 
 .mc00-system-bank{

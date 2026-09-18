@@ -45,7 +45,7 @@
       if(!item||!status) return;
       item.classList.remove('is-standby','is-checking','is-offline','is-online','is-blocked','is-clear');
       item.classList.add(`is-${nextState}`);
-      status.textContent=nextState==='checking'?'Checking':nextState==='offline'?'Offline':'Standby';
+      status.textContent=nextState==='checking'?'Checking':nextState==='offline'?'Offline':nextState==='blocked'?'Blocked':'Standby';
     };
 
     const paint = ()=>{
@@ -70,6 +70,7 @@
     };
 
     scanSystems.forEach(system=>setSystemState(system.key,'standby'));
+    setSystemState('launch','blocked');
     paint();
     card.classList.remove('is-complete');
     complete.hidden = true;
