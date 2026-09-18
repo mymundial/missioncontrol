@@ -200,11 +200,14 @@
     if(cp.type==='diagnostics'){
       return `<div class="mission-head diagnostics-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><div class="diagnostics-brand"><img src="./assets/audi-rings.webp" alt="Audi"></div><h1>Performance Scan</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
     }
+    if(cp.type==='activation'){
+      return `<div class="mission-head mc01-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><h1>Circuit Entry</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
+    }
     return `<div class="mission-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><h1>${cp.mission}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
   }
   function missionInstruction(type){
     return ({
-      activation:'Run the system initiation scan and bring Santa-1 recovery systems online.',
+      activation:'Vehicle energy generated on track has created enough power to initiate Santa-1’s recovery.',
       diagnostics:'Capture the engineering data needed for Santa-1.',
       radio:'Tune the receiver to 87.7 FM and establish a link with ELF FM.',
       commsrelay:'Relay the transmission and restore Santa-1 communications.',
@@ -226,7 +229,7 @@
   }
   function missionBody(cp){
     switch(cp.type){
-      case 'activation': return '';
+      case 'activation': return circuitEntryBody();
       case 'diagnostics': return diagnosticsBody();
       case 'radio': return radioBody();
       case 'commsrelay': return commsRelayBody();
@@ -243,6 +246,29 @@
       default:return '';
     }
   }
+  function circuitEntryBody(){
+    return `<div class="mission-instrument panel mc01-panel" id="mc01Activation" data-stage="detected">
+      <div class="mc01-track-stage" aria-hidden="true">
+        <div class="mc01-track-shadow"></div>
+        <div class="mc01-track-outline"></div>
+        <div class="mc01-track-energy"></div>
+        <span class="mc01-energy-node"></span>
+        <span class="mc01-energy-ripple ripple-a"></span>
+        <span class="mc01-energy-ripple ripple-b"></span>
+      </div>
+      <div class="mc01-readout">
+        <span class="mc01-bolt" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13.7 1.8 5.3 13h5.5l-.5 9.2L18.7 11h-5.5l.5-9.2Z"/></svg></span>
+        <div class="mc01-readout-copy"><span id="mc01StateLabel">Circuit Energy</span><strong id="mc01State">Detected</strong></div>
+        <div class="mc01-signal-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      </div>
+      <div class="mc01-transfer" aria-label="Circuit energy transfer progress">
+        <div class="mc01-transfer-meta"><span>Energy Transfer</span><strong id="mc01TransferValue">0%</strong></div>
+        <div class="mc01-transfer-track"><i id="mc01TransferFill"></i></div>
+      </div>
+      <div class="mc01-recovery-state" id="mc01RecoveryState" hidden><span>Recovery Initiated</span><strong>Santa-1 at 10%</strong></div>
+    </div>`;
+  }
+
   function diagnosticsBody(){
     const sensors=[
       {name:'Aero',key:'aero',viz:`<svg viewBox="0 0 120 70" role="presentation"><path class="aero-car" d="M50 18h20l8 10 4 23H38l4-23 8-10Z"/><path class="aero-flow f1" d="M4 15 C26 12 29 8 45 8 S82 9 116 15"/><path class="aero-flow f2" d="M2 35 C22 35 28 24 41 24 S79 24 118 35"/><path class="aero-flow f3" d="M4 55 C26 58 31 62 47 62 S83 60 116 55"/></svg>`},

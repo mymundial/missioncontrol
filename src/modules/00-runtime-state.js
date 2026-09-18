@@ -13,7 +13,7 @@
 
   const CHECKPOINTS = [
     {id:'gantry', mc:'MC-00', location:'Entrance Gantry', name:'Scan QR', type:'qr', playable:false, core:false, geofence:false, routeEnabled:false, lat:52.0735668895174, lng:-1.0234212294205571},
-    {id:'entry', mc:'MC-01', location:'Village', name:'Circuit Entry', type:'activation', playable:true, core:false, mission:'System Initiation Scan', geofence:true, lat:52.0742700024956, lng:-1.01353137321053, detectionRadius:80, activationRadius:30},
+    {id:'entry', mc:'MC-01', location:'Village', name:'Circuit Entry', type:'activation', playable:true, core:false, mission:'Circuit Entry', geofence:true, lat:52.0742700024956, lng:-1.01353137321053, detectionRadius:80, activationRadius:30},
     {id:'velocity', mc:'MC-02', location:'Wellington Straight', name:'Velocity Vault', type:'diagnostics', playable:true, core:true, mission:'Performance Scan', lat:52.07672858114103, lng:-1.0179463765923242, detectionRadius:150, activationRadius:35},
     {id:'luffield', mc:'MC-03', location:'Luffield', name:'ELF FM', type:'commsrelay', playable:true, core:false, mission:'Signal Relay', routeEnabled:true, geofence:true, lat:52.07588935484336, lng:-1.0202073683140254, detectionRadius:120, activationRadius:30},
     {id:'power', mc:'MC-04', location:'National Pit Straight', name:'Power Pulse', type:'power', playable:true, core:true, mission:'Acceleration Run', lat:52.07867166248026, lng:-1.0177768332976036, detectionRadius:150, activationRadius:35},
@@ -57,6 +57,7 @@
   }
 
   const COMPLETION_MESSAGES = {
+    entry:{sender:'MISSION CONTROL',title:'RECOVERY INITIATED',body:'Circuit energy has been routed into Santa-1. The recovery sequence is now underway.'},
     velocity:{sender:'ENGINEERING',title:'RACING-ENERGY PROFILE CONFIRMED',body:'Velocity Vault data shows the energy generated on track can be adapted for Santa-1.'},
     luffield:{sender:'COMMUNICATIONS',title:'COMMS LINK RESTORED',body:'Signal Relay has re-established the communications path to Santa-1. Santa is receiving Mission Control loud and clear.'},
     power:{sender:'ENGINEERING',title:'MAXIMUM POWER CAPTURED',body:'Power Pulse has captured a high-output racing energy profile for Santa-1.'},
@@ -72,7 +73,7 @@
 
   const SLEIGH_STAGES = [
     {stage:1,progress:0,name:'Grounded',asset:'./assets/sleigh-stage-1.webp',milestone:'Initial State',next:'Circuit Entry',copy:'Santa-1 remains grounded in stripped-back recovery condition. Mission Control is waiting for enough circuit energy to energise the chassis and begin the rebuild.'},
-    {stage:2,progress:10,name:'Power Online',asset:'./assets/sleigh-stage-2.webp',milestone:'Circuit Entry',next:'Power Pulse',copy:'Initial circuit power has been routed into Santa-1. Core housings, runner assemblies and the primary power channel are now live, allowing the rebuild to begin.'},
+    {stage:2,progress:10,name:'Recovery Initiated',asset:'./assets/sleigh-stage-2.webp',milestone:'Circuit Entry',next:'Velocity Vault',copy:'Initial circuit energy has been routed into Santa-1. The chassis is energised and the recovery sequence is underway, while the individual sleigh systems remain offline until they are restored.'},
     {stage:3,progress:40,name:'Core Recovery',asset:'./assets/sleigh-stage-3.webp',milestone:'Power Pulse',next:'Comet Curve',copy:'Power Pulse has stabilised the main energy supply and the Spirit Core is holding charge. Structural systems are rebuilding around the central drive chamber and the sleigh frame is taking shape.'},
     {stage:4,progress:70,name:'Flight Systems Active',asset:'./assets/sleigh-stage-4.webp',milestone:'Comet Curve',next:'Aurora Apex',copy:'Comet Curve has restored Santa-1’s guidance architecture and flight systems are now being integrated. Steering vectors, control pathways and propulsion mounting are aligned for the final phase of recovery.'},
     {stage:5,progress:100,name:'Development Complete',asset:'./assets/sleigh-stage-5.webp',milestone:'Aurora Apex',next:'Lapland Launch',copy:'Aurora Apex has locked the navigation network and completed the rebuild. Santa-1 now has a fully restored frame, active flight systems and a confirmed route home, ready for final verification at Lapland Launch.'}

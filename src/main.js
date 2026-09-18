@@ -13,7 +13,7 @@
 
   const CHECKPOINTS = [
     {id:'gantry', mc:'MC-00', location:'Entrance Gantry', name:'Scan QR', type:'qr', playable:false, core:false, geofence:false, routeEnabled:false, lat:52.0735668895174, lng:-1.0234212294205571},
-    {id:'entry', mc:'MC-01', location:'Village', name:'Circuit Entry', type:'activation', playable:true, core:false, mission:'System Initiation Scan', geofence:true, lat:52.0742700024956, lng:-1.01353137321053, detectionRadius:80, activationRadius:30},
+    {id:'entry', mc:'MC-01', location:'Village', name:'Circuit Entry', type:'activation', playable:true, core:false, mission:'Circuit Entry', geofence:true, lat:52.0742700024956, lng:-1.01353137321053, detectionRadius:80, activationRadius:30},
     {id:'velocity', mc:'MC-02', location:'Wellington Straight', name:'Velocity Vault', type:'diagnostics', playable:true, core:true, mission:'Performance Scan', lat:52.07672858114103, lng:-1.0179463765923242, detectionRadius:150, activationRadius:35},
     {id:'luffield', mc:'MC-03', location:'Luffield', name:'ELF FM', type:'commsrelay', playable:true, core:false, mission:'Signal Relay', routeEnabled:true, geofence:true, lat:52.07588935484336, lng:-1.0202073683140254, detectionRadius:120, activationRadius:30},
     {id:'power', mc:'MC-04', location:'National Pit Straight', name:'Power Pulse', type:'power', playable:true, core:true, mission:'Acceleration Run', lat:52.07867166248026, lng:-1.0177768332976036, detectionRadius:150, activationRadius:35},
@@ -57,6 +57,7 @@
   }
 
   const COMPLETION_MESSAGES = {
+    entry:{sender:'MISSION CONTROL',title:'RECOVERY INITIATED',body:'Circuit energy has been routed into Santa-1. The recovery sequence is now underway.'},
     velocity:{sender:'ENGINEERING',title:'RACING-ENERGY PROFILE CONFIRMED',body:'Velocity Vault data shows the energy generated on track can be adapted for Santa-1.'},
     luffield:{sender:'COMMUNICATIONS',title:'COMMS LINK RESTORED',body:'Signal Relay has re-established the communications path to Santa-1. Santa is receiving Mission Control loud and clear.'},
     power:{sender:'ENGINEERING',title:'MAXIMUM POWER CAPTURED',body:'Power Pulse has captured a high-output racing energy profile for Santa-1.'},
@@ -72,7 +73,7 @@
 
   const SLEIGH_STAGES = [
     {stage:1,progress:0,name:'Grounded',asset:'./assets/sleigh-stage-1.webp',milestone:'Initial State',next:'Circuit Entry',copy:'Santa-1 remains grounded in stripped-back recovery condition. Mission Control is waiting for enough circuit energy to energise the chassis and begin the rebuild.'},
-    {stage:2,progress:10,name:'Power Online',asset:'./assets/sleigh-stage-2.webp',milestone:'Circuit Entry',next:'Power Pulse',copy:'Initial circuit power has been routed into Santa-1. Core housings, runner assemblies and the primary power channel are now live, allowing the rebuild to begin.'},
+    {stage:2,progress:10,name:'Recovery Initiated',asset:'./assets/sleigh-stage-2.webp',milestone:'Circuit Entry',next:'Velocity Vault',copy:'Initial circuit energy has been routed into Santa-1. The chassis is energised and the recovery sequence is underway, while the individual sleigh systems remain offline until they are restored.'},
     {stage:3,progress:40,name:'Core Recovery',asset:'./assets/sleigh-stage-3.webp',milestone:'Power Pulse',next:'Comet Curve',copy:'Power Pulse has stabilised the main energy supply and the Spirit Core is holding charge. Structural systems are rebuilding around the central drive chamber and the sleigh frame is taking shape.'},
     {stage:4,progress:70,name:'Flight Systems Active',asset:'./assets/sleigh-stage-4.webp',milestone:'Comet Curve',next:'Aurora Apex',copy:'Comet Curve has restored Santa-1’s guidance architecture and flight systems are now being integrated. Steering vectors, control pathways and propulsion mounting are aligned for the final phase of recovery.'},
     {stage:5,progress:100,name:'Development Complete',asset:'./assets/sleigh-stage-5.webp',milestone:'Aurora Apex',next:'Lapland Launch',copy:'Aurora Apex has locked the navigation network and completed the rebuild. Santa-1 now has a fully restored frame, active flight systems and a confirmed route home, ready for final verification at Lapland Launch.'}
@@ -545,11 +546,14 @@
     if(cp.type==='diagnostics'){
       return `<div class="mission-head diagnostics-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><div class="diagnostics-brand"><img src="./assets/audi-rings.webp" alt="Audi"></div><h1>Performance Scan</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
     }
+    if(cp.type==='activation'){
+      return `<div class="mission-head mc01-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><h1>Circuit Entry</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
+    }
     return `<div class="mission-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><h1>${cp.mission}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
   }
   function missionInstruction(type){
     return ({
-      activation:'Run the system initiation scan and bring Santa-1 recovery systems online.',
+      activation:'Vehicle energy generated on track has created enough power to initiate Santa-1’s recovery.',
       diagnostics:'Capture the engineering data needed for Santa-1.',
       radio:'Tune the receiver to 87.7 FM and establish a link with ELF FM.',
       commsrelay:'Relay the transmission and restore Santa-1 communications.',
@@ -571,7 +575,7 @@
   }
   function missionBody(cp){
     switch(cp.type){
-      case 'activation': return '';
+      case 'activation': return circuitEntryBody();
       case 'diagnostics': return diagnosticsBody();
       case 'radio': return radioBody();
       case 'commsrelay': return commsRelayBody();
@@ -588,6 +592,29 @@
       default:return '';
     }
   }
+  function circuitEntryBody(){
+    return `<div class="mission-instrument panel mc01-panel" id="mc01Activation" data-stage="detected">
+      <div class="mc01-track-stage" aria-hidden="true">
+        <div class="mc01-track-shadow"></div>
+        <div class="mc01-track-outline"></div>
+        <div class="mc01-track-energy"></div>
+        <span class="mc01-energy-node"></span>
+        <span class="mc01-energy-ripple ripple-a"></span>
+        <span class="mc01-energy-ripple ripple-b"></span>
+      </div>
+      <div class="mc01-readout">
+        <span class="mc01-bolt" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13.7 1.8 5.3 13h5.5l-.5 9.2L18.7 11h-5.5l.5-9.2Z"/></svg></span>
+        <div class="mc01-readout-copy"><span id="mc01StateLabel">Circuit Energy</span><strong id="mc01State">Detected</strong></div>
+        <div class="mc01-signal-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      </div>
+      <div class="mc01-transfer" aria-label="Circuit energy transfer progress">
+        <div class="mc01-transfer-meta"><span>Energy Transfer</span><strong id="mc01TransferValue">0%</strong></div>
+        <div class="mc01-transfer-track"><i id="mc01TransferFill"></i></div>
+      </div>
+      <div class="mc01-recovery-state" id="mc01RecoveryState" hidden><span>Recovery Initiated</span><strong>Santa-1 at 10%</strong></div>
+    </div>`;
+  }
+
   function diagnosticsBody(){
     const sensors=[
       {name:'Aero',key:'aero',viz:`<svg viewBox="0 0 120 70" role="presentation"><path class="aero-car" d="M50 18h20l8 10 4 23H38l4-23 8-10Z"/><path class="aero-flow f1" d="M4 15 C26 12 29 8 45 8 S82 9 116 15"/><path class="aero-flow f2" d="M2 35 C22 35 28 24 41 24 S79 24 118 35"/><path class="aero-flow f3" d="M4 55 C26 58 31 62 47 62 S83 60 116 55"/></svg>`},
@@ -776,7 +803,7 @@
       row.addEventListener('click',open);
       row.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}});
     });
-    document.querySelectorAll('[data-exit-mission]').forEach(b=>b.addEventListener('click',()=>{const nav=state.missionReturnNav||'radar';set({missionOpen:null,nav});if(nav==='radar'&&lastGps)processGps(lastGps,true);}));
+    document.querySelectorAll('[data-exit-mission]').forEach(b=>b.addEventListener('click',()=>{if(state.missionOpen==='entry') stopMc01Activation();const nav=state.missionReturnNav||'radar';set({missionOpen:null,nav});if(nav==='radar'&&lastGps)processGps(lastGps,true);}));
   }
 
   function openElfTuner(){
@@ -788,9 +815,8 @@
     const idx=checkpointIndex(id);
     const allowed=state.completed.includes(id)||state.available.includes(id)||idx<state.routeIndex||(idx===state.routeIndex&&state.targetInRange);
     if(!allowed){toast('Mission is not available yet.');return;}
-    // MC-01 is an activation sequence rather than a mini-game. Starting it
-    // launches the system initiation scan immediately; there is no interim
-    // placeholder mission screen.
+    // MC-01 is a cinematic activation. The Circuit Entry screen begins
+    // immediately when opened; there is no second Start Activation control.
     if(id==='entry'&&!state.completed.includes('entry')){
       ping(780,.06,.04);haptic(25);
       triggerCircuitEntry();
@@ -849,18 +875,12 @@
     } else updateRadarLive();
   }
   function triggerCircuitEntry(){
-    const cp=current(); if(!cp||cp.id!=='entry') return;
+    const cp=current(); if(!cp||cp.id!=='entry'||state.completed.includes('entry')) return;
     if(state.mode==='demo') clearDemo();
-    if(!state.completed.includes('entry')) state.completed=[...state.completed,'entry'];
-    state.available=state.available.filter(id=>id!=='entry');
-    state.routeIndex=nextRouteIndex(state.routeIndex);state.targetVisible=false;state.targetInRange=false;state.distance=null;state.lastMessage='SYSTEMS ONLINE';
-    resetGeofenceRuntime();save();updateRadarLive();showEntrySurge();
-    if(state.mode==='demo') demoHoldUntil=Date.now()+2600;
-    setTimeout(()=>{
-      addMessage('complete:entry','MISSION CONTROL','SANTA-1 SYSTEMS INITIATED','Energy generated by vehicles on track has provided enough power to begin the recovery sequence.','MC-01');
-      if(state.mode==='demo') rearmDemoRoute(650);
-      else if(lastGps) processGps(lastGps,true);
-    },2250);
+    if(state.missionOpen==='entry') return;
+    resetGeofenceRuntime();
+    state={...state,missionOpen:'entry',missionReturnNav:state.nav||'radar',targetVisible:true,targetInRange:true,lastMessage:'CIRCUIT ENERGY DETECTED'};
+    save();render();
   }
 
   function startLiveExperience(){
@@ -956,6 +976,74 @@
         ping(620 + (progressValue * 2), .05, .02);
       }
     }, 45);
+  }
+  let mc01Timers=[];
+
+  function stopMc01Activation(){
+    mc01Timers.forEach(clearTimeout);
+    mc01Timers=[];
+  }
+
+  function mc01Later(fn,delay){
+    const timer=setTimeout(()=>{
+      mc01Timers=mc01Timers.filter(id=>id!==timer);
+      fn();
+    },delay);
+    mc01Timers.push(timer);
+  }
+
+  function bindCircuitEntryActivation(){
+    const panel=document.getElementById('mc01Activation');
+    const stateLabel=document.getElementById('mc01StateLabel');
+    const stateValue=document.getElementById('mc01State');
+    const transferValue=document.getElementById('mc01TransferValue');
+    const transferFill=document.getElementById('mc01TransferFill');
+    const recoveryState=document.getElementById('mc01RecoveryState');
+    if(!panel||!stateLabel||!stateValue||!transferValue||!transferFill||!recoveryState) return;
+
+    stopMc01Activation();
+
+    const setProgress=value=>{
+      const progress=Math.max(0,Math.min(100,Number(value)||0));
+      transferValue.textContent=`${progress}%`;
+      transferFill.style.transform=`scaleX(${progress/100})`;
+    };
+    const setStage=(stage,label,value,progress)=>{
+      if(!document.getElementById('mc01Activation')) return;
+      panel.dataset.stage=stage;
+      stateLabel.textContent=label;
+      stateValue.textContent=value;
+      setProgress(progress);
+    };
+
+    recoveryState.hidden=true;
+    setStage('detected','Circuit Energy','Detected',0);
+    ping(560,.08,.025);
+
+    mc01Later(()=>{
+      setStage('routing','Track Energy','Routing',34);
+      ping(640,.06,.025);
+      haptic(18);
+    },750);
+
+    mc01Later(()=>{
+      setStage('transfer','Power Transfer','Routing to Santa-1',72);
+      ping(720,.08,.03);
+      haptic([18,28,24]);
+    },1850);
+
+    mc01Later(()=>{
+      setStage('recovery','Recovery Sequence','Initiated',100);
+      recoveryState.hidden=false;
+      ping(880,.14,.05);
+      haptic([30,35,70]);
+    },3150);
+
+    mc01Later(()=>{
+      stopMc01Activation();
+      if(state.missionOpen!=='entry') return;
+      showCompletion('Circuit Entry Complete',"Santa-1's recovery has begun.");
+    },4350);
   }
   function startGpsWatch(){
     if(gpsWatchId!==null||!navigator.geolocation) return;
@@ -1202,6 +1290,7 @@
   }
   function bindMission(id){
     const cp=id==='elf-radio'?ELF_RADIO_MISSION:CHECKPOINTS.find(c=>c.id===id); if(!cp) return;
+    if(cp.type==='activation') bindCircuitEntryActivation();
     if(cp.type==='diagnostics') bindDiagnostics();
     if(cp.type==='radio') bindRadio();
     if(cp.type==='commsrelay') bindCommsRelay();

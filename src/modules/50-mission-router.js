@@ -1,5 +1,6 @@
   function bindMission(id){
     const cp=id==='elf-radio'?ELF_RADIO_MISSION:CHECKPOINTS.find(c=>c.id===id); if(!cp) return;
+    if(cp.type==='activation') bindCircuitEntryActivation();
     if(cp.type==='diagnostics') bindDiagnostics();
     if(cp.type==='radio') bindRadio();
     if(cp.type==='commsrelay') bindCommsRelay();
