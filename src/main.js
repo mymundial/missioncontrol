@@ -825,8 +825,8 @@
     ping(780,.06,.04);haptic(25);
     set({missionOpen:id,missionReturnNav:state.nav});
   }
-  function showEntrySurge(){
-    const el=document.createElement('div');el.className='surge';el.innerHTML=`<div class="surge-copy"><div class="kicker">System Initiation Scan</div><h1>Santa-1 Systems Initiated</h1><p>Vehicle energy generated on track has created enough power to initiate Santa's sleigh systems.</p></div>`;document.body.appendChild(el);ping(180,.25,.08);setTimeout(()=>{ping(520,.18,.05);haptic([50,40,90]);},600);setTimeout(()=>el.remove(),2200);
+  function showNorthernLaunchSurge(){
+    const el=document.createElement('div');el.className='surge';el.innerHTML=`<div class="surge-copy"><div class="kicker">Northern Flight</div><h1>Launch Authorised</h1><p>Santa-1 is cleared for departure.</p></div>`;document.body.appendChild(el);ping(180,.25,.08);setTimeout(()=>{ping(520,.18,.05);haptic([50,40,90]);},600);setTimeout(()=>el.remove(),2200);
   }
   function showCompletion(title,copy){
     const mc=document.getElementById('missionContent'); if(!mc) return;
@@ -1303,7 +1303,7 @@
     if(cp.type==='lando') bindLando();
     if(cp.type==='aurora') bindAurora();
     if(cp.type==='lapland') bindLapland();
-    if(cp.type==='northern') document.getElementById('authoriseFlight').onclick=()=>{showEntrySurge();setTimeout(()=>showCompletion('Santa-1 Airborne','Northern Flight completes the recovery mission. Santa-1 is airborne.'),1500);};
+    if(cp.type==='northern') document.getElementById('authoriseFlight').onclick=()=>{showNorthernLaunchSurge();setTimeout(()=>showCompletion('Santa-1 Airborne','Northern Flight completes the recovery mission. Santa-1 is airborne.'),1500);};
   }
   function bindDiagnostics(){
     const done=new Set();

@@ -13,5 +13,5 @@
     if(cp.type==='lando') bindLando();
     if(cp.type==='aurora') bindAurora();
     if(cp.type==='lapland') bindLapland();
-    if(cp.type==='northern') document.getElementById('authoriseFlight').onclick=()=>{showEntrySurge();setTimeout(()=>showCompletion('Santa-1 Airborne','Northern Flight completes the recovery mission. Santa-1 is airborne.'),1500);};
+    if(cp.type==='northern') document.getElementById('authoriseFlight').onclick=()=>{showNorthernLaunchSurge();setTimeout(()=>showCompletion('Santa-1 Airborne','Northern Flight completes the recovery mission. Santa-1 is airborne.'),1500);};
   }
