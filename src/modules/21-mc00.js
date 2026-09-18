@@ -49,7 +49,7 @@
     };
 
     const paint = ()=>{
-      bar.style.width = `${progressValue}%`;
+      bar.style.transform = `scaleX(${progressValue/100})`;
       value.textContent = `${progressValue}%`;
       progress.setAttribute('aria-valuenow', String(progressValue));
 

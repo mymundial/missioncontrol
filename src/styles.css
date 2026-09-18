@@ -2488,12 +2488,14 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 }
 #mc00ProgressFill{
   position:absolute;
-  inset:4px auto 4px 4px;
-  width:0%;
+  inset:4px;
+  width:auto;
   border-radius:999px;
   background:linear-gradient(180deg,#64ddff,#2fb4e4);
   box-shadow:0 0 16px rgba(77,210,249,.42);
-  transition:width .04s linear;
+  transform:scaleX(0);
+  transform-origin:left center;
+  transition:transform .04s linear;
 }
 #mc00ProgressValue{
   min-width:48px;
@@ -2681,6 +2683,10 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   margin:0 auto;
   padding:0 4px;
 }
+/* MC-00 keeps the readout calm: system name + status only.
+   The shared nodes remain available on Sleigh / Lapland Launch. */
+.mc00-system-bank .system-node{display:none;}
+.mc00-system-bank .system-status-name{gap:0;}
 .mc00-sleigh-frame{padding-bottom:6px;}
 .mc00-sleigh-visual{min-height:198px;}
 
