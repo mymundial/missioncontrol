@@ -104,7 +104,19 @@
   }
   function renderOnboardStep(step){
     const setupHeader=topBar();
-    if(step==='mc00-live'||step==='mc00-demo') return `<section class="onboard with-masthead setup-page mc00-page">${setupHeader}<div class="onboard-card panel mc00-card" data-mc00-mode="${step}"><div class="mc00-card-head"><div class="kicker">MC-00 / System Scan</div></div><div class="mc00-copy"><h1>Santa-1</h1><p class="support-copy">Santa's Sleigh Recovery</p></div><div class="mc00-visual-wrap"><div class="mc00-sleigh-frame"><div class="sleigh-visual sleigh-stage-1 mc00-sleigh-visual"><div class="sleigh-glow" aria-hidden="true"></div><img class="sleigh-art" src="./assets/sleigh-stage-1.webp" alt="Santa-1 sleigh system scan visual"><div class="mc00-scan-beam" aria-hidden="true"></div></div></div></div><div class="mc00-status-line" id="mc00StatusLine" aria-live="polite">Initialising scan</div><div class="mc00-progress-row"><div class="mc00-progress" role="progressbar" aria-label="System scan progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="mc00ProgressFill"></span></div><strong id="mc00ProgressValue">0%</strong></div><div class="mc00-complete-popup panel" id="mc00CompleteBlock" hidden><div class="mc00-complete-icon" aria-hidden="true">✓</div><h2>Scan Complete</h2><button class="btn primary wide" id="mc00Continue" data-mc00-continue="${step}">Continue</button></div></div></section>`;
+    if(step==='mc00-live'||step==='mc00-demo'){
+      const systems=[
+        {key:'power',label:'Power',status:'Standby'},
+        {key:'comms',label:'Comms',status:'Standby'},
+        {key:'core',label:'Core',status:'Standby'},
+        {key:'control',label:'Control',status:'Standby'},
+        {key:'propulsion',label:'Propulsion',status:'Standby'},
+        {key:'response',label:'Response',status:'Standby'},
+        {key:'navigation',label:'Navigation',status:'Standby'},
+        {key:'launch',label:'Launch',status:'Blocked',state:'blocked'}
+      ];
+      return `<section class="onboard with-masthead setup-page mc00-page">${setupHeader}<div class="onboard-card panel mc00-card" data-mc00-mode="${step}"><div class="mc00-copy"><h1>Santa-1</h1><p class="support-copy">Santa's Sleigh Recovery</p></div><div class="mc00-visual-wrap"><div class="mc00-sleigh-frame"><div class="sleigh-visual sleigh-stage-1 mc00-sleigh-visual"><div class="sleigh-glow" aria-hidden="true"></div><img class="sleigh-art" src="./assets/sleigh-stage-1.webp" alt="Santa-1 sleigh system scan visual"><div class="mc00-scan-beam" aria-hidden="true"></div></div></div></div>${systemStatusBank(systems,'mc00-system-bank','mc00')}<div class="mc00-progress-row"><div class="mc00-progress" role="progressbar" aria-label="System scan progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="mc00ProgressFill"></span></div><strong id="mc00ProgressValue">0%</strong></div><div class="mc00-complete-popup panel" id="mc00CompleteBlock" hidden><div class="mc00-complete-icon" aria-hidden="true">✓</div><h2>Scan Complete</h2><button class="btn primary wide" id="mc00Continue" data-mc00-continue="${step}">Continue</button></div></div></section>`;
+    }
     if(step==='brief') return `<section class="onboard with-masthead setup-page briefing-page">${setupHeader}<div class="onboard-card panel setup-card"><div class="onboard-icon setup-icon"><span class="setup-icon-glyph"><img src="./assets/mission-briefing-icon.svg" alt=""></span></div><h1>Mission Briefing</h1><p class="support-copy">Santa-1 has lost power. Energy signatures have been detected around the circuit. Locate each source, complete its mission and restore the sleigh.</p><div class="setup-actions"><button class="btn primary wide" data-onboard="audio">Continue</button></div></div></section>`;
     if(step==='audio') return `<section class="onboard with-masthead setup-page audio-page">${setupHeader}<div class="onboard-card panel setup-card"><div class="onboard-icon setup-icon"><span class="setup-icon-glyph"><img src="./assets/mission-audio-icon.webp" alt=""></span></div><h1>Mission Audio</h1><p class="support-copy">Mission Control uses proximity alerts, system sounds and live transmissions. Audio can be muted at any time.</p><div class="setup-actions stack"><button class="btn primary wide" data-audio="on">Enable Mission Audio</button><button class="btn secondary wide" data-audio="off">Continue Without Audio</button></div></div></section>`;
     if(step==='demo-scan') return `<section class="onboard with-masthead setup-page demo-scan-page">${setupHeader}<div class="onboard-card panel setup-card demo-scan-card"><div class="onboard-icon setup-icon demo-system-icon" aria-hidden="true"><span class="demo-scan-radar"><span></span></span></div><h1>DEMO MODE</h1><p class="support-copy">The demo will simulate checkpoint proximity in the same order as the live route. Your first target is <strong>Mission 01 · Circuit Entry</strong> at Village.</p><div class="setup-actions"><button class="btn primary wide" data-onboard="demo-continue">Continue to Radar</button></div></div></section>`;
@@ -142,14 +154,24 @@
         ? {name:'Flight Ready',copy:'Lapland Launch has completed the final systems verification. Every rebuilt system is stable and Santa-1 is fully cleared for launch.'}
         : {name:info.name,copy:info.copy};
     const systems=[
-      {label:'Power', online:r>=10},
-      {label:'Core', online:r>=40},
-      {label:'Guidance', online:r>=70},
-      {label:'Flight', online:r>=70},
-      {label:'Nav', online:r>=100}
+      {key:'power',label:'Power',status:state.completed.includes('power')?'Online':'Offline',state:state.completed.includes('power')?'online':'offline'},
+      {key:'comms',label:'Comms',status:state.completed.includes('luffield')?'Online':'Offline',state:state.completed.includes('luffield')?'online':'offline'},
+      {key:'core',label:'Core',status:state.completed.includes('spirit')?'Online':'Offline',state:state.completed.includes('spirit')?'online':'offline'},
+      {key:'control',label:'Control',status:state.completed.includes('comet')?'Online':'Offline',state:state.completed.includes('comet')?'online':'offline'},
+      {key:'propulsion',label:'Propulsion',status:state.completed.includes('jingle')?'Online':'Offline',state:state.completed.includes('jingle')?'online':'offline'},
+      {key:'response',label:'Response',status:state.completed.includes('lando')?'Online':'Offline',state:state.completed.includes('lando')?'online':'offline'},
+      {key:'navigation',label:'Navigation',status:state.completed.includes('aurora')?'Online':'Offline',state:state.completed.includes('aurora')?'online':'offline'},
+      {key:'launch',label:'Launch',status:state.completed.includes('lapland')?'Clear':'Blocked',state:state.completed.includes('lapland')?'clear':'blocked'}
     ];
-    const systemLeds=systems.map(system=>`<div class="sleigh-system ${system.online?'online':''}" aria-label="${system.label} ${system.online?'online':'offline'}"><span class="sleigh-led" aria-hidden="true"></span><span class="sleigh-system-label">${system.label}</span></div>`).join('');
-    return `<div class="sleigh-card panel"><div class="sleigh-title-row"><div><div class="kicker sleigh-pretitle">Sleigh Rebuild</div><h1>Santa-1</h1></div><strong class="sleigh-percent">${r}%</strong></div><div class="sleigh-development-bar" role="progressbar" aria-label="Santa-1 development progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${r}"><div class="sleigh-development-spectrum" aria-hidden="true"></div><div class="sleigh-development-mask" style="left:${r}%" aria-hidden="true"></div></div><div class="sleigh-visual sleigh-stage-${stage}"><div class="sleigh-glow" aria-hidden="true"></div><img class="sleigh-art" src="${info.asset}" alt="Santa-1 ${postStatus.name} development stage"></div><div class="sleigh-update-box panel soft"><div class="kicker sleigh-systems-title">Engineering Update</div><p class="sleigh-systems-copy">${postStatus.copy}</p></div><div class="sleigh-systems panel soft"><div class="kicker sleigh-systems-title">Systems Online</div><div class="sleigh-system-grid">${systemLeds}</div></div></div>`;
+    return `<div class="sleigh-card panel"><div class="sleigh-title-row"><div><div class="kicker sleigh-pretitle">Sleigh Rebuild</div><h1>Santa-1</h1></div><strong class="sleigh-percent">${r}%</strong></div><div class="sleigh-development-bar" role="progressbar" aria-label="Santa-1 development progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${r}"><div class="sleigh-development-spectrum" aria-hidden="true"></div><div class="sleigh-development-mask" style="left:${r}%" aria-hidden="true"></div></div><div class="sleigh-visual sleigh-stage-${stage}"><div class="sleigh-glow" aria-hidden="true"></div><img class="sleigh-art" src="${info.asset}" alt="Santa-1 ${postStatus.name} development stage"></div><div class="sleigh-update-box panel soft"><div class="kicker sleigh-systems-title">Engineering Update</div><p class="sleigh-systems-copy">${postStatus.copy}</p></div><div class="sleigh-systems panel soft"><div class="kicker sleigh-systems-title">System Status</div>${systemStatusBank(systems,'sleigh-system-bank')}</div></div>`;
+  }
+
+  function systemStatusBank(systems,extraClass='',dataPrefix=''){
+    return `<div class="system-status-bank ${extraClass}">${systems.map((system,i)=>{
+      const stateClass=system.state?` is-${system.state}`:'';
+      const dataAttr=dataPrefix?` data-${dataPrefix}-system="${system.key}"`:'';
+      return `<div class="system-status-item${stateClass}"${dataAttr}><div class="system-status-name"><span class="system-node" aria-hidden="true"></span><span>${system.label}</span></div><div class="system-status-value"${dataPrefix?` data-${dataPrefix}-status="${system.key}"`:''}>${system.status}</div></div>`;
+    }).join('')}</div>`;
   }
   function messageActivationLabel(message){
     if(message.key==='opening') return 'MISSION CONTROL';
@@ -364,8 +386,17 @@
     </div>`;
   }
   function laplandBody(){
-    const systems=['Energy','Comms','Spirit Core','Guidance','Propulsion','Flight Control','Navigation'];
-    return `<div class="mission-instrument panel"><div class="verify-list">${systems.map((s,i)=>`<div class="verify" data-verify="${i}"><span>${s}</span><span>Standby</span></div>`).join('')}</div><button class="btn primary wide" id="initiateTest">Initiate Final Test</button></div>`;
+    const systems=[
+      {key:'power',label:'Power',status:'Standby'},
+      {key:'comms',label:'Comms',status:'Standby'},
+      {key:'core',label:'Core',status:'Standby'},
+      {key:'control',label:'Control',status:'Standby'},
+      {key:'propulsion',label:'Propulsion',status:'Standby'},
+      {key:'response',label:'Response',status:'Standby'},
+      {key:'navigation',label:'Navigation',status:'Standby'},
+      {key:'launch',label:'Launch',status:'Blocked',state:'blocked'}
+    ];
+    return `<div class="mission-instrument panel lapland-panel">${systemStatusBank(systems,'lapland-system-bank','verify')}<button class="btn primary wide" id="initiateTest">Initiate Final Test</button></div>`;
   }
   function northernBody(){return `<div class="mission-instrument panel" style="text-align:center;padding:30px 18px"><div class="onboard-icon">✦</div><div class="kicker">Santa-1</div><h2 style="font-family:var(--display);text-transform:uppercase;font-size:34px;margin:8px 0">Northern Flight</h2><p class="sub">All restored systems are ready. Authorise the final flight sequence to complete the recovery mission.</p><button class="btn primary wide" style="margin-top:18px" id="authoriseFlight">Authorise Northern Flight</button></div>`}
 

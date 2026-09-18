@@ -17,36 +17,51 @@
     const card = document.querySelector('.mc00-card');
     const bar = document.getElementById('mc00ProgressFill');
     const value = document.getElementById('mc00ProgressValue');
-    const status = document.getElementById('mc00StatusLine');
     const progress = document.querySelector('.mc00-progress');
     const complete = document.getElementById('mc00CompleteBlock');
     const button = document.getElementById('mc00Continue');
-    if(!card || !bar || !value || !status || !progress || !complete || !button) return;
+    if(!card || !bar || !value || !progress || !complete || !button) return;
 
     stopMc00Scan();
 
-    const script = [
-      { at: 0, text: 'Initialising scan' },
-      { at: 12, text: 'Power: scanning' },
-      { at: 24, text: 'Power: offline' },
-      { at: 40, text: 'Comms: scanning' },
-      { at: 54, text: 'Comms: offline' },
-      { at: 70, text: 'Navigation: scanning' },
-      { at: 84, text: 'Navigation: offline' }
+    const scanSystems = [
+      { key:'power', start:3, end:14 },
+      { key:'comms', start:16, end:27 },
+      { key:'core', start:29, end:40 },
+      { key:'control', start:42, end:53 },
+      { key:'propulsion', start:55, end:66 },
+      { key:'response', start:68, end:79 },
+      { key:'navigation', start:81, end:92 }
     ];
 
     let progressValue = 0;
-    let lastText = '';
+    const lastStates = new Map();
+
+    const setSystemState = (key,nextState)=>{
+      if(lastStates.get(key)===nextState) return;
+      lastStates.set(key,nextState);
+      const item=document.querySelector(`[data-mc00-system="${key}"]`);
+      const status=document.querySelector(`[data-mc00-status="${key}"]`);
+      if(!item||!status) return;
+      item.classList.remove('is-standby','is-checking','is-offline','is-online','is-blocked','is-clear');
+      item.classList.add(`is-${nextState}`);
+      status.textContent=nextState==='checking'?'Checking':nextState==='offline'?'Offline':'Standby';
+    };
 
     const paint = ()=>{
       bar.style.width = `${progressValue}%`;
       value.textContent = `${progressValue}%`;
       progress.setAttribute('aria-valuenow', String(progressValue));
-      const line = script.reduce((active, item)=>progressValue >= item.at ? item : active, script[0]);
-      if(line.text !== lastText){
-        lastText = line.text;
-        status.textContent = line.text;
-      }
+
+      scanSystems.forEach(system=>{
+        const nextState = progressValue < system.start
+          ? 'standby'
+          : progressValue < system.end
+            ? 'checking'
+            : 'offline';
+        setSystemState(system.key,nextState);
+      });
+
       if(progressValue >= 100){
         stopMc00Scan();
         card.classList.add('is-complete');
@@ -54,6 +69,7 @@
       }
     };
 
+    scanSystems.forEach(system=>setSystemState(system.key,'standby'));
     paint();
     card.classList.remove('is-complete');
     complete.hidden = true;
@@ -64,7 +80,7 @@
       if(progressValue === 100){
         ping(860,.12,.05);
         haptic([20,35,65]);
-      } else if(progressValue % 18 === 0){
+      } else if(progressValue % 13 === 0){
         ping(620 + (progressValue * 2), .05, .02);
       }
     }, 45);

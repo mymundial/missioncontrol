@@ -2579,3 +2579,129 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 @media(max-height:740px){
   .topbar,.radar-page>.topbar,.mission-shell>.topbar,.setup-page>.topbar{padding-bottom:12px;}
 }
+
+/* === Pass 7-00-02: shared Santa-1 system status bank === */
+.mc00-card-head,.mc00-status-line{display:none!important;}
+
+.setup-page.mc00-page .mc00-card{
+  grid-template-rows:auto auto auto auto auto;
+  row-gap:13px;
+}
+.mc00-copy{
+  width:100%;
+  justify-self:stretch;
+  text-align:center;
+}
+.mc00-copy h1,
+.mc00-copy .support-copy{
+  width:100%;
+  text-align:center;
+}
+.mc00-copy h1{font-size:var(--challenge-title-size);}
+
+/* Four data columns: system | status | system | status. */
+.system-status-bank{
+  display:grid;
+  grid-template-columns:minmax(0,1.28fr) minmax(0,.82fr) minmax(0,1.28fr) minmax(0,.82fr);
+  column-gap:8px;
+  row-gap:7px;
+  align-items:center;
+  width:100%;
+}
+.system-status-item{display:contents;}
+.system-status-name,
+.system-status-value{
+  min-width:0;
+  min-height:25px;
+  display:flex;
+  align-items:center;
+  border-bottom:1px solid rgba(72,151,181,.14);
+  text-transform:uppercase;
+  font-size:8px;
+  line-height:1;
+  letter-spacing:.11em;
+  font-weight:800;
+}
+.system-status-name{
+  gap:6px;
+  color:#8fb7c7;
+  white-space:nowrap;
+}
+.system-status-value{
+  justify-content:flex-end;
+  color:#688f9f;
+  letter-spacing:.09em;
+  white-space:nowrap;
+}
+.system-node{
+  flex:0 0 auto;
+  width:11px;
+  height:11px;
+  border-radius:50%;
+  border:1px solid rgba(77,133,156,.55);
+  background:radial-gradient(circle at 40% 35%,rgba(72,111,127,.18),rgba(4,24,36,.94) 64%);
+  box-shadow:inset 0 0 5px rgba(0,0,0,.62);
+  transition:background .18s ease,border-color .18s ease,box-shadow .18s ease;
+}
+.system-status-item.is-checking .system-node{
+  border-color:rgba(104,223,255,.88);
+  background:radial-gradient(circle at 40% 36%,#e2fbff 0 10%,#6ddfff 25%,#176f92 62%,#073047 100%);
+  box-shadow:0 0 7px rgba(72,211,250,.7),0 0 14px rgba(72,211,250,.22),inset 0 0 6px rgba(225,251,255,.32);
+  animation:systemNodePulse .72s ease-in-out infinite;
+}
+.system-status-item.is-checking .system-status-value{color:#74ddfb;}
+.system-status-item.is-offline .system-node{
+  border-color:rgba(127,160,173,.5);
+  background:radial-gradient(circle at 42% 38%,rgba(112,138,149,.2),rgba(8,28,39,.96) 68%);
+}
+.system-status-item.is-offline .system-status-value{color:#8ba7b2;}
+.system-status-item.is-online .system-node,
+.system-status-item.is-clear .system-node{
+  border-color:rgba(114,216,244,.72);
+  background:radial-gradient(circle at 40% 36%,#e2fbff 0 7%,#76dff7 20%,#2fb9df 44%,#116789 72%,#063047 100%);
+  box-shadow:0 0 6px rgba(64,205,255,.46),0 0 12px rgba(51,190,244,.28),inset 0 0 8px rgba(225,251,255,.34);
+}
+.system-status-item.is-online .system-status-value,
+.system-status-item.is-clear .system-status-value{color:#8fe5fb;}
+.system-status-item.is-blocked .system-node{
+  border-color:rgba(111,139,151,.46);
+  background:radial-gradient(circle at 40% 35%,rgba(79,103,114,.16),rgba(4,22,32,.96) 68%);
+}
+.system-status-item.is-blocked .system-status-value{color:#7795a1;}
+@keyframes systemNodePulse{50%{filter:brightness(1.35);transform:scale(1.08)}}
+
+.mc00-system-bank{
+  width:min(100%,420px);
+  margin:0 auto;
+  padding:0 4px;
+}
+.mc00-sleigh-frame{padding-bottom:6px;}
+.mc00-sleigh-visual{min-height:198px;}
+
+/* The Sleigh page now mirrors the same eight-system vocabulary and node language. */
+.sleigh-system-bank{
+  margin-top:2px;
+  padding-top:2px;
+}
+.sleigh-systems .system-status-name,
+.sleigh-systems .system-status-value{
+  min-height:23px;
+  font-size:7.5px;
+}
+.sleigh-systems .system-node{width:10px;height:10px;}
+
+/* Lapland Launch uses the same system bank so MC-00 and final verification bookend one another. */
+.lapland-panel .lapland-system-bank{margin:4px 0 16px;}
+.lapland-panel .system-status-name,
+.lapland-panel .system-status-value{min-height:30px;font-size:9px;}
+
+@media(max-width:390px){
+  .setup-page.mc00-page .mc00-card{row-gap:10px;}
+  .mc00-sleigh-visual{min-height:170px;}
+  .system-status-bank{column-gap:5px;row-gap:5px;}
+  .system-status-name,.system-status-value{min-height:22px;font-size:7px;letter-spacing:.075em;}
+  .system-status-name{gap:4px;}
+  .system-node{width:9px;height:9px;}
+  .sleigh-systems .system-status-name,
+  .sleigh-systems .system-status-value{font-size:6.8px;}
+}
