@@ -561,7 +561,7 @@
       radio:'Tune the receiver to 87.7 FM and establish a link with ELF FM.',
       commsrelay:'Relay the transmission and restore Santa-1 communications.',
       power:'Reach maximum velocity and capture racing power for Santa-1.',
-      spirit:'Balance the energy feeds and stabilise the Spirit Core.',
+      spirit:'Charge and stabilise the storage tanks.',
       placeholder:'This checkpoint is reserved while the final installation game is developed.',
       artifacts:'Clear the unstable artefacts and stabilise the Starstream.',
       comet:'Lock 10 directional signals to restore Santa-1’s guidance path.',
@@ -719,34 +719,25 @@
     </div>`;
   }
   function spiritBody(){
-    const tankCells=side=>Array.from({length:3},(_,i)=>`<div class="spirit-tank-cell" data-spirit-tank="${side}-${i}"><span class="spirit-tank-energy"></span><i></i><b></b></div>`).join('');
-    const meterSegments=Array.from({length:10},()=>'<i></i>').join('');
+    const tankCells=side=>Array.from({length:4},(_,i)=>`<div class="spirit-tank-cell" data-spirit-tank="${side}-${i}">
+      <span class="spirit-tank-energy"></span><span class="spirit-tank-shimmer"></span>
+      <span class="spirit-tank-vent" aria-hidden="true"><i></i><i></i><i></i></span>
+    </div>`).join('');
     const stageDots=Array.from({length:5},(_,i)=>`<i data-spirit-stage-dot="${i}"></i>`).join('');
     return `<div class="mission-instrument panel spirit-panel" id="spiritRig" data-stage="0">
-      <div class="spirit-apparatus">
-        <div class="spirit-bank spirit-bank-left" aria-hidden="true">
-          <div class="spirit-vent"><i></i><i></i><i></i></div>
-          <div class="spirit-tank-stack">${tankCells('left')}</div>
-          <div class="spirit-meter spirit-meter-left" id="spiritMeterLeft">${meterSegments}<span></span></div>
-        </div>
-        <div class="spirit-core-rig" aria-hidden="true">
-          <span class="spirit-pipe pipe-left"></span><span class="spirit-pipe pipe-right"></span>
-          <div class="spirit-core" id="spiritCore"><i class="spirit-core-shell"></i><i class="spirit-vortex vortex-a"></i><i class="spirit-vortex vortex-b"></i><i class="spirit-core-flare"></i><b></b></div>
-        </div>
-        <div class="spirit-bank spirit-bank-right" aria-hidden="true">
-          <div class="spirit-vent"><i></i><i></i><i></i></div>
-          <div class="spirit-tank-stack">${tankCells('right')}</div>
-          <div class="spirit-meter spirit-meter-right" id="spiritMeterRight">${meterSegments}<span></span></div>
-        </div>
+      <div class="spirit-apparatus" aria-label="Spirit energy storage tanks">
+        <div class="spirit-meter spirit-meter-left" aria-hidden="true"><span class="spirit-meter-fill"></span><b class="spirit-meter-marker"></b></div>
+        <div class="spirit-bank spirit-bank-left"><div class="spirit-tank-stack">${tankCells('left')}</div></div>
+        <div class="spirit-bank spirit-bank-right"><div class="spirit-tank-stack">${tankCells('right')}</div></div>
+        <div class="spirit-meter spirit-meter-right" aria-hidden="true"><span class="spirit-meter-fill"></span><b class="spirit-meter-marker"></b></div>
       </div>
-      <div class="spirit-balance-readout"><span>Feed Balance</span><strong id="spiritState">Hold control</strong></div>
-      <div class="spirit-balance-control" id="spiritBalanceControl" role="slider" tabindex="0" aria-label="Balance energy feeds" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
-        <div class="spirit-balance-track"><span class="spirit-target-zone" id="spiritTarget"></span><i class="spirit-balance-mid"></i><b class="spirit-balance-knob" id="spiritKnob"></b></div>
-        <span class="spirit-balance-arrow left" aria-hidden="true">‹</span><span class="spirit-balance-arrow right" aria-hidden="true">›</span>
+      <div class="spirit-charge-controls" aria-label="Storage tank charging controls">
+        <button class="spirit-charge-btn is-next" data-charge="A" aria-label="Charge left tank bank"><strong>A</strong><span>Tap</span></button>
+        <button class="spirit-charge-btn" data-charge="B" aria-label="Charge right tank bank"><strong>B</strong><span>Tap</span></button>
       </div>
       <div class="spirit-stage-row"><div><span>Core Charge</span><strong><b id="spiritStageNumber">01</b> / 05</strong></div><em id="spiritStageName">Ignition</em></div>
       <div class="spirit-stage-progress" id="spiritStageProgress" aria-hidden="true">${stageDots}</div>
-      <div class="spirit-instruction" id="spiritInstruction">Drag the control to keep both energy feeds balanced.</div>
+      <div class="spirit-instruction" id="spiritState">Alternate A + B to fill the storage tanks.</div>
     </div>`;
   }
   function placeholderBody(cp){const location=cp?.location||'Checkpoint';return `<div class="mission-instrument panel" style="text-align:center;padding:30px 18px"><div class="onboard-icon">?</div><div class="kicker">${location} / Creative Hold</div><h2 style="font-family:var(--display);text-transform:uppercase;font-size:28px;margin:8px 0">Mission TBC</h2><p class="sub">This checkpoint is reserved while the final installation game is developed. GPS activation, route progression and completion behaviour remain active for testing.</p><button class="btn primary wide" style="margin-top:16px" id="completePlaceholder">Complete Demo Step</button></div>`}
@@ -1231,7 +1222,7 @@
 
   function startDemoExperience(){
     clearDemo();
-    state={...defaults,onboarded:false,audio:state.audio,bootDone:'demo-scan',mode:'demo',nav:'radar',completed:[],available:[],routeIndex:1,gpsCondition:'DEMO'};
+    state={...defaults,onboarded:false,audio:state.audio,bootDone:'mc00-demo',mode:'demo',nav:'radar',completed:[],available:[],routeIndex:1,gpsCondition:'DEMO'};
     save();
     render();
     ping(480,.07,.025);
@@ -1756,197 +1747,144 @@
   }
   function bindSpirit(){
     const rig=document.getElementById('spiritRig');
-    const control=document.getElementById('spiritBalanceControl');
-    const knob=document.getElementById('spiritKnob');
-    const target=document.getElementById('spiritTarget');
     const stateEl=document.getElementById('spiritState');
     const stageNumber=document.getElementById('spiritStageNumber');
     const stageName=document.getElementById('spiritStageName');
     const stageDots=[...document.querySelectorAll('[data-spirit-stage-dot]')];
-    const tanks=[...document.querySelectorAll('[data-spirit-tank]')];
-    if(!rig||!control||!knob||!target||!stateEl||!stageNumber||!stageName||!stageDots.length||!tanks.length) return;
+    const buttons=[...document.querySelectorAll('[data-charge]')];
+    const tankMap={
+      A:[...document.querySelectorAll('[data-spirit-tank^="left-"]')],
+      B:[...document.querySelectorAll('[data-spirit-tank^="right-"]')]
+    };
+    const meterMap={
+      A:document.querySelector('.spirit-meter-left'),
+      B:document.querySelector('.spirit-meter-right')
+    };
+    if(!rig||!stateEl||!stageNumber||!stageName||stageDots.length!==5||buttons.length!==2||tankMap.A.length!==4||tankMap.B.length!==4) return;
 
-    const stages=[
-      {name:'IGNITION',threshold:18,amplitude:14,speed:.00070,rate:.00050},
-      {name:'CHARGE',threshold:16,amplitude:20,speed:.00082,rate:.00047},
-      {name:'PRESSURE',threshold:14,amplitude:26,speed:.00096,rate:.00044},
-      {name:'SURGE',threshold:12,amplitude:31,speed:.00110,rate:.00041},
-      {name:'CORE STABLE',threshold:11,amplitude:35,speed:.00124,rate:.00038}
-    ];
-
-    const energyAudio=new Audio('./assets/spirit-energy-vortex.mp3');
-    energyAudio.preload='auto';energyAudio.loop=true;energyAudio.volume=.12;
-    const ventAudio=new Audio('./assets/spirit-tank-vent.mp3');
-    ventAudio.preload='auto';ventAudio.volume=.68;
-
-    let stage=0;
-    let stageProgress=0;
-    let userPos=50;
-    let targetPos=50;
-    let dragging=false;
+    const stages=['IGNITION','CHARGE','PRESSURE','SURGE','STABLE'];
+    const tapsPerTank=4;
+    const tanksPerBank=4;
+    const tapsPerBank=tapsPerTank*tanksPerBank;
+    const totalTaps=tapsPerBank*2;
+    const sideHits={A:0,B:0};
+    let expected='A';
+    let hits=0;
     let completed=false;
-    let audioStarted=false;
-    let raf=0;
-    let last=performance.now();
-    let ventTimer=0;
+    let finishTimer=0;
+    const payoffAudio=new Audio('./assets/spirit-tank-vent.mp3');
+    payoffAudio.preload='auto';
+    payoffAudio.volume=.72;
 
-    function startEnergyAudio(){
-      if(!state.audio||audioStarted) return;
-      audioStarted=true;
-      try{const p=energyAudio.play();if(p&&typeof p.catch==='function')p.catch(()=>{});}catch{}
-    }
-    function stopAudio(){
-      try{energyAudio.pause();ventAudio.pause();energyAudio.currentTime=0;ventAudio.currentTime=0;}catch{}
-    }
-    function vent(){
-      rig.classList.remove('is-venting');void rig.offsetWidth;rig.classList.add('is-venting');
-      clearTimeout(ventTimer);ventTimer=setTimeout(()=>rig.classList.remove('is-venting'),850);
-      if(state.audio){try{ventAudio.currentTime=0;const p=ventAudio.play();if(p&&typeof p.catch==='function')p.catch(()=>{});}catch{}}
-      haptic([22,18,34]);
-    }
-    function setUserFromClientX(clientX){
-      const rect=control.getBoundingClientRect();
-      if(!rect.width) return;
-      userPos=Math.max(4,Math.min(96,((clientX-rect.left)/rect.width)*100));
-      control.setAttribute('aria-valuenow',String(Math.round(userPos)));
-      startEnergyAudio();
-    }
-    function onPointerDown(e){
-      dragging=true;
-      control.classList.add('is-active');
-      try{control.setPointerCapture(e.pointerId);}catch{}
-      setUserFromClientX(e.clientX);
-      e.preventDefault();
-    }
-    function onPointerMove(e){
-      if(!dragging) return;
-      setUserFromClientX(e.clientX);
-      e.preventDefault();
-    }
-    function endPointer(e){
-      dragging=false;
-      control.classList.remove('is-active');
-      try{control.releasePointerCapture(e.pointerId);}catch{}
-    }
-    function onKey(e){
-      if(e.key!=='ArrowLeft'&&e.key!=='ArrowRight') return;
-      e.preventDefault();
-      userPos=Math.max(4,Math.min(96,userPos+(e.key==='ArrowLeft'?-4:4)));
-      control.setAttribute('aria-valuenow',String(Math.round(userPos)));
-      startEnergyAudio();
+    function playTankPayoff(){
+      if(!state.audio) return;
+      try{
+        payoffAudio.currentTime=0;
+        const play=payoffAudio.play();
+        if(play&&typeof play.catch==='function') play.catch(()=>{});
+      }catch{}
     }
 
-    control.addEventListener('pointerdown',onPointerDown);
-    control.addEventListener('pointermove',onPointerMove);
-    control.addEventListener('pointerup',endPointer);
-    control.addEventListener('pointercancel',endPointer);
-    control.addEventListener('keydown',onKey);
-
-    function updateTanks(overall){
-      const perSide=3;
-      tanks.forEach((cell,index)=>{
-        const slot=index%perSide;
-        const local=Math.max(0,Math.min(1,overall*perSide-slot));
-        cell.style.setProperty('--cell-fill',String(local));
-        cell.classList.toggle('is-full',local>.98);
-      });
+    function stageFromHits(){
+      if(hits>=totalTaps) return 4;
+      return Math.min(4,Math.floor((hits/totalTaps)*5));
     }
 
-    function updateVisuals(now){
-      const cfg=stages[stage]||stages[stages.length-1];
-      targetPos=50+
-        Math.sin(now*cfg.speed+(stage*.78))*cfg.amplitude+
-        Math.sin(now*cfg.speed*.43+1.9)*(cfg.amplitude*.18);
-      targetPos=Math.max(8,Math.min(92,targetPos));
-
-      const error=Math.abs(userPos-targetPos);
-      const quality=Math.max(0,Math.min(1,1-(error/cfg.threshold)));
-      const balanced=error<=cfg.threshold;
-      const meterLevel=Math.max(.06,quality);
-      const overall=(stage+stageProgress)/stages.length;
-
-      knob.style.left=`${userPos}%`;
-      target.style.left=`${targetPos}%`;
-      target.style.width=`${Math.max(12,cfg.threshold*1.45)}%`;
-      rig.style.setProperty('--balance-quality',String(meterLevel));
-      rig.style.setProperty('--core-power',String(Math.max(.08,overall)));
-      rig.style.setProperty('--spirit-charge',String(overall));
-      updateTanks(overall);
-
-      if(!audioStarted){
-        stateEl.textContent='HOLD CONTROL';
-      }else if(balanced){
-        stateEl.textContent=quality>.72?'BALANCED':'STABILISING';
-      }else{
-        stateEl.textContent=userPos<targetPos?'SHIFT RIGHT':'SHIFT LEFT';
-      }
-      rig.classList.toggle('is-balanced',balanced&&audioStarted);
-      rig.classList.toggle('is-unstable',!balanced&&audioStarted);
-      stageNumber.textContent=String(stage+1).padStart(2,'0');
-      stageName.textContent=cfg.name;
-      stageDots.forEach((dot,i)=>{
-        dot.classList.toggle('complete',i<stage);
-        dot.classList.toggle('active',i===stage);
-        dot.style.setProperty('--stage-progress',i===stage?String(stageProgress):(i<stage?'1':'0'));
-      });
-
-      return {balanced,quality};
-    }
-
-    function completeStage(){
-      vent();
-      ping(520+(stage*72),.09,.035);
-      if(stage>=stages.length-1){
-        completed=true;
-        stageProgress=1;
-        rig.dataset.stage='complete';
-        rig.classList.add('is-complete');
-        rig.style.setProperty('--balance-quality','1');
-        rig.style.setProperty('--core-power','1');
-        rig.style.setProperty('--spirit-charge','1');
-        updateTanks(1);
-        stageDots.forEach(dot=>{dot.classList.add('complete');dot.classList.remove('active');dot.style.setProperty('--stage-progress','1');});
-        stageNumber.textContent='05';
-        stageName.textContent='CORE STABLE';
-        stateEl.textContent='STABLE';
-        ping(840,.15,.055);haptic([30,28,64]);
-        setTimeout(()=>{
-          stopAudio();
-          if(state.missionOpen==='spirit') showCompletion('Spirit Core Charged','');
-        },900);
-        return;
-      }
-      stage++;
-      stageProgress=0;
+    function updateStage(){
+      const stage=stageFromHits();
+      const stageStart=(stage/5)*totalTaps;
+      const stageEnd=((stage+1)/5)*totalTaps;
+      const local=Math.max(0,Math.min(1,(hits-stageStart)/(stageEnd-stageStart)));
       rig.dataset.stage=String(stage);
-      haptic([18,22,32]);
+      stageNumber.textContent=String(stage+1).padStart(2,'0');
+      stageName.textContent=stages[stage];
+      stageDots.forEach((dot,i)=>{
+        const progress=i<stage?1:i===stage?local:0;
+        dot.classList.toggle('complete',i<stage||(completed&&i===4));
+        dot.classList.toggle('active',!completed&&i===stage);
+        dot.style.setProperty('--stage-progress',String(progress));
+      });
     }
 
-    function tick(now){
+    function updateBank(side){
+      const sideTotal=sideHits[side];
+      const bankProgress=Math.max(0,Math.min(1,sideTotal/tapsPerBank));
+      const meter=meterMap[side];
+      if(meter) meter.style.setProperty('--meter-level',String(bankProgress));
+      const tanks=tankMap[side];
+      tanks.forEach((tank,displayIndex)=>{
+        const fillOrder=(tanks.length-1)-displayIndex;
+        const local=Math.max(0,Math.min(1,(sideTotal-(fillOrder*tapsPerTank))/tapsPerTank));
+        tank.style.setProperty('--tank-fill',String(local));
+        tank.classList.toggle('is-active',local>0&&local<1);
+        tank.classList.toggle('is-full',local>=1);
+      });
+    }
+
+    function tankJustFilled(side){
+      if(sideHits[side]===0||sideHits[side]%tapsPerTank!==0) return;
+      const completedFromBottom=(sideHits[side]/tapsPerTank)-1;
+      const displayIndex=(tanksPerBank-1)-completedFromBottom;
+      const tank=tankMap[side][displayIndex];
+      if(!tank) return;
+      tank.classList.remove('is-locking');
+      void tank.offsetWidth;
+      tank.classList.add('is-locking');
+      setTimeout(()=>tank.classList.remove('is-locking'),900);
+      playTankPayoff();
+      haptic([24,18,42]);
+    }
+
+    function updateExpected(){
+      buttons.forEach(button=>button.classList.toggle('is-next',button.dataset.charge===expected));
+      stateEl.textContent=completed?'Storage tanks stable.':`Alternate A + B · Tap ${expected}`;
+    }
+
+    function completeSpirit(){
+      completed=true;
+      rig.classList.add('is-complete');
+      stageNumber.textContent='05';
+      stageName.textContent='STABLE';
+      stageDots.forEach(dot=>{
+        dot.classList.add('complete');dot.classList.remove('active');dot.style.setProperty('--stage-progress','1');
+      });
+      updateExpected();
+      buttons.forEach(button=>{button.disabled=true;button.classList.remove('is-next');});
+      haptic([30,28,64]);
+      finishTimer=setTimeout(()=>{
+        if(state.missionOpen==='spirit') showCompletion('Spirit Core Charged','');
+      },950);
+    }
+
+    function flashWrong(button){
+      button.classList.remove('is-wrong');void button.offsetWidth;button.classList.add('is-wrong');
+      setTimeout(()=>button.classList.remove('is-wrong'),280);
+      haptic([12,22,12]);
+    }
+
+    function onCharge(event){
       if(completed) return;
-      const dt=Math.min(50,Math.max(0,now-last));last=now;
-      const {balanced,quality}=updateVisuals(now);
-      if(audioStarted&&balanced){
-        stageProgress=Math.min(1,stageProgress+(dt*stages[stage].rate*(.48+quality*.72)));
-      }else if(audioStarted){
-        stageProgress=Math.max(0,stageProgress-(dt*.00010));
-      }
-      if(stageProgress>=1){completeStage();if(completed)return;}
-      raf=requestAnimationFrame(tick);
+      const button=event.currentTarget;
+      const side=button.dataset.charge;
+      if(side!==expected){flashWrong(button);return;}
+      hits++;
+      sideHits[side]++;
+      updateBank(side);
+      tankJustFilled(side);
+      expected=expected==='A'?'B':'A';
+      updateStage();
+      updateExpected();
+      haptic(10);
+      if(hits>=totalTaps) completeSpirit();
     }
 
-    rig.dataset.stage='0';
-    updateTanks(0);
-    updateVisuals(last);
-    raf=requestAnimationFrame(tick);
+    buttons.forEach(button=>button.addEventListener('click',onCharge));
+    updateBank('A');updateBank('B');updateStage();updateExpected();
 
     cleanupMission=()=>{
-      cancelAnimationFrame(raf);clearTimeout(ventTimer);stopAudio();
-      control.removeEventListener('pointerdown',onPointerDown);
-      control.removeEventListener('pointermove',onPointerMove);
-      control.removeEventListener('pointerup',endPointer);
-      control.removeEventListener('pointercancel',endPointer);
-      control.removeEventListener('keydown',onKey);
+      clearTimeout(finishTimer);
+      buttons.forEach(button=>button.removeEventListener('click',onCharge));
+      try{payoffAudio.pause();payoffAudio.currentTime=0;}catch{}
     };
   }
   function bindArtifacts(){

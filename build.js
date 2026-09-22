@@ -31,4 +31,9 @@ for (const dir of ['assets', 'fonts', 'admin']) {
   if (fs.existsSync(source)) fs.cpSync(source, path.join(out, dir), { recursive: true });
 }
 
+// Do not deploy retired runtime media that is intentionally no longer referenced.
+for (const file of ['spirit-energy-vortex.mp3']) {
+  fs.rmSync(path.join(out, 'assets', file), { force: true });
+}
+
 console.log(`Built static Mission Control site in ${out}`);
