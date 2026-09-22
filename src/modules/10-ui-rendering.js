@@ -417,7 +417,7 @@
     return `<div class="mission-instrument panel comet-panel">
       <div class="comet-score"><span>GUIDANCE LOCK</span><strong id="cometProgress">0 / 10</strong></div>
       <div class="comet-progress-track" aria-hidden="true">${Array.from({length:10},(_,i)=>`<i data-comet-step="${i}"></i>`).join('')}</div>
-      <div class="comet-instruction" id="cometInstruction">Capture matching signals. Ignore crossed signals.</div>
+      <div class="comet-instruction" id="cometInstruction">Match each signal as it reaches the capture line.</div>
       <div class="comet-game" id="cometGame" aria-label="Directional guidance rhythm game">
         <div class="comet-lanes">${lanes.map(([key])=>`<div class="comet-lane" data-comet-lane="${key}"></div>`).join('')}</div>
         <div class="comet-capture-line" aria-hidden="true"></div>
@@ -439,10 +439,22 @@
     return `<div class="mission-instrument panel jingle-panel">
       <div class="jingle-stack">${rows.map(r=>`<div class="jingle-stage ${r.level===1?'active':'standby'}" data-jingle-stage="${r.level}">
         <div class="jingle-stage-head"><span><strong>${r.level}</strong> · ${r.label}</span><em data-jingle-status="${r.level}">${r.status}</em></div>
-        <div class="sync-lane sync-lane-${r.level}"><div class="flight-zone"></div><div class="pulse-dot ${r.level===1?'active':''}" data-pulse-dot="${r.level}"></div></div>
+        <div class="sync-lane sync-lane-${r.level}">
+          <div class="propulsion-nozzle propulsion-nozzle-left" aria-hidden="true"><i></i></div>
+          <div class="propulsion-nozzle propulsion-nozzle-right" aria-hidden="true"><i></i></div>
+          <div class="propulsion-rail" aria-hidden="true"></div>
+          <div class="propulsion-particles" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="flight-zone" aria-hidden="true"><span>SYNC</span></div>
+          <div class="pulse-trail ${r.level===1?'active':''}" data-pulse-trail="${r.level}" aria-hidden="true"></div>
+          <div class="pulse-dot ${r.level===1?'active':''}" data-pulse-dot="${r.level}"></div>
+          <div class="propulsion-burst" aria-hidden="true"><i></i><i></i><i></i></div>
+        </div>
       </div>`).join('')}</div>
-      <div class="signal-state" id="jingleState">Pulse 1 · calibration speed</div>
-      <button class="btn primary wide" id="syncPulse">Sync Pulse</button>
+      <div class="jingle-progress" aria-label="Propulsion pulse progress">
+        ${rows.map(r=>`<span class="${r.level===1?'active':'pending'}" data-jingle-progress="${r.level}"><i></i><b>Pulse ${r.level}</b></span>`).join('')}
+      </div>
+      <div class="signal-state jingle-state" id="jingleState">Pulse 1 · calibration speed</div>
+      <button class="btn primary wide jingle-sync-btn" id="syncPulse"><span>Sync Pulse</span><i aria-hidden="true">›››</i></button>
     </div>`;
   }
   function landoBody(){

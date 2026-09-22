@@ -1,3 +1,10 @@
+# Pass 7-06-00
+
+- MC-08 Jingle Beams visual refresh: three propulsion chambers retained and upgraded with engineered housings, nozzles, target gates, trails, particles and lock bursts.
+- Increased propulsion timing pace to approximately 1.6s / 1.25s / 0.95s end-to-end.
+- Added EARLY / LATE miss feedback and a three-pulse progress indicator.
+- Reworked Sync Pulse control to match the premium Mission Control visual language.
+
 # Pass 7-05-01
 
 - MC-07 Comet Curve upgraded into a beat-synchronised four-direction rhythm game.
