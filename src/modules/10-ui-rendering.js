@@ -417,11 +417,10 @@
     return `<div class="mission-instrument panel comet-panel">
       <div class="comet-score"><span>GUIDANCE LOCK</span><strong id="cometProgress">0 / 10</strong></div>
       <div class="comet-progress-track" aria-hidden="true">${Array.from({length:10},(_,i)=>`<i data-comet-step="${i}"></i>`).join('')}</div>
-      <div class="comet-instruction" id="cometInstruction">Match each signal as it reaches the receptor line.</div>
+      <div class="comet-instruction" id="cometInstruction">Capture matching signals. Ignore crossed signals.</div>
       <div class="comet-game" id="cometGame" aria-label="Directional guidance rhythm game">
         <div class="comet-lanes">${lanes.map(([key])=>`<div class="comet-lane" data-comet-lane="${key}"></div>`).join('')}</div>
         <div class="comet-capture-line" aria-hidden="true"></div>
-        <div class="comet-receptors" aria-hidden="true">${lanes.map(([,dir])=>`<span class="comet-receptor">${arrow(dir)}</span>`).join('')}</div>
         <div class="comet-notes" id="cometNotes" aria-hidden="true"></div>
         <div class="comet-hit-flash" id="cometHitFlash"></div>
         <div class="comet-judgement" id="cometJudgement" aria-live="polite"></div>

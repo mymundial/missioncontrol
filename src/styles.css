@@ -4630,3 +4630,53 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   .comet-btn{height:54px;}
   .comet-judgement{font-size:19px;}
 }
+
+
+/* Pass 7-05-02: faster crossed-signal rhythm play */
+.comet-receptors{display:none!important;}
+.comet-game{
+  background:
+    radial-gradient(ellipse at 50% 78%,rgba(46,181,228,.16),transparent 43%),
+    linear-gradient(180deg,#03131f 0%,#061c2b 50%,#04121d 100%)!important;
+}
+.comet-game::before{animation-duration:.92s!important;}
+.comet-capture-line{top:80%!important;}
+.comet-capture-line::before{
+  height:2px!important;
+  background:linear-gradient(90deg,transparent,rgba(83,210,244,.25) 5%,rgba(140,238,255,.92) 50%,rgba(83,210,244,.25) 95%,transparent)!important;
+  box-shadow:0 0 10px rgba(83,216,247,.34)!important;
+}
+.comet-note.crossed .comet-chevron{
+  opacity:.88;
+  filter:drop-shadow(0 0 4px rgba(212,252,255,.82)) drop-shadow(0 0 10px rgba(74,223,255,.66));
+}
+.comet-note.ignored{
+  opacity:0!important;
+  transform:translate(-50%,-50%) scale(.72)!important;
+  transition:.14s ease-out!important;
+}
+.comet-judgement{
+  top:54%!important;
+  font-size:36px!important;
+  letter-spacing:.075em!important;
+  text-shadow:0 0 8px currentColor,0 0 22px currentColor!important;
+}
+.comet-judgement.perfect{font-size:40px!important;color:#d9fbff!important;}
+.comet-judgement.good{font-size:36px!important;color:#74e4ff!important;}
+.comet-judgement.miss{font-size:36px!important;color:#ff7581!important;}
+.comet-judgement.complete{font-size:22px!important;}
+.comet-combo{top:14px!important;right:16px!important;font-size:12px!important;}
+.comet-lane.hit{
+  background:linear-gradient(180deg,transparent 24%,rgba(62,207,244,.035) 55%,rgba(73,222,255,.15) 100%)!important;
+}
+.comet-controls{
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  align-items:stretch;
+}
+.comet-btn{min-width:0;}
+@media(max-width:390px){
+  .comet-judgement{font-size:30px!important;}
+  .comet-judgement.perfect{font-size:33px!important;}
+  .comet-judgement.good,.comet-judgement.miss{font-size:30px!important;}
+  .comet-judgement.complete{font-size:18px!important;}
+}
