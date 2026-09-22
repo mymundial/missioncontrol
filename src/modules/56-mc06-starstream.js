@@ -16,6 +16,7 @@
     let finished=false;
     let raf=0;
     let resizeObserver=null;
+    let lastType='blue';
 
     function clearTimers(){timers.forEach(clearTimeout);timers=[];}
     function later(fn,delay){const t=setTimeout(()=>{timers=timers.filter(id=>id!==t);fn();},delay);timers.push(t);return t;}
@@ -27,6 +28,12 @@
       field.dataset.intensity=String(level);
       panel?.classList.toggle('is-live',cleared>0);
       panel?.classList.toggle('is-intense',cleared>=7);
+    }
+
+    function renderStability(){
+      progress.textContent=`${cleared} / 10`;
+      steps.forEach((step,i)=>step.classList.toggle('on',i<cleared));
+      setIntensity();
     }
 
     function startStarstream(){
@@ -115,62 +122,67 @@
       later(()=>field.classList.remove('is-distorted'),220);
     }
 
+    function chooseType(){
+      if(cleared===0) return 'blue';
+      if(lastType==='red') return 'blue';
+      const chance=cleared<3?.16:cleared<7?.26:.36;
+      return Math.random()<chance?'red':'blue';
+    }
+
     function createSignature(){
       if(finished||active) return;
+      const type=chooseType();
+      lastType=type;
       const pos=randomPos();
       const el=document.createElement('button');
       el.type='button';
-      el.className='starstream-signature is-entering';
+      el.className=`starstream-signature is-${type} is-entering`;
       el.style.left=pos.x+'%';
       el.style.top=pos.y+'%';
-      el.setAttribute('aria-label','Clear unstable energy signature');
+      el.setAttribute('aria-label',type==='blue'?'Capture blue energy signature':'Avoid red interference signature');
       el.innerHTML=`<span class="signature-orbit orbit-a" aria-hidden="true"></span><span class="signature-orbit orbit-b" aria-hidden="true"></span><span class="signature-core" aria-hidden="true"><img src="./assets/mission-briefing-icon.svg" alt=""></span><i class="signature-scan" aria-hidden="true"></i>`;
       layer.appendChild(el);
-      active={el,escapes:0,locked:false};
-      later(()=>el.classList.remove('is-entering'),240);
+      const item={el,type,locked:false};
+      active=item;
+      later(()=>{if(active===item)el.classList.remove('is-entering');},220);
 
-      const pop=ev=>{
+      const tap=ev=>{
         ev.preventDefault();
         ev.stopPropagation();
-        if(finished||!active||active.el!==el) return;
-        popSignature();
+        if(finished||!active||active!==item||item.locked) return;
+        if(item.type==='red') hitRed(item); else hitBlue(item);
       };
-      if(window.PointerEvent) el.addEventListener('pointerdown',pop,{passive:false});
-      el.addEventListener('click',pop,{passive:false});
+      if(window.PointerEvent) el.addEventListener('pointerdown',tap,{passive:false});
+      el.addEventListener('click',tap,{passive:false});
+
+      if(type==='red'){
+        const dwell=intensity()===1?1050+Math.random()*380:intensity()===2?850+Math.random()*330:680+Math.random()*290;
+        later(()=>passRed(item),dwell);
+        return;
+      }
 
       const phaseSignature=()=>{
-        if(finished||!active||active.el!==el) return;
+        if(finished||!active||active!==item||item.locked) return;
         const p=randomPos();
         const level=intensity();
         el.classList.add('phase');
-        distortField();
-        stateEl.textContent='Signature shifted · reacquire';
+        stateEl.textContent='Blue signature shifted · reacquire';
         later(()=>{
-          if(finished||!active||active.el!==el) return;
+          if(finished||!active||active!==item||item.locked) return;
           el.style.left=p.x+'%';
           el.style.top=p.y+'%';
           el.classList.remove('phase');
-          // Later signatures are less predictable: shorter, random dwell before
-          // they vanish and reappear elsewhere in the Starstream.
-          const dwell=level===1
-            ? 1500+Math.random()*850
-            : level===2
-              ? 900+Math.random()*800
-              : 520+Math.random()*680;
+          const dwell=level===1?1450+Math.random()*750:level===2?880+Math.random()*650:500+Math.random()*540;
           later(phaseSignature,dwell);
-        },level===3?150+Math.random()*130:190+Math.random()*170);
+        },level===3?140+Math.random()*110:180+Math.random()*140);
       };
-      const firstShift=cleared<3
-        ? 1550+Math.random()*850
-        : cleared<7
-          ? 1050+Math.random()*700
-          : 650+Math.random()*600;
+      const firstShift=cleared<3?1450+Math.random()*700:cleared<7?980+Math.random()*600:590+Math.random()*500;
       later(phaseSignature,firstShift);
     }
 
-    function spawnBurst(x,y){
+    function spawnBurst(x,y,tone='blue'){
       const ripple=document.createElement('span');
-      ripple.className='artifact-ripple';
+      ripple.className=`artifact-ripple ${tone==='red'?'is-red':''}`;
       ripple.style.left=x+'px';ripple.style.top=y+'px';
       burstLayer.appendChild(ripple);
       later(()=>ripple.remove(),600);
@@ -178,7 +190,7 @@
       const count=cleared>=7?14:10;
       for(let i=0;i<count;i++){
         const p=document.createElement('i');
-        p.className='artifact-particle';
+        p.className=`artifact-particle ${tone==='red'?'is-red':''}`;
         p.style.left=x+'px';p.style.top=y+'px';
         p.style.setProperty('--dx',`${(Math.random()-.5)*150}px`);
         p.style.setProperty('--dy',`${(Math.random()-.5)*150}px`);
@@ -187,76 +199,56 @@
         later(()=>p.remove(),600);
       }
 
-      field.classList.remove('is-hit');
+      field.classList.remove('is-hit','is-negative');
       void field.offsetWidth;
-      field.classList.add('is-hit');
-      later(()=>field.classList.remove('is-hit'),220);
+      field.classList.add(tone==='red'?'is-negative':'is-hit');
+      later(()=>field.classList.remove(tone==='red'?'is-negative':'is-hit'),260);
     }
 
-    function escapeChance(){
-      return cleared<3?.14:cleared<7?.22:.30;
+    function signatureCentre(item){
+      const fr=field.getBoundingClientRect(),r=item.el.getBoundingClientRect();
+      return {x:r.left-fr.left+r.width/2,y:r.top-fr.top+r.height/2};
     }
 
-    function escapeSignature(item){
-      if(finished||!active||active!==item||item.locked) return;
+    function removeSignature(item,className='popped',delay=220){
+      if(active===item) active=null;
       item.locked=true;
-      item.escapes=(item.escapes||0)+1;
-      const fr=field.getBoundingClientRect(),r=item.el.getBoundingClientRect();
-      const cx=r.left-fr.left+r.width/2,cy=r.top-fr.top+r.height/2;
-      const streak=document.createElement('i');
-      streak.className='artifact-escape-streak';
-      streak.style.left=cx+'px';streak.style.top=cy+'px';
-      const angle=Math.random()*Math.PI*2;
-      const distance=110+Math.random()*95;
-      streak.style.setProperty('--dx',`${Math.cos(angle)*distance}px`);
-      streak.style.setProperty('--dy',`${Math.sin(angle)*distance}px`);
-      streak.style.setProperty('--angle',`${angle}rad`);
-      burstLayer.appendChild(streak);
-      later(()=>streak.remove(),420);
-
-      item.el.classList.add('misfire');
-      distortField();
-      stateEl.textContent='Energy escaped capture · reacquire';
-      ping(410,.04,.014);haptic(12);
-      later(()=>{
-        if(finished||!active||active!==item) return;
-        const p=randomPos();
-        item.el.style.left=p.x+'%';
-        item.el.style.top=p.y+'%';
-        item.el.classList.remove('misfire');
-        item.el.classList.add('is-entering');
-        later(()=>{
-          if(!finished&&active===item){
-            item.el.classList.remove('is-entering');
-            item.locked=false;
-          }
-        },190);
-      },220);
+      item.el.classList.add(className);
+      later(()=>item.el.remove(),delay);
     }
 
-    function popSignature(){
-      if(finished||!active||active.locked) return;
-      const item=active;
-      // A signature can evade capture once. The chance rises with field
-      // intensity, adding uncertainty without allowing repeated unfair escapes.
-      if((item.escapes||0)<1 && Math.random()<escapeChance()){
-        escapeSignature(item);
-        return;
-      }
-      const fr=field.getBoundingClientRect(),r=item.el.getBoundingClientRect();
-      spawnBurst(r.left-fr.left+r.width/2,r.top-fr.top+r.height/2);
-      item.el.classList.add('popped');
-      active=null;
-      later(()=>item.el.remove(),230);
-
-      cleared++;
-      setIntensity();
-      progress.textContent=`${cleared} / 10`;
-      steps[cleared-1]?.classList.add('on');
+    function hitBlue(item){
+      if(finished||active!==item||item.locked) return;
+      const c=signatureCentre(item);
+      spawnBurst(c.x,c.y,'blue');
+      removeSignature(item,'popped',230);
+      cleared=Math.min(10,cleared+1);
+      renderStability();
       ping(630+cleared*20,.045,.018);haptic(18);
-      stateEl.textContent=cleared===10?'Starstream stabilised':cleared>=7?'Interference critical · keep clearing':`Signature cleared · ${10-cleared} remaining`;
+      stateEl.textContent=cleared===10?'Starstream stabilised':cleared>=7?'Interference critical · capture blue':`Blue captured · ${10-cleared} remaining`;
       if(cleared>=10){finish();return;}
-      later(createSignature,cleared>=7?85:cleared>=3?120:165);
+      later(createSignature,cleared>=7?90:cleared>=3?125:170);
+    }
+
+    function hitRed(item){
+      if(finished||active!==item||item.locked) return;
+      const c=signatureCentre(item);
+      spawnBurst(c.x,c.y,'red');
+      removeSignature(item,'negative',250);
+      const lost=cleared>0;
+      cleared=Math.max(0,cleared-1);
+      renderStability();
+      distortField();
+      stateEl.textContent=lost?'Interference spike · stability -1':'Interference spike · avoid red';
+      ping(235,.075,.028);haptic([22,26,18]);
+      later(createSignature,270);
+    }
+
+    function passRed(item){
+      if(finished||!active||active!==item||item.locked) return;
+      removeSignature(item,'passed',190);
+      stateEl.textContent='Red interference passed';
+      later(createSignature,150);
     }
 
     function finish(){
@@ -264,7 +256,7 @@
       clearTimers();
       if(active){active.el.classList.add('absorbed');setTimeout(()=>active?.el?.remove(),220);active=null;}
       panel?.classList.add('is-complete');
-      field.classList.remove('is-distorted','is-hit');
+      field.classList.remove('is-distorted','is-hit','is-negative');
       field.classList.add('stabilised');
       beam.classList.add('active');
       progress.textContent='10 / 10';
@@ -272,7 +264,7 @@
       setTimeout(()=>showCompletion('Starstream Stabilised',''),900);
     }
 
-    setIntensity();
+    renderStability();
     startStarstream();
     createSignature();
 

@@ -4113,3 +4113,21 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 @media(max-width:390px){
   .artifact-progress-track{gap:4px;}
 }
+
+
+/* Pass 7-04-07: MC-06 blue capture / red interference mechanic */
+.signature-rule-blue{color:#76e9ff;font-weight:800;letter-spacing:.06em;}
+.signature-rule-red{color:#ff727f;font-weight:800;letter-spacing:.06em;}
+.starstream-signature.is-red{background:radial-gradient(circle,rgba(255,138,145,.24) 0 13%,rgba(222,55,72,.16) 28%,rgba(53,10,20,.72) 49%,rgba(24,2,8,.10) 68%,transparent 72%);box-shadow:0 0 20px rgba(255,73,91,.38),0 0 42px rgba(207,37,61,.20),inset 0 0 18px rgba(255,143,151,.14);}
+.starstream-signature.is-red::before{border-color:rgba(255,118,132,.88);box-shadow:0 0 12px rgba(255,75,94,.38),inset 0 0 12px rgba(244,68,88,.14);}
+.starstream-signature.is-red::after{border-color:rgba(255,91,110,.46);}
+.starstream-signature.is-red .signature-orbit{border-color:rgba(255,100,116,.34)!important;}
+.starstream-signature.is-red .signature-orbit.orbit-a{border-left-color:rgba(255,211,215,.95)!important;border-right-color:rgba(255,211,215,.95)!important;}
+.starstream-signature.is-red .signature-core img{filter:brightness(0) saturate(100%) invert(62%) sepia(62%) saturate(3637%) hue-rotate(315deg) brightness(108%) contrast(102%) drop-shadow(0 0 4px rgba(255,229,231,.95)) drop-shadow(0 0 10px rgba(255,76,96,.90)) drop-shadow(0 0 20px rgba(217,38,67,.64));}
+.starstream-signature.is-red .signature-scan{background:linear-gradient(90deg,transparent,rgba(255,112,128,.78),transparent)!important;box-shadow:0 0 8px rgba(255,74,94,.52)!important;}
+.starstream-signature.passed{pointer-events:none;opacity:0;transform:scale(.72);filter:blur(3px) brightness(.8);}
+.starstream-signature.negative{pointer-events:none;opacity:0;transform:scale(1.42) rotate(-9deg);filter:brightness(2.15) blur(2px);}
+.artifact-ripple.is-red{border-color:rgba(255,102,117,.96);box-shadow:0 0 17px rgba(255,66,88,.78),inset 0 0 12px rgba(255,77,95,.34);}
+.artifact-particle.is-red{background:linear-gradient(180deg,#ffe1e4,#ff5369);box-shadow:0 0 10px rgba(255,69,90,.82);}
+.artifact-field.is-negative{animation:starstreamNegativeFlash .26s ease-out;}
+@keyframes starstreamNegativeFlash{0%{filter:brightness(1)}28%{filter:brightness(1.2) sepia(.28) saturate(1.7) hue-rotate(305deg)}56%{transform:translateX(-3px)}100%{filter:none;transform:none}}

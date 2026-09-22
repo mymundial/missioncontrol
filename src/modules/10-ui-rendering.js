@@ -398,7 +398,7 @@
     return `<div class="mission-instrument panel artifact-panel">
       <div class="artifact-score"><span>FIELD STABILITY</span><strong id="artifactProgress">0 / 10</strong></div>
       <div class="artifact-progress-track" aria-hidden="true">${Array.from({length:10},(_,i)=>`<i data-artifact-step="${i}"></i>`).join('')}</div>
-      <div class="artifact-instruction">Tap the unstable signatures before they distort the Starstream.</div>
+      <div class="artifact-instruction">Capture <span class="signature-rule-blue">BLUE</span> signatures. Avoid <span class="signature-rule-red">RED</span> interference.</div>
       <div class="artifact-field" id="artifactField" data-intensity="1" aria-label="Fast-moving Starstream energy field">
         <canvas class="starstream-canvas" id="starstreamCanvas" aria-hidden="true"></canvas>
         <div class="starstream-nebula" aria-hidden="true"></div>
@@ -407,7 +407,7 @@
         <div class="artifact-layer" id="artifactLayer"></div>
         <div class="artifact-burst-layer" id="artifactBurstLayer" aria-hidden="true"></div>
       </div>
-      <div class="signal-state artifact-state" id="artifactState">Starstream interference detected</div>
+      <div class="signal-state artifact-state" id="artifactState">Blue stabilises · red destabilises</div>
     </div>`;
   }
   function cometBody(){
