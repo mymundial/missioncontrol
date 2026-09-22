@@ -1927,6 +1927,7 @@
     let raf=0;
     let resizeObserver=null;
     let lastType='blue';
+    let redStreak=0;
 
     function clearTimers(){timers.forEach(clearTimeout);timers=[];}
     function later(fn,delay){const t=setTimeout(()=>{timers=timers.filter(id=>id!==t);fn();},delay);timers.push(t);return t;}
@@ -2034,8 +2035,8 @@
 
     function chooseType(){
       if(cleared===0) return 'blue';
-      if(lastType==='red') return 'blue';
-      const chance=cleared<3?.16:cleared<7?.26:.36;
+      if(redStreak>=2) return 'blue';
+      const chance=cleared<3?.30:cleared<7?.40:.50;
       return Math.random()<chance?'red':'blue';
     }
 
@@ -2043,6 +2044,7 @@
       if(finished||active) return;
       const type=chooseType();
       lastType=type;
+      redStreak=type==='red'?redStreak+1:0;
       const pos=randomPos();
       const el=document.createElement('button');
       el.type='button';
@@ -2071,23 +2073,9 @@
         return;
       }
 
-      const phaseSignature=()=>{
-        if(finished||!active||active!==item||item.locked) return;
-        const p=randomPos();
-        const level=intensity();
-        el.classList.add('phase');
-        stateEl.textContent='Blue signature shifted · reacquire';
-        later(()=>{
-          if(finished||!active||active!==item||item.locked) return;
-          el.style.left=p.x+'%';
-          el.style.top=p.y+'%';
-          el.classList.remove('phase');
-          const dwell=level===1?1450+Math.random()*750:level===2?880+Math.random()*650:500+Math.random()*540;
-          later(phaseSignature,dwell);
-        },level===3?140+Math.random()*110:180+Math.random()*140);
-      };
-      const firstShift=cleared<3?1450+Math.random()*700:cleared<7?980+Math.random()*600:590+Math.random()*500;
-      later(phaseSignature,firstShift);
+      // Blue signatures remain stable until captured. The previous random
+      // shift/reacquire behaviour has been removed so the rule is explicit:
+      // capture blue, avoid red.
     }
 
     function spawnBurst(x,y,tone='blue'){

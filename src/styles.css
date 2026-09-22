@@ -4131,3 +4131,21 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .artifact-particle.is-red{background:linear-gradient(180deg,#ffe1e4,#ff5369);box-shadow:0 0 10px rgba(255,69,90,.82);}
 .artifact-field.is-negative{animation:starstreamNegativeFlash .26s ease-out;}
 @keyframes starstreamNegativeFlash{0%{filter:brightness(1)}28%{filter:brightness(1.2) sepia(.28) saturate(1.7) hue-rotate(305deg)}56%{transform:translateX(-3px)}100%{filter:none;transform:none}}
+
+
+/* Pass 7-04-08: ten-step stability track + simplified blue/red rules */
+.artifact-progress-track{
+  display:flex!important;
+  width:100%!important;
+  max-width:none!important;
+  gap:7px!important;
+  margin:8px 0 12px!important;
+}
+.artifact-progress-track i{
+  flex:1 1 0!important;
+  min-width:0!important;
+  width:auto!important;
+}
+@media(max-width:390px){
+  .artifact-progress-track{gap:5px!important;}
+}
