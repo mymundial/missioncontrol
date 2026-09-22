@@ -69,7 +69,7 @@
   }
   function completeCurrent(){
     const id=state.missionOpen; const idx=checkpointIndex(id); if(idx<0) return;
-    if(id==='lapland') stopLaplandAudio();
+    if(id==='lapland'){ stopLaplandAudio(); playLaplandExitCelebration(); }
     const done=state.completed.includes(id)?state.completed:[...state.completed,id];
     const available=state.available.filter(x=>x!==id);
     let routeIndex=normaliseRouteIndex(state.routeIndex);

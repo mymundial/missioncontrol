@@ -934,7 +934,7 @@
   }
   function completeCurrent(){
     const id=state.missionOpen; const idx=checkpointIndex(id); if(idx<0) return;
-    if(id==='lapland') stopLaplandAudio();
+    if(id==='lapland'){ stopLaplandAudio(); playLaplandExitCelebration(); }
     const done=state.completed.includes(id)?state.completed:[...state.completed,id];
     const available=state.available.filter(x=>x!==id);
     let routeIndex=normaliseRouteIndex(state.routeIndex);
@@ -2822,6 +2822,7 @@
 
   let laplandMusic=null;
   let laplandVoice=null;
+  let laplandExitSfx=null;
   let laplandVolumeRaf=0;
   let laplandTimers=[];
 
@@ -2850,6 +2851,23 @@
       laplandVoice.volume=1;
     }
     return laplandVoice;
+  }
+  function getLaplandExitSfx(){
+    if(!laplandExitSfx){
+      laplandExitSfx=new Audio('./assets/lapland-exit-celebration.mp3');
+      laplandExitSfx.preload='auto';
+      laplandExitSfx.volume=.9;
+    }
+    return laplandExitSfx;
+  }
+  function playLaplandExitCelebration(){
+    if(!state.audio) return;
+    const sfx=getLaplandExitSfx();
+    try{sfx.currentTime=0;}catch{}
+    try{
+      const p=sfx.play();
+      if(p&&typeof p.catch==='function') p.catch(()=>{});
+    }catch{}
   }
   function fadeLaplandMusic(target,duration=350,onDone){
     if(!laplandMusic){onDone?.();return;}

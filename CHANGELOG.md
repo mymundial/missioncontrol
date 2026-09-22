@@ -1,3 +1,9 @@
+## Pass 7-08-02 — Lapland return transition
+- Added the supplied Positive Celebration sting as a lightweight 96 kbps production MP3 (~24 KB).
+- On Lapland Launch completion, the backing track now hands off to the celebration sting when the guest presses the return button, avoiding an abrupt silent cut.
+- The sting respects the global Mission Audio setting and is only used for the completed Lapland Launch return flow.
+- No gameplay, verification timing or light-show changes.
+
 ## Pass 7-08-01 — Lapland Launch audio finale
 - Added the full supplied Las Vegas backing track as a compressed 112 kbps MP3; it loops while Lapland Launch remains open.
 - Added the updated Chief Engineer clearance recording as a compressed mono 96 kbps MP3.
