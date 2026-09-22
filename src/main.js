@@ -2034,7 +2034,7 @@
       el.style.left=pos.x+'%';
       el.style.top=pos.y+'%';
       el.setAttribute('aria-label','Clear unstable energy signature');
-      el.innerHTML=`<span class="signature-orbit orbit-a" aria-hidden="true"></span><span class="signature-orbit orbit-b" aria-hidden="true"></span><span class="signature-core" aria-hidden="true"><img src="./assets/brake-horse-power.webp" alt=""></span><i class="signature-scan" aria-hidden="true"></i>`;
+      el.innerHTML=`<span class="signature-orbit orbit-a" aria-hidden="true"></span><span class="signature-orbit orbit-b" aria-hidden="true"></span><span class="signature-core" aria-hidden="true"><img src="./assets/silverstone-power-icon.webp" alt=""></span><i class="signature-scan" aria-hidden="true"></i>`;
       layer.appendChild(el);
       active={el};
       later(()=>el.classList.remove('is-entering'),240);
