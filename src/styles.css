@@ -3840,7 +3840,7 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
     radial-gradient(circle at 49% 50%,transparent 0 49%,rgba(0,9,18,.24) 72%,rgba(0,6,14,.62) 100%),
     linear-gradient(90deg,rgba(0,9,18,.23),transparent 14% 86%,rgba(0,9,18,.23));
 }
-.artifact-layer{z-index:6;}
+.artifact-layer{z-index:6;pointer-events:auto;}
 .artifact-burst-layer{z-index:7;}
 
 .starstream-signature{
@@ -4032,4 +4032,20 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 
 @media(prefers-reduced-motion:reduce){
   .starstream-signature,.signature-orbit,.signature-scan,.starstream-nebula,.artifact-field::before{animation:none!important;}
+}
+
+/* Pass 7-04-04: Starstream target interaction + shared Mission Briefing lightning icon */
+.artifact-field .artifact-layer{pointer-events:auto;}
+.starstream-signature{pointer-events:auto;}
+.signature-core img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  opacity:1;
+  filter:
+    brightness(0) saturate(100%) invert(95%) sepia(35%) saturate(1864%) hue-rotate(164deg) brightness(107%) contrast(101%)
+    drop-shadow(0 0 4px rgba(220,251,255,.95))
+    drop-shadow(0 0 10px rgba(90,224,255,.88))
+    drop-shadow(0 0 20px rgba(39,168,238,.62));
 }

@@ -2034,14 +2034,19 @@
       el.style.left=pos.x+'%';
       el.style.top=pos.y+'%';
       el.setAttribute('aria-label','Clear unstable energy signature');
-      el.innerHTML=`<span class="signature-orbit orbit-a" aria-hidden="true"></span><span class="signature-orbit orbit-b" aria-hidden="true"></span><span class="signature-core" aria-hidden="true"><img src="./assets/brake-horse-power.webp" alt=""></span><i class="signature-scan" aria-hidden="true"></i>`;
+      el.innerHTML=`<span class="signature-orbit orbit-a" aria-hidden="true"></span><span class="signature-orbit orbit-b" aria-hidden="true"></span><span class="signature-core" aria-hidden="true"><img src="./assets/mission-briefing-icon.svg" alt=""></span><i class="signature-scan" aria-hidden="true"></i>`;
       layer.appendChild(el);
       active={el};
       later(()=>el.classList.remove('is-entering'),240);
 
-      const pop=ev=>{ev.preventDefault();popSignature();};
+      const pop=ev=>{
+        ev.preventDefault();
+        ev.stopPropagation();
+        if(finished||!active||active.el!==el) return;
+        popSignature();
+      };
       if(window.PointerEvent) el.addEventListener('pointerdown',pop,{passive:false});
-      else el.addEventListener('click',pop);
+      el.addEventListener('click',pop,{passive:false});
 
       const shiftDelay=cleared<4?2250+Math.random()*650:cleared<8?1750+Math.random()*500:1250+Math.random()*380;
       later(()=>{
