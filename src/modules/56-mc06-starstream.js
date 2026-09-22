@@ -126,7 +126,7 @@
       el.setAttribute('aria-label','Clear unstable energy signature');
       el.innerHTML=`<span class="signature-orbit orbit-a" aria-hidden="true"></span><span class="signature-orbit orbit-b" aria-hidden="true"></span><span class="signature-core" aria-hidden="true"><img src="./assets/mission-briefing-icon.svg" alt=""></span><i class="signature-scan" aria-hidden="true"></i>`;
       layer.appendChild(el);
-      active={el};
+      active={el,escapes:0,locked:false};
       later(()=>el.classList.remove('is-entering'),240);
 
       const pop=ev=>{
@@ -193,9 +193,56 @@
       later(()=>field.classList.remove('is-hit'),220);
     }
 
+    function escapeChance(){
+      return cleared<3?.14:cleared<7?.22:.30;
+    }
+
+    function escapeSignature(item){
+      if(finished||!active||active!==item||item.locked) return;
+      item.locked=true;
+      item.escapes=(item.escapes||0)+1;
+      const fr=field.getBoundingClientRect(),r=item.el.getBoundingClientRect();
+      const cx=r.left-fr.left+r.width/2,cy=r.top-fr.top+r.height/2;
+      const streak=document.createElement('i');
+      streak.className='artifact-escape-streak';
+      streak.style.left=cx+'px';streak.style.top=cy+'px';
+      const angle=Math.random()*Math.PI*2;
+      const distance=110+Math.random()*95;
+      streak.style.setProperty('--dx',`${Math.cos(angle)*distance}px`);
+      streak.style.setProperty('--dy',`${Math.sin(angle)*distance}px`);
+      streak.style.setProperty('--angle',`${angle}rad`);
+      burstLayer.appendChild(streak);
+      later(()=>streak.remove(),420);
+
+      item.el.classList.add('misfire');
+      distortField();
+      stateEl.textContent='Energy escaped capture · reacquire';
+      ping(410,.04,.014);haptic(12);
+      later(()=>{
+        if(finished||!active||active!==item) return;
+        const p=randomPos();
+        item.el.style.left=p.x+'%';
+        item.el.style.top=p.y+'%';
+        item.el.classList.remove('misfire');
+        item.el.classList.add('is-entering');
+        later(()=>{
+          if(!finished&&active===item){
+            item.el.classList.remove('is-entering');
+            item.locked=false;
+          }
+        },190);
+      },220);
+    }
+
     function popSignature(){
-      if(finished||!active) return;
+      if(finished||!active||active.locked) return;
       const item=active;
+      // A signature can evade capture once. The chance rises with field
+      // intensity, adding uncertainty without allowing repeated unfair escapes.
+      if((item.escapes||0)<1 && Math.random()<escapeChance()){
+        escapeSignature(item);
+        return;
+      }
       const fr=field.getBoundingClientRect(),r=item.el.getBoundingClientRect();
       spawnBurst(r.left-fr.left+r.width/2,r.top-fr.top+r.height/2);
       item.el.classList.add('popped');

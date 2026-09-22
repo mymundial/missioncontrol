@@ -4076,3 +4076,40 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   .starstream-signature .signature-core{inset:0!important;}
   .starstream-signature .signature-core img{width:43%!important;height:57%!important;}
 }
+\n\n/* Pass 7-04-06: MC-06 ten-step fit + capture escape behaviour */
+.artifact-progress-track{
+  grid-template-columns:repeat(10,minmax(0,1fr));
+  gap:5px;
+  width:100%;
+}
+.starstream-signature.misfire{
+  pointer-events:none;
+  animation:starstreamCaptureEscape .22s cubic-bezier(.4,0,.9,.45) forwards!important;
+}
+.artifact-escape-streak{
+  position:absolute;
+  z-index:9;
+  width:54px;
+  height:3px;
+  margin:-1.5px 0 0 -27px;
+  border-radius:999px;
+  pointer-events:none;
+  transform:rotate(var(--angle));
+  transform-origin:50% 50%;
+  background:linear-gradient(90deg,transparent,rgba(120,231,255,.88),#eefeff);
+  box-shadow:0 0 8px rgba(91,221,255,.72),0 0 18px rgba(50,166,231,.42);
+  animation:starstreamEscapeStreak .38s ease-out forwards;
+}
+@keyframes starstreamCaptureEscape{
+  0%{opacity:1;filter:brightness(1.2);transform:scale(1)}
+  35%{opacity:1;filter:brightness(2.1);transform:scale(.92)}
+  100%{opacity:0;filter:brightness(2.4) blur(3px);transform:scale(.28)}
+}
+@keyframes starstreamEscapeStreak{
+  0%{opacity:0;transform:translate(0,0) rotate(var(--angle)) scaleX(.28)}
+  20%{opacity:1}
+  100%{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(var(--angle)) scaleX(1.2)}
+}
+@media(max-width:390px){
+  .artifact-progress-track{gap:4px;}
+}
