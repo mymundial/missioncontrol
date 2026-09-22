@@ -4878,3 +4878,188 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   .jingle-progress>span{font-size:6px;gap:4px;}
   .jingle-progress i{width:9px;height:9px;}
 }
+
+/* === Pass 7-08-00: Lapland Launch final verification === */
+.mission-lapland .lapland-head{
+  padding-bottom:9px;
+}
+.lapland-head .lapland-sponsor{
+  width:96px;
+  max-width:28vw;
+  margin:4px auto 1px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:.68;
+  transition:opacity .25s ease,filter .25s ease,transform .25s ease;
+}
+.lapland-head .lapland-sponsor img{
+  display:block;
+  width:100%;
+  height:auto;
+  filter:drop-shadow(0 0 8px rgba(93,214,250,.08));
+}
+.lapland-head h1{
+  margin-top:0;
+}
+.lapland-head.is-launch-clear .lapland-sponsor{
+  opacity:1;
+  filter:drop-shadow(0 0 9px rgba(95,220,255,.4));
+  animation:laplandSponsorPulse .9s ease-out 1;
+}
+
+.lapland-panel{
+  --lapland-charge:0;
+  position:relative;
+  overflow:hidden;
+  padding:16px 16px 15px;
+  border-color:rgba(61,161,197,.42);
+  background:
+    radial-gradient(circle at 50% 18%,rgba(49,175,217,calc(.035 + (var(--lapland-charge) * .09))),transparent 44%),
+    linear-gradient(180deg,rgba(7,35,50,.96),rgba(4,26,38,.98));
+  box-shadow:
+    0 15px 36px rgba(0,0,0,.18),
+    0 0 calc(4px + (var(--lapland-charge) * 17px)) rgba(60,205,246,calc(.04 + (var(--lapland-charge) * .15))),
+    inset 0 0 calc(14px + (var(--lapland-charge) * 24px)) rgba(60,205,246,calc(.015 + (var(--lapland-charge) * .045)));
+  transition:border-color .25s ease,box-shadow .25s ease,background .25s ease;
+}
+.lapland-panel::before{
+  content:"";
+  position:absolute;
+  inset:0 0 auto;
+  height:2px;
+  background:linear-gradient(90deg,transparent,rgba(116,226,255,.82),transparent);
+  opacity:calc(.15 + (var(--lapland-charge) * .6));
+  pointer-events:none;
+}
+.lapland-panel::after{
+  content:"";
+  position:absolute;
+  top:-20%;
+  bottom:-20%;
+  width:36%;
+  left:-45%;
+  transform:skewX(-12deg);
+  background:linear-gradient(90deg,transparent,rgba(211,248,255,.18),transparent);
+  opacity:0;
+  pointer-events:none;
+}
+.lapland-panel.is-complete{
+  border-color:rgba(108,220,250,.78);
+  box-shadow:0 0 24px rgba(68,207,247,.2),inset 0 0 30px rgba(68,207,247,.055);
+}
+.lapland-panel.is-complete::after{
+  opacity:1;
+  animation:laplandLightSweep .72s ease-out forwards;
+}
+.lapland-verification-label{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:12px;
+  padding-bottom:10px;
+  margin-bottom:2px;
+  border-bottom:1px solid rgba(72,151,181,.16);
+  text-transform:uppercase;
+  letter-spacing:.13em;
+}
+.lapland-verification-label span{
+  color:#6f9dad;
+  font-size:8px;
+  font-weight:700;
+}
+.lapland-verification-label strong{
+  color:#b9dce8;
+  font-size:9px;
+  font-weight:800;
+}
+.lapland-panel .lapland-system-bank{
+  position:relative;
+  z-index:1;
+  margin:7px 0 15px;
+  padding:0 2px;
+}
+.lapland-panel .system-node{display:none;}
+.lapland-panel .system-status-name{gap:0;}
+.lapland-panel .system-status-name,
+.lapland-panel .system-status-value{
+  min-height:31px;
+  font-size:8.5px;
+  transition:color .2s ease,text-shadow .2s ease,border-color .2s ease;
+}
+.lapland-panel .system-status-item.is-checking .system-status-name,
+.lapland-panel .system-status-item.is-checking .system-status-value{
+  color:#6fddfa;
+  text-shadow:0 0 8px rgba(77,211,248,.35);
+}
+.lapland-panel .system-status-item.is-online .system-status-name,
+.lapland-panel .system-status-item.is-online .system-status-value,
+.lapland-panel .system-status-item.is-clear .system-status-name,
+.lapland-panel .system-status-item.is-clear .system-status-value{
+  color:#a8edff;
+  text-shadow:0 0 9px rgba(76,212,249,.32);
+  border-bottom-color:rgba(101,203,235,.25);
+}
+.lapland-panel .system-status-item.is-offline .system-status-name,
+.lapland-panel .system-status-item.is-blocked .system-status-name{
+  color:#d88f96;
+}
+.lapland-test-btn{
+  position:relative;
+  z-index:1;
+  margin-top:2px;
+}
+.lapland-payoff{
+  position:relative;
+  z-index:2;
+  margin:5px 0 1px;
+  padding:16px 10px 13px;
+  text-align:center;
+  border-top:1px solid rgba(104,214,247,.28);
+  border-bottom:1px solid rgba(104,214,247,.28);
+  background:linear-gradient(90deg,transparent,rgba(59,190,230,.07),transparent);
+}
+.lapland-payoff[hidden]{display:none;}
+.lapland-payoff span{
+  display:block;
+  margin-bottom:5px;
+  color:#77b7ca;
+  font-size:8px;
+  line-height:1;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+}
+.lapland-payoff strong{
+  display:block;
+  font-family:var(--display);
+  color:#ecfbff;
+  font-size:28px;
+  line-height:1;
+  letter-spacing:.035em;
+  text-transform:uppercase;
+  text-shadow:0 0 15px rgba(89,220,255,.3);
+  animation:laplandPayoffIn .42s cubic-bezier(.2,.85,.25,1) both;
+}
+.lapland-panel.has-attention{
+  border-color:rgba(255,155,122,.42);
+}
+@keyframes laplandLightSweep{
+  from{left:-45%;}
+  to{left:115%;}
+}
+@keyframes laplandSponsorPulse{
+  0%{transform:scale(.98);filter:drop-shadow(0 0 0 rgba(95,220,255,0));}
+  45%{transform:scale(1.035);filter:drop-shadow(0 0 12px rgba(95,220,255,.48));}
+  100%{transform:scale(1);filter:drop-shadow(0 0 9px rgba(95,220,255,.4));}
+}
+@keyframes laplandPayoffIn{
+  from{opacity:0;transform:translateY(5px) scale(.98);}
+  to{opacity:1;transform:none;}
+}
+@media(max-width:390px){
+  .lapland-head .lapland-sponsor{width:82px;margin-top:2px;}
+  .lapland-panel{padding:13px 13px 12px;}
+  .lapland-panel .system-status-name,
+  .lapland-panel .system-status-value{min-height:27px;font-size:7.4px;}
+  .lapland-payoff strong{font-size:24px;}
+}

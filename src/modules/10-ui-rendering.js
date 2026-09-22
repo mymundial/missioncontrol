@@ -206,6 +206,9 @@
     if(cp.type==='spirit'){
       return `<div class="mission-head spirit-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><h1>Spirit Core</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
     }
+    if(cp.type==='lapland'){
+      return `<div class="mission-head lapland-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><div class="lapland-sponsor"><img src="./assets/las-vegas-logo.webp" alt="Las Vegas"></div><h1>Lapland Launch</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
+    }
     return `<div class="mission-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><h1>${cp.mission}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
   }
   function missionInstruction(type){
@@ -222,7 +225,7 @@
       jingle:'Time three propulsion pulses so each lands inside the target flight zone.',
       lando:'React the moment the lights go out to calibrate Santa-1 flight control.',
       aurora:'Align the navigation rings and lock Santa-1 onto the North Pole.',
-      lapland:'Initiate a full-system verification and watch every restored system report ready.',
+      lapland:'Final systems verification.',
       northern:'Authorise the restored sleigh for its final Northern Flight.'
     })[type]||'';
   }
@@ -490,17 +493,25 @@
     </div>`;
   }
   function laplandBody(){
+    // Row-major ordering is intentionally interleaved so the visual columns read
+    // POWER / COMMS / CORE / CONTROL on the left and PROPULSION / RESPONSE /
+    // NAVIGATION / LAUNCH on the right, matching the MC-00 system bank.
     const systems=[
       {key:'power',label:'Power',status:'Standby'},
-      {key:'comms',label:'Comms',status:'Standby'},
-      {key:'core',label:'Core',status:'Standby'},
-      {key:'control',label:'Control',status:'Standby'},
       {key:'propulsion',label:'Propulsion',status:'Standby'},
+      {key:'comms',label:'Comms',status:'Standby'},
       {key:'response',label:'Response',status:'Standby'},
+      {key:'core',label:'Core',status:'Standby'},
       {key:'navigation',label:'Navigation',status:'Standby'},
-      {key:'launch',label:'Launch',status:'Blocked',state:'blocked'}
+      {key:'control',label:'Control',status:'Standby'},
+      {key:'launch',label:'Launch',status:'Standby'}
     ];
-    return `<div class="mission-instrument panel lapland-panel">${systemStatusBank(systems,'lapland-system-bank','verify')}<button class="btn primary wide" id="initiateTest">Initiate Final Test</button></div>`;
+    return `<div class="mission-instrument panel lapland-panel" id="laplandPanel" style="--lapland-charge:0">
+      <div class="lapland-verification-label"><span>Santa-1</span><strong>Final Verification</strong></div>
+      ${systemStatusBank(systems,'lapland-system-bank','verify')}
+      <div class="lapland-payoff" id="laplandPayoff" hidden><span>Verification Complete</span><strong>All Systems Go</strong></div>
+      <button class="btn primary wide lapland-test-btn" id="initiateTest">Run Final Verification</button>
+    </div>`;
   }
   function northernBody(){return `<div class="mission-instrument panel" style="text-align:center;padding:30px 18px"><div class="onboard-icon">✦</div><div class="kicker">Santa-1</div><h2 style="font-family:var(--display);text-transform:uppercase;font-size:34px;margin:8px 0">Northern Flight</h2><p class="sub">All restored systems are ready. Authorise the final flight sequence to complete the recovery mission.</p><button class="btn primary wide" style="margin-top:18px" id="authoriseFlight">Authorise Northern Flight</button></div>`}
 
