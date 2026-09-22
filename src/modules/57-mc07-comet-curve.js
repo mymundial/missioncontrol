@@ -72,14 +72,16 @@
     }
     function startMusic(){
       if(!state.audio) return;
+      beginMissionAudioRadioOverride('comet');
       try{
         music=new Audio('./assets/comet-curve-rhythm.mp3');
         music.preload='auto';
         music.volume=.66;
         music.loop=true;
         music.currentTime=0;
-        music.play().catch(()=>{});
-      }catch{music=null;}
+        const play=music.play();
+        if(play&&typeof play.catch==='function') play.catch(()=>endMissionAudioRadioOverride('comet'));
+      }catch{music=null;endMissionAudioRadioOverride('comet');}
     }
     function ensureMusic(){
       if(!state.audio||!music||!music.paused) return;
@@ -98,14 +100,19 @@
       music=null;
     }
     function playCompletionSound(){
-      if(!state.audio) return;
+      if(!state.audio){endMissionAudioRadioOverride('comet');return;}
       try{
         completionSfx=new Audio('./assets/comet-curve-complete.mp3');
         completionSfx.preload='auto';
         completionSfx.volume=.86;
         completionSfx.currentTime=0;
-        completionSfx.play().catch(()=>{});
-      }catch{completionSfx=null;}
+        let released=false;
+        const releaseRadio=()=>{if(released)return;released=true;endMissionAudioRadioOverride('comet');};
+        completionSfx.onended=releaseRadio;
+        completionSfx.onerror=releaseRadio;
+        const play=completionSfx.play();
+        if(play&&typeof play.catch==='function') play.catch(releaseRadio);
+      }catch{completionSfx=null;endMissionAudioRadioOverride('comet');}
     }
     function stopCompletionSound(){
       if(!completionSfx) return;
@@ -290,6 +297,7 @@
       notes=[];
       stopMusic();
       stopCompletionSound();
+      endMissionAudioRadioOverride('comet');
     };
 
     clockStart=performance.now();

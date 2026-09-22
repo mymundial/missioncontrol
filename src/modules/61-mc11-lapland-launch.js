@@ -38,14 +38,18 @@
     }
     return laplandExitSfx;
   }
-  function playLaplandExitCelebration(){
-    if(!state.audio) return;
+  function playLaplandExitCelebration(onComplete){
+    if(!state.audio){onComplete?.();return;}
     const sfx=getLaplandExitSfx();
+    let finished=false;
+    const finish=()=>{if(finished)return;finished=true;sfx.onended=null;sfx.onerror=null;onComplete?.();};
     try{sfx.currentTime=0;}catch{}
+    sfx.onended=finish;
+    sfx.onerror=finish;
     try{
       const p=sfx.play();
-      if(p&&typeof p.catch==='function') p.catch(()=>{});
-    }catch{}
+      if(p&&typeof p.catch==='function') p.catch(finish);
+    }catch{finish();}
   }
   function fadeLaplandMusic(target,duration=350,onDone){
     if(!laplandMusic){onDone?.();return;}
@@ -62,21 +66,23 @@
   }
   function startLaplandMusic(){
     if(!state.audio) return;
+    beginMissionAudioRadioOverride('lapland');
     const music=getLaplandMusic();
     music.loop=true;
     if(music.ended) music.currentTime=0;
     music.volume=Math.min(music.volume||.34,.34);
     try{
       const p=music.play();
-      if(p&&typeof p.catch==='function') p.catch(()=>{});
-    }catch{}
+      if(p&&typeof p.catch==='function') p.catch(()=>endMissionAudioRadioOverride('lapland'));
+    }catch{endMissionAudioRadioOverride('lapland');}
   }
-  function stopLaplandAudio(reset=true){
+  function stopLaplandAudio(reset=true,restoreRadio=true){
     clearLaplandTimers();
     cancelAnimationFrame(laplandVolumeRaf);laplandVolumeRaf=0;
     stopStatic();
     if(laplandVoice){try{laplandVoice.pause();if(reset)laplandVoice.currentTime=0;}catch{}}
     if(laplandMusic){try{laplandMusic.pause();if(reset)laplandMusic.currentTime=0;laplandMusic.volume=.34;}catch{}}
+    if(restoreRadio) endMissionAudioRadioOverride('lapland');
   }
   function playLaplandClearance(onComplete){
     const finish=()=>{

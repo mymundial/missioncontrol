@@ -1,83 +1,49 @@
-# Pass 6.84 — Final Production Audit
+# Pass 7-08-03 — Production Audit
 
 ## Result
 
-**20 automated checks passed · 0 failures · 2 non-blocking warnings.**
-
-The production runtime in Pass 6.84 is byte-for-byte identical to Pass 6.83. Pass 6.84 adds only audit/documentation tooling and establishes the cleaned application as the production baseline.
+**19 automated checks passed · 0 failures · 3 non-blocking warnings.**
 
 ## Production footprint
 
-- `dist/`: **6,642,092 bytes (~6.33 MiB)**
-- Production files: **39**
-- Browser JavaScript: **127,652 bytes**
-- CSS: **141,874 bytes**
-- Canonical JS source chunks: **21**
-- Runtime assets: **29**
-- Web fonts: **4 WOFF2 files**
+- `dist/`: **8,757,454 bytes (~8.35 MiB)**
+- Production files: **45**
+- No WAV/source-master audio is deployed.
+- Runtime images remain WebP/SVG, audio MP3, and fonts WOFF2.
+
+## Audio priority change verified
+
+- Comet Curve and Lapland Launch now suppress ELF FM when their mission bedding starts.
+- The radio stream remains logically enabled but is faded to silence so it can resume without a hard restart.
+- Comet Curve restores ELF FM only after its dedicated completion sting ends, or immediately when the mission is exited early.
+- Lapland Launch keeps ELF FM suppressed through the backing track, Chief Engineer clearance and Return transition; the radio fades back in only after the Positive Celebration exit sting finishes.
+- If Mission Audio is disabled, no override is applied and ELF FM behaviour is unchanged.
 
 ## Automated checks passed
 
-- Clean production build completes.
+- Production build completes successfully.
 - Generated browser JavaScript parses successfully.
 - Development JS modules are not deployed individually.
-- No legacy PNG/JPEG/WAV/TTF/OTF or test/temp files are present in `dist/`.
-- `src/main.js` and `src/styles.css` match their deployed copies exactly.
-- All static runtime asset, font, stylesheet and script references resolve.
-- Every deployed asset and font is referenced by the runtime.
-- WebP, WOFF2 and MP3 file signatures match their extensions.
-- CSS brace structure is balanced.
-- Vercel is configured for `npm run build` → `dist/` static output.
-- `/admin` retains the correct root asset base.
-- The service worker is retirement-only: no fetch interception and no new cache creation.
-- The 13-checkpoint route is present in the expected order from Entrance Gantry through Northern Flight.
-- Every route checkpoint type has a render/bind or approved automatic flow.
-- Lapland Launch Comms verification checks **MC-03 Luffield completion**, not optional ELF FM radio tuning.
-- Power Pulse retains iOS long-press selection/callout protection.
-- Power Pulse scenery geometry remains fixed at high velocity rather than scaling with speed.
+- No PNG/JPEG/WAV/TTF/OTF or test/temp files are present in `dist/`.
+- Generated JS/CSS match their deployed copies.
+- Runtime asset/font/script/style references resolve.
+- Every deployed asset and font is referenced.
+- Asset signatures match their extensions.
+- CSS structure is balanced.
+- Vercel remains configured for `npm run build` → `dist/`.
+- Service worker remains retirement-only with no fetch interception/runtime caching.
+- The 13-checkpoint route and handlers remain intact.
+- Lapland Launch still verifies Comms via MC-03 Luffield.
+- Power Pulse mobile protections and fixed high-speed geometry remain intact.
 
-## Non-blocking warnings / launch decisions
+## Non-blocking warnings
 
-### 1. ELF FM production stream
-
-The current stream remains:
-
-`https://streams.radiomast.io/ref-128k-mp3-stereo`
-
-The source still identifies this as a **test stream**. This is the only external runtime URL found by the audit. Replace it before launch if a final ELF FM stream is supplied.
-
-### 2. Web app install icon
-
-`manifest.webmanifest` has no icon definitions. This has no effect on normal QR-code/browser use. It only affects presentation if guests add the experience to their home screen.
-
-## Service-worker position
-
-The previous cache-first service worker has been retired. The remaining `sw.js` is intentionally a cleanup shim for older devices: it deletes legacy `mission-control-sleigh-*` caches, unregisters itself, and never intercepts network requests.
-
-Keeping the shim through the first production deployment is the safer option for returning test devices that may still carry old registrations. It can be removed after the production transition once legacy test installs no longer matter.
-
-## Required physical-device smoke test before public launch
-
-The code/asset audit is not a substitute for a final real-device check. Before opening to guests, test at least one current iPhone/Safari and one Android/Chrome device through the following:
-
-- Fresh first load from the QR URL.
-- Returning load with existing local state.
-- Mission Briefing → Mission Audio → Live/Demo setup card layout.
-- Live GPS permission accepted, denied, and recovered after refresh.
-- Real checkpoint detection/activation accuracy at representative circuit locations.
-- Demo progression from Circuit Entry through the next mission.
-- MC-02 Performance Scan complete flow and mobile viewport fit.
-- MC-03 Luffield completion with ELF FM radio left untuned.
-- MC-04 Power Pulse sustained maximum speed with scenery intact and no iOS text magnifier.
-- Audio enable/disable and user-gesture playback behaviour.
-- Sleigh, Missions and Comms navigation/state persistence.
-- Lapland Launch verification and Northern Flight completion.
-- `/admin` scrolling and GPS override controls.
+1. **Deployment footprint:** ~8.35 MiB exceeds the 7 MiB audit target. This remains primarily due to retaining the full Lapland Launch music track by design.
+2. **ELF FM stream:** current Radio Mast URL is still identified as a test stream and should be replaced when the production stream is supplied.
+3. **Web app manifest:** no install icon is defined; normal browser/QR use is unaffected.
 
 ## Re-run
 
 ```bash
 npm run audit
 ```
-
-A zero exit status means all blocking production checks passed.

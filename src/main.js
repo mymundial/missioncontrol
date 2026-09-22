@@ -261,6 +261,49 @@
     raf=requestAnimationFrame(step);
     return ()=>cancelAnimationFrame(raf);
   }
+  let missionAudioRadioOwner=null;
+  let missionAudioRadioWasPlaying=false;
+  let missionAudioRadioRestoreVolume=1;
+  let missionAudioRadioFadeCancel=()=>{};
+  function beginMissionAudioRadioOverride(owner){
+    if(!owner||!state.audio) return false;
+    const audio=elfAudioEl;
+    if(missionAudioRadioOwner===owner) return missionAudioRadioWasPlaying;
+    missionAudioRadioFadeCancel();
+    missionAudioRadioFadeCancel=()=>{};
+    missionAudioRadioOwner=owner;
+    missionAudioRadioWasPlaying=Boolean(audio&&state.elfAudioOn&&!audio.paused);
+    missionAudioRadioRestoreVolume=missionAudioRadioWasPlaying?Math.max(.01,audio.volume||1):1;
+    if(missionAudioRadioWasPlaying){
+      // Mission bedding always has priority over ELF FM. Keep the stream alive
+      // at silence so it can fade back in seamlessly when mission audio ends.
+      missionAudioRadioFadeCancel=rampElementVolume(audio,0,220);
+    }
+    return missionAudioRadioWasPlaying;
+  }
+  function endMissionAudioRadioOverride(owner){
+    if(!owner||missionAudioRadioOwner!==owner) return;
+    const shouldRestore=missionAudioRadioWasPlaying;
+    const restoreVolume=missionAudioRadioRestoreVolume;
+    missionAudioRadioFadeCancel();
+    missionAudioRadioFadeCancel=()=>{};
+    missionAudioRadioOwner=null;
+    missionAudioRadioWasPlaying=false;
+    missionAudioRadioRestoreVolume=1;
+    if(!shouldRestore||!elfAudioEl||!state.elfAudioOn) return;
+    const audio=elfAudioEl;
+    const restore=()=>{
+      audio.volume=0;
+      missionAudioRadioFadeCancel=rampElementVolume(audio,restoreVolume,520);
+    };
+    if(audio.paused){
+      try{
+        const play=audio.play();
+        if(play&&typeof play.then==='function') play.then(restore).catch(()=>{});
+        else restore();
+      }catch{}
+    }else restore();
+  }
   function stopSantaTransmission(restoreRadio=true){
     try{santaTransmissionCleanup?.();}catch{}
     santaTransmissionCleanup=null;
@@ -912,6 +955,7 @@
       triggerCircuitEntry();
       return;
     }
+    if(state.audio&&(id==='comet'||id==='lapland')) beginMissionAudioRadioOverride(id);
     ping(780,.06,.04);haptic(25);
     set({missionOpen:id,missionReturnNav:state.nav});
   }
@@ -934,7 +978,12 @@
   }
   function completeCurrent(){
     const id=state.missionOpen; const idx=checkpointIndex(id); if(idx<0) return;
-    if(id==='lapland'){ stopLaplandAudio(); playLaplandExitCelebration(); }
+    if(id==='lapland'){
+      // Keep ELF FM suppressed through the exit sting, then restore it with a
+      // fade only after all Lapland mission audio has finished.
+      stopLaplandAudio(true,false);
+      playLaplandExitCelebration(()=>endMissionAudioRadioOverride('lapland'));
+    }
     const done=state.completed.includes(id)?state.completed:[...state.completed,id];
     const available=state.available.filter(x=>x!==id);
     let routeIndex=normaliseRouteIndex(state.routeIndex);
@@ -2277,14 +2326,16 @@
     }
     function startMusic(){
       if(!state.audio) return;
+      beginMissionAudioRadioOverride('comet');
       try{
         music=new Audio('./assets/comet-curve-rhythm.mp3');
         music.preload='auto';
         music.volume=.66;
         music.loop=true;
         music.currentTime=0;
-        music.play().catch(()=>{});
-      }catch{music=null;}
+        const play=music.play();
+        if(play&&typeof play.catch==='function') play.catch(()=>endMissionAudioRadioOverride('comet'));
+      }catch{music=null;endMissionAudioRadioOverride('comet');}
     }
     function ensureMusic(){
       if(!state.audio||!music||!music.paused) return;
@@ -2303,14 +2354,19 @@
       music=null;
     }
     function playCompletionSound(){
-      if(!state.audio) return;
+      if(!state.audio){endMissionAudioRadioOverride('comet');return;}
       try{
         completionSfx=new Audio('./assets/comet-curve-complete.mp3');
         completionSfx.preload='auto';
         completionSfx.volume=.86;
         completionSfx.currentTime=0;
-        completionSfx.play().catch(()=>{});
-      }catch{completionSfx=null;}
+        let released=false;
+        const releaseRadio=()=>{if(released)return;released=true;endMissionAudioRadioOverride('comet');};
+        completionSfx.onended=releaseRadio;
+        completionSfx.onerror=releaseRadio;
+        const play=completionSfx.play();
+        if(play&&typeof play.catch==='function') play.catch(releaseRadio);
+      }catch{completionSfx=null;endMissionAudioRadioOverride('comet');}
     }
     function stopCompletionSound(){
       if(!completionSfx) return;
@@ -2495,6 +2551,7 @@
       notes=[];
       stopMusic();
       stopCompletionSound();
+      endMissionAudioRadioOverride('comet');
     };
 
     clockStart=performance.now();
@@ -2860,14 +2917,18 @@
     }
     return laplandExitSfx;
   }
-  function playLaplandExitCelebration(){
-    if(!state.audio) return;
+  function playLaplandExitCelebration(onComplete){
+    if(!state.audio){onComplete?.();return;}
     const sfx=getLaplandExitSfx();
+    let finished=false;
+    const finish=()=>{if(finished)return;finished=true;sfx.onended=null;sfx.onerror=null;onComplete?.();};
     try{sfx.currentTime=0;}catch{}
+    sfx.onended=finish;
+    sfx.onerror=finish;
     try{
       const p=sfx.play();
-      if(p&&typeof p.catch==='function') p.catch(()=>{});
-    }catch{}
+      if(p&&typeof p.catch==='function') p.catch(finish);
+    }catch{finish();}
   }
   function fadeLaplandMusic(target,duration=350,onDone){
     if(!laplandMusic){onDone?.();return;}
@@ -2884,21 +2945,23 @@
   }
   function startLaplandMusic(){
     if(!state.audio) return;
+    beginMissionAudioRadioOverride('lapland');
     const music=getLaplandMusic();
     music.loop=true;
     if(music.ended) music.currentTime=0;
     music.volume=Math.min(music.volume||.34,.34);
     try{
       const p=music.play();
-      if(p&&typeof p.catch==='function') p.catch(()=>{});
-    }catch{}
+      if(p&&typeof p.catch==='function') p.catch(()=>endMissionAudioRadioOverride('lapland'));
+    }catch{endMissionAudioRadioOverride('lapland');}
   }
-  function stopLaplandAudio(reset=true){
+  function stopLaplandAudio(reset=true,restoreRadio=true){
     clearLaplandTimers();
     cancelAnimationFrame(laplandVolumeRaf);laplandVolumeRaf=0;
     stopStatic();
     if(laplandVoice){try{laplandVoice.pause();if(reset)laplandVoice.currentTime=0;}catch{}}
     if(laplandMusic){try{laplandMusic.pause();if(reset)laplandMusic.currentTime=0;laplandMusic.volume=.34;}catch{}}
+    if(restoreRadio) endMissionAudioRadioOverride('lapland');
   }
   function playLaplandClearance(onComplete){
     const finish=()=>{

@@ -62,6 +62,49 @@
     raf=requestAnimationFrame(step);
     return ()=>cancelAnimationFrame(raf);
   }
+  let missionAudioRadioOwner=null;
+  let missionAudioRadioWasPlaying=false;
+  let missionAudioRadioRestoreVolume=1;
+  let missionAudioRadioFadeCancel=()=>{};
+  function beginMissionAudioRadioOverride(owner){
+    if(!owner||!state.audio) return false;
+    const audio=elfAudioEl;
+    if(missionAudioRadioOwner===owner) return missionAudioRadioWasPlaying;
+    missionAudioRadioFadeCancel();
+    missionAudioRadioFadeCancel=()=>{};
+    missionAudioRadioOwner=owner;
+    missionAudioRadioWasPlaying=Boolean(audio&&state.elfAudioOn&&!audio.paused);
+    missionAudioRadioRestoreVolume=missionAudioRadioWasPlaying?Math.max(.01,audio.volume||1):1;
+    if(missionAudioRadioWasPlaying){
+      // Mission bedding always has priority over ELF FM. Keep the stream alive
+      // at silence so it can fade back in seamlessly when mission audio ends.
+      missionAudioRadioFadeCancel=rampElementVolume(audio,0,220);
+    }
+    return missionAudioRadioWasPlaying;
+  }
+  function endMissionAudioRadioOverride(owner){
+    if(!owner||missionAudioRadioOwner!==owner) return;
+    const shouldRestore=missionAudioRadioWasPlaying;
+    const restoreVolume=missionAudioRadioRestoreVolume;
+    missionAudioRadioFadeCancel();
+    missionAudioRadioFadeCancel=()=>{};
+    missionAudioRadioOwner=null;
+    missionAudioRadioWasPlaying=false;
+    missionAudioRadioRestoreVolume=1;
+    if(!shouldRestore||!elfAudioEl||!state.elfAudioOn) return;
+    const audio=elfAudioEl;
+    const restore=()=>{
+      audio.volume=0;
+      missionAudioRadioFadeCancel=rampElementVolume(audio,restoreVolume,520);
+    };
+    if(audio.paused){
+      try{
+        const play=audio.play();
+        if(play&&typeof play.then==='function') play.then(restore).catch(()=>{});
+        else restore();
+      }catch{}
+    }else restore();
+  }
   function stopSantaTransmission(restoreRadio=true){
     try{santaTransmissionCleanup?.();}catch{}
     santaTransmissionCleanup=null;

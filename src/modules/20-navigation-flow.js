@@ -47,6 +47,7 @@
       triggerCircuitEntry();
       return;
     }
+    if(state.audio&&(id==='comet'||id==='lapland')) beginMissionAudioRadioOverride(id);
     ping(780,.06,.04);haptic(25);
     set({missionOpen:id,missionReturnNav:state.nav});
   }
@@ -69,7 +70,12 @@
   }
   function completeCurrent(){
     const id=state.missionOpen; const idx=checkpointIndex(id); if(idx<0) return;
-    if(id==='lapland'){ stopLaplandAudio(); playLaplandExitCelebration(); }
+    if(id==='lapland'){
+      // Keep ELF FM suppressed through the exit sting, then restore it with a
+      // fade only after all Lapland mission audio has finished.
+      stopLaplandAudio(true,false);
+      playLaplandExitCelebration(()=>endMissionAudioRadioOverride('lapland'));
+    }
     const done=state.completed.includes(id)?state.completed:[...state.completed,id];
     const available=state.available.filter(x=>x!==id);
     let routeIndex=normaliseRouteIndex(state.routeIndex);

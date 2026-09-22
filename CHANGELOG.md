@@ -1,3 +1,10 @@
+## Pass 7-08-03 — Mission audio priority over ELF FM
+- Comet Curve and Lapland Launch bedding music now take priority over ELF FM whenever the radio is already playing.
+- ELF FM quickly fades to silence as mission music starts, remains suppressed for the entire mission-audio sequence, and fades back to its previous listening level only after that sequence has finished.
+- Comet Curve keeps the radio suppressed through the rhythm loop and dedicated completion sting, then restores the station after the sting ends (or immediately on a mid-mission exit).
+- Lapland Launch keeps the radio suppressed through the backing track, Chief Engineer clearance and completion flow; on Return it remains muted through the Positive Celebration exit sting and only then fades back in.
+- No mission gameplay, timing, visual or asset changes.
+
 ## Pass 7-08-02 — Lapland return transition
 - Added the supplied Positive Celebration sting as a lightweight 96 kbps production MP3 (~24 KB).
 - On Lapland Launch completion, the backing track now hands off to the celebration sting when the guest presses the return button, avoiding an abrupt silent cut.
