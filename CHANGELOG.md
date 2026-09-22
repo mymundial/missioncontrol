@@ -1,3 +1,11 @@
+# Pass 7-07-01
+
+- Replaced the MC-09 gantry base artwork with a clean premium all-off gantry asset.
+- Removed baked-in red glow from the lower lamps; inactive lights are now fully neutral.
+- Re-aligned CSS lamp overlays to the replacement gantry lens centres.
+- Preserved the flatter diffuser-style active red/green illumination from 7-07-00.
+- No gameplay or timing changes.
+
 # Pass 7-07-00
 
 - MC-09 Lightspeed Lando light-treatment refresh only; reaction timing and gameplay are unchanged.
