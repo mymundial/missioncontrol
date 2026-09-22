@@ -1,3 +1,11 @@
+## Pass 7-08-07 — Sleigh nav icon scale + state stability
+- Replaced the undersized Sleigh nav artwork with the approved, clearly recognisable sleigh silhouette.
+- Re-cropped the raster states around the real icon content so its optical scale matches the other navigation icons.
+- Increased the Sleigh icon display box slightly to compensate for its wider horizontal silhouette.
+- Removed the active-state vertical transform and active filter so selecting Sleigh no longer jumps or shifts; the icon now changes colour only.
+- Active and inactive assets share identical dimensions and registration.
+- No Sleigh status logic, gameplay, GPS, audio or other navigation behaviour changes.
+
 ## Pass 7-08-06 — Sleigh status language + nav icon
 - Rebuilt the Sleigh navigation icon as a minimal single-colour glyph with matching inactive and active cyan states.
 - Removed status nodes from the Sleigh system bank for a cleaner text-only readout.

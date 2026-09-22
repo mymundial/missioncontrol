@@ -420,8 +420,8 @@ body.admin-mode button{
 
 /* Use the sleigh nav SVG as a normal image so it renders reliably. */
 .nav-mask,.nav-mask-sleigh{display:none!important;}
-.nav-sleigh-icon{display:block;opacity:.72;filter:brightness(.9) saturate(.75);}
-.nav button.active .nav-sleigh-icon{opacity:1;filter:brightness(1.35) saturate(1.5) drop-shadow(0 0 4px rgba(71,212,255,.36));transform:translateY(-1px);}
+/* Sleigh nav icon uses matched raster states with identical geometry. */
+.nav-sleigh-icon{display:block;}
 
 /* Recovery spectrum: red at 0, orange at 10, yellow at 40, green by 70. */
 .sleigh-development-spectrum{background:linear-gradient(90deg,
@@ -442,7 +442,7 @@ body.admin-mode button{
 .sleigh-system.online .sleigh-system-label{color:#90cfe1;}
 
 @media(max-width:360px){
-  .nav-sleigh-icon{width:28px;height:17px;}
+  .nav-sleigh-icon-wrap,.nav-sleigh-icon{width:32px;height:21px;}
   .sleigh-led{width:27px;height:27px;}
   .sleigh-system-label{font-size:6px;}
 }
@@ -462,12 +462,12 @@ body.admin-mode button{
 .sleigh-systems-copy{margin:0 0 12px;}
 
 /* Raster nav icon states use the same silhouette and registration. */
-.nav-sleigh-icon-wrap{position:relative;display:block;width:30px;height:18px;}
-.nav-sleigh-icon{position:absolute;inset:0;width:30px;height:18px;object-fit:contain;object-position:center;transition:opacity .16s ease,filter .16s ease,transform .16s ease;}
-.nav-sleigh-off{opacity:.78;}
+.nav-sleigh-icon-wrap{position:relative;display:block;width:34px;height:22px;}
+.nav-sleigh-icon{position:absolute;inset:0;width:34px;height:22px;object-fit:contain;object-position:center;transition:opacity .14s ease;}
+.nav-sleigh-off{opacity:1;}
 .nav-sleigh-on{opacity:0;}
 .nav button.active .nav-sleigh-off{opacity:0;}
-.nav button.active .nav-sleigh-on{opacity:1;filter:drop-shadow(0 0 3px rgba(71,212,255,.22));transform:translateY(-1px);}
+.nav button.active .nav-sleigh-on{opacity:1;}
 
 .missions-list{margin-top:24px;padding-bottom:8px;}
 .mission-row-copy{min-width:0;}
@@ -519,7 +519,7 @@ body.admin-mode button{
   .sleigh-title-row h1,.sleigh-percent{font-size:24px!important;}
   .nav button{font-size:8.5px;}
   .nav .ico svg{width:32px;height:19px;}
-  .nav-sleigh-icon-wrap,.nav-sleigh-icon{width:32px;height:19px;}
+  .nav-sleigh-icon-wrap,.nav-sleigh-icon{width:34px;height:22px;}
 }
 
 #radarMessage .btn.small{white-space:nowrap;}
@@ -1441,7 +1441,7 @@ body.admin-mode button{
 .nav button{gap:4px;font-size:8px;}
 .nav .ico{height:25px;}
 .nav .ico svg{width:30px;height:18px;}
-.nav-sleigh-icon-wrap,.nav-sleigh-icon{width:30px;height:18px;}
+.nav-sleigh-icon-wrap,.nav-sleigh-icon{width:34px;height:22px;}
 
 /* ---------- RADAR ---------- */
 .radar-page{
