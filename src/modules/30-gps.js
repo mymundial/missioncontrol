@@ -1,10 +1,37 @@
   function startGpsWatch(){
-    if(gpsWatchId!==null||!navigator.geolocation) return;
+    if(state.gpsEnabled===false||gpsWatchId!==null||!navigator.geolocation) return;
     gpsWatchId=navigator.geolocation.watchPosition(pos=>processGps(normalisePosition(pos)),err=>{
+      if(err.code===1){stopGpsWatch();state.gpsEnabled=false;}
       state.gpsCondition=err.code===1?'DENIED':'WAITING';save();updateRadarLive();
     },{enableHighAccuracy:true,maximumAge:1000,timeout:15000});
   }
   function normalisePosition(pos){return {lat:pos.coords.latitude,lng:pos.coords.longitude,accuracy:pos.coords.accuracy,timestamp:pos.timestamp||Date.now()};}
+  function stopGpsWatch(){
+    if(gpsWatchId!==null&&navigator.geolocation){try{navigator.geolocation.clearWatch(gpsWatchId);}catch{}}
+    gpsWatchId=null;
+  }
+  function disableGpsSetting(){
+    stopGpsWatch();
+    lastGps=null;
+    resetGeofenceRuntime();
+    state={...state,gpsEnabled:false,gpsCondition:'OFF',gpsAccuracy:null,targetVisible:false,targetInRange:false,distance:null};
+    save();render();toast('GPS location off.');
+  }
+  function enableGpsSetting(){
+    if(!navigator.geolocation){toast('Location services are unavailable on this device.');return;}
+    state.gpsEnabled=true;state.gpsCondition='WAITING';save();render();
+    navigator.geolocation.getCurrentPosition(pos=>{
+      clearDemo();
+      state={...state,mode:'live',gpsEnabled:true,gpsAccuracy:pos.coords.accuracy,gpsCondition:gpsCondition(pos.coords.accuracy),targetVisible:false,targetInRange:false,distance:null};
+      save();render();startGpsWatch();processGps(normalisePosition(pos),true);toast('GPS location on.');
+    },err=>{
+      state.gpsEnabled=false;state.gpsCondition=err.code===1?'DENIED':'OFF';save();render();toast(err.code===1?'Location permission was denied.':'Unable to enable GPS location.');
+    },{enableHighAccuracy:true,timeout:10000,maximumAge:0});
+  }
+  function toggleGpsSetting(){
+    const gpsOn=state.mode==='live'&&state.gpsEnabled!==false;
+    if(gpsOn) disableGpsSetting(); else enableGpsSetting();
+  }
   function processGps(fix,force=false){
     if(!fix||!Number.isFinite(fix.lat)||!Number.isFinite(fix.lng)) return;
     lastGps=fix;

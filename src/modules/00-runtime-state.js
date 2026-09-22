@@ -93,6 +93,7 @@
     bearing:0,
     gpsAccuracy:null,
     gpsCondition:'WAITING',
+    gpsEnabled:true,
     missionOpen:null,
     missionReturnNav:'radar',
     elfUnlocked:false,
@@ -157,7 +158,8 @@
         targetVisible:liveMode?false:Boolean(parsed.targetVisible),
         distance:liveMode?null:(Number.isFinite(parsed.distance)?parsed.distance:null),
         gpsAccuracy:liveMode?null:(Number.isFinite(parsed.gpsAccuracy)?parsed.gpsAccuracy:null),
-        gpsCondition:liveMode?'WAITING':(parsed.gpsCondition||defaults.gpsCondition)
+        gpsCondition:liveMode?(parsed.gpsEnabled===false?'OFF':'WAITING'):(parsed.gpsCondition||defaults.gpsCondition),
+        gpsEnabled:parsed.gpsEnabled!==undefined?Boolean(parsed.gpsEnabled):liveMode
       };
     } catch { return {...defaults}; }
   }

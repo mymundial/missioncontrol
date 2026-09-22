@@ -1,7 +1,8 @@
   function startDemoExperience(){
     clearDemo();
+    stopGpsWatch();
     demoHoldUntil=Date.now()+900;
-    state={...state,onboarded:true,bootDone:true,mode:'demo',nav:'radar',completed:[],available:[],routeIndex:1,targetVisible:false,targetInRange:false,distance:null,gpsCondition:'DEMO'};
+    state={...state,onboarded:true,bootDone:true,mode:'demo',gpsEnabled:false,nav:'radar',completed:[],available:[],routeIndex:1,targetVisible:false,targetInRange:false,distance:null,gpsCondition:'DEMO'};
     save();
     ensureOpeningMessage();
     render();

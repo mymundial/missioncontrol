@@ -93,6 +93,7 @@
     bearing:0,
     gpsAccuracy:null,
     gpsCondition:'WAITING',
+    gpsEnabled:true,
     missionOpen:null,
     missionReturnNav:'radar',
     elfUnlocked:false,
@@ -157,7 +158,8 @@
         targetVisible:liveMode?false:Boolean(parsed.targetVisible),
         distance:liveMode?null:(Number.isFinite(parsed.distance)?parsed.distance:null),
         gpsAccuracy:liveMode?null:(Number.isFinite(parsed.gpsAccuracy)?parsed.gpsAccuracy:null),
-        gpsCondition:liveMode?'WAITING':(parsed.gpsCondition||defaults.gpsCondition)
+        gpsCondition:liveMode?(parsed.gpsEnabled===false?'OFF':'WAITING'):(parsed.gpsCondition||defaults.gpsCondition),
+        gpsEnabled:parsed.gpsEnabled!==undefined?Boolean(parsed.gpsEnabled):liveMode
       };
     } catch { return {...defaults}; }
   }
@@ -428,7 +430,7 @@
       radar:`<svg viewBox="0 0 210 126" aria-hidden="true"><path fill="currentColor" d="M105 60.5c-11.8 0-23.1 4.9-31.2 13.6l4.4 4.1c13.7-14.8 36.8-15.7 51.6-1.9.6.6 1.2 1.2 1.8 1.8l4.4-4.1C128 65.3 116.7 60.5 105 60.5Zm0 30c-7 0-12.7 5.6-12.7 12.6S98 115.8 105 115.8s12.7-5.6 12.7-12.6c0-3.3-1.2-6.4-3.5-8.8-2.4-2.5-5.8-3.9-9.2-3.9Zm0 19.3c-3.7 0-6.6-3-6.6-6.6s3-6.6 6.6-6.6c3.6 0 6.6 3 6.6 6.6s-2.9 6.5-6.6 6.6ZM105 9.2C79 9.2 54.1 20 36.4 39l4.4 4.1c33.1-35.4 88.6-37.4 124.1-4.3 1.4 1.3 2.8 2.7 4.1 4.1l4.4-4.1C155.7 19.9 130.9 9.2 105 9.2Zm0 25.6c-18.9 0-37 7.8-49.9 21.7l4.4 4.1c23.4-25.1 62.7-26.5 87.9-3.1 1 .9 2 1.9 3 2.9l4.4-4.1c-13.1-13.7-31-21.5-49.8-21.5Z"/></svg>`,
       missions:`<svg viewBox="0 0 210 126" aria-hidden="true"><path fill="currentColor" d="M142 62.7H86.9v6H142v-6Zm0 15.4H86.9v6H142v-6Zm0-30.9H86.9v6H142v-6Zm-61.1-15.4H68.1v6h12.8v-6Zm61.1 0H86.9v6H142v-6Zm2.2-26.5H65.8l-12.3 6v102l12.3 6h78.5l12.3-6v-102l-12.4-6Zm6.3 108H59.5v-102h91.1v102ZM80.9 78.1H68.1v6h12.8v-6Zm0-30.9H68.1v6h12.8v-6Zm0 15.5H68.1v6h12.8v-6Z"/></svg>`,
       comms:`<svg viewBox="0 0 210 126" aria-hidden="true"><path fill="currentColor" d="M105 8.62a46.17 46.17 0 0 1 46.12 46.12h6a52.14 52.14 0 0 0-104.27 0h6A46.17 46.17 0 0 1 105 8.62Zm41.18 50.67c-7.73 0-13.12 5.49-13.12 13.36V86c0 7.89 4.87 13.18 12.11 13.18a12.52 12.52 0 0 0 4.41-.77c-2.54 7.83-8.27 11.22-18.1 11.22H119a9 9 0 0 0-8.45-6H99.32a8.95 8.95 0 1 0 0 17.89h11.25a9 9 0 0 0 8.39-5.86h12.51c17.54 0 25.7-9.42 25.7-29.64V59.29Zm-35.6 56.2H99.32a2.93 2.93 0 0 1 0-5.86h11.25a2.93 2.93 0 1 1 0 5.86ZM151.16 86c0 4.49-2.24 7.17-6 7.17s-6.1-2.61-6.1-7.17V72.65c0-3.55 1.87-7.34 7.11-7.34h5Zm-14-44.19A3 3 0 0 0 140 43.69a3.17 3.17 0 0 0 1.12-.21 3 3 0 0 0 1.67-3.92 40.73 40.73 0 0 0-75.58 0 3 3 0 1 0 5.58 2.25 34.71 34.71 0 0 1 64.42 0ZM63.85 59.29h-11V86c0 7.89 4.82 13.18 12 13.18S77 93.89 77 86V72.65C77 64.78 71.58 59.29 63.85 59.29ZM71 86c0 4.56-2.23 7.17-6.11 7.17s-6-2.68-6-7.17V65.31h5c5.24 0 7.11 3.79 7.11 7.34Z"/></svg>`,
-      sleigh:`<span class="nav-sleigh-icon-wrap" aria-hidden="true"><img class="nav-sleigh-icon nav-sleigh-off" src="./assets/nav-sleigh-unselected.webp?v=7.8.7" alt=""><img class="nav-sleigh-icon nav-sleigh-on" src="./assets/nav-sleigh-selected.webp?v=7.8.7" alt=""></span>`
+      sleigh:`<span class="nav-sleigh-icon-wrap" aria-hidden="true"><img class="nav-sleigh-icon nav-sleigh-off" src="./assets/nav-sleigh-unselected.webp?v=7.8.8" alt=""><img class="nav-sleigh-icon nav-sleigh-on" src="./assets/nav-sleigh-selected.webp?v=7.8.8" alt=""></span>`
     };
     return icons[id]||'';
   }
@@ -442,7 +444,7 @@
     const cp=current();
     const activationDistance=distanceToActivation(cp,state.distance);
     const distanceValue=!cp?'GROTTO':state.targetVisible&&Number.isFinite(activationDistance)?`${Math.round(activationDistance)} M`:'SEARCHING';
-    const condition=state.mode==='demo'?'DEMO':state.gpsCondition;
+    const condition=state.mode==='demo'?'DEMO':state.gpsEnabled===false?'OFF':state.gpsCondition;
     return `<section class="telemetry-block"><div class="telemetry-heading">TELEMETRY</div><div class="status-strip panel">
       <div class="status-cell"><div class="status-label">GPS Accuracy</div><div class="status-value gps-${condition.toLowerCase()}">${condition}</div></div>
       <div class="status-cell"><div class="status-label">Sleigh System</div><div class="status-value">${recovery()}%</div></div>
@@ -517,7 +519,7 @@
       return `<section class="onboard with-masthead setup-page mc00-page">${setupHeader}<div class="onboard-card panel mc00-card" data-mc00-mode="${step}"><div class="mc00-copy"><h1>System Scan</h1><p class="support-copy">Santa-1 Sleigh Recovery</p></div><div class="mc00-visual-wrap"><div class="mc00-sleigh-frame"><div class="sleigh-visual sleigh-stage-1 mc00-sleigh-visual"><div class="sleigh-glow" aria-hidden="true"></div><img class="sleigh-art" src="./assets/sleigh-stage-1.webp" alt="Santa-1 sleigh system scan visual"><div class="mc00-scan-beam" aria-hidden="true"></div></div></div></div>${systemStatusBank(systems,'mc00-system-bank','mc00')}<div class="mc00-progress-row"><div class="mc00-progress" role="progressbar" aria-label="System scan progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="mc00ProgressFill"></span></div><strong id="mc00ProgressValue">0%</strong></div><div class="mc00-complete-popup panel" id="mc00CompleteBlock" hidden><div class="mc00-complete-icon" aria-hidden="true">✓</div><h2>Scan Complete</h2><button class="btn primary wide" id="mc00Continue" data-mc00-continue="${step}">Continue</button></div></div></section>`;
     }
     if(step==='brief') return `<section class="onboard with-masthead setup-page briefing-page">${setupHeader}<div class="onboard-card panel setup-card"><div class="onboard-icon setup-icon"><span class="setup-icon-glyph"><img src="./assets/mission-briefing-icon.svg" alt=""></span></div><h1>Mission Briefing</h1><p class="support-copy">Santa-1 has lost power. Energy signatures have been detected around the circuit. Locate each source, complete its mission and restore the sleigh.</p><div class="setup-actions"><button class="btn primary wide" data-onboard="audio">Continue</button></div></div></section>`;
-    if(step==='audio') return `<section class="onboard with-masthead setup-page audio-page">${setupHeader}<div class="onboard-card panel setup-card"><div class="onboard-icon setup-icon"><span class="setup-icon-glyph"><img src="./assets/mission-audio-icon.webp" alt=""></span></div><h1>Mission Audio</h1><p class="support-copy">Mission Control uses proximity alerts, system sounds and live transmissions. Audio can be muted at any time.</p><div class="setup-actions stack"><button class="btn primary wide" data-audio="on">Enable Mission Audio</button><button class="btn secondary wide" data-audio="off">Continue Without Audio</button></div></div></section>`;
+    if(step==='audio') return `<section class="onboard with-masthead setup-page audio-page">${setupHeader}<div class="onboard-card panel setup-card"><div class="onboard-icon setup-icon"><span class="setup-icon-glyph"><img src="./assets/mission-audio-icon.webp" alt=""></span></div><h1>Mission Audio</h1><p class="support-copy">Mission Control uses proximity alerts, system sounds and live transmissions. You can change Mission Audio at any time in Comms.</p><div class="setup-actions stack"><button class="btn primary wide" data-audio="on">Enable Mission Audio</button><button class="btn secondary wide" data-audio="off">Continue Without Audio</button></div></div></section>`;
     return `<section class="onboard with-masthead setup-page radar-setup-page">${setupHeader}<div class="onboard-card panel setup-card"><div class="onboard-icon setup-icon"><span class="setup-icon-glyph"><img src="./assets/radar-setup-icon.svg" alt=""></span></div><h1>Mission Radar</h1><p class="support-copy">Mission Control uses your location to detect each installation as you move around the circuit.</p><div class="setup-actions stack"><button class="btn primary wide" data-location="request">Enable GPS Location</button><button class="btn secondary wide" data-location="demo">Demo Mode</button></div></div></section>`;
   }
   function renderRadar(){
@@ -583,14 +585,15 @@
   }
   function renderComms(){
     const feed=[...state.messages].sort((a,b)=>b.timestamp-a.timestamp).map(m=>`<article class="comms-message panel ${m.read?'':'unread'}"><div class="comms-message-head"><div class="kicker">${messageActivationLabel(m)}</div><time datetime="${new Date(m.timestamp).toISOString()}">${formatMessageTime(m.timestamp)}</time></div><h3>${m.title}</h3><p>${m.body}</p></article>`).join('');
+    const gpsOn=state.mode==='live'&&state.gpsEnabled!==false;
+    const settings=`<section class="mission-settings panel"><div class="mission-settings-head"><div class="kicker">Mission Settings</div></div><div class="mission-settings-grid"><button class="mission-setting-toggle ${gpsOn?'on':'off'}" data-gps-setting aria-pressed="${gpsOn?'true':'false'}"><span class="mission-setting-icon"><img src="./assets/radar-setup-icon.svg" alt=""></span><span class="mission-setting-copy"><span>GPS Location</span><strong>${gpsOn?'On':'Off'}</strong></span></button><button class="mission-setting-toggle ${state.audio?'on':'off'}" data-mission-audio-setting aria-pressed="${state.audio?'true':'false'}"><span class="mission-setting-icon"><img src="./assets/mission-audio-icon.webp" alt=""></span><span class="mission-setting-copy"><span>Mission Audio</span><strong>${state.audio?'On':'Off'}</strong></span></button></div></section>`;
     const streamReady=Boolean(ELF_STREAM_URL);
-    const toggle=`<button class="sound-toggle ${state.elfAudioOn?'on':'off'}" id="elfAudioToggle" data-elf-audio aria-pressed="${state.elfAudioOn?'true':'false'}" ${streamReady?'':'aria-disabled="true"'}><span>Sound</span><strong>${state.elfAudioOn?'On':'Off'}</strong></button>`;
+    const toggle=`<button class="sound-toggle ${state.elfAudioOn?'on':'off'}" id="elfAudioToggle" data-elf-audio aria-pressed="${state.elfAudioOn?'true':'false'}" ${streamReady?'':'aria-disabled="true"'}><span>Radio</span><strong>${state.elfAudioOn?'On':'Off'}</strong></button>`;
     const radio=state.elfUnlocked
       ? `<section class="comms-radio panel tuned compact"><div class="comms-radio-head"><div><div class="kicker">ELF FM</div><h2>87.7</h2></div>${toggle}</div><div class="wave locked ${state.elfAudioOn?'live':''}">${'<i></i>'.repeat(28)}</div><div class="radio-state-line">Signal Locked</div></section>`
       : `<section class="comms-radio panel locked compact"><div class="comms-radio-head"><div><div class="kicker">ELF FM</div><h2>87.7</h2></div><button class="btn small primary" data-tune-elf>Tune In</button></div><div class="wave">${'<i></i>'.repeat(28)}</div><div class="radio-state-line muted">Signal Available</div></section>`;
-    return `${radio}<section class="comms-feed"><div class="comms-section-title"><span>Message Feed</span></div>${feed||'<div class="comms-empty panel">No transmissions received.</div>'}</section>`;
+    return `${settings}${radio}<section class="comms-feed"><div class="comms-section-title"><span>Message Feed</span></div>${feed||'<div class="comms-empty panel">No transmissions received.</div>'}</section>`;
   }
-
 
 
   function missionHeader(cp){
@@ -928,6 +931,8 @@
     document.querySelectorAll('[data-dismiss-messages]').forEach(b=>b.addEventListener('click',dismissMessageAlert));
     document.querySelectorAll('[data-tune-elf]').forEach(b=>b.addEventListener('click',()=>openElfTuner()));
     document.querySelectorAll('[data-elf-audio]').forEach(b=>b.addEventListener('click',toggleElfAudio));
+    document.querySelectorAll('[data-mission-audio-setting]').forEach(b=>b.addEventListener('click',toggleMissionAudioSetting));
+    document.querySelectorAll('[data-gps-setting]').forEach(b=>b.addEventListener('click',toggleGpsSetting));
     document.querySelectorAll('[data-onboard]').forEach(b=>b.addEventListener('click',()=>{
       set({bootDone:b.dataset.onboard});
     }));
@@ -944,6 +949,13 @@
       row.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}});
     });
     document.querySelectorAll('[data-exit-mission]').forEach(b=>b.addEventListener('click',()=>{if(state.missionOpen==='entry') stopMc01Activation();if(state.missionOpen==='lapland') stopLaplandAudio();const nav=state.missionReturnNav||'radar';set({missionOpen:null,nav});if(nav==='radar'&&lastGps)processGps(lastGps,true);}));
+  }
+
+  function toggleMissionAudioSetting(){
+    const on=!state.audio;
+    state.audio=on;save();render();
+    if(on){ensureAudio();ping(660,.08,.025);toast('Mission Audio on.');}
+    else{stopStatic();toast('Mission Audio off.');}
   }
 
   function openElfTuner(){
@@ -1033,7 +1045,7 @@
   function startLiveExperience(){
     if(!navigator.geolocation){toast('Location services are unavailable on this device.');return;}
     navigator.geolocation.getCurrentPosition(pos=>{
-      state={...state,onboarded:true,mode:'live',nav:'radar',routeIndex:normaliseRouteIndex(state.routeIndex||ROUTE_START_INDEX),gpsAccuracy:pos.coords.accuracy,gpsCondition:gpsCondition(pos.coords.accuracy)};save();ensureOpeningMessage();render();startGpsWatch();processGps(normalisePosition(pos),true);
+      state={...state,onboarded:true,mode:'live',gpsEnabled:true,nav:'radar',routeIndex:normaliseRouteIndex(state.routeIndex||ROUTE_START_INDEX),gpsAccuracy:pos.coords.accuracy,gpsCondition:gpsCondition(pos.coords.accuracy)};save();ensureOpeningMessage();render();startGpsWatch();processGps(normalisePosition(pos),true);
     },()=>toast('Location permission is required for Live Radar.'),{enableHighAccuracy:true,timeout:10000,maximumAge:0});
   }
   let mc00ScanTimer = null;
@@ -1189,12 +1201,39 @@
     },4350);
   }
   function startGpsWatch(){
-    if(gpsWatchId!==null||!navigator.geolocation) return;
+    if(state.gpsEnabled===false||gpsWatchId!==null||!navigator.geolocation) return;
     gpsWatchId=navigator.geolocation.watchPosition(pos=>processGps(normalisePosition(pos)),err=>{
+      if(err.code===1){stopGpsWatch();state.gpsEnabled=false;}
       state.gpsCondition=err.code===1?'DENIED':'WAITING';save();updateRadarLive();
     },{enableHighAccuracy:true,maximumAge:1000,timeout:15000});
   }
   function normalisePosition(pos){return {lat:pos.coords.latitude,lng:pos.coords.longitude,accuracy:pos.coords.accuracy,timestamp:pos.timestamp||Date.now()};}
+  function stopGpsWatch(){
+    if(gpsWatchId!==null&&navigator.geolocation){try{navigator.geolocation.clearWatch(gpsWatchId);}catch{}}
+    gpsWatchId=null;
+  }
+  function disableGpsSetting(){
+    stopGpsWatch();
+    lastGps=null;
+    resetGeofenceRuntime();
+    state={...state,gpsEnabled:false,gpsCondition:'OFF',gpsAccuracy:null,targetVisible:false,targetInRange:false,distance:null};
+    save();render();toast('GPS location off.');
+  }
+  function enableGpsSetting(){
+    if(!navigator.geolocation){toast('Location services are unavailable on this device.');return;}
+    state.gpsEnabled=true;state.gpsCondition='WAITING';save();render();
+    navigator.geolocation.getCurrentPosition(pos=>{
+      clearDemo();
+      state={...state,mode:'live',gpsEnabled:true,gpsAccuracy:pos.coords.accuracy,gpsCondition:gpsCondition(pos.coords.accuracy),targetVisible:false,targetInRange:false,distance:null};
+      save();render();startGpsWatch();processGps(normalisePosition(pos),true);toast('GPS location on.');
+    },err=>{
+      state.gpsEnabled=false;state.gpsCondition=err.code===1?'DENIED':'OFF';save();render();toast(err.code===1?'Location permission was denied.':'Unable to enable GPS location.');
+    },{enableHighAccuracy:true,timeout:10000,maximumAge:0});
+  }
+  function toggleGpsSetting(){
+    const gpsOn=state.mode==='live'&&state.gpsEnabled!==false;
+    if(gpsOn) disableGpsSetting(); else enableGpsSetting();
+  }
   function processGps(fix,force=false){
     if(!fix||!Number.isFinite(fix.lat)||!Number.isFinite(fix.lng)) return;
     lastGps=fix;
@@ -1306,8 +1345,9 @@
 
   function startDemoExperience(){
     clearDemo();
+    stopGpsWatch();
     demoHoldUntil=Date.now()+900;
-    state={...state,onboarded:true,bootDone:true,mode:'demo',nav:'radar',completed:[],available:[],routeIndex:1,targetVisible:false,targetInRange:false,distance:null,gpsCondition:'DEMO'};
+    state={...state,onboarded:true,bootDone:true,mode:'demo',gpsEnabled:false,nav:'radar',completed:[],available:[],routeIndex:1,targetVisible:false,targetInRange:false,distance:null,gpsCondition:'DEMO'};
     save();
     ensureOpeningMessage();
     render();
@@ -1488,7 +1528,7 @@
     state.elfAudioOn=playing;
     save();
     showRadioCompletion();
-    if(!playing) toast('ELF FM is tuned. Use Sound On in Comms to start the stream.');
+    if(!playing) toast('ELF FM is tuned. Use Radio On in Comms to start the stream.');
   }
   function bindRadio(){
     const range=document.getElementById('freqRange'), val=document.getElementById('freqVal'), st=document.getElementById('signalState'), btn=document.getElementById('lockSignal'), wave=document.getElementById('radioWave');
@@ -3098,7 +3138,7 @@
   else {
     if(state.onboarded) ensureOpeningMessage();
     render();
-    if(state.onboarded&&state.mode==='live') startGpsWatch();
+    if(state.onboarded&&state.mode==='live'&&state.gpsEnabled!==false) startGpsWatch();
     if(state.onboarded&&state.mode==='demo'&&state.nav==='radar'&&!state.missionOpen){setTimeout(maybeStartDemoTarget,350);rearmDemoRoute(850);}
   }
 })();

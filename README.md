@@ -1,19 +1,20 @@
-# Silverstone Mission Control — Pass 7-08-06
+# Silverstone Mission Control — Pass 7-08-08
 
-This pass refines the Sleigh navigation icon and locks the final system-status colour language through Northern Flight.
+This pass adds persistent mission controls to Comms so the onboarding promise that Mission Audio can be changed later is now true.
 
 ## This pass
 
-- **Sleigh navigation:** simplified single-colour sleigh glyph; muted when inactive and cyan when selected, matching the other navigation icons.
-- **Sleigh System Status:** status nodes removed for a cleaner text-only readout.
-- **Status colours:** ONLINE is green, OFFLINE / BLOCKED remain red, and CLEAR is orange.
-- **Lapland Launch:** CLEAR now reads orange in the final verification bank; ONLINE reads green.
-- **Northern Flight:** once MC-12 is completed, the Sleigh LAUNCH state advances from CLEAR to green COMPLETE.
-- No gameplay, route, GPS or mission-audio behaviour changed in this pass.
+- **Mission Settings:** added a compact settings panel above ELF FM on the Comms page.
+- **GPS Location:** toggle live location tracking on/off using the same radar icon from Mission Radar setup.
+- **Mission Audio:** toggle mission voice, music and effects on/off using the same Mission Audio icon from onboarding.
+- **Demo to live GPS:** Demo Mode stays deliberate; pressing GPS Location ON from Comms explicitly requests a fresh GPS fix and switches to live mode only after permission succeeds.
+- **ELF FM:** remains independent from Mission Audio; its existing playback toggle is now labelled Radio to avoid ambiguity.
+- **Onboarding copy:** now tells guests Mission Audio can be changed later in Comms.
+- No mission gameplay, route order or mission-audio priority rules changed.
 
 ## Production status
 
-- Production `dist/`: approximately **8.25 MiB / 45 files**.
+- Production `dist/`: approximately **8.26 MiB / 45 files**.
 - No WAV/source-master audio or development modules are shipped in `dist/`.
 - Runtime images are WebP/SVG, audio is MP3, and fonts are WOFF2.
 - Vercel remains a static deployment using `npm run build` and `dist/`.

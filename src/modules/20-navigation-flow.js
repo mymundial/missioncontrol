@@ -11,6 +11,8 @@
     document.querySelectorAll('[data-dismiss-messages]').forEach(b=>b.addEventListener('click',dismissMessageAlert));
     document.querySelectorAll('[data-tune-elf]').forEach(b=>b.addEventListener('click',()=>openElfTuner()));
     document.querySelectorAll('[data-elf-audio]').forEach(b=>b.addEventListener('click',toggleElfAudio));
+    document.querySelectorAll('[data-mission-audio-setting]').forEach(b=>b.addEventListener('click',toggleMissionAudioSetting));
+    document.querySelectorAll('[data-gps-setting]').forEach(b=>b.addEventListener('click',toggleGpsSetting));
     document.querySelectorAll('[data-onboard]').forEach(b=>b.addEventListener('click',()=>{
       set({bootDone:b.dataset.onboard});
     }));
@@ -27,6 +29,13 @@
       row.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}});
     });
     document.querySelectorAll('[data-exit-mission]').forEach(b=>b.addEventListener('click',()=>{if(state.missionOpen==='entry') stopMc01Activation();if(state.missionOpen==='lapland') stopLaplandAudio();const nav=state.missionReturnNav||'radar';set({missionOpen:null,nav});if(nav==='radar'&&lastGps)processGps(lastGps,true);}));
+  }
+
+  function toggleMissionAudioSetting(){
+    const on=!state.audio;
+    state.audio=on;save();render();
+    if(on){ensureAudio();ping(660,.08,.025);toast('Mission Audio on.');}
+    else{stopStatic();toast('Mission Audio off.');}
   }
 
   function openElfTuner(){
@@ -116,6 +125,6 @@
   function startLiveExperience(){
     if(!navigator.geolocation){toast('Location services are unavailable on this device.');return;}
     navigator.geolocation.getCurrentPosition(pos=>{
-      state={...state,onboarded:true,mode:'live',nav:'radar',routeIndex:normaliseRouteIndex(state.routeIndex||ROUTE_START_INDEX),gpsAccuracy:pos.coords.accuracy,gpsCondition:gpsCondition(pos.coords.accuracy)};save();ensureOpeningMessage();render();startGpsWatch();processGps(normalisePosition(pos),true);
+      state={...state,onboarded:true,mode:'live',gpsEnabled:true,nav:'radar',routeIndex:normaliseRouteIndex(state.routeIndex||ROUTE_START_INDEX),gpsAccuracy:pos.coords.accuracy,gpsCondition:gpsCondition(pos.coords.accuracy)};save();ensureOpeningMessage();render();startGpsWatch();processGps(normalisePosition(pos),true);
     },()=>toast('Location permission is required for Live Radar.'),{enableHighAccuracy:true,timeout:10000,maximumAge:0});
   }

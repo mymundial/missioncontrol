@@ -16,7 +16,7 @@
     state.elfAudioOn=playing;
     save();
     showRadioCompletion();
-    if(!playing) toast('ELF FM is tuned. Use Sound On in Comms to start the stream.');
+    if(!playing) toast('ELF FM is tuned. Use Radio On in Comms to start the stream.');
   }
   function bindRadio(){
     const range=document.getElementById('freqRange'), val=document.getElementById('freqVal'), st=document.getElementById('signalState'), btn=document.getElementById('lockSignal'), wave=document.getElementById('radioWave');

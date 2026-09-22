@@ -1,3 +1,12 @@
+## Pass 7-08-08 — Comms mission settings
+- Added a compact Mission Settings panel above ELF FM on the Comms page.
+- Added GPS Location and Mission Audio toggle controls using the same radar and audio icons from onboarding.
+- Mission Audio can now be changed at any time from Comms without affecting ELF FM.
+- GPS Location can be stopped and restarted from Comms; re-enabling it requests a fresh high-accuracy fix and explicitly switches Demo Mode to live GPS only when the user chooses the GPS control.
+- The onboarding Mission Audio copy now points guests to Comms for later changes.
+- Renamed the existing ELF FM Sound toggle label to Radio to distinguish station playback from Mission Audio.
+- No mission gameplay, route order or audio-priority rules changed.
+
 ## Pass 7-08-07 — Sleigh nav icon scale + state stability
 - Replaced the undersized Sleigh nav artwork with the approved, clearly recognisable sleigh silhouette.
 - Re-cropped the raster states around the real icon content so its optical scale matches the other navigation icons.
