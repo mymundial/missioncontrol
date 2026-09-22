@@ -1,3 +1,12 @@
+# Pass 7-05-01
+
+- MC-07 Comet Curve upgraded into a beat-synchronised four-direction rhythm game.
+- Added fixed LEFT / DOWN / UP / RIGHT receptor row and canonical centred arrow geometry.
+- Added PERFECT / GOOD / MISS timing feedback, combo display and stronger miss response.
+- Added beat-reactive field motion and receptor pulses.
+- Integrated an optimised 32-second edit of the supplied arcade music track at ~129 BPM.
+- Falling signals and target timing now lock to the track beat clock while retaining a silent fallback when mission audio is disabled.
+
 # Silverstone Mission Control — Pass 7-00-00
 
 ## MC-00 system scan + masthead cleanup

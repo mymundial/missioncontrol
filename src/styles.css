@@ -4407,3 +4407,226 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   .comet-btn{height:54px;}
   .comet-progress-track{gap:4px;}
 }
+
+/* Pass 7-05-01: MC-07 rhythm / dance-mat treatment */
+.comet-instruction{transition:opacity .28s ease,transform .28s ease;}
+.comet-instruction.recede{opacity:.34;transform:translateY(-2px);}
+.comet-game{
+  background:
+    radial-gradient(ellipse at 50% 80%,rgba(48,173,218,.13),transparent 42%),
+    linear-gradient(180deg,#041522 0%,#061c2b 52%,#04131e 100%)!important;
+  transition:filter .09s ease,box-shadow .09s ease;
+}
+.comet-game::before{
+  background:
+    linear-gradient(90deg,transparent 24.8%,rgba(92,198,235,.065) 25%,transparent 25.2%,transparent 49.8%,rgba(92,198,235,.065) 50%,transparent 50.2%,transparent 74.8%,rgba(92,198,235,.065) 75%,transparent 75.2%),
+    repeating-linear-gradient(180deg,transparent 0 29px,rgba(93,207,244,.026) 29px 30px),
+    linear-gradient(180deg,rgba(83,202,242,.03),transparent 36%,rgba(83,202,242,.02));
+  background-position:0 0,0 0,0 0;
+  animation:cometFieldFlow 1.35s linear infinite;
+}
+.comet-game.beat-pulse{
+  box-shadow:
+    inset 0 0 0 1px rgba(99,221,252,.42),
+    inset 0 0 48px rgba(39,163,209,.14),
+    0 0 18px rgba(63,198,235,.08)!important;
+}
+.comet-game.beat-pulse::after{opacity:.72;}
+@keyframes cometFieldFlow{to{background-position:0 0,0 30px,0 0}}
+
+/* One canonical centred double-chevron, rotated for every direction. */
+.comet-arrow-icon{
+  position:relative;
+  display:block;
+  width:42px;
+  height:42px;
+  margin:auto;
+  transform-origin:50% 50%;
+}
+.comet-arrow-icon i{
+  position:absolute;
+  top:11px;
+  width:15px;
+  height:15px;
+  border-top:5px solid currentColor;
+  border-right:5px solid currentColor;
+  border-radius:1px;
+  transform:rotate(45deg);
+  box-sizing:border-box;
+}
+.comet-arrow-icon i:first-child{left:5px;}
+.comet-arrow-icon i:last-child{left:17px;}
+.comet-arrow-left{transform:rotate(180deg);}
+.comet-arrow-down{transform:rotate(90deg);}
+.comet-arrow-up{transform:rotate(-90deg);}
+.comet-arrow-right{transform:rotate(0deg);}
+
+.comet-lanes{z-index:1;}
+.comet-lane::after{opacity:.28;}
+.comet-receptors{
+  position:absolute;
+  z-index:4;
+  left:0;
+  right:0;
+  top:80%;
+  transform:translateY(-50%);
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  pointer-events:none;
+}
+.comet-receptor{
+  width:52px;
+  height:52px;
+  margin:auto;
+  display:grid;
+  place-items:center;
+  color:rgba(107,214,242,.30);
+  border:1px solid rgba(76,164,197,.17);
+  border-radius:13px;
+  background:rgba(4,24,36,.26);
+  filter:drop-shadow(0 0 7px rgba(80,204,240,.09));
+  transition:color .12s ease,border-color .12s ease,background .12s ease,box-shadow .12s ease,transform .12s ease;
+}
+.comet-receptor .comet-arrow-icon{transform-origin:center;}
+.comet-receptor.hit{
+  color:#effeff;
+  border-color:rgba(129,236,255,.92);
+  background:rgba(65,193,229,.18);
+  box-shadow:0 0 14px rgba(74,218,250,.55),inset 0 0 15px rgba(99,227,255,.15);
+  transform:scale(1.08);
+}
+.comet-receptor.miss{
+  color:#ff9ba5;
+  border-color:rgba(255,95,111,.85);
+  background:rgba(134,23,39,.18);
+  box-shadow:0 0 13px rgba(255,67,91,.42);
+}
+.comet-receptor.locked{
+  color:#e9feff;
+  border-color:#73e9ff;
+  background:rgba(64,202,236,.19);
+  box-shadow:0 0 16px rgba(82,221,249,.48),inset 0 0 15px rgba(82,221,249,.13);
+}
+.comet-game.beat-pulse .comet-receptor:not(.hit):not(.miss){
+  color:rgba(142,231,251,.43);
+  border-color:rgba(89,188,220,.26);
+}
+
+/* Receptor line is a timing marker, not a capture box. */
+.comet-capture-line{
+  top:80%!important;
+  height:1px!important;
+  transform:none!important;
+  background:transparent!important;
+}
+.comet-capture-line::before{
+  left:5%!important;
+  right:5%!important;
+  top:0!important;
+  background:linear-gradient(90deg,transparent,rgba(87,211,243,.34) 9%,rgba(128,235,255,.72) 50%,rgba(87,211,243,.34) 91%,transparent)!important;
+  box-shadow:0 0 7px rgba(83,216,247,.26)!important;
+}
+.comet-capture-line::after,.comet-capture-line span{display:none!important;}
+
+.comet-note{
+  width:66px!important;
+  height:66px!important;
+  margin-left:0!important;
+  transform:translate(-50%,-50%);
+  display:grid;
+  place-items:center;
+}
+.comet-note .comet-arrow-icon{
+  z-index:2;
+  color:#f0fdff;
+  filter:drop-shadow(0 0 4px rgba(212,252,255,.96)) drop-shadow(0 0 11px rgba(74,223,255,.88)) drop-shadow(0 0 22px rgba(47,172,239,.55));
+}
+.comet-note.hit{transform:translate(-50%,-50%) scale(1.22)!important;}
+.comet-note.miss{transform:translate(-50%,-50%) scale(.76)!important;}
+.comet-note .comet-tail{bottom:58%;height:72px;}
+
+/* Controls now preserve the same canonical direction and centre geometry. */
+.comet-controls{gap:8px;margin-top:10px;}
+.comet-btn{
+  height:60px;
+  padding:0;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+}
+.comet-btn .comet-arrow-icon{
+  color:#e5fbff;
+  filter:drop-shadow(0 0 4px rgba(179,247,255,.70)) drop-shadow(0 0 11px rgba(61,214,255,.34));
+}
+.comet-btn:active .comet-arrow-icon{filter:drop-shadow(0 0 5px rgba(217,253,255,.95)) drop-shadow(0 0 14px rgba(69,221,255,.60));}
+
+.comet-judgement{
+  position:absolute;
+  z-index:8;
+  left:50%;
+  top:62%;
+  transform:translate(-50%,-50%) scale(.86);
+  opacity:0;
+  pointer-events:none;
+  font-family:var(--display);
+  font-size:22px;
+  line-height:1;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  white-space:nowrap;
+  text-shadow:0 0 12px currentColor;
+}
+.comet-judgement.show{animation:cometJudgement .42s ease-out both;}
+.comet-judgement.perfect{color:#bff8ff;}
+.comet-judgement.good{color:#70def7;}
+.comet-judgement.miss{color:#ff7c88;}
+.comet-judgement.complete{color:#bcf7ff;font-size:17px;animation:cometCompleteLock .7s ease-out both;}
+.comet-combo{
+  position:absolute;
+  z-index:8;
+  top:12px;
+  right:14px;
+  opacity:0;
+  color:#7fdff6;
+  font-family:var(--display);
+  font-size:11px;
+  letter-spacing:.12em;
+  transition:opacity .14s ease;
+}
+.comet-combo.show{opacity:.9;}
+@keyframes cometJudgement{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.76)}
+  24%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}
+  70%{opacity:1}
+  100%{opacity:0;transform:translate(-50%,-58%) scale(1)}
+}
+@keyframes cometCompleteLock{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.72)}
+  45%{opacity:1;transform:translate(-50%,-50%) scale(1.06)}
+  100%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+}
+.comet-game.miss-shock{animation:cometMissShock .25s ease-out;}
+.comet-game.miss-shock .comet-capture-line::before{
+  background:linear-gradient(90deg,transparent,#ff6473 18%,#ffd5d8 50%,#ff6473 82%,transparent)!important;
+  box-shadow:0 0 11px rgba(255,69,90,.48)!important;
+}
+@keyframes cometMissShock{
+  0%{transform:translateX(0);filter:none}
+  22%{transform:translateX(-3px);filter:brightness(1.12) saturate(1.3)}
+  45%{transform:translateX(3px)}
+  70%{transform:translateX(-1px)}
+  100%{transform:translateX(0);filter:none}
+}
+.comet-game.complete .comet-receptors{filter:drop-shadow(0 0 10px rgba(89,224,251,.22));}
+.comet-state{min-height:18px;}
+
+@media(max-width:390px){
+  .comet-receptor{width:44px;height:44px;border-radius:11px;}
+  .comet-arrow-icon{width:36px;height:36px;}
+  .comet-arrow-icon i{top:10px;width:13px;height:13px;border-top-width:4px;border-right-width:4px;}
+  .comet-arrow-icon i:first-child{left:5px;}
+  .comet-arrow-icon i:last-child{left:15px;}
+  .comet-note{width:58px!important;height:58px!important;}
+  .comet-btn{height:54px;}
+  .comet-judgement{font-size:19px;}
+}

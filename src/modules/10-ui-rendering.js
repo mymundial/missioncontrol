@@ -413,18 +413,22 @@
   function cometBody(){
     const lanes=[['L','left'],['D','down'],['U','up'],['R','right']];
     const btnLabel={L:'Left',D:'Down',U:'Up',R:'Right'};
+    const arrow=(dir,extra='')=>`<span class="comet-arrow-icon comet-arrow-${dir} ${extra}" aria-hidden="true"><i></i><i></i></span>`;
     return `<div class="mission-instrument panel comet-panel">
       <div class="comet-score"><span>GUIDANCE LOCK</span><strong id="cometProgress">0 / 10</strong></div>
       <div class="comet-progress-track" aria-hidden="true">${Array.from({length:10},(_,i)=>`<i data-comet-step="${i}"></i>`).join('')}</div>
-      <div class="comet-instruction">Tap the matching direction when each signal enters the target zone.</div>
-      <div class="comet-game" id="cometGame" aria-label="Directional guidance game">
-        <div class="comet-lanes">${lanes.map(([key,dir])=>`<div class="comet-lane" data-comet-lane="${key}"><span class="comet-lane-guide comet-guide-${dir}" aria-hidden="true"><i></i><i></i></span></div>`).join('')}</div>
-        <div class="comet-capture-line" aria-hidden="true"><span>TARGET ZONE</span></div>
+      <div class="comet-instruction" id="cometInstruction">Match each signal as it reaches the receptor line.</div>
+      <div class="comet-game" id="cometGame" aria-label="Directional guidance rhythm game">
+        <div class="comet-lanes">${lanes.map(([key])=>`<div class="comet-lane" data-comet-lane="${key}"></div>`).join('')}</div>
+        <div class="comet-capture-line" aria-hidden="true"></div>
+        <div class="comet-receptors" aria-hidden="true">${lanes.map(([,dir])=>`<span class="comet-receptor">${arrow(dir)}</span>`).join('')}</div>
         <div class="comet-notes" id="cometNotes" aria-hidden="true"></div>
         <div class="comet-hit-flash" id="cometHitFlash"></div>
+        <div class="comet-judgement" id="cometJudgement" aria-live="polite"></div>
+        <div class="comet-combo" id="cometCombo" aria-live="polite"></div>
       </div>
-      <div class="comet-controls">${lanes.map(([key,dir])=>`<button class="comet-btn comet-btn-${dir}" data-arrow="${key}" aria-label="${btnLabel[key]}"><span class="comet-btn-icon" aria-hidden="true"><i></i><i></i></span></button>`).join('')}</div>
-      <div class="signal-state comet-state" id="cometState">Guidance stream armed</div>
+      <div class="comet-controls">${lanes.map(([key,dir])=>`<button class="comet-btn comet-btn-${dir}" data-arrow="${key}" aria-label="${btnLabel[key]}">${arrow(dir)}</button>`).join('')}</div>
+      <div class="signal-state comet-state" id="cometState">Guidance rhythm armed</div>
     </div>`;
   }
   function jingleBody(){
