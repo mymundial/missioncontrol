@@ -20,13 +20,13 @@
     function clearTimers(){timers.forEach(clearTimeout);timers=[];}
     function later(fn,delay){const t=setTimeout(()=>{timers=timers.filter(id=>id!==t);fn();},delay);timers.push(t);return t;}
     function randomPos(){return {x:14+Math.random()*72,y:14+Math.random()*70};}
-    function intensity(){return cleared<4?1:cleared<8?2:3;}
+    function intensity(){return cleared<3?1:cleared<7?2:3;}
 
     function setIntensity(){
       const level=intensity();
       field.dataset.intensity=String(level);
       panel?.classList.toggle('is-live',cleared>0);
-      panel?.classList.toggle('is-intense',cleared>=8);
+      panel?.classList.toggle('is-intense',cleared>=7);
     }
 
     function startStarstream(){
@@ -138,19 +138,34 @@
       if(window.PointerEvent) el.addEventListener('pointerdown',pop,{passive:false});
       el.addEventListener('click',pop,{passive:false});
 
-      const shiftDelay=cleared<4?2250+Math.random()*650:cleared<8?1750+Math.random()*500:1250+Math.random()*380;
-      later(()=>{
+      const phaseSignature=()=>{
         if(finished||!active||active.el!==el) return;
         const p=randomPos();
+        const level=intensity();
         el.classList.add('phase');
         distortField();
         stateEl.textContent='Signature shifted · reacquire';
         later(()=>{
-          if(!active||active.el!==el) return;
-          el.style.left=p.x+'%';el.style.top=p.y+'%';
+          if(finished||!active||active.el!==el) return;
+          el.style.left=p.x+'%';
+          el.style.top=p.y+'%';
           el.classList.remove('phase');
-        },120);
-      },shiftDelay);
+          // Later signatures are less predictable: shorter, random dwell before
+          // they vanish and reappear elsewhere in the Starstream.
+          const dwell=level===1
+            ? 1500+Math.random()*850
+            : level===2
+              ? 900+Math.random()*800
+              : 520+Math.random()*680;
+          later(phaseSignature,dwell);
+        },level===3?150+Math.random()*130:190+Math.random()*170);
+      };
+      const firstShift=cleared<3
+        ? 1550+Math.random()*850
+        : cleared<7
+          ? 1050+Math.random()*700
+          : 650+Math.random()*600;
+      later(phaseSignature,firstShift);
     }
 
     function spawnBurst(x,y){
@@ -160,7 +175,7 @@
       burstLayer.appendChild(ripple);
       later(()=>ripple.remove(),600);
 
-      const count=cleared>=8?14:10;
+      const count=cleared>=7?14:10;
       for(let i=0;i<count;i++){
         const p=document.createElement('i');
         p.className='artifact-particle';
@@ -189,12 +204,12 @@
 
       cleared++;
       setIntensity();
-      progress.textContent=`${cleared} / 12`;
+      progress.textContent=`${cleared} / 10`;
       steps[cleared-1]?.classList.add('on');
       ping(630+cleared*20,.045,.018);haptic(18);
-      stateEl.textContent=cleared===12?'Starstream stabilised':cleared>=8?'Interference critical · keep clearing':`Signature cleared · ${12-cleared} remaining`;
-      if(cleared>=12){finish();return;}
-      later(createSignature,cleared>=8?90:cleared>=4?125:170);
+      stateEl.textContent=cleared===10?'Starstream stabilised':cleared>=7?'Interference critical · keep clearing':`Signature cleared · ${10-cleared} remaining`;
+      if(cleared>=10){finish();return;}
+      later(createSignature,cleared>=7?85:cleared>=3?120:165);
     }
 
     function finish(){
@@ -205,7 +220,7 @@
       field.classList.remove('is-distorted','is-hit');
       field.classList.add('stabilised');
       beam.classList.add('active');
-      progress.textContent='12 / 12';
+      progress.textContent='10 / 10';
       ping(920,.12,.045);haptic([28,24,58]);
       setTimeout(()=>showCompletion('Starstream Stabilised',''),900);
     }

@@ -396,8 +396,8 @@
   function placeholderBody(cp){const location=cp?.location||'Checkpoint';return `<div class="mission-instrument panel" style="text-align:center;padding:30px 18px"><div class="onboard-icon">?</div><div class="kicker">${location} / Creative Hold</div><h2 style="font-family:var(--display);text-transform:uppercase;font-size:28px;margin:8px 0">Mission TBC</h2><p class="sub">This checkpoint is reserved while the final installation game is developed. GPS activation, route progression and completion behaviour remain active for testing.</p><button class="btn primary wide" style="margin-top:16px" id="completePlaceholder">Complete Demo Step</button></div>`}
   function artifactBody(){
     return `<div class="mission-instrument panel artifact-panel">
-      <div class="artifact-score"><span>FIELD STABILITY</span><strong id="artifactProgress">0 / 12</strong></div>
-      <div class="artifact-progress-track" aria-hidden="true">${Array.from({length:12},(_,i)=>`<i data-artifact-step="${i}"></i>`).join('')}</div>
+      <div class="artifact-score"><span>FIELD STABILITY</span><strong id="artifactProgress">0 / 10</strong></div>
+      <div class="artifact-progress-track" aria-hidden="true">${Array.from({length:10},(_,i)=>`<i data-artifact-step="${i}"></i>`).join('')}</div>
       <div class="artifact-instruction">Tap the unstable signatures before they distort the Starstream.</div>
       <div class="artifact-field" id="artifactField" data-intensity="1" aria-label="Fast-moving Starstream energy field">
         <canvas class="starstream-canvas" id="starstreamCanvas" aria-hidden="true"></canvas>
