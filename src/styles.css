@@ -5063,3 +5063,120 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   .lapland-panel .system-status-value{min-height:27px;font-size:7.4px;}
   .lapland-payoff strong{font-size:24px;}
 }
+
+/* === Pass 7-08-01: Lapland Launch audio + Vegas light-show payoff === */
+.lapland-lightshow{
+  position:absolute;
+  inset:0;
+  z-index:0;
+  overflow:hidden;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .18s ease;
+}
+.lapland-lightshow i{position:absolute;display:block;pointer-events:none;}
+.lapland-facets{
+  inset:-12%;
+  background:
+    repeating-conic-gradient(from 17deg at 50% 5%,rgba(191,246,255,.13) 0 3deg,transparent 3deg 12deg),
+    radial-gradient(circle at 50% 0,rgba(176,239,255,.18),transparent 38%);
+  mask-image:linear-gradient(180deg,#000 0,rgba(0,0,0,.7) 45%,transparent 86%);
+  transform-origin:50% 0;
+}
+.lapland-beam{
+  top:-30%;
+  bottom:-30%;
+  width:17%;
+  left:18%;
+  background:linear-gradient(90deg,transparent,rgba(208,250,255,.16),rgba(117,222,251,.22),transparent);
+  filter:blur(1px);
+  transform:rotate(18deg) translateX(-180%);
+}
+.lapland-beam.beam-b{
+  left:68%;
+  width:13%;
+  transform:rotate(-18deg) translateX(180%);
+}
+.lapland-reflections{
+  inset:0;
+  background:
+    radial-gradient(circle at 8% 18%,rgba(220,252,255,.86) 0 1.4px,transparent 2.2px),
+    radial-gradient(circle at 21% 66%,rgba(133,226,255,.72) 0 1.8px,transparent 2.7px),
+    radial-gradient(circle at 37% 29%,rgba(222,253,255,.7) 0 1.2px,transparent 2px),
+    radial-gradient(circle at 52% 78%,rgba(134,224,252,.82) 0 1.7px,transparent 2.5px),
+    radial-gradient(circle at 66% 20%,rgba(231,254,255,.82) 0 1.3px,transparent 2.2px),
+    radial-gradient(circle at 78% 58%,rgba(130,224,252,.78) 0 1.6px,transparent 2.5px),
+    radial-gradient(circle at 92% 34%,rgba(224,253,255,.75) 0 1.4px,transparent 2.2px);
+  background-size:112px 96px,138px 121px,147px 105px,129px 134px,118px 99px,151px 117px,126px 109px;
+  opacity:.76;
+}
+.lapland-panel.is-celebrating .lapland-lightshow{opacity:1;}
+.lapland-panel.is-celebrating .lapland-facets{animation:laplandFacetTurn 6.8s linear infinite;}
+.lapland-panel.is-celebrating .beam-a{animation:laplandBeamA 2.4s ease-in-out infinite alternate;}
+.lapland-panel.is-celebrating .beam-b{animation:laplandBeamB 2.15s ease-in-out .15s infinite alternate;}
+.lapland-panel.is-celebrating .lapland-reflections{animation:laplandReflections 2.8s linear infinite;}
+.lapland-panel.is-celebrating .system-status-item.is-online,
+.lapland-panel.is-celebrating .system-status-item.is-clear{
+  animation:laplandSystemPulse 1.35s ease-in-out infinite alternate;
+}
+.lapland-head.is-celebrating .lapland-sponsor{
+  animation:laplandVegasSponsor 1.15s ease-in-out infinite alternate;
+}
+.lapland-panel.is-celebrating{
+  animation:laplandPanelCelebration 1.5s ease-in-out infinite alternate;
+}
+.lapland-panel.is-celebrating::after{
+  opacity:1;
+  animation:laplandFinalSweep 1.7s ease-in-out infinite;
+}
+.lapland-panel.is-celebrating .lapland-payoff{
+  background:linear-gradient(90deg,transparent,rgba(88,206,241,.13),rgba(229,252,255,.08),rgba(88,206,241,.13),transparent);
+  box-shadow:0 0 20px rgba(78,211,247,.08);
+}
+.lapland-panel.is-celebrating .lapland-payoff strong{
+  text-shadow:0 0 12px rgba(151,236,255,.42),0 0 28px rgba(89,220,255,.22);
+}
+@keyframes laplandFacetTurn{
+  0%{transform:rotate(-2deg) scale(1.04);opacity:.58;}
+  50%{transform:rotate(3deg) scale(1.08);opacity:.92;}
+  100%{transform:rotate(-2deg) scale(1.04);opacity:.58;}
+}
+@keyframes laplandBeamA{
+  from{transform:rotate(18deg) translateX(-180%);opacity:.35;}
+  to{transform:rotate(18deg) translateX(250%);opacity:.9;}
+}
+@keyframes laplandBeamB{
+  from{transform:rotate(-18deg) translateX(210%);opacity:.3;}
+  to{transform:rotate(-18deg) translateX(-280%);opacity:.82;}
+}
+@keyframes laplandReflections{
+  from{transform:translate3d(-11px,-6px,0);background-position:0 0,0 0,0 0,0 0,0 0,0 0,0 0;}
+  to{transform:translate3d(12px,8px,0);background-position:38px 21px,-33px 29px,47px -18px,-31px -25px,29px 38px,-41px 24px,35px -29px;}
+}
+@keyframes laplandSystemPulse{
+  from{filter:brightness(.95);}
+  to{filter:brightness(1.22);}
+}
+@keyframes laplandVegasSponsor{
+  from{opacity:.83;transform:scale(1);filter:drop-shadow(0 0 7px rgba(105,225,255,.28));}
+  to{opacity:1;transform:scale(1.025);filter:drop-shadow(0 0 15px rgba(165,241,255,.6));}
+}
+@keyframes laplandPanelCelebration{
+  from{box-shadow:0 0 20px rgba(68,207,247,.17),inset 0 0 26px rgba(68,207,247,.045);}
+  to{box-shadow:0 0 30px rgba(91,220,255,.26),inset 0 0 40px rgba(99,223,255,.085);}
+}
+@keyframes laplandFinalSweep{
+  0%{left:-45%;opacity:0;}
+  16%{opacity:1;}
+  72%{opacity:.7;}
+  100%{left:118%;opacity:0;}
+}
+@media (prefers-reduced-motion:reduce){
+  .lapland-panel.is-celebrating,
+  .lapland-panel.is-celebrating .lapland-facets,
+  .lapland-panel.is-celebrating .lapland-beam,
+  .lapland-panel.is-celebrating .lapland-reflections,
+  .lapland-panel.is-celebrating .system-status-item,
+  .lapland-head.is-celebrating .lapland-sponsor,
+  .lapland-panel.is-celebrating::after{animation:none!important;}
+}

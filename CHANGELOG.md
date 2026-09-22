@@ -1,3 +1,13 @@
+## Pass 7-08-01 — Lapland Launch audio finale
+- Added the full supplied Las Vegas backing track as a compressed 112 kbps MP3; it loops while Lapland Launch remains open.
+- Added the updated Chief Engineer clearance recording as a compressed mono 96 kbps MP3.
+- Background music now starts with the mission, ducks for the final launch check and radio transmission, then punches back up after clearance.
+- Added short generated radio static bookends around the Chief Engineer transmission.
+- Added a restrained Mission Control / Las Vegas light-show payoff: moving reflected points, faceted light, cyan-white beams, sponsor glow and system-row pulses.
+- ALL SYSTEMS GO now appears after the spoken clearance and light-show trigger rather than immediately on launch clear.
+- Lapland audio is stopped and reset when the mission is exited or completed.
+- Source WAV masters are excluded from production.
+
 # Pass 7-08-00
 
 - Refreshed Lapland Launch as the final MC-00 bookend using the same eight-system vocabulary and compact four-column status bank.

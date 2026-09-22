@@ -28,7 +28,7 @@
       row.addEventListener('click',open);
       row.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}});
     });
-    document.querySelectorAll('[data-exit-mission]').forEach(b=>b.addEventListener('click',()=>{if(state.missionOpen==='entry') stopMc01Activation();const nav=state.missionReturnNav||'radar';set({missionOpen:null,nav});if(nav==='radar'&&lastGps)processGps(lastGps,true);}));
+    document.querySelectorAll('[data-exit-mission]').forEach(b=>b.addEventListener('click',()=>{if(state.missionOpen==='entry') stopMc01Activation();if(state.missionOpen==='lapland') stopLaplandAudio();const nav=state.missionReturnNav||'radar';set({missionOpen:null,nav});if(nav==='radar'&&lastGps)processGps(lastGps,true);}));
   }
 
   function openElfTuner(){
@@ -69,6 +69,7 @@
   }
   function completeCurrent(){
     const id=state.missionOpen; const idx=checkpointIndex(id); if(idx<0) return;
+    if(id==='lapland') stopLaplandAudio();
     const done=state.completed.includes(id)?state.completed:[...state.completed,id];
     const available=state.available.filter(x=>x!==id);
     let routeIndex=normaliseRouteIndex(state.routeIndex);

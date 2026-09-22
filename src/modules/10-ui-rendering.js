@@ -509,7 +509,8 @@
     return `<div class="mission-instrument panel lapland-panel" id="laplandPanel" style="--lapland-charge:0">
       <div class="lapland-verification-label"><span>Santa-1</span><strong>Final Verification</strong></div>
       ${systemStatusBank(systems,'lapland-system-bank','verify')}
-      <div class="lapland-payoff" id="laplandPayoff" hidden><span>Verification Complete</span><strong>All Systems Go</strong></div>
+      <div class="lapland-lightshow" aria-hidden="true"><i class="lapland-facets"></i><i class="lapland-beam beam-a"></i><i class="lapland-beam beam-b"></i><i class="lapland-reflections"></i></div>
+      <div class="lapland-payoff" id="laplandPayoff" hidden><span>Launch Clearance</span><strong>All Systems Go</strong></div>
       <button class="btn primary wide lapland-test-btn" id="initiateTest">Run Final Verification</button>
     </div>`;
   }
