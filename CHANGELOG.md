@@ -1,3 +1,11 @@
+# Pass 7-07-00
+
+- MC-09 Lightspeed Lando light-treatment refresh only; reaction timing and gameplay are unchanged.
+- Inactive gantry lamps now render as genuinely dark smoked diffuser lenses with no red halo or bright rim, masking the baked lower-row pre-glow in the gantry artwork.
+- Active red lamps use a flatter LED/diffuser treatment with an even illuminated face, smaller internal highlight and stronger outward bloom instead of glossy spherical shading.
+- Green capture lamps use the same believable diffuser language for visual consistency.
+- No new image or audio assets added.
+
 # Pass 7-06-00
 
 - MC-08 Jingle Beams visual refresh: three propulsion chambers retained and upgraded with engineered housings, nozzles, target gates, trails, particles and lock bursts.
