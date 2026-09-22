@@ -56,6 +56,9 @@
     let notes=[];
     let music=null;
     let completionSfx=null;
+    // Capture whether ELF FM was genuinely playing before Comet Curve took
+    // audio priority. Used as a second restore path after mission teardown.
+    const cometRadioWasPlaying=beginMissionAudioRadioOverride('comet');
     let signalCount=0;
     let nextSpawnAt=BEAT_OFFSET;
 
@@ -107,7 +110,15 @@
         completionSfx.volume=.86;
         completionSfx.currentTime=0;
         let released=false;
-        const releaseRadio=()=>{if(released)return;released=true;endMissionAudioRadioOverride('comet');};
+        const releaseRadio=()=>{
+          if(released)return;
+          released=true;
+          endMissionAudioRadioOverride('comet');
+          // Some mobile browsers can leave a zero-volume stream suspended even
+          // after the first restore request. Reassert the user's enabled radio
+          // state after the completion sting without requiring a toggle cycle.
+          if(cometRadioWasPlaying) setTimeout(()=>ensureElfRadioPlayback(1,520),180);
+        };
         completionSfx.onended=releaseRadio;
         completionSfx.onerror=releaseRadio;
         const play=completionSfx.play();
@@ -298,6 +309,7 @@
       stopMusic();
       stopCompletionSound();
       endMissionAudioRadioOverride('comet');
+      if(cometRadioWasPlaying) ensureElfRadioPlayback(1,520);
     };
 
     clockStart=performance.now();

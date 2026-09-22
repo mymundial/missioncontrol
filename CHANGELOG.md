@@ -1,3 +1,10 @@
+## Pass 7-08-04 — Comet Curve ELF FM restore reliability
+- Fixed a Comet Curve-specific radio hand-back case where ELF FM could remain logically On but silent after the mission completed.
+- Shared radio restoration now explicitly reasserts playback before fading back to the user's listening level.
+- Comet Curve adds a guarded second restore after its completion sting and again on mission teardown, so mobile browser audio suspension cannot leave the radio at zero volume.
+- Lapland Launch audio-priority behaviour is unchanged.
+- No gameplay, mission timing, visual or asset changes.
+
 ## Pass 7-08-03 — Mission audio priority over ELF FM
 - Comet Curve and Lapland Launch bedding music now take priority over ELF FM whenever the radio is already playing.
 - ELF FM quickly fades to silence as mission music starts, remains suppressed for the entire mission-audio sequence, and fades back to its previous listening level only after that sequence has finished.

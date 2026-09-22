@@ -1,4 +1,4 @@
-# Pass 7-08-03 — Production Audit
+# Pass 7-08-04 — Production Audit
 
 ## Result
 
@@ -6,18 +6,18 @@
 
 ## Production footprint
 
-- `dist/`: **8,757,454 bytes (~8.35 MiB)**
+- `dist/`: **8,758,622 bytes (~8.35 MiB)**
 - Production files: **45**
 - No WAV/source-master audio is deployed.
 - Runtime images remain WebP/SVG, audio MP3, and fonts WOFF2.
 
-## Audio priority change verified
+## Comet Curve radio restore fix verified
 
-- Comet Curve and Lapland Launch now suppress ELF FM when their mission bedding starts.
-- The radio stream remains logically enabled but is faded to silence so it can resume without a hard restart.
-- Comet Curve restores ELF FM only after its dedicated completion sting ends, or immediately when the mission is exited early.
-- Lapland Launch keeps ELF FM suppressed through the backing track, Chief Engineer clearance and Return transition; the radio fades back in only after the Positive Celebration exit sting finishes.
-- If Mission Audio is disabled, no override is applied and ELF FM behaviour is unchanged.
+- Comet Curve still suppresses ELF FM while its rhythm track and completion sting have audio priority.
+- Shared radio restoration now explicitly reasserts playback before fading ELF FM back to the previous listening state.
+- Comet Curve also performs a guarded second restore after its completion sting and again during mission teardown if the station had been playing before mission audio took priority.
+- This prevents the radio UI remaining On while the stream is silently stuck at zero volume or suspended by a mobile browser.
+- Lapland Launch keeps its existing, already-working mission-audio priority and return behaviour unchanged.
 
 ## Automated checks passed
 

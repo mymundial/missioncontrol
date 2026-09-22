@@ -1,13 +1,12 @@
-# Silverstone Mission Control — Pass 7-08-03
+# Silverstone Mission Control — Pass 7-08-04
 
-This pass adds shared audio-priority handling so mission bedding never competes with ELF FM.
+This pass fixes Comet Curve's ELF FM hand-back after mission audio completes.
 
 ## This pass
 
-- **Comet Curve:** ELF FM fades out as the rhythm mission begins, stays suppressed through the gameplay and completion sting, then fades back in after mission audio ends.
-- **Lapland Launch:** ELF FM stays suppressed through the Vegas backing track, Chief Engineer clearance and final return sting, then fades back in.
-- Mid-mission exits restore the radio cleanly.
-- Mission Audio remains authoritative: if Mission Audio is disabled, the radio is not suppressed.
+- **Comet Curve:** ELF FM still fades out for the rhythm track and completion sting, but restoration is now reasserted after the sting and on mission teardown so the radio cannot remain silently stuck at zero volume while its UI says On.
+- **Lapland Launch:** existing mission-audio priority and radio restoration are unchanged.
+- Mission Audio still takes precedence; no sustained double audio is introduced.
 - No gameplay, mission timing, graphics or audio assets changed in this pass.
 
 ## Production status
@@ -24,4 +23,4 @@ This pass adds shared audio-priority handling so mission bedding never competes 
 npm run audit
 ```
 
-Current result: **19 passed / 3 warnings / 0 failures**. See `PRODUCTION-AUDIT.md` for detail.
+See `PRODUCTION-AUDIT.md` for the current result.

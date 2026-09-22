@@ -265,6 +265,27 @@
   let missionAudioRadioWasPlaying=false;
   let missionAudioRadioRestoreVolume=1;
   let missionAudioRadioFadeCancel=()=>{};
+  function ensureElfRadioPlayback(targetVolume=1,duration=520){
+    if(!elfAudioEl||!state.elfAudioOn) return false;
+    const audio=elfAudioEl;
+    const target=Math.max(.01,Math.min(1,Number.isFinite(targetVolume)?targetVolume:1));
+    const restore=()=>{
+      missionAudioRadioFadeCancel();
+      missionAudioRadioFadeCancel=()=>{};
+      // Always restart the fade from silence. This makes recovery deterministic
+      // if a mobile browser suspended the stream while it was at zero volume.
+      audio.volume=0;
+      missionAudioRadioFadeCancel=rampElementVolume(audio,target,duration);
+    };
+    if(audio.paused){
+      try{
+        const play=audio.play();
+        if(play&&typeof play.then==='function'){play.then(restore).catch(()=>{});}
+        else restore();
+      }catch{}
+    } else restore();
+    return true;
+  }
   function beginMissionAudioRadioOverride(owner){
     if(!owner||!state.audio) return false;
     const audio=elfAudioEl;
@@ -291,18 +312,7 @@
     missionAudioRadioWasPlaying=false;
     missionAudioRadioRestoreVolume=1;
     if(!shouldRestore||!elfAudioEl||!state.elfAudioOn) return;
-    const audio=elfAudioEl;
-    const restore=()=>{
-      audio.volume=0;
-      missionAudioRadioFadeCancel=rampElementVolume(audio,restoreVolume,520);
-    };
-    if(audio.paused){
-      try{
-        const play=audio.play();
-        if(play&&typeof play.then==='function') play.then(restore).catch(()=>{});
-        else restore();
-      }catch{}
-    }else restore();
+    ensureElfRadioPlayback(restoreVolume,520);
   }
   function stopSantaTransmission(restoreRadio=true){
     try{santaTransmissionCleanup?.();}catch{}
@@ -2310,6 +2320,9 @@
     let notes=[];
     let music=null;
     let completionSfx=null;
+    // Capture whether ELF FM was genuinely playing before Comet Curve took
+    // audio priority. Used as a second restore path after mission teardown.
+    const cometRadioWasPlaying=beginMissionAudioRadioOverride('comet');
     let signalCount=0;
     let nextSpawnAt=BEAT_OFFSET;
 
@@ -2361,7 +2374,15 @@
         completionSfx.volume=.86;
         completionSfx.currentTime=0;
         let released=false;
-        const releaseRadio=()=>{if(released)return;released=true;endMissionAudioRadioOverride('comet');};
+        const releaseRadio=()=>{
+          if(released)return;
+          released=true;
+          endMissionAudioRadioOverride('comet');
+          // Some mobile browsers can leave a zero-volume stream suspended even
+          // after the first restore request. Reassert the user's enabled radio
+          // state after the completion sting without requiring a toggle cycle.
+          if(cometRadioWasPlaying) setTimeout(()=>ensureElfRadioPlayback(1,520),180);
+        };
         completionSfx.onended=releaseRadio;
         completionSfx.onerror=releaseRadio;
         const play=completionSfx.play();
@@ -2552,6 +2573,7 @@
       stopMusic();
       stopCompletionSound();
       endMissionAudioRadioOverride('comet');
+      if(cometRadioWasPlaying) ensureElfRadioPlayback(1,520);
     };
 
     clockStart=performance.now();

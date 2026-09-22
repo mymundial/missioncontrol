@@ -66,6 +66,27 @@
   let missionAudioRadioWasPlaying=false;
   let missionAudioRadioRestoreVolume=1;
   let missionAudioRadioFadeCancel=()=>{};
+  function ensureElfRadioPlayback(targetVolume=1,duration=520){
+    if(!elfAudioEl||!state.elfAudioOn) return false;
+    const audio=elfAudioEl;
+    const target=Math.max(.01,Math.min(1,Number.isFinite(targetVolume)?targetVolume:1));
+    const restore=()=>{
+      missionAudioRadioFadeCancel();
+      missionAudioRadioFadeCancel=()=>{};
+      // Always restart the fade from silence. This makes recovery deterministic
+      // if a mobile browser suspended the stream while it was at zero volume.
+      audio.volume=0;
+      missionAudioRadioFadeCancel=rampElementVolume(audio,target,duration);
+    };
+    if(audio.paused){
+      try{
+        const play=audio.play();
+        if(play&&typeof play.then==='function'){play.then(restore).catch(()=>{});}
+        else restore();
+      }catch{}
+    } else restore();
+    return true;
+  }
   function beginMissionAudioRadioOverride(owner){
     if(!owner||!state.audio) return false;
     const audio=elfAudioEl;
@@ -92,18 +113,7 @@
     missionAudioRadioWasPlaying=false;
     missionAudioRadioRestoreVolume=1;
     if(!shouldRestore||!elfAudioEl||!state.elfAudioOn) return;
-    const audio=elfAudioEl;
-    const restore=()=>{
-      audio.volume=0;
-      missionAudioRadioFadeCancel=rampElementVolume(audio,restoreVolume,520);
-    };
-    if(audio.paused){
-      try{
-        const play=audio.play();
-        if(play&&typeof play.then==='function') play.then(restore).catch(()=>{});
-        else restore();
-      }catch{}
-    }else restore();
+    ensureElfRadioPlayback(restoreVolume,520);
   }
   function stopSantaTransmission(restoreRadio=true){
     try{santaTransmissionCleanup?.();}catch{}
