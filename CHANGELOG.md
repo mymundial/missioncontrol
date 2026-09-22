@@ -1,4 +1,17 @@
 ## Pass 7-08-09 — Jingle Beams gameplay polish
+## Pass 7.10.0 — Jingle Beams five-goal escalation and audio polish
+
+- Expanded MC-08 from three goals to five propulsion goals.
+- Goals 04 and 05 now use continuously sweeping receivers; Goal 05 moves faster while puck-speed escalation stays deliberately modest for mobile playability.
+- Rebuilt the receiver into a bright central scoring aperture with left/right rebound posts so the visible white beam now matches the true scoring zone.
+- Added distinct post-hit feedback using a compressed production edit of the supplied glitched impact sound.
+- Added a compressed 20.8-second Arena Sports gameplay loop; Jingle Beams now takes mission-audio priority over ELF FM and restores the radio when the mission closes.
+- The music hard-stops on Goal 05 before the goal confirmation and final hockey buzzer sequence.
+- Increased puck trail length and brightness, added impact sparks, stronger paddle/rail/post feedback, receiver energy animation and progressive arena intensity as beams charge.
+- Reduced redundant in-game copy: progress is carried by five beam indicators and the initial DRAG TO MOVE prompt, while dynamic state remains available to assistive technology.
+- Source WAV masters and the full supplied music master are not deployed.
+- Bumped runtime asset cache version to 7.10.0.
+
 - Simplified MC-08 Propulsion Sync around the existing three-hit timing mechanic rather than adding new gameplay.
 - Reworked the three propulsion channels into cleaner horizontal energy tracks with a clearer SYNC window and reduced decorative machinery.
 - Each completed channel now stays visibly energised while the next channel arms, creating a clearer three-stage build.
