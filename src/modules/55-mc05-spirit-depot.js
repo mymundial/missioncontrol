@@ -13,6 +13,10 @@
       A:document.querySelector('.spirit-meter-left'),
       B:document.querySelector('.spirit-meter-right')
     };
+    const bankMap={
+      A:document.querySelector('.spirit-bank-left'),
+      B:document.querySelector('.spirit-bank-right')
+    };
     if(!rig||!stateEl||!stageNumber||!stageName||stageDots.length!==5||buttons.length!==2||tankMap.A.length!==4||tankMap.B.length!==4) return;
 
     const stages=['IGNITION','CHARGE','PRESSURE','SURGE','STABLE'];
@@ -25,6 +29,7 @@
     let hits=0;
     let completed=false;
     let finishTimer=0;
+    const reactionTimers=[];
     const payoffAudio=new Audio('./assets/spirit-tank-vent.mp3');
     payoffAudio.preload='auto';
     payoffAudio.volume=.72;
@@ -71,6 +76,21 @@
         tank.style.setProperty('--tank-fill',String(local));
         tank.classList.toggle('is-active',local>0&&local<1);
         tank.classList.toggle('is-full',local>=1);
+      });
+    }
+
+    function pulseCharge(side,button){
+      const bank=bankMap[side];
+      const meter=meterMap[side];
+      const tanks=tankMap[side];
+      const active=tanks.find(tank=>tank.classList.contains('is-active')) || [...tanks].reverse().find(tank=>tank.classList.contains('is-full'));
+      [bank,meter,button,active].forEach(el=>{
+        if(!el) return;
+        el.classList.remove('is-pumping');
+        void el.offsetWidth;
+        el.classList.add('is-pumping');
+        const timer=setTimeout(()=>el.classList.remove('is-pumping'),220);
+        reactionTimers.push(timer);
       });
     }
 
@@ -123,6 +143,7 @@
       hits++;
       sideHits[side]++;
       updateBank(side);
+      pulseCharge(side,button);
       tankJustFilled(side);
       expected=expected==='A'?'B':'A';
       updateStage();
@@ -136,6 +157,7 @@
 
     cleanupMission=()=>{
       clearTimeout(finishTimer);
+      reactionTimers.forEach(clearTimeout);
       buttons.forEach(button=>button.removeEventListener('click',onCharge));
       try{payoffAudio.pause();payoffAudio.currentTime=0;}catch{}
     };
