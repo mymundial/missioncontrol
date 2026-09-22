@@ -8,12 +8,11 @@
 
   function continueMc00Sequence(mode){
     stopMc00Scan();
-    const nextStep = mode==='mc00-demo' ? 'demo-scan' : 'brief';
-    set({ bootDone: nextStep });
+    set({ bootDone: 'brief' });
   }
 
   function bindMc00Scan(step){
-    if(step!=='mc00-live' && step!=='mc00-demo') return;
+    if(step!=='mc00-live') return;
     const card = document.querySelector('.mc00-card');
     const bar = document.getElementById('mc00ProgressFill');
     const value = document.getElementById('mc00ProgressValue');

@@ -1,3 +1,11 @@
+## Pass 7-08-05 — onboarding flow cleanup
+- Removed the Quick Demo button from the splash page so Start Mission is the only entry action.
+- Locked onboarding order to Start Mission → System Scan → Mission Briefing → Mission Audio → Mission Radar → Radar.
+- Renamed the radar setup heading from Enable Live Radar to Mission Radar.
+- Renamed setup actions to Enable GPS Location and Demo Mode.
+- Demo Mode is now selected only from Mission Radar setup and goes directly to the radar; the redundant demo scan/introduction step has been removed.
+- No mission gameplay, GPS detection logic, audio-priority behaviour or mission content changes.
+
 ## Pass 7-08-04 — Comet Curve ELF FM restore reliability
 - Fixed a Comet Curve-specific radio hand-back case where ELF FM could remain logically On but silent after the mission completed.
 - Shared radio restoration now explicitly reasserts playback before fading back to the user's listening level.

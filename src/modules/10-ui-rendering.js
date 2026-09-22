@@ -99,12 +99,12 @@
     }
   }
   function renderLaunch(){
-    if(state.bootDone===false) return `<section class="hero"><div class="hero-content"><img class="hero-logo hero-logo-stacked" src="./assets/silverstone-logo-landing.webp" alt="Silverstone"><img class="hero-mission-logo" src="./assets/mission-control-logo.webp" alt="Mission Control"><div class="hero-actions"><button class="btn primary" data-onboard="mc00-live">Start Mission</button><button class="btn secondary" data-onboard="demo">Quick Demo</button></div></div></section>`;
+    if(state.bootDone===false) return `<section class="hero"><div class="hero-content"><img class="hero-logo hero-logo-stacked" src="./assets/silverstone-logo-landing.webp" alt="Silverstone"><img class="hero-mission-logo" src="./assets/mission-control-logo.webp" alt="Mission Control"><div class="hero-actions"><button class="btn primary" data-onboard="mc00-live">Start Mission</button></div></div></section>`;
     return renderOnboardStep(state.bootDone);
   }
   function renderOnboardStep(step){
     const setupHeader=topBar();
-    if(step==='mc00-live'||step==='mc00-demo'){
+    if(step==='mc00-live'){
       const systems=[
         {key:'power',label:'Power',status:'Standby'},
         {key:'propulsion',label:'Propulsion',status:'Standby'},
@@ -119,8 +119,7 @@
     }
     if(step==='brief') return `<section class="onboard with-masthead setup-page briefing-page">${setupHeader}<div class="onboard-card panel setup-card"><div class="onboard-icon setup-icon"><span class="setup-icon-glyph"><img src="./assets/mission-briefing-icon.svg" alt=""></span></div><h1>Mission Briefing</h1><p class="support-copy">Santa-1 has lost power. Energy signatures have been detected around the circuit. Locate each source, complete its mission and restore the sleigh.</p><div class="setup-actions"><button class="btn primary wide" data-onboard="audio">Continue</button></div></div></section>`;
     if(step==='audio') return `<section class="onboard with-masthead setup-page audio-page">${setupHeader}<div class="onboard-card panel setup-card"><div class="onboard-icon setup-icon"><span class="setup-icon-glyph"><img src="./assets/mission-audio-icon.webp" alt=""></span></div><h1>Mission Audio</h1><p class="support-copy">Mission Control uses proximity alerts, system sounds and live transmissions. Audio can be muted at any time.</p><div class="setup-actions stack"><button class="btn primary wide" data-audio="on">Enable Mission Audio</button><button class="btn secondary wide" data-audio="off">Continue Without Audio</button></div></div></section>`;
-    if(step==='demo-scan') return `<section class="onboard with-masthead setup-page demo-scan-page">${setupHeader}<div class="onboard-card panel setup-card demo-scan-card"><div class="onboard-icon setup-icon demo-system-icon" aria-hidden="true"><span class="demo-scan-radar"><span></span></span></div><h1>DEMO MODE</h1><p class="support-copy">The demo will simulate checkpoint proximity in the same order as the live route. Your first target is <strong>Mission 01 · Circuit Entry</strong> at Village.</p><div class="setup-actions"><button class="btn primary wide" data-onboard="demo-continue">Continue to Radar</button></div></div></section>`;
-    return `<section class="onboard with-masthead setup-page radar-setup-page">${setupHeader}<div class="onboard-card panel setup-card"><div class="onboard-icon setup-icon"><span class="setup-icon-glyph"><img src="./assets/radar-setup-icon.svg" alt=""></span></div><h1>Enable Live Radar</h1><p class="support-copy">Mission Control uses your location to detect each installation as you move around the circuit.</p><div class="setup-actions stack"><button class="btn primary wide" data-location="request">Enable Location</button><button class="btn secondary wide" data-location="demo">Use Demo Mode</button></div></div></section>`;
+    return `<section class="onboard with-masthead setup-page radar-setup-page">${setupHeader}<div class="onboard-card panel setup-card"><div class="onboard-icon setup-icon"><span class="setup-icon-glyph"><img src="./assets/radar-setup-icon.svg" alt=""></span></div><h1>Mission Radar</h1><p class="support-copy">Mission Control uses your location to detect each installation as you move around the circuit.</p><div class="setup-actions stack"><button class="btn primary wide" data-location="request">Enable GPS Location</button><button class="btn secondary wide" data-location="demo">Demo Mode</button></div></div></section>`;
   }
   function renderRadar(){
     const cp=current();

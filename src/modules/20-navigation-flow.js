@@ -12,8 +12,6 @@
     document.querySelectorAll('[data-tune-elf]').forEach(b=>b.addEventListener('click',()=>openElfTuner()));
     document.querySelectorAll('[data-elf-audio]').forEach(b=>b.addEventListener('click',toggleElfAudio));
     document.querySelectorAll('[data-onboard]').forEach(b=>b.addEventListener('click',()=>{
-      if(b.dataset.onboard==='demo'){ startDemoExperience(); return; }
-      if(b.dataset.onboard==='demo-continue'){ continueDemoExperience(); return; }
       set({bootDone:b.dataset.onboard});
     }));
     document.querySelectorAll('[data-mc00-continue]').forEach(b=>b.addEventListener('click',()=>continueMc00Sequence(b.dataset.mc00Continue)));

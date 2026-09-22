@@ -1,17 +1,11 @@
   function startDemoExperience(){
     clearDemo();
-    state={...defaults,onboarded:false,audio:state.audio,bootDone:'mc00-demo',mode:'demo',nav:'radar',completed:[],available:[],routeIndex:1,gpsCondition:'DEMO'};
-    save();
-    render();
-    ping(480,.07,.025);
-  }
-  function continueDemoExperience(){
-    clearDemo();
     demoHoldUntil=Date.now()+900;
     state={...state,onboarded:true,bootDone:true,mode:'demo',nav:'radar',completed:[],available:[],routeIndex:1,targetVisible:false,targetInRange:false,distance:null,gpsCondition:'DEMO'};
     save();
     ensureOpeningMessage();
     render();
+    ping(480,.07,.025);
     maybeStartDemoTarget(650);
   }
   function clearDemo(){clearTimeout(demoTimer);clearInterval(demoInterval);demoTimer=null;demoInterval=null;}
