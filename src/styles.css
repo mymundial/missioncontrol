@@ -2663,13 +2663,19 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 }
 .system-status-item.is-offline .system-status-value{color:#ff979e;}
 .system-status-item.is-online .system-node,
-.system-status-item.is-clear .system-node{
-  border-color:rgba(114,216,244,.72);
-  background:radial-gradient(circle at 40% 36%,#e2fbff 0 7%,#76dff7 20%,#2fb9df 44%,#116789 72%,#063047 100%);
-  box-shadow:0 0 6px rgba(64,205,255,.46),0 0 12px rgba(51,190,244,.28),inset 0 0 8px rgba(225,251,255,.34);
+.system-status-item.is-complete .system-node{
+  border-color:rgba(109,231,154,.76);
+  background:radial-gradient(circle at 40% 36%,#e7fff0 0 7%,#83efad 20%,#35c96f 44%,#147b42 72%,#073b25 100%);
+  box-shadow:0 0 6px rgba(76,226,132,.46),0 0 12px rgba(57,203,111,.24),inset 0 0 8px rgba(231,255,240,.3);
 }
 .system-status-item.is-online .system-status-value,
-.system-status-item.is-clear .system-status-value{color:#8fe5fb;}
+.system-status-item.is-complete .system-status-value{color:#72e69b;}
+.system-status-item.is-clear .system-node{
+  border-color:rgba(255,181,74,.82);
+  background:radial-gradient(circle at 40% 36%,#fff4d9 0 7%,#ffd277 20%,#f59a2f 46%,#9a5017 72%,#4b2108 100%);
+  box-shadow:0 0 6px rgba(255,174,63,.48),0 0 12px rgba(245,154,47,.24),inset 0 0 8px rgba(255,246,221,.28);
+}
+.system-status-item.is-clear .system-status-value{color:#ffb34f;}
 .system-status-item.is-blocked .system-node{
   border-color:rgba(255,122,122,.78);
   background:radial-gradient(circle at 40% 36%,#ffd8d8 0 8%,#ff8a8a 20%,#c63a45 48%,#611725 74%,#26030e 100%);
@@ -2690,7 +2696,7 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .mc00-sleigh-frame{padding-bottom:6px;}
 .mc00-sleigh-visual{min-height:198px;}
 
-/* The Sleigh page now mirrors the same eight-system vocabulary and node language. */
+/* Sleigh uses the shared eight-system vocabulary with a cleaner text-only readout. */
 .sleigh-system-bank{
   margin-top:2px;
   padding-top:2px;
@@ -2700,7 +2706,8 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   min-height:23px;
   font-size:7.5px;
 }
-.sleigh-systems .system-node{width:10px;height:10px;}
+.sleigh-system-bank .system-node{display:none;}
+.sleigh-system-bank .system-status-name{gap:0;}
 
 /* Lapland Launch uses the same system bank so MC-00 and final verification bookend one another. */
 .lapland-panel .lapland-system-bank{margin:4px 0 16px;}
@@ -4993,11 +5000,19 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   text-shadow:0 0 8px rgba(77,211,248,.35);
 }
 .lapland-panel .system-status-item.is-online .system-status-name,
-.lapland-panel .system-status-item.is-online .system-status-value,
-.lapland-panel .system-status-item.is-clear .system-status-name,
-.lapland-panel .system-status-item.is-clear .system-status-value{
+.lapland-panel .system-status-item.is-clear .system-status-name{
   color:#a8edff;
-  text-shadow:0 0 9px rgba(76,212,249,.32);
+  text-shadow:0 0 9px rgba(76,212,249,.24);
+  border-bottom-color:rgba(101,203,235,.25);
+}
+.lapland-panel .system-status-item.is-online .system-status-value{
+  color:#72e69b;
+  text-shadow:0 0 9px rgba(76,226,132,.28);
+  border-bottom-color:rgba(101,203,235,.25);
+}
+.lapland-panel .system-status-item.is-clear .system-status-value{
+  color:#ffb34f;
+  text-shadow:0 0 9px rgba(255,179,79,.3);
   border-bottom-color:rgba(101,203,235,.25);
 }
 .lapland-panel .system-status-item.is-offline .system-status-name,

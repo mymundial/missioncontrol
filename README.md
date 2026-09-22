@@ -1,17 +1,19 @@
-# Silverstone Mission Control — Pass 7-08-04
+# Silverstone Mission Control — Pass 7-08-06
 
-This pass fixes Comet Curve's ELF FM hand-back after mission audio completes.
+This pass refines the Sleigh navigation icon and locks the final system-status colour language through Northern Flight.
 
 ## This pass
 
-- **Comet Curve:** ELF FM still fades out for the rhythm track and completion sting, but restoration is now reasserted after the sting and on mission teardown so the radio cannot remain silently stuck at zero volume while its UI says On.
-- **Lapland Launch:** existing mission-audio priority and radio restoration are unchanged.
-- Mission Audio still takes precedence; no sustained double audio is introduced.
-- No gameplay, mission timing, graphics or audio assets changed in this pass.
+- **Sleigh navigation:** simplified single-colour sleigh glyph; muted when inactive and cyan when selected, matching the other navigation icons.
+- **Sleigh System Status:** status nodes removed for a cleaner text-only readout.
+- **Status colours:** ONLINE is green, OFFLINE / BLOCKED remain red, and CLEAR is orange.
+- **Lapland Launch:** CLEAR now reads orange in the final verification bank; ONLINE reads green.
+- **Northern Flight:** once MC-12 is completed, the Sleigh LAUNCH state advances from CLEAR to green COMPLETE.
+- No gameplay, route, GPS or mission-audio behaviour changed in this pass.
 
 ## Production status
 
-- Production `dist/`: approximately **8.35 MiB / 45 files**.
+- Production `dist/`: approximately **8.25 MiB / 45 files**.
 - No WAV/source-master audio or development modules are shipped in `dist/`.
 - Runtime images are WebP/SVG, audio is MP3, and fonts are WOFF2.
 - Vercel remains a static deployment using `npm run build` and `dist/`.

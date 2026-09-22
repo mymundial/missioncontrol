@@ -1,3 +1,11 @@
+## Pass 7-08-06 — Sleigh status language + nav icon
+- Rebuilt the Sleigh navigation icon as a minimal single-colour glyph with matching inactive and active cyan states.
+- Removed status nodes from the Sleigh system bank for a cleaner text-only readout.
+- ONLINE system states now read green; OFFLINE / BLOCKED remain red.
+- LAUNCH CLEAR now reads orange on Sleigh and Lapland Launch.
+- After MC-12 Northern Flight is completed, the Sleigh LAUNCH state advances from CLEAR to green COMPLETE.
+- No mission gameplay, route, GPS or audio behaviour changes.
+
 ## Pass 7-08-05 — onboarding flow cleanup
 - Removed the Quick Demo button from the splash page so Start Mission is the only entry action.
 - Locked onboarding order to Start Mission → System Scan → Mission Briefing → Mission Audio → Mission Radar → Radar.
