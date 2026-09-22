@@ -1,7 +1,6 @@
   function bindComet(){
     const dirClass={L:'left',D:'down',U:'up',R:'right'};
     const keys=['L','D','U','R'];
-    const laneLeftPct={L:12.5,D:37.5,U:62.5,R:87.5};
     const game=document.getElementById('cometGame');
     const notesLayer=document.getElementById('cometNotes');
     const progress=document.getElementById('cometProgress');
@@ -12,6 +11,28 @@
     const instruction=document.getElementById('cometInstruction');
     const steps=[...document.querySelectorAll('[data-comet-step]')];
     if(!game||!notesLayer||!progress||!stateEl||!flash||!judgement||!comboEl) return;
+
+    // Structural lane ownership: every direction gets its own fixed 25% lane
+    // container. Notes are created inside their designated lane, so a LEFT
+    // signal cannot ever render in DOWN/UP/RIGHT (and vice versa).
+    notesLayer.innerHTML='';
+    const laneHosts={};
+    keys.forEach((key,index)=>{
+      const host=document.createElement('div');
+      host.className=`comet-note-lane comet-note-lane-${dirClass[key]}`;
+      host.dataset.cometNoteLane=key;
+      Object.assign(host.style,{
+        position:'absolute',
+        top:'0',
+        bottom:'0',
+        left:`${index*25}%`,
+        width:'25%',
+        pointerEvents:'none',
+        overflow:'visible'
+      });
+      notesLayer.appendChild(host);
+      laneHosts[key]=host;
+    });
 
     const BPM=129.2;
     const BEAT=60/BPM;
@@ -66,7 +87,14 @@
     }
     function stopMusic(){
       if(!music) return;
-      try{music.pause();music.currentTime=0;}catch{}
+      try{
+        music.loop=false;
+        music.volume=0;
+        music.pause();
+        music.currentTime=0;
+        music.removeAttribute('src');
+        music.load();
+      }catch{}
       music=null;
     }
     function playCompletionSound(){
@@ -129,13 +157,12 @@
       el.className=`comet-note active ${dirClass[laneKey]}`;
       el.dataset.lane=laneKey;
       el.dataset.direction=laneKey;
-      // Lock each direction to one fixed lane centre. Do not derive note
-      // position from live element geometry: LEFT/DOWN/UP/RIGHT are always
-      // 12.5/37.5/62.5/87.5% respectively.
-      el.style.left=laneLeftPct[laneKey]+'%';
+      // Position only within the note's own lane container. The lane itself
+      // owns the horizontal placement; the note is always centred at 50%.
+      el.style.left='50%';
       el.style.top='5%';
       el.innerHTML=arrowMarkup(laneKey);
-      notesLayer.appendChild(el);
+      laneHosts[laneKey].appendChild(el);
       notes.push({laneKey,dirKey:laneKey,el,spawnTime:spawnAt,targetTime,hit:false});
       signalCount++;
       if(signalCount===2&&instruction) instruction.classList.add('recede');
@@ -195,11 +222,11 @@
         game.classList.add('complete');
         document.querySelectorAll('.comet-btn').forEach(b=>b.disabled=true);
         comboEl.classList.remove('show');
-        judgement.textContent='GUIDANCE SIGNAL LOCKED';
+        judgement.textContent='SEQUENCE COMPLETE';
         judgement.className='comet-judgement show complete';
-        stateEl.textContent='GUIDANCE SIGNAL LOCKED';
-        // Completion ends the rhythm loop immediately, then plays the
-        // dedicated one-shot payoff supplied for MC-07.
+        stateEl.textContent='SEQUENCE COMPLETE';
+        // Hard-stop the rhythm loop before starting the dedicated
+        // completion payoff: the two audio sources must never overlap.
         stopMusic();
         playCompletionSound();
         haptic([30,22,60]);
