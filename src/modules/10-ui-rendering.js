@@ -386,12 +386,11 @@
         <div class="spirit-meter spirit-meter-right" aria-hidden="true"><span class="spirit-meter-fill"></span><b class="spirit-meter-marker"></b></div>
       </div>
       <div class="spirit-charge-controls" aria-label="Storage tank charging controls">
-        <button class="spirit-charge-btn is-next" data-charge="A" aria-label="Charge left tank bank"><strong>A</strong><span>Tap</span></button>
-        <button class="spirit-charge-btn" data-charge="B" aria-label="Charge right tank bank"><strong>B</strong><span>Tap</span></button>
+        <button class="spirit-charge-btn is-next" data-charge="A" aria-label="Charge left tank bank"><strong>A</strong></button>
+        <button class="spirit-charge-btn" data-charge="B" aria-label="Charge right tank bank"><strong>B</strong></button>
       </div>
       <div class="spirit-stage-row"><div><span>Core Charge</span><strong><b id="spiritStageNumber">01</b> / 05</strong></div><em id="spiritStageName">Ignition</em></div>
       <div class="spirit-stage-progress" id="spiritStageProgress" aria-hidden="true">${stageDots}</div>
-      <div class="spirit-instruction" id="spiritState">Alternate A + B to fill the storage tanks.</div>
     </div>`;
   }
   function placeholderBody(cp){const location=cp?.location||'Checkpoint';return `<div class="mission-instrument panel" style="text-align:center;padding:30px 18px"><div class="onboard-icon">?</div><div class="kicker">${location} / Creative Hold</div><h2 style="font-family:var(--display);text-transform:uppercase;font-size:28px;margin:8px 0">Mission TBC</h2><p class="sub">This checkpoint is reserved while the final installation game is developed. GPS activation, route progression and completion behaviour remain active for testing.</p><button class="btn primary wide" style="margin-top:16px" id="completePlaceholder">Complete Demo Step</button></div>`}

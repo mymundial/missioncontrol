@@ -1,6 +1,5 @@
   function bindSpirit(){
     const rig=document.getElementById('spiritRig');
-    const stateEl=document.getElementById('spiritState');
     const stageNumber=document.getElementById('spiritStageNumber');
     const stageName=document.getElementById('spiritStageName');
     const stageDots=[...document.querySelectorAll('[data-spirit-stage-dot]')];
@@ -17,7 +16,7 @@
       A:document.querySelector('.spirit-bank-left'),
       B:document.querySelector('.spirit-bank-right')
     };
-    if(!rig||!stateEl||!stageNumber||!stageName||stageDots.length!==5||buttons.length!==2||tankMap.A.length!==4||tankMap.B.length!==4) return;
+    if(!rig||!stageNumber||!stageName||stageDots.length!==5||buttons.length!==2||tankMap.A.length!==4||tankMap.B.length!==4) return;
 
     const stages=['IGNITION','CHARGE','PRESSURE','SURGE','STABLE'];
     const tapsPerTank=4;
@@ -109,8 +108,7 @@
     }
 
     function updateExpected(){
-      buttons.forEach(button=>button.classList.toggle('is-next',button.dataset.charge===expected));
-      stateEl.textContent=completed?'Storage tanks stable.':`Alternate A + B · Tap ${expected}`;
+      buttons.forEach(button=>button.classList.toggle('is-next',!completed&&button.dataset.charge===expected));
     }
 
     function completeSpirit(){
