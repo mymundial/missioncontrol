@@ -115,7 +115,7 @@
       notes.slice().forEach(note=>{
         note.y+=speed*dt;
         note.el.style.top=(note.y*100)+'%';
-        if(note.y>.94) missNote(note);
+        if(note.y>.92) missNote(note);
       });
       raf=requestAnimationFrame(frame);
     }
@@ -124,9 +124,9 @@
       const key=btn.dataset.arrow;
       const laneNotes=notes.filter(n=>n.key===key);
       const candidate=laneNotes.sort((a,b)=>Math.abs(a.y-.80)-Math.abs(b.y-.80))[0];
-      const inWindow=candidate&&candidate.y>=.70&&candidate.y<=.90;
+      const inWindow=candidate&&candidate.y>=.73&&candidate.y<=.87;
       if(!inWindow){
-        stateEl.textContent='Wait for the signal to reach the capture line';
+        stateEl.textContent='Wait for the signal to enter the target zone';
         haptic(8);
         return;
       }
