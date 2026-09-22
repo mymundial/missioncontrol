@@ -1,6 +1,7 @@
   function bindComet(){
     const dirClass={L:'left',D:'down',U:'up',R:'right'};
     const keys=['L','D','U','R'];
+    const laneLeftPct={L:12.5,D:37.5,U:62.5,R:87.5};
     const game=document.getElementById('cometGame');
     const notesLayer=document.getElementById('cometNotes');
     const progress=document.getElementById('cometProgress');
@@ -33,20 +34,12 @@
     let lastLane='';
     let notes=[];
     let music=null;
+    let completionSfx=null;
     let signalCount=0;
-    let crossedRun=0;
     let nextSpawnAt=BEAT_OFFSET;
 
     function clock(){ return Math.max(0,(performance.now()-clockStart)/1000); }
     function spawnGapBeats(){ return correct<3?1.5:correct<7?1.25:1; }
-    function validChance(){ return correct<3?.74:correct<7?.66:.58; }
-    function laneCenter(key){
-      const lane=document.querySelector(`[data-comet-lane="${key}"]`);
-      if(!lane) return 0;
-      const wrap=game.getBoundingClientRect();
-      const r=lane.getBoundingClientRect();
-      return (r.left-wrap.left)+(r.width/2);
-    }
     function arrowMarkup(key){
       return `<span class="comet-arrow-icon comet-arrow-${dirClass[key]}" aria-hidden="true"><i></i><i></i></span><span class="comet-tail"></span>`;
     }
@@ -55,15 +48,6 @@
       const lane=pool[Math.floor(Math.random()*pool.length)]||keys[Math.floor(Math.random()*keys.length)];
       lastLane=lane;
       return lane;
-    }
-    function chooseSignal(laneKey){
-      let valid=Math.random()<validChance();
-      if(crossedRun>=2) valid=true;
-      if(signalCount<2) valid=true;
-      if(valid){ crossedRun=0; return {dirKey:laneKey,valid:true}; }
-      crossedRun++;
-      const other=keys.filter(k=>k!==laneKey);
-      return {dirKey:other[Math.floor(Math.random()*other.length)],valid:false};
     }
     function startMusic(){
       if(!state.audio) return;
@@ -84,6 +68,21 @@
       if(!music) return;
       try{music.pause();music.currentTime=0;}catch{}
       music=null;
+    }
+    function playCompletionSound(){
+      if(!state.audio) return;
+      try{
+        completionSfx=new Audio('./assets/comet-curve-complete.mp3');
+        completionSfx.preload='auto';
+        completionSfx.volume=.86;
+        completionSfx.currentTime=0;
+        completionSfx.play().catch(()=>{});
+      }catch{completionSfx=null;}
+    }
+    function stopCompletionSound(){
+      if(!completionSfx) return;
+      try{completionSfx.pause();completionSfx.currentTime=0;}catch{}
+      completionSfx=null;
     }
     function pulseBeat(){
       game.classList.remove('beat-pulse');
@@ -125,17 +124,19 @@
     function spawn(spawnAt=clock()){
       if(finished) return;
       const laneKey=chooseLane();
-      const signal=chooseSignal(laneKey);
       const targetTime=spawnAt+(TRAVEL_BEATS*BEAT);
       const el=document.createElement('div');
-      el.className=`comet-note active ${dirClass[signal.dirKey]}${signal.valid?'':' crossed'}`;
+      el.className=`comet-note active ${dirClass[laneKey]}`;
       el.dataset.lane=laneKey;
-      el.dataset.direction=signal.dirKey;
-      el.style.left=laneCenter(laneKey)+'px';
+      el.dataset.direction=laneKey;
+      // Lock each direction to one fixed lane centre. Do not derive note
+      // position from live element geometry: LEFT/DOWN/UP/RIGHT are always
+      // 12.5/37.5/62.5/87.5% respectively.
+      el.style.left=laneLeftPct[laneKey]+'%';
       el.style.top='5%';
-      el.innerHTML=arrowMarkup(signal.dirKey);
+      el.innerHTML=arrowMarkup(laneKey);
       notesLayer.appendChild(el);
-      notes.push({laneKey,dirKey:signal.dirKey,valid:signal.valid,el,spawnTime:spawnAt,targetTime,hit:false});
+      notes.push({laneKey,dirKey:laneKey,el,spawnTime:spawnAt,targetTime,hit:false});
       signalCount++;
       if(signalCount===2&&instruction) instruction.classList.add('recede');
       if(!raf) raf=requestAnimationFrame(frame);
@@ -165,13 +166,6 @@
       stateEl.textContent=message;
       ping(180,.09,.025);
       haptic([18,20,28]);
-    }
-    function passCrossed(note){
-      if(!note||!notes.includes(note)) return;
-      note.el.classList.add('ignored');
-      setTimeout(()=>note.el.remove(),150);
-      notes=notes.filter(n=>n!==note);
-      stateEl.textContent='CROSSED SIGNAL IGNORED';
     }
     function hitNote(note,error){
       if(finished||!note) return;
@@ -204,9 +198,11 @@
         judgement.textContent='GUIDANCE SIGNAL LOCKED';
         judgement.className='comet-judgement show complete';
         stateEl.textContent='GUIDANCE SIGNAL LOCKED';
-        ping(980,.15,.05);haptic([30,22,60]);
-        // Deliberately keep the rhythm track looping through the completion
-        // screen. cleanupMission stops it only when the player leaves MC-07.
+        // Completion ends the rhythm loop immediately, then plays the
+        // dedicated one-shot payoff supplied for MC-07.
+        stopMusic();
+        playCompletionSound();
+        haptic([30,22,60]);
         setTimeout(()=>showCompletion('Guidance Signal Locked',''),900);
       }
     }
@@ -227,8 +223,7 @@
         }
         note.el.style.top=(y*100)+'%';
         if(t-note.targetTime>MISS_WINDOW){
-          if(note.valid) registerMiss(note.laneKey,'SIGNAL MISSED',note);
-          else passCrossed(note);
+          registerMiss(note.laneKey,'SIGNAL MISSED',note);
         }
       });
       raf=requestAnimationFrame(frame);
@@ -252,10 +247,6 @@
         return;
       }
 
-      if(!candidate.note.valid){
-        registerMiss(key,'CROSSED SIGNAL CAPTURED',candidate.note);
-        return;
-      }
       if(candidate.error>GOOD_WINDOW){
         registerMiss(key,'TIMING LOST',candidate.note);
         return;
@@ -271,6 +262,7 @@
       notes.forEach(n=>n.el.remove());
       notes=[];
       stopMusic();
+      stopCompletionSound();
     };
 
     clockStart=performance.now();
