@@ -222,7 +222,7 @@
       placeholder:'This checkpoint is reserved while the final installation game is developed.',
       artifacts:'Clear the unstable signatures and stabilise the Starstream.',
       comet:'Lock 10 directional signals to restore Santa-1’s guidance path.',
-      jingle:'Time three propulsion pulses so each lands inside the target flight zone.',
+      jingle:'Synchronise the three propulsion channels.',
       lando:'React the moment the lights go out to calibrate Santa-1 flight control.',
       aurora:'Align the navigation rings and lock Santa-1 onto the North Pole.',
       lapland:'Final systems verification.',
@@ -435,29 +435,25 @@
   }
   function jingleBody(){
     const rows=[
-      {level:1,label:'Calibration Speed',status:'Armed'},
-      {level:2,label:'Sync Speed',status:'Standby'},
-      {level:3,label:'Precision Speed',status:'Standby'}
+      {level:1,label:'Channel 01',mode:'Calibration',status:'Armed'},
+      {level:2,label:'Channel 02',mode:'Sync',status:'Standby'},
+      {level:3,label:'Channel 03',mode:'Precision',status:'Standby'}
     ];
-    return `<div class="mission-instrument panel jingle-panel">
+    return `<div class="mission-instrument panel jingle-panel" id="jinglePanel">
       <div class="jingle-stack">${rows.map(r=>`<div class="jingle-stage ${r.level===1?'active':'standby'}" data-jingle-stage="${r.level}">
-        <div class="jingle-stage-head"><span><strong>${r.level}</strong> · ${r.label}</span><em data-jingle-status="${r.level}">${r.status}</em></div>
+        <div class="jingle-stage-head">
+          <span><strong>${r.label}</strong><small>${r.mode}</small></span>
+          <em data-jingle-status="${r.level}">${r.status}</em>
+        </div>
         <div class="sync-lane sync-lane-${r.level}">
-          <div class="propulsion-nozzle propulsion-nozzle-left" aria-hidden="true"><i></i></div>
-          <div class="propulsion-nozzle propulsion-nozzle-right" aria-hidden="true"><i></i></div>
-          <div class="propulsion-rail" aria-hidden="true"></div>
-          <div class="propulsion-particles" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
-          <div class="flight-zone" aria-hidden="true"><span>SYNC</span></div>
+          <div class="propulsion-trackline" aria-hidden="true"></div>
+          <div class="flight-zone" aria-hidden="true"><span>SYNC</span><i></i></div>
           <div class="pulse-trail ${r.level===1?'active':''}" data-pulse-trail="${r.level}" aria-hidden="true"></div>
-          <div class="pulse-dot ${r.level===1?'active':''}" data-pulse-dot="${r.level}"></div>
-          <div class="propulsion-burst" aria-hidden="true"><i></i><i></i><i></i></div>
+          <div class="pulse-dot ${r.level===1?'active':''}" data-pulse-dot="${r.level}" aria-hidden="true"></div>
         </div>
       </div>`).join('')}</div>
-      <div class="jingle-progress" aria-label="Propulsion pulse progress">
-        ${rows.map(r=>`<span class="${r.level===1?'active':'pending'}" data-jingle-progress="${r.level}"><i></i><b>Pulse ${r.level}</b></span>`).join('')}
-      </div>
-      <div class="signal-state jingle-state" id="jingleState">Pulse 1 · calibration speed</div>
-      <button class="btn primary wide jingle-sync-btn" id="syncPulse"><span>Sync Pulse</span><i aria-hidden="true">›››</i></button>
+      <div class="signal-state jingle-state" id="jingleState">Channel 01 · armed</div>
+      <button class="btn primary wide jingle-sync-btn" id="syncPulse"><span>Sync Pulse</span></button>
     </div>`;
   }
   function landoBody(){

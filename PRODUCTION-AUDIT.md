@@ -1,4 +1,4 @@
-# Pass 7-08-08 — Production Audit
+# Pass 7-08-09 — Production Audit
 
 ## Result
 
@@ -12,14 +12,15 @@
 - No WAV/source-master audio is deployed.
 - Runtime images remain WebP/SVG, audio MP3, and fonts WOFF2.
 
-## Mission settings update verified
+## Jingle Beams update verified
 
-- Comms now includes a Mission Settings panel above ELF FM.
-- GPS Location uses the existing Mission Radar setup icon and can stop/restart the live GPS watch.
-- Re-enabling GPS requests a fresh high-accuracy location fix; Demo Mode only switches to live GPS after the user explicitly enables GPS and permission succeeds.
-- Mission Audio uses the existing onboarding audio icon and updates the same global `state.audio` preference used by mission voice/music/effects.
-- ELF FM remains independent and its playback toggle is labelled Radio.
-- Existing Comet Curve / Lapland Launch radio-priority behaviour is unchanged.
+- MC-08 remains the existing three-hit timing interaction; no additional gameplay phase was introduced.
+- Three propulsion channels now use clearer horizontal energy tracks with explicit SYNC windows.
+- Timing windows progressively tighten while pulse speed increases from Channel 01 to Channel 03.
+- Completed channels remain visibly LOCKED while the next channel arms.
+- EARLY / LATE feedback is limited to the current channel and clears quickly.
+- The Sync Pulse control receives a restrained approach cue rather than a new control scheme.
+- Completing Channel 03 triggers a short all-channel illumination and PROPULSION ONLINE state before the existing completion modal.
 
 ## Automated checks passed
 

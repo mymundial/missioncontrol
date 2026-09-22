@@ -1,3 +1,12 @@
+## Pass 7-08-09 — Jingle Beams gameplay polish
+- Simplified MC-08 Propulsion Sync around the existing three-hit timing mechanic rather than adding new gameplay.
+- Reworked the three propulsion channels into cleaner horizontal energy tracks with a clearer SYNC window and reduced decorative machinery.
+- Each completed channel now stays visibly energised while the next channel arms, creating a clearer three-stage build.
+- Increased difficulty progressively across the three channels using both faster pulse speed and tighter timing windows.
+- Added restrained EARLY / LATE feedback and a subtle approach cue on the Sync Pulse control.
+- Final success now resolves all three channels together into a short PROPULSION ONLINE payoff before the existing completion flow.
+- No route, GPS, radio, onboarding or other mission behaviour changes.
+
 ## Pass 7-08-08 — Comms mission settings
 - Added a compact Mission Settings panel above ELF FM on the Comms page.
 - Added GPS Location and Mission Audio toggle controls using the same radar and audio icons from onboarding.
