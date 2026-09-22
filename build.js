@@ -32,7 +32,7 @@ for (const dir of ['assets', 'fonts', 'admin']) {
 }
 
 // Do not deploy retired runtime media that is intentionally no longer referenced.
-for (const file of ['spirit-energy-vortex.mp3']) {
+for (const file of ['spirit-energy-vortex.mp3', 'jingle-arena-loop.mp3']) {
   fs.rmSync(path.join(out, 'assets', file), { force: true });
 }
 

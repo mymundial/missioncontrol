@@ -1,17 +1,4 @@
 ## Pass 7-08-09 — Jingle Beams gameplay polish
-## Pass 7.10.0 — Jingle Beams five-goal escalation and audio polish
-
-- Expanded MC-08 from three goals to five propulsion goals.
-- Goals 04 and 05 now use continuously sweeping receivers; Goal 05 moves faster while puck-speed escalation stays deliberately modest for mobile playability.
-- Rebuilt the receiver into a bright central scoring aperture with left/right rebound posts so the visible white beam now matches the true scoring zone.
-- Added distinct post-hit feedback using a compressed production edit of the supplied glitched impact sound.
-- Added a compressed 20.8-second Arena Sports gameplay loop; Jingle Beams now takes mission-audio priority over ELF FM and restores the radio when the mission closes.
-- The music hard-stops on Goal 05 before the goal confirmation and final hockey buzzer sequence.
-- Increased puck trail length and brightness, added impact sparks, stronger paddle/rail/post feedback, receiver energy animation and progressive arena intensity as beams charge.
-- Reduced redundant in-game copy: progress is carried by five beam indicators and the initial DRAG TO MOVE prompt, while dynamic state remains available to assistive technology.
-- Source WAV masters and the full supplied music master are not deployed.
-- Bumped runtime asset cache version to 7.10.0.
-
 - Simplified MC-08 Propulsion Sync around the existing three-hit timing mechanic rather than adding new gameplay.
 - Reworked the three propulsion channels into cleaner horizontal energy tracks with a clearer SYNC window and reduced decorative machinery.
 - Each completed channel now stays visibly energised while the next channel arms, creating a clearer three-stage build.
@@ -565,3 +552,13 @@ This pass adds a self-contained static build for Vercel. No Vercel project-setti
 - Added permanent three-beam progress indicators, glow trails, rail pulses, paddle impact feedback and a final PROPULSION ONLINE surge.
 - Added production MP3 edits for puck strike, goal confirmation and final hockey buzzer; source WAV masters are not deployed.
 - Bumped runtime asset cache version to 7.9.0.
+
+## Pass 7.11.0 — Jingle Beams controlled rollback + post rebound
+
+- Restored the Pass 7.9 three-goal Jingle Beams gameplay, original receiver geometry, original puck trail and original three-round difficulty curve.
+- Removed the Pass 7.10 moving Goal 04 / Goal 05 escalation and removed Jingle Beams mission music/radio override while a replacement track is selected.
+- Kept the cleaner HUD treatment: removed the duplicate instruction line, receiver beam label and secondary drag copy; the live status remains available to assistive technology but is no longer visible.
+- The existing bright centre strip now defines the scoring aperture. Hits inside the same receiver but just left or right of that strip rebound back into play instead of scoring.
+- Retained the compressed `jingle-post-hit.mp3` effect for those rebound contacts; no WAV master is deployed.
+- Retired `jingle-arena-loop.mp3` from production; the build explicitly excludes it so a 7.10 overlay cannot accidentally redeploy the rejected loop.
+- Bumped runtime asset cache version to 7.11.0.

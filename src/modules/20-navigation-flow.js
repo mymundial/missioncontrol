@@ -54,7 +54,7 @@
       triggerCircuitEntry();
       return;
     }
-    if(state.audio&&(id==='comet'||id==='jingle'||id==='lapland')) beginMissionAudioRadioOverride(id);
+    if(state.audio&&(id==='comet'||id==='lapland')) beginMissionAudioRadioOverride(id);
     ping(780,.06,.04);haptic(25);
     set({missionOpen:id,missionReturnNav:state.nav});
   }

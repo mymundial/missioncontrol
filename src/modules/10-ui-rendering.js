@@ -222,7 +222,7 @@
       placeholder:'This checkpoint is reserved while the final installation game is developed.',
       artifacts:'Clear the unstable signatures and stabilise the Starstream.',
       comet:'Lock 10 directional signals to restore Santa-1’s guidance path.',
-      jingle:'Charge all 5 propulsion beams.',
+      jingle:'Charge all 3 propulsion beams.',
       lando:'React the moment the lights go out to calibrate Santa-1 flight control.',
       aurora:'Align the navigation rings and lock Santa-1 onto the North Pole.',
       lapland:'Final systems verification.',
@@ -434,15 +434,15 @@
     </div>`;
   }
   function jingleBody(){
-    return `<div class="mission-instrument panel jingle-panel" id="jinglePanel" data-charge="0">
+    return `<div class="mission-instrument panel jingle-panel" id="jinglePanel">
       <div class="jingle-beam-progress" aria-label="Jingle Beam charge progress">
-        ${[1,2,3,4,5].map(i=>`<div class="jingle-beam-indicator ${i===1?'is-next':''}" data-jingle-beam="${i}"><span aria-hidden="true"><i></i></span><strong>0${i}</strong></div>`).join('')}
+        ${[1,2,3].map(i=>`<div class="jingle-beam-indicator ${i===1?'is-next':''}" data-jingle-beam="${i}"><span aria-hidden="true"><i></i></span><strong>0${i}</strong></div>`).join('')}
       </div>
-      <div class="jingle-arena" id="jingleArena" tabindex="0" role="application" aria-label="Jingle Beams propulsion game. Drag to move the paddle. Score through the bright centre beam; the side posts rebound the puck.">
+      <div class="jingle-arena" id="jingleArena" tabindex="0" role="application" aria-label="Jingle Beams propulsion game. Drag to move the paddle and direct the charge through the bright centre beam. The receiver edges rebound the puck.">
         <div class="jingle-grid" aria-hidden="true"></div>
         <div class="jingle-energy-rail rail-left" aria-hidden="true"><i></i></div>
         <div class="jingle-energy-rail rail-right" aria-hidden="true"><i></i></div>
-        <div class="jingle-receiver" id="jingleReceiver" aria-hidden="true"><b class="jingle-goal-post post-left"></b><span class="jingle-goal-aperture"></span><b class="jingle-goal-post post-right"></b></div>
+        <div class="jingle-receiver" id="jingleReceiver" aria-hidden="true"><span></span><i></i></div>
         <div class="jingle-goal-flare" id="jingleGoalFlare" aria-hidden="true"></div>
         <div class="jingle-puck-trail" id="jinglePuckTrail" aria-hidden="true"></div>
         <div class="jingle-puck" id="jinglePuck" aria-hidden="true"><i></i></div>

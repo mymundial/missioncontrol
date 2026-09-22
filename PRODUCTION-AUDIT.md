@@ -1,4 +1,4 @@
-# Pass 7.10.0 — Production Audit
+# Pass 7.11.0 — Production Audit
 
 ## Result
 
@@ -6,26 +6,26 @@
 
 ## Production footprint
 
-- `dist/`: **8.610 MiB** (**9,028,231 bytes**)
-- Production files: **50**
-- Previous Jingle Beams build: **8.317 MiB / 48 files**
-- Meaningful delta: **+307,225 bytes (~300.0 KiB)** and **+2 files**.
-- The delta is primarily the new compressed 20.8-second arena music loop plus the post-hit SFX; no source WAV or full 80-second music master is deployed.
+- `dist/`: **8.328 MiB**
+- Production files: **49**
+- Versus Pass 7.10.0: **-295,307 bytes (~288.4 KiB)** and **-1 production file**, primarily from removing the Jingle Beams arena music asset.
+- Versus the Pass 7.9.0 baseline: **+11,918 bytes (~11.6 KiB)** and **+1 production file**, from the post-hit production MP3 plus the small gameplay/CSS changes.
+- No WAV/source-master audio is deployed.
+- No Jingle Beams gameplay music is deployed in this pass; `build.js` explicitly removes the retired 7.10 arena loop from `dist/` if it remains in an overlaid working tree.
 - No test/temp files are deployed.
 - Runtime images remain WebP/SVG and fonts WOFF2.
 
 ## Jingle Beams update verified
 
-- MC-08 now requires five successful goals rather than three.
-- Goals 01–03 use static receiver positions with progressive puck speed.
-- Goal 04 continuously sweeps the receiver left-to-right and back on a smooth 5.2-second cycle.
-- Goal 05 uses the same smooth sweep at a faster 3.2-second cycle while keeping the puck-speed increase modest for mobile control.
-- Only the bright centre aperture scores; the left/right receiver posts rebound the puck and trigger the dedicated post-hit sound.
-- Puck trail length/intensity now scales with speed, with added rail, paddle, post and goal impact sparks.
-- The arena progressively gains energy as each beam is charged.
-- Jingle Beams now suppresses ELF FM while active, starts its own Arena Sports loop when mission audio is enabled, and restores the user's radio state on mission teardown.
-- Final sequence is: Goal 05 → music hard-stop → goal confirmation → full beam surge → hockey buzzer → PROPULSION ONLINE.
-- Redundant visible state/instruction copy was reduced; dynamic state remains in the live region for assistive technology.
+- MC-08 is back to three goals using the Pass 7.9 original arena, receiver and puck-trail treatment.
+- Beam 01, Beam 02 and Beam 03 remain static receiver positions with the original progressive puck speeds.
+- The visible bright centre strip is now the scoring aperture.
+- Receiver contact immediately left or right of the scoring aperture rebounds the puck into play and triggers `jingle-post-hit.mp3`.
+- No new visible post geometry was introduced.
+- Duplicate visible HUD copy remains removed; only the three beam indicators and initial `DRAG TO MOVE` cue are retained inside the game body.
+- The live gameplay state remains present as an `aria-live` region but is visually hidden.
+- Jingle Beams no longer starts mission music or overrides ELF FM in this pass.
+- Third-goal completion remains goal confirmation → final beam surge → hockey buzzer → PROPULSION ONLINE → standard completion modal.
 
 ## Automated checks passed
 
@@ -46,6 +46,12 @@
 
 ## Non-blocking warnings
 
-1. **Deployment footprint:** 8.61 MB exceeds the 7 MB audit target, primarily because the full Lapland Launch music track remains intentionally retained.
+1. **Deployment footprint:** 8.33 MB exceeds the 7 MB audit target, primarily because the full Lapland Launch music track remains intentionally retained.
 2. **ELF FM stream:** current Radio Mast URL is still identified as a test stream and should be replaced when the production stream is supplied.
 3. **Web app manifest:** no install icon is defined; normal browser/QR use is unaffected.
+
+## Re-run
+
+```bash
+npm run audit
+```
