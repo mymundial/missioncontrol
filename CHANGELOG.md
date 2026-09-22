@@ -542,3 +542,13 @@ This pass adds a self-contained static build for Vercel. No Vercel project-setti
 - Lapland Launch final systems verification now checks MC-03 / Luffield completion for the Comms system.
 - ELF FM radio tuning remains an optional Comms interaction and no longer affects mission or launch completion.
 - Service-worker cache bumped to v79.
+
+## Pass 7.9.0 — Jingle Beams neon propulsion arena
+
+- Replaced the MC-08 three-lane timing interaction with a single-screen neon Pong / air-hockey propulsion game.
+- Player now drags a horizontal paddle to redirect an energy puck into the active beam receiver.
+- Three successful goals charge Beam 01, Beam 02 and Beam 03; the receiver shifts position and puck speed increases between rounds.
+- Missed returns relaunch automatically with no lives or game-over state.
+- Added permanent three-beam progress indicators, glow trails, rail pulses, paddle impact feedback and a final PROPULSION ONLINE surge.
+- Added production MP3 edits for puck strike, goal confirmation and final hockey buzzer; source WAV masters are not deployed.
+- Bumped runtime asset cache version to 7.9.0.

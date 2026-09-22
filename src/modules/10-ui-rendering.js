@@ -222,7 +222,7 @@
       placeholder:'This checkpoint is reserved while the final installation game is developed.',
       artifacts:'Clear the unstable signatures and stabilise the Starstream.',
       comet:'Lock 10 directional signals to restore Santa-1’s guidance path.',
-      jingle:'Synchronise the three propulsion channels.',
+      jingle:'Charge all 3 propulsion beams.',
       lando:'React the moment the lights go out to calibrate Santa-1 flight control.',
       aurora:'Align the navigation rings and lock Santa-1 onto the North Pole.',
       lapland:'Final systems verification.',
@@ -434,26 +434,23 @@
     </div>`;
   }
   function jingleBody(){
-    const rows=[
-      {level:1,label:'Channel 01',mode:'Calibration',status:'Armed'},
-      {level:2,label:'Channel 02',mode:'Sync',status:'Standby'},
-      {level:3,label:'Channel 03',mode:'Precision',status:'Standby'}
-    ];
     return `<div class="mission-instrument panel jingle-panel" id="jinglePanel">
-      <div class="jingle-stack">${rows.map(r=>`<div class="jingle-stage ${r.level===1?'active':'standby'}" data-jingle-stage="${r.level}">
-        <div class="jingle-stage-head">
-          <span><strong>${r.label}</strong><small>${r.mode}</small></span>
-          <em data-jingle-status="${r.level}">${r.status}</em>
-        </div>
-        <div class="sync-lane sync-lane-${r.level}">
-          <div class="propulsion-trackline" aria-hidden="true"></div>
-          <div class="flight-zone" aria-hidden="true"><span>SYNC</span><i></i></div>
-          <div class="pulse-trail ${r.level===1?'active':''}" data-pulse-trail="${r.level}" aria-hidden="true"></div>
-          <div class="pulse-dot ${r.level===1?'active':''}" data-pulse-dot="${r.level}" aria-hidden="true"></div>
-        </div>
-      </div>`).join('')}</div>
-      <div class="signal-state jingle-state" id="jingleState">Channel 01 · armed</div>
-      <button class="btn primary wide jingle-sync-btn" id="syncPulse"><span>Sync Pulse</span></button>
+      <div class="jingle-beam-progress" aria-label="Jingle Beam charge progress">
+        ${[1,2,3].map(i=>`<div class="jingle-beam-indicator ${i===1?'is-next':''}" data-jingle-beam="${i}"><span aria-hidden="true"><i></i></span><strong>0${i}</strong></div>`).join('')}
+      </div>
+      <div class="jingle-instruction">Redirect the charge into the beam array</div>
+      <div class="jingle-arena" id="jingleArena" tabindex="0" role="application" aria-label="Jingle Beams propulsion game. Drag to move the paddle and redirect the charge into the beam receiver.">
+        <div class="jingle-grid" aria-hidden="true"></div>
+        <div class="jingle-energy-rail rail-left" aria-hidden="true"><i></i></div>
+        <div class="jingle-energy-rail rail-right" aria-hidden="true"><i></i></div>
+        <div class="jingle-receiver" id="jingleReceiver" aria-hidden="true"><span></span><i></i><small id="jingleReceiverLabel">BEAM 01</small></div>
+        <div class="jingle-goal-flare" id="jingleGoalFlare" aria-hidden="true"></div>
+        <div class="jingle-puck-trail" id="jinglePuckTrail" aria-hidden="true"></div>
+        <div class="jingle-puck" id="jinglePuck" aria-hidden="true"><i></i></div>
+        <div class="jingle-paddle" id="jinglePaddle" aria-hidden="true"><i></i></div>
+        <div class="jingle-drag-prompt" id="jinglePrompt"><strong>DRAG TO MOVE</strong><span>Direct the charge into the receiver</span></div>
+      </div>
+      <div class="signal-state jingle-state" id="jingleState" aria-live="polite">Beam 01 · ready</div>
     </div>`;
   }
   function landoBody(){

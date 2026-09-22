@@ -1,4 +1,4 @@
-# Pass 7-08-09 — Production Audit
+# Pass 7.9.0 — Production Audit
 
 ## Result
 
@@ -6,21 +6,24 @@
 
 ## Production footprint
 
-- `dist/`: **~8.26 MiB**
-- Production files: **45**
-- No new media assets were added in this pass.
+- `dist/`: **8.317 MiB**
+- Production files: **48**
+- Previous build: **8.262 MiB / 45 files**
+- Meaningful delta: **+58,186 bytes (~56.8 KiB)** and **+3 files**, entirely from the new compressed Jingle Beams audio plus the gameplay/CSS changes.
 - No WAV/source-master audio is deployed.
-- Runtime images remain WebP/SVG, audio MP3, and fonts WOFF2.
+- No test/temp files are deployed.
+- Runtime images remain WebP/SVG and fonts WOFF2.
 
 ## Jingle Beams update verified
 
-- MC-08 remains the existing three-hit timing interaction; no additional gameplay phase was introduced.
-- Three propulsion channels now use clearer horizontal energy tracks with explicit SYNC windows.
-- Timing windows progressively tighten while pulse speed increases from Channel 01 to Channel 03.
-- Completed channels remain visibly LOCKED while the next channel arms.
-- EARLY / LATE feedback is limited to the current channel and clears quickly.
-- The Sync Pulse control receives a restrained approach cue rather than a new control scheme.
-- Completing Channel 03 triggers a short all-channel illumination and PROPULSION ONLINE state before the existing completion modal.
+- MC-08 is now a one-sided neon Pong / air-hockey propulsion arena rather than the previous timing-bar interaction.
+- Direct drag control moves a single bottom paddle; keyboard left/right and A/D input remain available for desktop accessibility.
+- The energy puck rebounds from the arena rails and paddle; paddle contact influences the outgoing angle.
+- Beam 01 starts with the slowest puck and centered receiver. Beam 02 and Beam 03 progressively increase speed and shift the receiver position.
+- A missed puck triggers a short relaunch rather than a failure state.
+- Each successful goal permanently charges one of the three beam indicators.
+- Third goal sequence is: goal confirmation → final beam surge → hockey buzzer → PROPULSION ONLINE → standard completion modal.
+- New audio assets are compressed MP3 production edits: puck strike, goal confirmation and final buzzer.
 
 ## Automated checks passed
 
@@ -41,7 +44,7 @@
 
 ## Non-blocking warnings
 
-1. **Deployment footprint:** ~8.26 MiB exceeds the 7 MiB audit target, primarily because the full Lapland Launch music track is intentionally retained.
+1. **Deployment footprint:** 8.32 MB exceeds the 7 MB audit target, primarily because the full Lapland Launch music track remains intentionally retained.
 2. **ELF FM stream:** current Radio Mast URL is still identified as a test stream and should be replaced when the production stream is supplied.
 3. **Web app manifest:** no install icon is defined; normal browser/QR use is unaffected.
 

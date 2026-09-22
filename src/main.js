@@ -20,7 +20,7 @@
     {id:'spirit', mc:'MC-05', location:'Copse', name:'Spirit Depot', type:'spirit', playable:true, core:true, mission:'Charge the Spirit Core', lat:52.07895798720806, lng:-1.0124059222979016, detectionRadius:120, activationRadius:30},
     {id:'escapade', mc:'MC-06', location:'Escapade', name:'Starstream Escapade', type:'artifacts', playable:true, core:true, mission:'Energy Interference', lat:52.07480005189975, lng:-1.0102119794664433, detectionRadius:120, activationRadius:30},
     {id:'comet', mc:'MC-07', location:'Becketts', name:'Comet Curve', type:'comet', playable:true, core:true, mission:'Guidance Calibration', lat:52.07247136741095, lng:-1.0099658493552224, detectionRadius:140, activationRadius:30},
-    {id:'jingle', mc:'MC-08', location:'Hangar Straight', name:'Jingle Beams', type:'jingle', playable:true, core:true, mission:'Propulsion Sync', lat:52.067475902465475, lng:-1.0132842109045421, detectionRadius:150, activationRadius:35},
+    {id:'jingle', mc:'MC-08', location:'Hangar Straight', name:'Jingle Beams', type:'jingle', playable:true, core:true, mission:'Jingle Beams', lat:52.067475902465475, lng:-1.0132842109045421, detectionRadius:150, activationRadius:35},
     {id:'lando', mc:'MC-09', location:'Stowe', name:'Lightspeed Lando', type:'lando', playable:true, core:true, mission:'High-Speed Control', lat:52.06363909240851, lng:-1.017077251994755, detectionRadius:120, activationRadius:30},
     {id:'aurora', mc:'MC-10', location:'Vale', name:'Aurora Apex', type:'aurora', playable:true, core:true, mission:'Aurora Lock', lat:52.065488708771205, lng:-1.0204674536551839, detectionRadius:120, activationRadius:30},
     {id:'lapland', mc:'MC-11', location:'Hamilton Straight', name:'Lapland Launch', type:'lapland', playable:true, core:true, mission:'Final Systems Test', lat:52.06828247188286, lng:-1.0234649670014986, detectionRadius:150, activationRadius:35},
@@ -623,7 +623,7 @@
       placeholder:'This checkpoint is reserved while the final installation game is developed.',
       artifacts:'Clear the unstable signatures and stabilise the Starstream.',
       comet:'Lock 10 directional signals to restore Santa-1’s guidance path.',
-      jingle:'Synchronise the three propulsion channels.',
+      jingle:'Charge all 3 propulsion beams.',
       lando:'React the moment the lights go out to calibrate Santa-1 flight control.',
       aurora:'Align the navigation rings and lock Santa-1 onto the North Pole.',
       lapland:'Final systems verification.',
@@ -835,26 +835,23 @@
     </div>`;
   }
   function jingleBody(){
-    const rows=[
-      {level:1,label:'Channel 01',mode:'Calibration',status:'Armed'},
-      {level:2,label:'Channel 02',mode:'Sync',status:'Standby'},
-      {level:3,label:'Channel 03',mode:'Precision',status:'Standby'}
-    ];
     return `<div class="mission-instrument panel jingle-panel" id="jinglePanel">
-      <div class="jingle-stack">${rows.map(r=>`<div class="jingle-stage ${r.level===1?'active':'standby'}" data-jingle-stage="${r.level}">
-        <div class="jingle-stage-head">
-          <span><strong>${r.label}</strong><small>${r.mode}</small></span>
-          <em data-jingle-status="${r.level}">${r.status}</em>
-        </div>
-        <div class="sync-lane sync-lane-${r.level}">
-          <div class="propulsion-trackline" aria-hidden="true"></div>
-          <div class="flight-zone" aria-hidden="true"><span>SYNC</span><i></i></div>
-          <div class="pulse-trail ${r.level===1?'active':''}" data-pulse-trail="${r.level}" aria-hidden="true"></div>
-          <div class="pulse-dot ${r.level===1?'active':''}" data-pulse-dot="${r.level}" aria-hidden="true"></div>
-        </div>
-      </div>`).join('')}</div>
-      <div class="signal-state jingle-state" id="jingleState">Channel 01 · armed</div>
-      <button class="btn primary wide jingle-sync-btn" id="syncPulse"><span>Sync Pulse</span></button>
+      <div class="jingle-beam-progress" aria-label="Jingle Beam charge progress">
+        ${[1,2,3].map(i=>`<div class="jingle-beam-indicator ${i===1?'is-next':''}" data-jingle-beam="${i}"><span aria-hidden="true"><i></i></span><strong>0${i}</strong></div>`).join('')}
+      </div>
+      <div class="jingle-instruction">Redirect the charge into the beam array</div>
+      <div class="jingle-arena" id="jingleArena" tabindex="0" role="application" aria-label="Jingle Beams propulsion game. Drag to move the paddle and redirect the charge into the beam receiver.">
+        <div class="jingle-grid" aria-hidden="true"></div>
+        <div class="jingle-energy-rail rail-left" aria-hidden="true"><i></i></div>
+        <div class="jingle-energy-rail rail-right" aria-hidden="true"><i></i></div>
+        <div class="jingle-receiver" id="jingleReceiver" aria-hidden="true"><span></span><i></i><small id="jingleReceiverLabel">BEAM 01</small></div>
+        <div class="jingle-goal-flare" id="jingleGoalFlare" aria-hidden="true"></div>
+        <div class="jingle-puck-trail" id="jinglePuckTrail" aria-hidden="true"></div>
+        <div class="jingle-puck" id="jinglePuck" aria-hidden="true"><i></i></div>
+        <div class="jingle-paddle" id="jinglePaddle" aria-hidden="true"><i></i></div>
+        <div class="jingle-drag-prompt" id="jinglePrompt"><strong>DRAG TO MOVE</strong><span>Direct the charge into the receiver</span></div>
+      </div>
+      <div class="signal-state jingle-state" id="jingleState" aria-live="polite">Beam 01 · ready</div>
     </div>`;
   }
   function landoBody(){
@@ -2609,123 +2606,324 @@
     raf=requestAnimationFrame(frame);
   }
   function bindJingle(){
-    let level=1;
-    let x=0;
-    let dir=1;
-    let last=performance.now();
-    let raf=0;
-    let feedbackTimer=0;
-    let advanceTimer=0;
     const panel=document.getElementById('jinglePanel');
-    const st=document.getElementById('jingleState');
-    const btn=document.getElementById('syncPulse');
+    const arena=document.getElementById('jingleArena');
+    const puck=document.getElementById('jinglePuck');
+    const trail=document.getElementById('jinglePuckTrail');
+    const paddle=document.getElementById('jinglePaddle');
+    const receiver=document.getElementById('jingleReceiver');
+    const receiverLabel=document.getElementById('jingleReceiverLabel');
+    const goalFlare=document.getElementById('jingleGoalFlare');
+    const prompt=document.getElementById('jinglePrompt');
+    const stateEl=document.getElementById('jingleState');
+    if(!panel||!arena||!puck||!trail||!paddle||!receiver||!stateEl) return;
 
-    // Each channel is quicker and less forgiving than the last.
-    const speeds=[0,0.058,0.076,0.10];
-    const windows=[null,[40,60],[43,57],[46,54]];
+    let beam=1;
+    let running=false;
+    let started=false;
+    let dragging=false;
+    let raf=0;
+    let launchTimer=0;
+    let finishTimer=0;
+    let buzzerTimer=0;
+    let last=performance.now();
+    let lastStrikeAt=0;
+    let bounds={w:0,h:0,paddleW:0,paddleH:0,paddleY:0,puckR:9,goalW:0,goalLeft:0,goalBottom:0};
+    let paddleX=0;
+    let puckX=0;
+    let puckY=0;
+    let vx=0;
+    let vy=0;
+    let previousPuck={x:0,y:0};
+    const speeds=[0,0.245,0.285,0.325];
+    const goalPositions=[0,.50,.31,.69];
 
-    function dotFor(n){return document.querySelector(`[data-pulse-dot="${n}"]`);}
-    function trailFor(n){return document.querySelector(`[data-pulse-trail="${n}"]`);}
-    function stageFor(n){return document.querySelector(`[data-jingle-stage="${n}"]`);}
-    function statusFor(n){return document.querySelector(`[data-jingle-status="${n}"]`);}
+    const strikePool=Array.from({length:3},()=>{
+      const a=new Audio('./assets/jingle-puck-strike.mp3');
+      a.preload='auto';
+      return a;
+    });
+    const goalAudio=new Audio('./assets/jingle-goal.mp3');
+    goalAudio.preload='auto';
+    const buzzerAudio=new Audio('./assets/jingle-buzzer.mp3');
+    buzzerAudio.preload='auto';
+    let strikeIndex=0;
 
-    function setPulsePosition(n,value){
-      const dot=dotFor(n);
-      const trail=trailFor(n);
-      if(dot) dot.style.left=value+'%';
-      if(trail) trail.style.setProperty('--pulse-x',value+'%');
+    function beamEl(n){return document.querySelector(`[data-jingle-beam="${n}"]`);}
+    function clamp(v,min,max){return Math.max(min,Math.min(max,v));}
+    function playAudio(el,volume=1,rate=1){
+      if(!state.audio||!el) return;
+      try{
+        el.pause();
+        el.currentTime=0;
+        el.volume=clamp(volume,0,1);
+        el.playbackRate=rate;
+        const play=el.play();
+        if(play&&typeof play.catch==='function') play.catch(()=>{});
+      }catch{}
     }
-
-    function updateApproachCue(){
-      const [min,max]=windows[level];
-      const distance=x<min?min-x:(x>max?x-max:0);
-      btn?.classList.toggle('approaching',distance<=11);
+    function playStrike(volume=.62,rate=1){
+      if(!state.audio) return;
+      const now=performance.now();
+      if(now-lastStrikeAt<70) return;
+      lastStrikeAt=now;
+      const el=strikePool[strikeIndex++%strikePool.length];
+      playAudio(el,volume,rate);
     }
-
-    function tick(now){
-      const dt=Math.min(32,now-last); last=now;
-      x+=dir*speeds[level]*dt;
-      if(x>100){x=100;dir=-1;}else if(x<0){x=0;dir=1;}
-      setPulsePosition(level,x);
-      updateApproachCue();
-      raf=requestAnimationFrame(tick);
+    function setPaddleX(x){
+      const half=bounds.paddleW/2;
+      paddleX=clamp(x,half+10,bounds.w-half-10);
+      paddle.style.transform=`translate3d(${paddleX-half}px,0,0)`;
     }
-    raf=requestAnimationFrame(tick);
-    cleanupMission=()=>{
-      cancelAnimationFrame(raf);
-      clearTimeout(feedbackTimer);
-      clearTimeout(advanceTimer);
-    };
-
-    function flashMiss(stage,status,kind){
-      clearTimeout(feedbackTimer);
-      stage?.classList.remove('early','late');
-      void stage?.offsetWidth;
-      stage?.classList.add(kind);
-      if(status) status.textContent=kind==='early'?'EARLY':'LATE';
-      st.textContent=kind==='early'?'EARLY · wait for the sync window':'LATE · catch the next pass';
-      haptic([18,22,18]);
-      ping(220,.05,.018);
-      feedbackTimer=setTimeout(()=>{
-        stage?.classList.remove('early','late');
-        if(status) status.textContent='ARMED';
-        if(level<=3) st.textContent=`Channel 0${level} · armed`;
-      },430);
+    function setPuckPosition(){
+      const r=bounds.puckR;
+      puck.style.transform=`translate3d(${puckX-r}px,${puckY-r}px,0)`;
+      const dx=puckX-previousPuck.x;
+      const dy=puckY-previousPuck.y;
+      const length=clamp(Math.hypot(dx,dy)*10,16,58);
+      const angle=Math.atan2(dy,dx)*180/Math.PI;
+      trail.style.width=`${length}px`;
+      trail.style.transform=`translate3d(${puckX}px,${puckY}px,0) rotate(${angle+180}deg)`;
     }
-
-    function armNext(){
-      level++;
-      x=0;
-      dir=1;
+    function updateBounds(preservePaddle=true){
+      const rect=arena.getBoundingClientRect();
+      bounds.w=rect.width;
+      bounds.h=rect.height;
+      bounds.paddleW=paddle.offsetWidth;
+      bounds.paddleH=paddle.offsetHeight;
+      bounds.paddleY=paddle.offsetTop;
+      bounds.puckR=puck.offsetWidth/2;
+      bounds.goalW=receiver.offsetWidth;
+      bounds.goalLeft=parseFloat(receiver.style.left||'50')/100*bounds.w-bounds.goalW/2;
+      bounds.goalBottom=receiver.offsetTop+receiver.offsetHeight;
+      if(!preservePaddle||!paddleX) setPaddleX(bounds.w/2);
+      else setPaddleX(paddleX);
+    }
+    function setReceiverForBeam(n){
+      const position=goalPositions[n]||.5;
+      receiver.style.left=`${position*100}%`;
+      receiverLabel.textContent=`BEAM 0${n}`;
+      requestAnimationFrame(()=>updateBounds());
+    }
+    function pulseRail(side){
+      const rail=arena.querySelector(`.rail-${side}`);
+      if(!rail) return;
+      rail.classList.remove('is-hit');
+      void rail.offsetWidth;
+      rail.classList.add('is-hit');
+      setTimeout(()=>rail.classList.remove('is-hit'),180);
+    }
+    function resetPuckAtReceiver(){
+      updateBounds();
+      const rect=receiver.getBoundingClientRect();
+      const arenaRect=arena.getBoundingClientRect();
+      puckX=rect.left-arenaRect.left+rect.width/2;
+      puckY=Math.max(bounds.goalBottom+28,62);
+      previousPuck={x:puckX,y:puckY};
+      setPuckPosition();
+    }
+    function launchPuck(fromReceiver=false){
+      clearTimeout(launchTimer);
+      updateBounds();
+      if(fromReceiver) resetPuckAtReceiver();
+      else {
+        puckX=bounds.w/2;
+        puckY=Math.min(bounds.h*.35,bounds.paddleY-90);
+        previousPuck={x:puckX,y:puckY};
+        setPuckPosition();
+      }
+      const speed=speeds[beam];
+      const lateral=(beam===1?.28:(beam===2?.36:.43))*(Math.random()<.5?-1:1);
+      vx=speed*lateral;
+      vy=Math.sqrt(Math.max(.001,speed*speed-vx*vx));
+      running=true;
       last=performance.now();
-      const nextStage=stageFor(level);
-      const nextDot=dotFor(level);
-      const nextTrail=trailFor(level);
-      const nextStatus=statusFor(level);
-      nextStage?.classList.remove('standby');
-      nextStage?.classList.add('active');
-      nextDot?.classList.add('active');
-      nextTrail?.classList.add('active');
-      setPulsePosition(level,0);
-      if(nextStatus) nextStatus.textContent='ARMED';
-      st.textContent=`Channel 0${level} · armed`;
+      stateEl.textContent=`Beam 0${beam} · live`;
     }
+    function scheduleLaunch(fromReceiver=false,delay=420){
+      running=false;
+      clearTimeout(launchTimer);
+      launchTimer=setTimeout(()=>launchPuck(fromReceiver),delay);
+    }
+    function normaliseVelocity(speed){
+      const mag=Math.hypot(vx,vy)||1;
+      vx=vx/mag*speed;
+      vy=vy/mag*speed;
+    }
+    function paddleHit(){
+      const half=bounds.paddleW/2;
+      const offset=clamp((puckX-paddleX)/half,-1,1);
+      const speed=speeds[beam];
+      vx=vx*.28+offset*speed*.84;
+      vy=-Math.abs(vy||speed);
+      normaliseVelocity(speed);
+      puckY=bounds.paddleY-bounds.puckR-1;
+      paddle.classList.remove('is-hit');
+      void paddle.offsetWidth;
+      paddle.classList.add('is-hit');
+      setTimeout(()=>paddle.classList.remove('is-hit'),170);
+      playStrike(.68,1+(Math.random()-.5)*.07);
+      haptic(14);
+    }
+    function missedPaddle(){
+      running=false;
+      stateEl.textContent=`Beam 0${beam} · charge lost · relaunching`;
+      arena.classList.add('is-missed');
+      haptic([14,24,14]);
+      setTimeout(()=>arena.classList.remove('is-missed'),260);
+      scheduleLaunch(true,520);
+    }
+    function markBeamCharged(n){
+      const current=beamEl(n);
+      current?.classList.remove('is-next');
+      current?.classList.add('is-charged');
+      current?.setAttribute('aria-label',`Beam 0${n} charged`);
+      const next=beamEl(n+1);
+      next?.classList.add('is-next');
+    }
+    function finishGame(){
+      running=false;
+      panel.classList.add('is-complete');
+      arena.classList.add('is-complete');
+      stateEl.textContent='PROPULSION ONLINE';
+      clearTimeout(buzzerTimer);
+      buzzerTimer=setTimeout(()=>{
+        playAudio(buzzerAudio,.78,1);
+        haptic([30,28,70]);
+      },780);
+      finishTimer=setTimeout(()=>showCompletion('Propulsion Online','All three Jingle Beams are charged and Santa-1 propulsion is responding within flight parameters.'),2450);
+    }
+    function scoreGoal(){
+      if(!running) return;
+      running=false;
+      const scoredBeam=beam;
+      markBeamCharged(scoredBeam);
+      stateEl.textContent=`BEAM 0${scoredBeam} CHARGED`;
+      goalFlare.classList.remove('is-active');
+      void goalFlare.offsetWidth;
+      goalFlare.classList.add('is-active');
+      receiver.classList.add('is-charged');
+      puck.classList.add('is-absorbed');
+      playAudio(goalAudio,.86,1);
+      haptic([22,18,42]);
+      setTimeout(()=>{
+        goalFlare.classList.remove('is-active');
+        if(scoredBeam<3){
+          puck.classList.remove('is-absorbed');
+          receiver.classList.remove('is-charged');
+        }
+      },520);
+      if(scoredBeam===3){
+        finishGame();
+        return;
+      }
+      beam++;
+      setTimeout(()=>{
+        setReceiverForBeam(beam);
+        stateEl.textContent=`Beam 0${beam} · ready`;
+        scheduleLaunch(true,380);
+      },620);
+    }
+    function tick(now){
+      const dt=Math.min(26,now-last);
+      last=now;
+      if(running){
+        previousPuck={x:puckX,y:puckY};
+        puckX+=vx*dt;
+        puckY+=vy*dt;
+        const r=bounds.puckR;
+        if(puckX-r<=4&&vx<0){puckX=r+4;vx=Math.abs(vx);pulseRail('left');playStrike(.2,.93);}
+        if(puckX+r>=bounds.w-4&&vx>0){puckX=bounds.w-r-4;vx=-Math.abs(vx);pulseRail('right');playStrike(.2,1.05);}
 
-    btn.onclick=()=>{
-      const stage=stageFor(level);
-      const status=statusFor(level);
-      const [targetMin,targetMax]=windows[level];
-      if(x>=targetMin&&x<=targetMax){
-        const perfect=Math.abs(x-50)<=2.5;
-        ping(perfect?1040:880+level*90,.085,.035);
-        haptic(perfect?[18,18,48]:[22,25,42]);
-        const dot=dotFor(level);
-        const trail=trailFor(level);
-        stage?.classList.remove('active','standby','early','late');
-        stage?.classList.add('locked','bursting');
-        if(dot){dot.classList.remove('active');dot.classList.add('locked');dot.style.left='50%';}
-        if(trail){trail.classList.remove('active');trail.classList.add('locked');trail.style.setProperty('--pulse-x','50%');}
-        if(status) status.textContent='LOCKED';
-        btn.classList.remove('approaching');
-        st.textContent=perfect?`PERFECT · Channel 0${level} locked`:`Channel 0${level} · locked`;
-        setTimeout(()=>stage?.classList.remove('bursting'),380);
-
-        if(level===3){
-          cancelAnimationFrame(raf);
-          btn.disabled=true;
-          panel?.classList.add('all-locked');
-          st.textContent='PROPULSION ONLINE';
-          btn.querySelector('span').textContent='Propulsion Online';
-          setTimeout(()=>ping(1120,.11,.035),180);
-          setTimeout(()=>ping(1380,.14,.03),360);
-          advanceTimer=setTimeout(()=>showCompletion('Propulsion Online','All three propulsion channels are synchronised and responding within flight parameters.'),1700);
-          return;
+        const goalLeft=bounds.goalLeft;
+        const goalRight=goalLeft+bounds.goalW;
+        if(vy<0&&puckY-r<=bounds.goalBottom){
+          if(puckX>=goalLeft+r*.15&&puckX<=goalRight-r*.15){
+            scoreGoal();
+          }else if(puckY-r<=6){
+            puckY=r+6;
+            vy=Math.abs(vy);
+            playStrike(.18,.97);
+          }
         }
 
-        advanceTimer=setTimeout(armNext,360);
-      }else{
-        flashMiss(stage,status,x<targetMin?'early':'late');
+        if(running&&vy>0&&puckY+r>=bounds.paddleY&&previousPuck.y+r<bounds.paddleY+bounds.paddleH){
+          const half=bounds.paddleW/2;
+          if(puckX>=paddleX-half-r*.35&&puckX<=paddleX+half+r*.35) paddleHit();
+        }
+        if(running&&puckY-r>bounds.h) missedPaddle();
+        setPuckPosition();
       }
+      raf=requestAnimationFrame(tick);
+    }
+    function pointerToPaddle(e){
+      const rect=arena.getBoundingClientRect();
+      setPaddleX(e.clientX-rect.left);
+    }
+    function startFromInteraction(){
+      if(started) return;
+      started=true;
+      prompt?.classList.add('is-hidden');
+      arena.classList.add('is-live');
+      scheduleLaunch(false,220);
+    }
+    function onPointerDown(e){
+      dragging=true;
+      try{arena.setPointerCapture?.(e.pointerId);}catch{}
+      e.preventDefault();
+      try{arena.focus({preventScroll:true});}catch{arena.focus();}
+      pointerToPaddle(e);
+      startFromInteraction();
+    }
+    function onPointerMove(e){
+      if(!dragging) return;
+      e.preventDefault();
+      pointerToPaddle(e);
+    }
+    function onPointerUp(e){
+      dragging=false;
+      try{arena.releasePointerCapture?.(e.pointerId);}catch{}
+    }
+    function onKeyDown(e){
+      if(!['ArrowLeft','ArrowRight','a','A','d','D'].includes(e.key)) return;
+      e.preventDefault();
+      updateBounds();
+      setPaddleX(paddleX+(['ArrowLeft','a','A'].includes(e.key)?-28:28));
+      startFromInteraction();
+    }
+    function onResize(){
+      updateBounds();
+      if(!running&&!panel.classList.contains('is-complete')) resetPuckAtReceiver();
+    }
+
+    setReceiverForBeam(1);
+    requestAnimationFrame(()=>{
+      updateBounds(false);
+      puckX=bounds.w/2;
+      puckY=Math.min(bounds.h*.33,bounds.paddleY-84);
+      previousPuck={x:puckX,y:puckY};
+      setPuckPosition();
+    });
+    arena.addEventListener('pointerdown',onPointerDown,{passive:false});
+    arena.addEventListener('pointermove',onPointerMove,{passive:false});
+    arena.addEventListener('pointerup',onPointerUp);
+    arena.addEventListener('pointercancel',onPointerUp);
+    arena.addEventListener('keydown',onKeyDown);
+    window.addEventListener('resize',onResize);
+    raf=requestAnimationFrame(tick);
+
+    cleanupMission=()=>{
+      cancelAnimationFrame(raf);
+      clearTimeout(launchTimer);
+      clearTimeout(finishTimer);
+      clearTimeout(buzzerTimer);
+      arena.removeEventListener('pointerdown',onPointerDown);
+      arena.removeEventListener('pointermove',onPointerMove);
+      arena.removeEventListener('pointerup',onPointerUp);
+      arena.removeEventListener('pointercancel',onPointerUp);
+      arena.removeEventListener('keydown',onKeyDown);
+      window.removeEventListener('resize',onResize);
+      [...strikePool,goalAudio,buzzerAudio].forEach(a=>{try{a.pause();a.currentTime=0;}catch{}});
     };
   }
   function bindLando(){
