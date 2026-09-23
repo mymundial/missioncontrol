@@ -1,4 +1,4 @@
-# Pass 7.26.0 — Production Audit
+# Pass 7.27.0 — Production Audit
 
 ## Result
 
@@ -6,24 +6,21 @@
 
 ## Production footprint
 
-- `dist/`: **8.064 MiB**
+- `dist/`: **8.195 MiB**
 - Production files: **50**
-- Versus Pass 7.25.0: **+11,286 bytes** (**+11.0 KiB**) with **no file-count change**.
-- The supplied calmer Aurora ring artworks were production-compressed as WebP without redesigning or remasking them.
-- No duplicate ring assets were added.
+- Versus Pass 7.26.0: **+137,160 bytes** (**+133.9 KiB**) with **no file-count change**.
+- The footprint increase comes from the three replacement Aurora ring WebPs; no duplicate assets were added.
 - No WAV/source-master audio is deployed.
 - No test/temp files are deployed.
 - Runtime images remain WebP/SVG and fonts remain WOFF2.
 
 ## Aurora Apex verified
 
-- Reverted to the three calmer supplied ring artworks for Outer, Middle and Inner.
-- Ring stack geometry is now **Outer 99% / Middle 67% / Inner 41%**.
-- The Outer ring fills the previously exposed dark outer dial zone.
-- Middle and Inner are also scaled up while preserving clear negative-space gaps between each concentric band.
-- Legacy procedural ring overlays remain disabled so the supplied artwork is not visually overwritten.
-- All three rings remain visible from the opening state with only modest active-ring emphasis.
-- Aurora Apex gameplay, capture timing, Inner hold-to-brake control, mistimed overspin/RGB fault, centre core, HUD, audio and route behaviour are unchanged.
+- Replaced `aurora-ring-outer.webp`, `aurora-ring-middle.webp` and `aurora-ring-inner.webp` with the newly rebuilt concentric transparent ring artworks.
+- The calmer deep-blue / light-green aurora direction is preserved while removing the visibly misaligned earlier artwork used in the previous pass.
+- Aurora Apex ring stack geometry, spacing, scaling, active-state emphasis, gameplay timings, background behaviour and mistimed desync feedback remain unchanged.
+- No mission copy, HUD structure, audio, routing or interaction logic was changed.
+- `src/main.js` was regenerated via `node bundle-js.cjs` and remained functionally unchanged.
 
 ## Automated checks passed
 
@@ -44,7 +41,7 @@
 
 ## Non-blocking warnings
 
-1. **Deployment footprint:** 8.06 MB exceeds the 7 MB audit target, primarily because the full Lapland Launch music track remains intentionally retained.
+1. **Deployment footprint:** 8.19 MB exceeds the 7 MB audit target, primarily because the full Lapland Launch music track remains intentionally retained.
 2. **ELF FM stream:** current Radio Mast URL is still identified as a test stream and should be replaced when the production stream is supplied.
 3. **Web app manifest:** no install icon is defined; normal browser/QR use is unaffected.
 
