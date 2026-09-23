@@ -665,3 +665,12 @@ This pass adds a self-contained static build for Vercel. No Vercel project-setti
 - Active ring remains identifiable through a modest brightness/saturation lift and capture marker, rather than by suppressing the other two rings.
 - No gameplay, timings, controls, HUD structure, copy, audio, route or radio behaviour changed.
 - Bumped runtime asset version to 7.22.0.
+
+## Pass 7.23.0 — Aurora Apex ring thickness correction
+
+- Kept the current Aurora Apex gameplay, darker chamber background, ring design language, centring, status UI and mistimed overspin/RGB fault unchanged.
+- Rebuilt the three image-based Aurora ring assets again so the visible aurora bands occupy more of each ring, correcting the remaining “too thin / too much gap” issue from Pass 7.22.
+- Increased apparent band weight progressively by ring so the smaller Middle and Inner rings no longer lose visual presence inside their smaller concentric containers.
+- Left all three rings clearly visible from the opening frame; the active ring remains highlighted only modestly rather than suppressing the others.
+- No copy, HUD structure, audio or layout changes were made.
+- Bumped runtime asset version to 7.23.0.
