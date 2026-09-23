@@ -683,3 +683,13 @@ This pass adds a self-contained static build for Vercel. No Vercel project-setti
 - Lifted the startup/tracking suppression so all three rings remain clearly visible from the beginning, with only a modest active-ring emphasis.
 - No copy, HUD structure, audio or route behaviour was changed.
 - Bumped runtime asset version to 7.24.0.
+
+## Pass 7.25.0 — Aurora Apex approved separate ring artwork
+
+- Kept the current Aurora Apex gameplay, concentric wrapper geometry, darker chamber background, tracking/active behaviour and mistimed overspin/RGB fault unchanged.
+- Replaced the three prior generated/programmatic ring visuals with the three individually approved Aurora artworks, mapped separately to Outer, Middle and Inner.
+- Converted each approved source image into a dedicated WebP annulus with fixed geometry so the three artworks remain independent while preserving deliberate dark spacing between the concentric bands.
+- Suppressed the legacy procedural ring-overlay layers so the approved artwork is displayed cleanly rather than being modified by older CSS aurora effects.
+- Kept all three rings clearly visible from the opening state; the active ring receives only a modest luminance/saturation lift.
+- No copy, HUD structure, audio, route or other mission behaviour was changed.
+- Bumped runtime asset version to 7.25.0.

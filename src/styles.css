@@ -5808,3 +5808,28 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 }
 .aurora-ring.active img{opacity:1;filter:saturate(.96) contrast(1.10) brightness(.98);}
 .aurora-ring.active::before{opacity:.07;}
+
+/* Pass 7.25.0 — Aurora Apex approved separate ring artwork */
+/* The approved WebPs provide the ring material/edge treatment themselves.
+   Suppress legacy procedural band overlays so the authored artwork remains intact. */
+.aurora-ring::before,.aurora-ring::after{opacity:0!important;}
+.aurora-ring{
+  opacity:.90;
+  filter:drop-shadow(0 6px 9px rgba(0,2,8,.42));
+}
+.aurora-ring img{
+  opacity:1;
+  filter:saturate(.96) contrast(1.04) brightness(.94);
+}
+.aurora-ring.tracking{
+  opacity:.86;
+  filter:drop-shadow(0 6px 9px rgba(0,2,8,.40));
+}
+.aurora-ring.tracking img{filter:saturate(.92) contrast(1.04) brightness(.90);}
+.aurora-ring.active{
+  opacity:1;
+  filter:drop-shadow(0 7px 10px rgba(0,2,8,.46)) drop-shadow(0 0 5px rgba(104,227,233,.10));
+}
+.aurora-ring.active img{filter:saturate(1.00) contrast(1.05) brightness(.99);}
+.aurora-ring.locked{opacity:.94;}
+.aurora-ring.locked img{filter:saturate(.98) contrast(1.04) brightness(.95) hue-rotate(1deg);}
