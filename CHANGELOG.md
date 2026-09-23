@@ -574,3 +574,14 @@ This pass adds a self-contained static build for Vercel. No Vercel project-setti
 - No completion titles or other text are drawn over the aurora rings. Ring, star and axis geometry share the same 50% / 50% origin to keep the instrument concentric.
 - No new artwork, music or production audio assets were added.
 - Bumped runtime asset cache version to 7.14.0.
+
+## Pass 7.15.0 — Aurora Apex visual refinement
+
+- Kept the accepted Pass 7.14 moving-ring capture gameplay unchanged.
+- Re-centred all three rotating ring wrappers using one fixed inset/margin origin so rotation can no longer influence their layout position.
+- Rebuilt the outer, middle and inner Aurora ring WebP artwork as mathematically centred annuli with softer procedural aurora ribbons, fewer stars and no illustrative constellation lines.
+- Reduced the panel-wide cyan bloom, atmospheric haze and idle ring drop-shadows so the aurora artwork remains readable against the dark instrument.
+- Reduced active/near-lock/locked bloom while keeping capture feedback and the final navigation payoff clearly visible.
+- Preserved the clean dial: no completion text or new HUD is drawn over the rings.
+- Bumped runtime asset cache version to 7.15.0.
+
