@@ -674,3 +674,12 @@ This pass adds a self-contained static build for Vercel. No Vercel project-setti
 - Left all three rings clearly visible from the opening frame; the active ring remains highlighted only modestly rather than suppressing the others.
 - No copy, HUD structure, audio or layout changes were made.
 - Bumped runtime asset version to 7.23.0.
+
+## Pass 7.24.0 — Aurora Apex larger rings with restored spacing
+
+- Kept the current Aurora Apex gameplay, layout, darker chamber background and mistimed overspin/RGB fault unchanged.
+- Rebuilt the three Aurora ring image assets again so the rings read larger and fuller, while preserving visible negative-space gaps between Outer, Middle and Inner.
+- Restored crisp ring edges and removed the obvious connected-line constellation treatment; the artwork now uses only sparse star specks.
+- Lifted the startup/tracking suppression so all three rings remain clearly visible from the beginning, with only a modest active-ring emphasis.
+- No copy, HUD structure, audio or route behaviour was changed.
+- Bumped runtime asset version to 7.24.0.
