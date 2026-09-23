@@ -224,7 +224,7 @@
       comet:'Lock 10 directional signals to restore Santa-1’s guidance path.',
       jingle:'Charge all 3 propulsion beams.',
       lando:'React the moment the lights go out to calibrate Santa-1 flight control.',
-      aurora:'Guide the aurora charge through the vortex and lock Santa-1 onto the North Pole.',
+      aurora:'Capture each rotating navigation ring on the North Pole axis.',
       lapland:'Final systems verification.',
       northern:'Authorise the restored sleigh for its final Northern Flight.'
     })[type]||'';
@@ -470,24 +470,21 @@
     </div>`;
   }
   function auroraBody(){
-    const rings=[['outer','Outer'],['middle','Middle'],['inner','Inner']];
+    const rings=[['outer','Outer Ring'],['middle','Middle Ring'],['inner','Inner Ring']];
     return `<div class="mission-instrument panel aurora-panel">
       <div class="aurora-atmosphere" aria-hidden="true"></div>
       <div class="aurora-north" aria-hidden="true"><span class="aurora-north-star">✦</span><strong>North Pole</strong><i></i></div>
-      <div class="aurora-dial" id="auroraDial" tabindex="0" role="application" aria-label="Aurora vortex guidance control. Swipe around the vortex to guide the charge inward.">
-        <div class="aurora-field"></div>
-        <div class="aurora-vortex-halo" aria-hidden="true"></div>
+      <div class="aurora-dial" id="auroraDial" tabindex="0" role="application" aria-label="Aurora Apex navigation capture. Tap to capture the outer and middle rings on the North Pole axis. Hold to brake the inner ring into alignment.">
+        <div class="aurora-field" aria-hidden="true"></div>
         <div class="aurora-target-line" aria-hidden="true"></div>
-        ${rings.map(([key])=>`<div class="aurora-ring aurora-ring-${key}" data-aurora-ring="${key}"><img src="./assets/aurora-ring-${key}.webp" alt="" aria-hidden="true"></div>`).join('')}
-        <div class="aurora-trail" aria-hidden="true">${Array.from({length:9},()=>`<i class="aurora-trail-dot"></i>`).join('')}</div>
-        <div class="aurora-orb" id="auroraOrb" aria-hidden="true"><i></i></div>
-        <div class="aurora-compass"><span>✦</span></div>
-        <div class="aurora-route-wave" aria-hidden="true"></div>
-        <div class="aurora-guide-prompt" id="auroraGuidePrompt" aria-hidden="true"><strong>SWIPE AROUND TO GUIDE</strong><span>Lead the charge into the centre</span></div>
-        <div class="aurora-lock-copy" id="auroraLockCopy" aria-hidden="true"><strong>AURORA ROUTE LOCKED</strong><span>NORTH POLE VECTOR ESTABLISHED</span></div>
+        <div class="aurora-capture-gate" aria-hidden="true"><i></i></div>
+        ${rings.map(([key])=>`<div class="aurora-ring aurora-ring-${key}" data-aurora-ring="${key}" aria-hidden="true"><img src="./assets/aurora-ring-${key}.webp" alt=""><span class="aurora-lock-notch"></span></div>`).join('')}
+        <div class="aurora-charge-pulse" aria-hidden="true"></div>
+        <div class="aurora-final-wave" aria-hidden="true"></div>
+        <div class="aurora-compass" aria-hidden="true"><span>✦</span></div>
       </div>
-      <div class="aurora-ring-statuses" aria-label="Aurora route progress">${rings.map(([key,label],i)=>`<div class="aurora-ring-status ${i===0?'active':''}" data-aurora-status="${key}"><span class="aurora-mini-ring"></span><div><strong>${label}</strong><small>${i===0?'GUIDING':'STANDBY'}</small></div></div>`).join('')}</div>
-      <div class="visually-hidden" id="auroraState" aria-live="polite">Outer aurora route ready.</div>
+      <div class="aurora-ring-statuses" aria-label="Navigation ring status">${rings.map(([key,label],i)=>`<div class="aurora-ring-status ${i===0?'active':'tracking'}" data-aurora-status="${key}"><span class="aurora-mini-ring"></span><div><strong>${label}</strong><small>${i===0?'Tap to capture':'Tracking'}</small></div></div>`).join('')}</div>
+      <div class="visually-hidden" id="auroraState" aria-live="polite">Outer ring active. Tap when its marker reaches the North Pole axis.</div>
     </div>`;
   }
   function laplandBody(){

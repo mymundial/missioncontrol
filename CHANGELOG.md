@@ -563,13 +563,14 @@ This pass adds a self-contained static build for Vercel. No Vercel project-setti
 - Retired `jingle-arena-loop.mp3` from production; the build explicitly excludes it so a 7.10 overlay cannot accidentally redeploy the rejected loop.
 - Bumped runtime asset cache version to 7.11.0.
 
-## Pass 7.13.0 — Aurora Apex vortex navigation
+## Pass 7.14.0 — Aurora Apex timed navigation capture
 
-- Replaced the rejected ring-alignment interaction with a coin-vortex-inspired celestial navigation game built from the Pass 7.11 visual baseline.
-- The player now swipes around the circular instrument to add momentum to a glowing aurora charge; the charge spirals from the outer route through middle and inner routes into the centre star.
-- Existing aurora ring artwork is retained, but the rings now counter-rotate during play and progressively energise as the charge crosses each route.
-- Added a curved multi-point comet trail, progressive centre-star power states, route-crossing pulses and compact OUTER / MIDDLE / INNER route indicators.
-- Replaced the old static alignment line with a subdued guide that becomes a full North Pole navigation beam only during the final lock sequence.
-- Final completion now holds on the activated instrument: centre impact, ring surge, outward energy wave, North Pole beam and `AURORA ROUTE LOCKED` confirmation before the standard mission-complete card.
-- No new image or audio assets were added; existing WebP aurora artwork and shared synthesized UI tones are reused.
-- Bumped runtime asset cache version to 7.13.0.
+- Replaced the rejected Aurora Apex alignment/vortex experiments with a moving-ring timing game built from the accepted Pass 7.11 baseline.
+- All three aurora rings now rotate continuously around one shared mathematical centre; Outer moves clockwise, Middle counter-rotates, and Inner runs fastest with a subtle speed variation.
+- Outer and Middle are captured by tapping as their marker reaches the North Pole axis. Inner adds a hold-to-brake interaction and automatically locks when braked into the capture window.
+- Each successful capture snaps the ring into alignment, sends an inward energy pulse, permanently energises that ring and increases the centre-star charge state.
+- Added restrained near-capture feedback at the North Pole axis plus a linked wake reaction when the next ring becomes active.
+- Final capture now holds a clean visual payoff: all rings surge, the centre star blooms, a navigation beam fires to the North Pole marker, and the powered instrument remains visible before the standard Mission Complete treatment.
+- No completion titles or other text are drawn over the aurora rings. Ring, star and axis geometry share the same 50% / 50% origin to keep the instrument concentric.
+- No new artwork, music or production audio assets were added.
+- Bumped runtime asset cache version to 7.14.0.

@@ -1,7 +1,7 @@
 {
-  "name": "silverstone-mission-control-games-pass7-13-00",
+  "name": "silverstone-mission-control-games-pass7-14-00",
   "private": true,
-  "version": "7.13.0",
+  "version": "7.14.0",
   "scripts": {
     "dev": "node bundle-js.cjs && node local-dev-server.cjs",
     "build": "node build.js",

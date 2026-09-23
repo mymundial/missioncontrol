@@ -1,4 +1,4 @@
-# Pass 7.13.0 — Production Audit
+# Pass 7.14.0 — Production Audit
 
 ## Result
 
@@ -8,23 +8,26 @@
 
 - `dist/`: **8.339 MiB**
 - Production files: **49**
-- Versus Pass 7.11.0 baseline: **+11,333 bytes (~11.1 KiB)** and **no additional production files**.
-- No new image or audio assets were added for Aurora Apex.
+- Versus the accepted Pass 7.11.0 baseline: **+11,462 bytes (~11.2 KiB)** and **no additional production files**.
+- The delta is code/CSS only; no new artwork, music or sound assets were added.
 - No WAV/source-master audio is deployed.
+- No Jingle Beams gameplay music is deployed; the rejected arena loop remains excluded by `build.js`.
 - No test/temp files are deployed.
 - Runtime images remain WebP/SVG and fonts WOFF2.
 
 ## Aurora Apex update verified
 
-- MC-10 no longer uses the three manually aligned navigation rings from the Pass 7.11 baseline.
-- The player now swipes around the circular instrument to impart momentum to an aurora charge that spirals through outer, middle and inner routes toward the centre star.
-- The existing three aurora WebP rings are retained and counter-rotate during live guidance rather than being replaced with new artwork.
-- Route crossings progressively energise the ring artwork, centre compass and OUTER / MIDDLE / INNER progress indicators.
-- The charge uses a multi-point curved trail driven by its actual orbit path; reduced-motion mode removes the trail and decorative ring rotation while retaining the playable interaction.
-- The final centre impact holds on the activated instrument and visibly fires the navigation beam to the North Pole marker before the standard mission-complete card appears.
-- Final on-instrument confirmation reads `AURORA ROUTE LOCKED` / `NORTH POLE VECTOR ESTABLISHED`.
-- Aurora mission instruction copy now describes guiding the aurora charge rather than aligning rings.
-- No new music or source audio is introduced; existing synthesized UI tones and haptics provide stage/lock feedback.
+- MC-10 now runs as a three-stage timed navigation capture rather than a manual drag alignment or vortex/orb game.
+- All three aurora rings begin in motion and share the exact same CSS origin (`left: 50%`, `top: 50%`, centred transform origin) with the centre star and North Pole axis.
+- Outer rotates clockwise with the broadest capture window; Middle counter-rotates faster with a tighter window.
+- Inner rotates fastest with a small speed variation and uses press/hold braking; it locks automatically when braked into the North Pole capture window or can lock on release inside the window.
+- A missed capture has no failure state: the ring continues rotating for another attempt.
+- Each successful capture snaps the ring to zero degrees, leaves it visibly powered, sends a pulse inward and advances the centre-star charge state.
+- The next ring receives a short wake reaction after each lock so the instrument behaves as one linked system.
+- No completion copy or status title is rendered over the ring artwork.
+- The third lock triggers a held visual payoff: all rings surge, the centre star blooms, the existing axis becomes a bright navigation beam and the North Pole marker flares before the normal Mission Complete screen appears.
+- Existing Aurora Apex WebP ring artwork is reused; no new media assets are required.
+- Pass 7.11 Jingle Beams gameplay/audio remains unchanged.
 
 ## Automated checks passed
 
@@ -49,9 +52,9 @@
 2. **ELF FM stream:** current Radio Mast URL is still identified as a test stream and should be replaced when the production stream is supplied.
 3. **Web app manifest:** no install icon is defined; normal browser/QR use is unaffected.
 
-## Visual test limitation
+## Visual-test limitation
 
-A local Chromium screenshot smoke test could not be completed reliably in this container because the headless browser process did not terminate cleanly against local file content. The production build, generated JavaScript syntax, CSS structure, asset references and automated audit all pass; this report does not claim a completed live browser playthrough.
+A headless Chromium screenshot attempt was made, but Chromium does not complete page capture in this container environment. No browser playthrough is claimed. Geometry, interaction code, generated bundle, production build and static audit are verified as described above.
 
 ## Re-run
 

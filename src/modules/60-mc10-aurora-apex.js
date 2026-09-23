@@ -1,11 +1,10 @@
   function bindAurora(){
     const dial=document.getElementById('auroraDial');
-    const orb=document.getElementById('auroraOrb');
-    const panel=dial?.closest('.aurora-panel');
-    const prompt=document.getElementById('auroraGuidePrompt');
     const stateEl=document.getElementById('auroraState');
-    const lockCopy=document.getElementById('auroraLockCopy');
-    if(!dial||!orb||!stateEl) return;
+    const north=document.querySelector('.aurora-north');
+    const pulseEl=document.querySelector('.aurora-charge-pulse');
+    const finalWave=document.querySelector('.aurora-final-wave');
+    if(!dial||!stateEl)return;
 
     const ringEls={
       outer:document.querySelector('[data-aurora-ring="outer"]'),
@@ -18,225 +17,262 @@
       inner:document.querySelector('[data-aurora-status="inner"]')
     };
     const order=['outer','middle','inner'];
-    const thresholds=[315,625,900];
-    const radii=[.405,.275,.155,.018];
-    const trailEls=Array.from(dial.querySelectorAll('.aurora-trail-dot'));
-    const trailHistory=[];
-    const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-    const timers=[];
+    const labels={outer:'Outer',middle:'Middle',inner:'Inner'};
+    const angles={outer:132,middle:-84,inner:164};
+    const baseSpeeds={outer:62,middle:-84,inner:126};
+    const captureWindows={outer:24,middle:18,inner:11};
+    const readyWindows={outer:38,middle:30,inner:24};
+    const pulseSizes={outer:'91%',middle:'60%',inner:'34%'};
+    const locked={outer:false,middle:false,inner:false};
+    const reduced=!!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    const speedScale=reduced ? .72 : 1;
 
-    let raf=0;
+    let activeIndex=0;
     let pointerId=null;
-    let dragging=false;
-    let started=false;
+    let braking=false;
+    let brakeFactor=1;
     let finished=false;
-    let stage=0;
-    let angle=-62;
-    let angularVelocity=18;
-    let travel=0;
-    let lastPointerAngle=0;
-    let last=performance.now();
-    let trailTick=0;
+    let raf=0;
+    let lastTs=0;
+    let completionTimer=0;
+    const feedbackTimers=[];
 
-    const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
     const normalise=a=>((a%360)+360)%360;
     const signed=a=>{const n=normalise(a);return n>180?n-360:n;};
-    const ease=p=>.5-Math.cos(Math.PI*clamp(p,0,1))*.5;
-    const delay=(fn,ms)=>{const id=setTimeout(fn,ms);timers.push(id);return id;};
+    const activeKey=()=>order[activeIndex]||null;
 
-    function angleForEvent(e){
-      const r=dial.getBoundingClientRect();
-      const cx=r.left+r.width/2;
-      const cy=r.top+r.height/2;
-      return Math.atan2(e.clientY-cy,e.clientX-cx)*180/Math.PI;
+    function renderRing(key){
+      ringEls[key].style.setProperty('--aurora-rotation',`${angles[key]}deg`);
     }
-    function radiusForTravel(value){
-      if(value<=thresholds[0]){
-        const p=ease(value/thresholds[0]);
-        return radii[0]+(radii[1]-radii[0])*p;
-      }
-      if(value<=thresholds[1]){
-        const p=ease((value-thresholds[0])/(thresholds[1]-thresholds[0]));
-        return radii[1]+(radii[2]-radii[1])*p;
-      }
-      const p=ease((value-thresholds[1])/(thresholds[2]-thresholds[1]));
-      return radii[2]+(radii[3]-radii[2])*p;
-    }
-    function pointFor(angleDeg,radius){
-      const radians=angleDeg*Math.PI/180;
-      return {
-        x:50+Math.cos(radians)*radius*100,
-        y:50+Math.sin(radians)*radius*100
-      };
-    }
-    function renderTrail(point){
-      if(reduced){
-        trailEls.forEach(el=>el.style.opacity='0');
-        return;
-      }
-      trailTick++;
-      if(trailTick%2===0){
-        trailHistory.unshift(point);
-        if(trailHistory.length>trailEls.length*2) trailHistory.length=trailEls.length*2;
-      }
-      trailEls.forEach((el,i)=>{
-        const p=trailHistory[Math.min(trailHistory.length-1,i*2)];
-        if(!p){el.style.opacity='0';return;}
-        el.style.left=`${p.x}%`;
-        el.style.top=`${p.y}%`;
-        el.style.opacity=`${Math.max(.04,.5-i*.055)}`;
-        el.style.transform=`translate(-50%,-50%) scale(${Math.max(.24,1-i*.085)})`;
-      });
-    }
-    function renderOrb(){
-      const radius=finished?0:radiusForTravel(travel);
-      const point=finished?{x:50,y:50}:pointFor(angle,radius);
-      orb.style.left=`${point.x}%`;
-      orb.style.top=`${point.y}%`;
-      const speedGlow=clamp(Math.abs(angularVelocity)/330,.2,1);
-      orb.style.setProperty('--aurora-orb-glow',`${12+speedGlow*10}px`);
-      orb.style.setProperty('--aurora-orb-glow-wide',`${24+speedGlow*16}px`);
-      renderTrail(point);
-    }
-    function setStatus(index,state){
-      const key=order[index];
+
+    function setStatus(key,mode){
       const el=statusEls[key];
-      if(!el) return;
-      el.classList.toggle('active',state==='active');
-      el.classList.toggle('locked',state==='locked');
+      if(!el)return;
+      el.classList.toggle('active',mode==='active');
+      el.classList.toggle('locked',mode==='locked');
+      el.classList.toggle('tracking',mode==='tracking');
       const small=el.querySelector('small');
-      if(small) small.textContent=state==='locked'?'ROUTED':state==='active'?'GUIDING':'STANDBY';
+      if(!small)return;
+      if(mode==='locked') small.textContent='Locked ✓';
+      else if(mode==='active') small.textContent=key==='inner'?'Hold to brake':'Tap to capture';
+      else small.textContent='Tracking';
     }
-    function activateStage(index){
-      order.forEach((_,i)=>setStatus(i,i<index?'locked':i===index?'active':'standby'));
-      dial.dataset.stage=String(index+1);
-      stateEl.textContent=`${order[index][0].toUpperCase()+order[index].slice(1)} aurora route active.`;
+
+    function updateStage(){
+      const active=activeKey();
+      order.forEach((key,i)=>{
+        const mode=locked[key]?'locked':i===activeIndex?'active':'tracking';
+        setStatus(key,mode);
+        ringEls[key].classList.toggle('active',mode==='active');
+      });
+      if(active){
+        stateEl.textContent=active==='inner'?'Inner ring active. Press and hold to brake it into the North Pole axis.':`${labels[active]} ring active. Tap when its marker reaches the North Pole axis.`;
+      }
     }
-    function crossStage(index){
-      const key=order[index];
-      ringEls[key]?.classList.add('energised');
-      setStatus(index,'locked');
-      dial.classList.remove('route-pulse');
-      void dial.offsetWidth;
-      dial.classList.add('route-pulse');
-      delay(()=>dial.classList.remove('route-pulse'),480);
-      ping(690+index*120,.095,.035+index*.006);
-      haptic(index===2?[24,18,48]:[14,12,24]);
-      stage=index+1;
-      if(stage<order.length) activateStage(stage);
+
+    function fireInwardPulse(key){
+      if(!pulseEl)return;
+      pulseEl.style.setProperty('--pulse-size',pulseSizes[key]);
+      pulseEl.classList.remove('fire');
+      void pulseEl.offsetWidth;
+      pulseEl.classList.add('fire');
     }
-    function finishRoute(){
-      if(finished) return;
+
+    function clearMomentClass(el,className,delay){
+      if(!el)return;
+      el.classList.remove(className);
+      void el.offsetWidth;
+      el.classList.add(className);
+      feedbackTimers.push(setTimeout(()=>el.classList.remove(className),delay));
+    }
+
+    function finishSequence(){
       finished=true;
-      dragging=false;
-      angularVelocity=0;
-      travel=thresholds[2];
-      order.forEach((_,i)=>setStatus(i,'locked'));
-      dial.dataset.stage='4';
-      dial.classList.add('route-locked');
-      panel?.classList.add('route-locked');
-      stateEl.textContent='Aurora route locked. North Pole vector established.';
-      renderOrb();
-      ping(930,.11,.045);
-      delay(()=>ping(1160,.15,.05),180);
-      delay(()=>ping(1390,.22,.055),420);
-      haptic([28,22,70]);
-      const hold=reduced?1900:3200;
-      delay(()=>showCompletion('Aurora Route Locked','North Pole navigation vector established. Santa-1 now has a confirmed route home.'),hold);
+      braking=false;
+      brakeFactor=1;
+      dial.classList.remove('capture-ready','braking','miss');
+      releasePointer();
+      dial.classList.add('complete');
+      if(north) north.classList.add('complete');
+      order.forEach(key=>ringEls[key].classList.add('final-surge'));
+      if(finalWave){
+        finalWave.classList.remove('fire');
+        void finalWave.offsetWidth;
+        finalWave.classList.add('fire');
+      }
+      stateEl.textContent='Navigation route locked to the North Pole.';
+      ping(1090,.13,.04);
+      feedbackTimers.push(setTimeout(()=>ping(1370,.18,.05),260));
+      haptic([32,20,68]);
+      completionTimer=setTimeout(()=>showCompletion('North Pole Signal Locked',''),2800);
     }
-    function advanceStages(){
-      while(stage<order.length&&travel>=thresholds[stage]){
-        crossStage(stage);
-        if(stage===order.length){finishRoute();break;}
+
+    function lockRing(key){
+      if(finished||locked[key]||key!==activeKey())return;
+      angles[key]=0;
+      renderRing(key);
+      locked[key]=true;
+      ringEls[key].classList.remove('near-lock','braking','active','miss');
+      ringEls[key].classList.add('locked');
+      clearMomentClass(ringEls[key],'lock-burst',620);
+      dial.classList.remove('capture-ready','braking','miss');
+      fireInwardPulse(key);
+
+      const charge=order.filter(k=>locked[k]).length;
+      dial.dataset.charge=String(charge);
+      setStatus(key,'locked');
+      ping(700+(charge-1)*145,.09,.03+charge*.004);
+      haptic(charge===3?[24,18,50]:[18,15,34]);
+
+      activeIndex++;
+      if(activeIndex>=order.length){
+        feedbackTimers.push(setTimeout(finishSequence,360));
+      }else{
+        updateStage();
+        const next=activeKey();
+        clearMomentClass(ringEls[next],'wake',520);
       }
     }
-    function startGuidance(){
-      if(started) return;
-      started=true;
-      dial.classList.add('is-live');
-      prompt?.classList.add('is-hidden');
-      activateStage(0);
-      stateEl.textContent='Outer aurora route active. Swipe around the vortex to guide the charge inward.';
-      ping(540,.07,.024);
+
+    function missCapture(key){
+      clearMomentClass(ringEls[key],'miss',260);
+      clearMomentClass(dial,'miss',260);
+      stateEl.textContent=`${labels[key]} ring passed the capture window. Keep watching the North Pole axis.`;
+      ping(330,.035,.012);
+      haptic(8);
     }
-    function applyImpulse(delta){
-      if(!delta||finished) return;
-      startGuidance();
-      const capped=clamp(delta,-24,24);
-      angularVelocity=clamp(angularVelocity+capped*7.8,-390,390);
-      if(Math.abs(angularVelocity)<72) angularVelocity=(angularVelocity<0?-1:1)*72;
-      dial.classList.toggle('is-counter',angularVelocity<0);
+
+    function tryCapture(){
+      const key=activeKey();
+      if(!key||finished)return false;
+      const offset=Math.abs(signed(angles[key]));
+      if(offset<=captureWindows[key]){
+        lockRing(key);
+        return true;
+      }
+      missCapture(key);
+      return false;
     }
-    function tick(now){
-      const dt=Math.min(34,Math.max(0,now-last));
-      last=now;
+
+    function updateReadiness(){
+      const key=activeKey();
+      let ready=false;
+      order.forEach(k=>ringEls[k].classList.remove('near-lock'));
+      if(key&&!finished){
+        const offset=Math.abs(signed(angles[key]));
+        ready=offset<=readyWindows[key];
+        ringEls[key].classList.toggle('near-lock',ready);
+      }
+      dial.classList.toggle('capture-ready',ready);
+      if(north) north.classList.toggle('capture-ready',ready);
+    }
+
+    function frame(ts){
+      if(!lastTs)lastTs=ts;
+      const dt=Math.min(.05,(ts-lastTs)/1000||0);
+      lastTs=ts;
+
       if(!finished){
-        if(started){
-          const decay=dragging?.997:.986;
-          angularVelocity*=Math.pow(decay,dt/16.67);
-          if(Math.abs(angularVelocity)<7) angularVelocity=0;
-          angle+=angularVelocity*dt/1000;
-          if(Math.abs(angularVelocity)>6){
-            travel=Math.min(thresholds[2],travel+Math.abs(angularVelocity)*dt/1000);
-            advanceStages();
-          }
-        }else{
-          angle+=18*dt/1000;
+        const active=activeKey();
+        const targetBrake=active==='inner'&&braking ? .17 : 1;
+        brakeFactor+=(targetBrake-brakeFactor)*Math.min(1,dt*7.5);
+
+        order.forEach(key=>{
+          if(locked[key])return;
+          let speed=baseSpeeds[key]*speedScale;
+          if(key==='inner') speed*=1+.12*Math.sin(ts/620);
+          if(key==='inner'&&active==='inner') speed*=brakeFactor;
+          angles[key]+=speed*dt;
+          renderRing(key);
+        });
+        updateReadiness();
+
+        if(active==='inner'&&braking&&Math.abs(signed(angles.inner))<=captureWindows.inner){
+          lockRing('inner');
         }
-        renderOrb();
       }
-      raf=requestAnimationFrame(tick);
+      if(!finished)raf=requestAnimationFrame(frame);
     }
-    function onPointerDown(e){
-      if(finished) return;
-      e.preventDefault();
-      pointerId=e.pointerId;
-      dragging=true;
-      lastPointerAngle=angleForEvent(e);
-      try{dial.setPointerCapture(pointerId);}catch{}
-      try{dial.focus({preventScroll:true});}catch{dial.focus();}
-      startGuidance();
-      dial.classList.add('is-guiding');
-    }
-    function onPointerMove(e){
-      if(!dragging||e.pointerId!==pointerId||finished) return;
-      e.preventDefault();
-      const next=angleForEvent(e);
-      const delta=signed(next-lastPointerAngle);
-      lastPointerAngle=next;
-      if(Math.abs(delta)>.45) applyImpulse(delta);
-    }
-    function endPointer(e){
-      if(e&&pointerId!==null&&e.pointerId!==pointerId) return;
-      dragging=false;
-      dial.classList.remove('is-guiding');
-      if(pointerId!==null){try{dial.releasePointerCapture(pointerId);}catch{}}
+
+    function releasePointer(){
+      if(pointerId===null)return;
+      try{dial.releasePointerCapture(pointerId);}catch{}
       pointerId=null;
     }
-    function onKeyDown(e){
-      if(finished) return;
-      if(!['ArrowLeft','ArrowRight','a','A','d','D',' '].includes(e.key)) return;
-      e.preventDefault();
-      const direction=['ArrowLeft','a','A'].includes(e.key)?-1:1;
-      applyImpulse(direction*14);
-    }
 
-    activateStage(0);
-    renderOrb();
-    dial.addEventListener('pointerdown',onPointerDown,{passive:false});
-    dial.addEventListener('pointermove',onPointerMove,{passive:false});
-    dial.addEventListener('pointerup',endPointer);
-    dial.addEventListener('pointercancel',endPointer);
-    dial.addEventListener('keydown',onKeyDown);
-    raf=requestAnimationFrame(tick);
+    dial.addEventListener('pointerdown',e=>{
+      if(finished||pointerId!==null)return;
+      const key=activeKey();
+      if(!key)return;
+      e.preventDefault();
+      pointerId=e.pointerId;
+      try{dial.setPointerCapture(pointerId);}catch{}
+      if(key==='inner'){
+        braking=true;
+        dial.classList.add('braking');
+        ringEls.inner.classList.add('braking');
+        statusEls.inner.querySelector('small').textContent='Braking · hold';
+        stateEl.textContent='Inner ring braking. Hold until the marker reaches the North Pole axis.';
+      }else{
+        dial.classList.add('pressed');
+      }
+    });
+
+    dial.addEventListener('pointerup',e=>{
+      if(e.pointerId!==pointerId)return;
+      const key=activeKey();
+      if(key==='inner'){
+        braking=false;
+        dial.classList.remove('braking');
+        ringEls.inner.classList.remove('braking');
+        if(!finished&&!tryCapture())setStatus('inner','active');
+      }else if(key){
+        tryCapture();
+      }
+      dial.classList.remove('pressed');
+      releasePointer();
+    });
+
+    dial.addEventListener('pointercancel',e=>{
+      if(e.pointerId!==pointerId)return;
+      braking=false;
+      dial.classList.remove('braking','pressed');
+      if(ringEls.inner)ringEls.inner.classList.remove('braking');
+      if(activeKey())setStatus(activeKey(),'active');
+      releasePointer();
+    });
+
+    dial.addEventListener('keydown',e=>{
+      if(finished||e.repeat||!['Enter',' '].includes(e.key))return;
+      e.preventDefault();
+      const key=activeKey();
+      if(key==='inner'){
+        braking=true;
+        dial.classList.add('braking');
+        ringEls.inner.classList.add('braking');
+        setStatus('inner','active');
+      }else tryCapture();
+    });
+
+    dial.addEventListener('keyup',e=>{
+      if(finished||!['Enter',' '].includes(e.key)||activeKey()!=='inner')return;
+      e.preventDefault();
+      braking=false;
+      dial.classList.remove('braking');
+      ringEls.inner.classList.remove('braking');
+      if(!tryCapture())setStatus('inner','active');
+    });
+
+    order.forEach(renderRing);
+    updateStage();
+    updateReadiness();
+    raf=requestAnimationFrame(frame);
 
     cleanupMission=()=>{
       cancelAnimationFrame(raf);
-      timers.forEach(clearTimeout);
-      dial.removeEventListener('pointerdown',onPointerDown);
-      dial.removeEventListener('pointermove',onPointerMove);
-      dial.removeEventListener('pointerup',endPointer);
-      dial.removeEventListener('pointercancel',endPointer);
-      dial.removeEventListener('keydown',onKeyDown);
+      clearTimeout(completionTimer);
+      feedbackTimers.forEach(clearTimeout);
+      braking=false;
+      releasePointer();
     };
   }
