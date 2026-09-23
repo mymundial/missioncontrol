@@ -478,7 +478,9 @@
         <div class="aurora-field"></div>
         <div class="aurora-target-line"></div>
         ${rings.map(([key])=>`<div class="aurora-ring aurora-ring-${key}" data-aurora-ring="${key}"><img src="./assets/aurora-ring-${key}.webp" alt="" aria-hidden="true"><span class="aurora-lock-notch"></span></div>`).join('')}
+        <div class="aurora-lock-wave" id="auroraLockWave" aria-hidden="true"></div>
         <div class="aurora-compass"><span>✦</span></div>
+        <div class="aurora-route-confirm" aria-hidden="true"><span>Route established</span><strong>North Pole Vector Locked</strong></div>
       </div>
       <div class="aurora-ring-statuses">${rings.map(([key,label],i)=>`<button type="button" class="aurora-ring-status ${i===0?'selected':''}" data-aurora-status="${key}" data-aurora-select="${key}"><span class="aurora-mini-ring"></span><div><strong>${label}</strong><small>${i===0?'Selected · align':'Align to lock'}</small></div></button>`).join('')}</div>
       <div class="visually-hidden" id="auroraState" aria-live="polite">Outer ring awaiting alignment.</div>

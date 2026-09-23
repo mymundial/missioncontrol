@@ -1,4 +1,4 @@
-# Pass 7.11.0 — Production Audit
+# Pass 7.12.0 — Production Audit
 
 ## Result
 
@@ -6,26 +6,25 @@
 
 ## Production footprint
 
-- `dist/`: **8.328 MiB**
+- `dist/`: **8.339 MiB**
 - Production files: **49**
-- Versus Pass 7.10.0: **-295,307 bytes (~288.4 KiB)** and **-1 production file**, primarily from removing the Jingle Beams arena music asset.
-- Versus the Pass 7.9.0 baseline: **+11,918 bytes (~11.6 KiB)** and **+1 production file**, from the post-hit production MP3 plus the small gameplay/CSS changes.
+- Versus Pass 7.11.0: **+11,376 bytes (~11.1 KiB)** and **no additional production files**.
+- The increase is JavaScript/CSS only; no new production artwork or audio was added.
 - No WAV/source-master audio is deployed.
-- No Jingle Beams gameplay music is deployed in this pass; `build.js` explicitly removes the retired 7.10 arena loop from `dist/` if it remains in an overlaid working tree.
 - No test/temp files are deployed.
 - Runtime images remain WebP/SVG and fonts WOFF2.
 
-## Jingle Beams update verified
+## Aurora Apex update verified
 
-- MC-08 is back to three goals using the Pass 7.9 original arena, receiver and puck-trail treatment.
-- Beam 01, Beam 02 and Beam 03 remain static receiver positions with the original progressive puck speeds.
-- The visible bright centre strip is now the scoring aperture.
-- Receiver contact immediately left or right of the scoring aperture rebounds the puck into play and triggers `jingle-post-hit.mp3`.
-- No new visible post geometry was introduced.
-- Duplicate visible HUD copy remains removed; only the three beam indicators and initial `DRAG TO MOVE` cue are retained inside the game body.
-- The live gameplay state remains present as an `aria-live` region but is visually hidden.
-- Jingle Beams no longer starts mission music or overrides ELF FM in this pass.
-- Third-goal completion remains goal confirmation → final beam surge → hockey buzzer → PROPULSION ONLINE → standard completion modal.
+- Existing concentric aurora artwork, North Pole marker, three status controls and overall panel layout are retained.
+- Outer Ring remains direct and forgiving.
+- Middle Ring now counter-rotates relative to the drag gesture and carries a short damped coast after release when it is not already within the lock window.
+- Inner Ring responds faster to the drag gesture and uses the tightest precision lock window.
+- Near-lock feedback is magnetic and gives one restrained cue rather than continuously firing while the ring remains close to alignment.
+- Each successful ring lock sends a visible energy pulse inward and progressively increases the centre-star / aurora intensity.
+- The third ring triggers a dedicated 2.3-second route-lock payoff before the normal completion card: ring energy surge, centre-compass flare, navigation beam to the North Pole marker and an in-instrument `NORTH POLE VECTOR LOCKED` confirmation.
+- Reduced-motion users receive the locked end state without the new animated sequence.
+- Coast and completion animation state is cleaned up when the mission closes.
 
 ## Automated checks passed
 
@@ -46,9 +45,13 @@
 
 ## Non-blocking warnings
 
-1. **Deployment footprint:** 8.33 MB exceeds the 7 MB audit target, primarily because the full Lapland Launch music track remains intentionally retained.
+1. **Deployment footprint:** 8.34 MB exceeds the 7 MB audit target, primarily because the full Lapland Launch music track remains intentionally retained.
 2. **ELF FM stream:** current Radio Mast URL is still identified as a test stream and should be replaced when the production stream is supplied.
 3. **Web app manifest:** no install icon is defined; normal browser/QR use is unaffected.
+
+## Visual smoke-test limitation
+
+A local Chromium attempt was made, but the managed browser blocks `127.0.0.1` pages. No live browser interaction is claimed as verified by this pass; build, generated syntax, static references and the production audit all pass.
 
 ## Re-run
 
