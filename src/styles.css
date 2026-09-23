@@ -1266,76 +1266,146 @@ body.admin-mode button{
 
 
 
-/* Pass 7.17.0 — Aurora Apex dimensional atmosphere refinement */
-.aurora-panel::after{content:"";position:absolute;z-index:0;left:-14%;right:-14%;top:18%;height:68%;pointer-events:none;mix-blend-mode:screen;opacity:.82;background:
-  radial-gradient(ellipse 11% 56% at 12% 47%,rgba(71,234,182,.19) 0 12%,rgba(42,181,160,.09) 34%,transparent 68%),
-  radial-gradient(ellipse 13% 62% at 31% 42%,rgba(85,246,195,.16) 0 11%,rgba(42,196,176,.08) 35%,transparent 70%),
-  radial-gradient(ellipse 12% 58% at 53% 50%,rgba(71,225,197,.17) 0 12%,rgba(43,178,186,.075) 38%,transparent 72%),
-  radial-gradient(ellipse 14% 64% at 74% 43%,rgba(82,231,207,.145) 0 11%,rgba(50,169,191,.07) 36%,transparent 70%),
-  radial-gradient(ellipse 10% 55% at 91% 51%,rgba(72,207,223,.13) 0 10%,rgba(43,139,190,.06) 34%,transparent 68%);
-  filter:blur(18px) saturate(1.12);transform:translate3d(0,0,0) scaleY(1.04);transform-origin:50% 50%;animation:auroraBackdropBreathe 14s ease-in-out infinite alternate;will-change:transform,opacity,filter;}
-.aurora-atmosphere{opacity:1;}
-.aurora-atmosphere::before{left:-10%;right:-10%;top:18%;height:66%;opacity:.86;background:
-  linear-gradient(104deg,transparent 0 7%,rgba(80,231,178,.03) 10%,rgba(81,241,188,.20) 14%,rgba(56,204,182,.08) 19%,transparent 24% 29%,rgba(67,229,190,.16) 35%,rgba(54,196,190,.07) 41%,transparent 47% 52%,rgba(76,232,201,.17) 58%,rgba(65,188,202,.065) 64%,transparent 69% 76%,rgba(79,215,220,.13) 82%,transparent 91%),
-  radial-gradient(ellipse at 50% 48%,rgba(50,206,185,.075),transparent 58%);
-  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 13%,#000 84%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 13%,#000 84%,transparent 100%);
-  filter:blur(10px) saturate(1.16);transform:translate3d(-3%,0,0) skewY(-4deg) scale(1.05);animation:auroraCurtainSweep 12s ease-in-out infinite alternate;}
-.aurora-atmosphere::after{left:-8%;right:-8%;top:25%;height:54%;opacity:.66;background:
-  linear-gradient(96deg,transparent 0 15%,rgba(116,255,210,.075) 20%,transparent 27% 38%,rgba(88,232,207,.085) 45%,transparent 53% 63%,rgba(91,216,230,.07) 70%,transparent 78%),
-  radial-gradient(ellipse 55% 18% at 50% 76%,rgba(60,202,196,.08),transparent 72%);
-  filter:blur(7px);transform:translate3d(2%,0,0) skewY(-2deg);animation:auroraVeilParallax 17s ease-in-out infinite alternate;}
+/* Pass 7.18.0 — Aurora Apex celestial instrument art-direction pass */
+/* Keep the 7.17 layout/gameplay; make the depth stack visually decisive. */
+.aurora-panel{
+  background:
+    radial-gradient(72% 55% at 50% 60%,rgba(9,76,91,.12),transparent 71%),
+    radial-gradient(36% 42% at 6% 48%,rgba(22,132,116,.10),transparent 73%),
+    radial-gradient(38% 44% at 95% 48%,rgba(22,109,135,.10),transparent 75%),
+    linear-gradient(180deg,#041a28 0%,#02121d 100%);
+}
+.aurora-panel::before{opacity:.52;filter:brightness(1.05);}
+.aurora-panel::after{
+  content:"";position:absolute;z-index:0;left:-12%;right:-12%;top:16%;height:72%;pointer-events:none;
+  background:
+    linear-gradient(104deg,transparent 0 4%,rgba(59,221,172,.02) 8%,rgba(63,235,184,.18) 13%,rgba(51,188,169,.07) 20%,transparent 27% 35%,rgba(66,233,195,.15) 42%,rgba(62,185,190,.07) 48%,transparent 56% 66%,rgba(72,218,215,.14) 73%,rgba(70,171,205,.055) 79%,transparent 88%),
+    radial-gradient(ellipse 68% 22% at 48% 73%,rgba(49,199,180,.12),transparent 72%);
+  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 88%,transparent 100%);
+  mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 88%,transparent 100%);
+  filter:blur(7px) saturate(1.30);opacity:.94;transform:translate3d(0,0,0) skewY(-2deg) scaleY(1.08);
+  animation:auroraBackdropBreathe 13s ease-in-out infinite alternate;will-change:transform,opacity;
+}
+.aurora-atmosphere{opacity:1;mix-blend-mode:screen;}
+.aurora-atmosphere::before{
+  left:-10%;right:-10%;top:16%;height:70%;opacity:.95;
+  background:
+    linear-gradient(94deg,transparent 0 6%,rgba(86,255,200,.20) 11%,rgba(71,222,190,.075) 17%,transparent 25% 31%,rgba(88,247,208,.17) 38%,rgba(70,210,202,.075) 44%,transparent 52% 60%,rgba(81,227,221,.15) 67%,rgba(83,190,219,.065) 74%,transparent 83%),
+    linear-gradient(112deg,transparent 4% 17%,rgba(78,229,184,.08) 26%,transparent 36% 52%,rgba(79,209,217,.075) 61%,transparent 74%);
+  -webkit-mask-image:linear-gradient(180deg,transparent,#000 12%,#000 82%,transparent 100%);
+  mask-image:linear-gradient(180deg,transparent,#000 12%,#000 82%,transparent 100%);
+  filter:blur(6px) saturate(1.24);transform:translate3d(-2%,0,0) skewY(-3deg) scale(1.05);
+  animation:auroraCurtainSweep 11s ease-in-out infinite alternate;
+}
+.aurora-atmosphere::after{
+  left:-6%;right:-6%;top:24%;height:56%;opacity:.76;
+  background:
+    linear-gradient(88deg,transparent 0 16%,rgba(149,255,219,.08) 21%,transparent 28% 39%,rgba(103,244,214,.10) 45%,transparent 52% 63%,rgba(103,219,235,.08) 70%,transparent 78%),
+    radial-gradient(ellipse 62% 18% at 50% 78%,rgba(68,217,204,.11),transparent 74%);
+  filter:blur(4px);transform:translate3d(2%,0,0) skewY(-1.5deg);
+  animation:auroraVeilParallax 16s ease-in-out infinite alternate;
+}
 
-.aurora-field{background:
-  radial-gradient(circle at 50% 50%,rgba(44,190,177,.055) 0 11%,rgba(16,83,94,.025) 24%,transparent 44%),
-  radial-gradient(circle at 32% 38%,rgba(52,230,192,.045),transparent 23%),
-  radial-gradient(circle at 71% 64%,rgba(55,201,229,.035),transparent 26%),
-  radial-gradient(circle at 50% 50%,#061927 0 17%,rgba(3,15,25,.982) 17% 100%);
-  box-shadow:inset 0 0 0 1px rgba(123,232,239,.06),inset 0 0 44px rgba(0,6,15,.40),0 0 22px rgba(26,145,162,.035);}
-.aurora-field::before{opacity:.88;}
-.aurora-field::after{opacity:.94;filter:blur(12px) saturate(1.1);background:
-  conic-gradient(from 206deg at 50% 50%,transparent 0 7%,rgba(69,226,180,.09) 14%,rgba(55,198,185,.035) 20%,transparent 26% 39%,rgba(74,232,206,.075) 47%,transparent 57% 72%,rgba(77,199,225,.065) 81%,transparent 91% 100%);}
+/* Let the living sky read through the dial; the dial supplies a dark optical vignette, not an opaque disc. */
+.aurora-field{
+  background:
+    radial-gradient(circle at 50% 50%,rgba(3,19,29,.96) 0 16.5%,rgba(4,23,34,.68) 17% 38%,rgba(2,13,22,.40) 58%,rgba(1,9,16,.58) 100%),
+    radial-gradient(circle at 30% 36%,rgba(69,234,194,.055),transparent 26%),
+    radial-gradient(circle at 72% 65%,rgba(68,210,230,.05),transparent 28%);
+  box-shadow:inset 0 0 0 1px rgba(145,241,243,.08),inset 0 0 56px rgba(0,5,12,.46),0 14px 34px rgba(0,4,10,.24);
+}
+.aurora-field::before{opacity:.95;filter:drop-shadow(0 0 2px rgba(188,247,255,.18));}
+.aurora-field::after{
+  opacity:.58;filter:blur(9px) saturate(1.15);
+  background:conic-gradient(from 200deg at 50% 50%,transparent 0 9%,rgba(82,239,191,.075) 15%,transparent 22% 39%,rgba(85,231,214,.07) 47%,transparent 56% 73%,rgba(83,201,231,.06) 81%,transparent 91% 100%);
+}
 
-.aurora-ring{filter:drop-shadow(0 8px 9px rgba(0,5,12,.46)) drop-shadow(0 -1px 2px rgba(153,245,232,.11));}
-.aurora-ring img{filter:saturate(.98) contrast(1.095) brightness(.955);opacity:.985;}
-.aurora-ring::before{opacity:.46;background:
-  conic-gradient(from 18deg,transparent 0 5%,rgba(174,255,224,.20) 12%,rgba(75,226,198,.06) 18%,transparent 25% 37%,rgba(109,244,216,.18) 46%,rgba(63,188,210,.055) 53%,transparent 61% 73%,rgba(115,224,239,.14) 82%,transparent 93% 100%);
-  filter:blur(.35px) saturate(1.08);}
-.aurora-ring::after{opacity:.94;mix-blend-mode:normal;background:
-  radial-gradient(circle,transparent 0 35.0%,rgba(0,5,12,.64) 35.28%,rgba(195,255,239,.23) 35.72%,rgba(77,208,191,.07) 36.24%,transparent 37.15% 47.18%,rgba(216,255,247,.24) 47.64%,rgba(65,206,196,.055) 48.10%,rgba(0,5,12,.66) 48.62%,transparent 49.45%);}
-.aurora-ring-outer::before{opacity:.50;}
-.aurora-ring-middle::before{opacity:.52;}
-.aurora-ring-inner::before{opacity:.55;}
-.aurora-ring.active{filter:drop-shadow(0 8px 9px rgba(0,5,12,.44)) drop-shadow(0 0 8px rgba(104,235,236,.20));}
-.aurora-ring.active img{filter:saturate(1.04) contrast(1.10) brightness(.99);}
-.aurora-ring.active::before{opacity:.62;}
-.aurora-ring.near-lock{filter:drop-shadow(0 7px 9px rgba(0,5,12,.40)) drop-shadow(0 0 12px rgba(136,252,241,.34)) brightness(1.03);}
-.aurora-ring.near-lock::before{opacity:.72;}
-.aurora-ring.locked img{filter:saturate(1.06) contrast(1.08) brightness(1.015) hue-rotate(4deg);}
-.aurora-ring.locked::before{opacity:.66;}
+/* The WebPs are now translucent glass/energy annuli. Crisp edges + dark depth separate each layer. */
+.aurora-ring{
+  filter:drop-shadow(0 12px 11px rgba(0,3,8,.62)) drop-shadow(0 -1px 1px rgba(212,255,248,.20));
+  transition:filter .16s ease,opacity .16s ease;
+}
+.aurora-ring img{opacity:.94;filter:saturate(.90) contrast(1.17) brightness(.80);transition:filter .18s ease,opacity .18s ease;}
+.aurora-ring::before{
+  opacity:.23;mix-blend-mode:screen;filter:blur(.15px) saturate(1.04);
+  background:conic-gradient(from 14deg,transparent 0 8%,rgba(204,255,237,.22) 12%,transparent 18% 39%,rgba(115,247,219,.18) 45%,transparent 52% 72%,rgba(117,224,241,.15) 80%,transparent 90% 100%);
+}
+.aurora-ring::after{
+  opacity:1;mix-blend-mode:normal;
+  background:radial-gradient(circle,
+    transparent 0 34.55%,
+    rgba(0,3,8,.92) 34.85%,
+    rgba(4,35,42,.72) 35.35%,
+    rgba(190,255,239,.34) 35.72%,
+    transparent 36.45% 47.15%,
+    rgba(223,255,248,.42) 47.55%,
+    rgba(21,96,94,.38) 47.95%,
+    rgba(0,3,8,.90) 48.45%,
+    transparent 49.1%);
+}
+.aurora-ring-outer{z-index:3;}
+.aurora-ring-middle{z-index:4;filter:drop-shadow(0 10px 10px rgba(0,3,8,.68)) drop-shadow(0 -1px 1px rgba(212,255,248,.18));}
+.aurora-ring-inner{z-index:5;filter:drop-shadow(0 8px 9px rgba(0,3,8,.72)) drop-shadow(0 -1px 1px rgba(212,255,248,.16));}
+.aurora-ring.tracking img{opacity:.78;filter:saturate(.72) contrast(1.22) brightness(.67);}
+.aurora-ring.tracking::before{opacity:.12;}
+.aurora-ring.active{filter:drop-shadow(0 12px 12px rgba(0,3,8,.60)) drop-shadow(0 0 9px rgba(89,235,224,.30)) drop-shadow(0 -1px 1px rgba(230,255,250,.28));}
+.aurora-ring.active img{opacity:1;filter:saturate(1.12) contrast(1.18) brightness(1.07);}
+.aurora-ring.active::before{opacity:.52;}
+.aurora-ring.active::after{filter:brightness(1.10);}
+.aurora-ring.near-lock{filter:drop-shadow(0 11px 11px rgba(0,3,8,.56)) drop-shadow(0 0 13px rgba(132,255,239,.47)) brightness(1.035);}
+.aurora-ring.near-lock img{filter:saturate(1.18) contrast(1.18) brightness(1.12);}
+.aurora-ring.locked{filter:drop-shadow(0 10px 10px rgba(0,3,8,.56)) drop-shadow(0 0 9px rgba(83,239,175,.31)) drop-shadow(0 -1px 1px rgba(221,255,241,.24));}
+.aurora-ring.locked img{opacity:1;filter:saturate(1.04) contrast(1.16) brightness(.99) hue-rotate(4deg);}
+.aurora-ring.locked::before{opacity:.40;}
 
-.aurora-compass{border-color:rgba(223,252,255,.88);background:
-  radial-gradient(circle at 50% 50%,rgba(95,226,210,.09) 0 10%,transparent 29%),
-  radial-gradient(circle at 39% 34%,rgba(31,101,107,.46),transparent 31%),
-  radial-gradient(circle,rgba(7,36,51,.99) 0 42%,rgba(2,12,22,.997) 77%);
-  box-shadow:0 9px 20px rgba(0,4,11,.53),0 0 0 4px rgba(33,111,126,.055),0 0 18px rgba(70,216,221,.10),inset 0 0 21px rgba(73,207,208,.075);}
-.aurora-compass span{filter:drop-shadow(0 0 2px rgba(255,255,255,.68));text-shadow:0 0 7px rgba(167,250,255,.72),0 0 18px rgba(63,217,218,.12);}
+/* Stronger foreground plane: precision axis + glass power core sit above the rings. */
+.aurora-target-line{z-index:9;background:linear-gradient(180deg,rgba(248,255,255,.96),rgba(107,242,244,.60) 28%,rgba(76,212,221,.16) 68%,transparent);box-shadow:0 0 3px rgba(232,255,255,.58);}
+.aurora-capture-gate{z-index:10;}
+.aurora-compass{
+  z-index:11;border-color:rgba(230,255,255,.93);
+  background:
+    radial-gradient(circle at 50% 50%,rgba(98,242,218,.12) 0 11%,transparent 27%),
+    radial-gradient(circle at 38% 32%,rgba(40,114,120,.46),transparent 31%),
+    radial-gradient(circle,#082431 0 38%,#04141f 62%,#020b13 100%);
+  box-shadow:0 13px 24px rgba(0,3,9,.68),0 0 0 4px rgba(51,137,145,.10),0 0 14px rgba(75,221,218,.14),inset 0 1px 0 rgba(220,255,255,.12),inset 0 0 23px rgba(64,207,198,.10);
+}
+.aurora-compass::before,.aurora-compass::after{background:rgba(126,235,244,.26);}
+.aurora-compass span{filter:drop-shadow(0 0 3px rgba(255,255,255,.84));text-shadow:0 0 8px rgba(205,255,255,.88),0 0 18px rgba(67,229,218,.22);}
 
-/* Environment builds as navigation charge accumulates without changing gameplay. */
-.aurora-panel:has(.aurora-dial[data-charge="1"])::after{opacity:.88;filter:blur(17px) saturate(1.16) brightness(1.04);}
-.aurora-panel:has(.aurora-dial[data-charge="1"]) .aurora-atmosphere::before{opacity:.91;}
-.aurora-panel:has(.aurora-dial[data-charge="2"])::after{opacity:.94;filter:blur(16px) saturate(1.20) brightness(1.08);}
-.aurora-panel:has(.aurora-dial[data-charge="2"]) .aurora-atmosphere::before{opacity:.97;filter:blur(9px) saturate(1.20) brightness(1.07);}
-.aurora-panel:has(.aurora-dial[data-charge="2"]) .aurora-field::after{opacity:1;filter:blur(11px) saturate(1.16) brightness(1.08);}
-.aurora-panel:has(.aurora-dial[data-charge="3"])::after,.aurora-panel:has(.aurora-dial.complete)::after{opacity:1;filter:blur(15px) saturate(1.24) brightness(1.12);}
-.aurora-panel:has(.aurora-dial[data-charge="3"]) .aurora-atmosphere::before,.aurora-panel:has(.aurora-dial.complete) .aurora-atmosphere::before{opacity:1;filter:blur(8px) saturate(1.25) brightness(1.11);}
-.aurora-panel:has(.aurora-dial.complete) .aurora-atmosphere::after{opacity:.82;filter:blur(6px) brightness(1.12);}
+/* Wrong timing = a short navigation-sync fault: physical overspin comes from JS; RGB ghost stays visual-only. */
+.aurora-dial.desync::before,.aurora-dial.desync::after{
+  content:"";position:absolute;z-index:12;inset:4.2%;border-radius:50%;pointer-events:none;opacity:0;
+  border:1px solid transparent;mix-blend-mode:screen;
+}
+.aurora-dial.desync::before{border-color:rgba(255,62,103,.55);animation:auroraDialRgbRed .22s steps(2,end);}
+.aurora-dial.desync::after{border-color:rgba(70,232,255,.64);animation:auroraDialRgbCyan .22s steps(2,end);}
+.aurora-ring.desync img{animation:auroraRingRgbSplit .24s steps(2,end);}
+.aurora-ring.desync .aurora-lock-notch{animation:auroraNotchFault .24s steps(2,end);}
 
-@keyframes auroraBackdropBreathe{0%{transform:translate3d(-1.5%,1%,0) scaleY(1.02);opacity:.72}50%{transform:translate3d(1%,-1%,0) scaleY(1.07);opacity:.88}100%{transform:translate3d(2.2%,.5%,0) scaleY(1.04);opacity:.78}}
-@keyframes auroraCurtainSweep{0%{transform:translate3d(-4%,1%,0) skewY(-4deg) scale(1.04)}45%{transform:translate3d(1%,-1.5%,0) skewY(-1deg) scale(1.08)}100%{transform:translate3d(4%,-.5%,0) skewY(2deg) scale(1.05)}}
-@keyframes auroraVeilParallax{0%{transform:translate3d(3%,1%,0) skewY(-2deg);opacity:.52}100%{transform:translate3d(-4%,-1%,0) skewY(1deg);opacity:.72}}
+/* Existing charge states now alter contrast/energy, not global bloom. */
+.aurora-panel:has(.aurora-dial[data-charge="1"]) .aurora-atmosphere::before{filter:blur(5.5px) saturate(1.28) brightness(1.05);}
+.aurora-panel:has(.aurora-dial[data-charge="1"]) .aurora-compass{box-shadow:0 13px 24px rgba(0,3,9,.64),0 0 0 4px rgba(51,137,145,.11),0 0 18px rgba(71,226,215,.19),inset 0 0 24px rgba(64,207,198,.12);}
+.aurora-panel:has(.aurora-dial[data-charge="2"]) .aurora-atmosphere::before{filter:blur(5px) saturate(1.34) brightness(1.10);}
+.aurora-panel:has(.aurora-dial[data-charge="2"]) .aurora-atmosphere::after{opacity:.88;}
+.aurora-panel:has(.aurora-dial[data-charge="2"]) .aurora-field{box-shadow:inset 0 0 0 1px rgba(145,241,243,.10),inset 0 0 56px rgba(0,5,12,.42),0 14px 34px rgba(0,4,10,.24);}
+.aurora-panel:has(.aurora-dial[data-charge="3"])::after,.aurora-panel:has(.aurora-dial.complete)::after{opacity:1;filter:blur(5px) saturate(1.38) brightness(1.13);}
+.aurora-panel:has(.aurora-dial.complete) .aurora-atmosphere::before{filter:blur(4px) saturate(1.42) brightness(1.16);}
+.aurora-panel:has(.aurora-dial.complete) .aurora-atmosphere::after{opacity:.94;filter:blur(3px) brightness(1.15);}
+
+@keyframes auroraBackdropBreathe{0%{transform:translate3d(-2%,1%,0) skewY(-2deg) scaleY(1.04);opacity:.80}50%{transform:translate3d(1%,-1%,0) skewY(.5deg) scaleY(1.10);opacity:.98}100%{transform:translate3d(3%,0,0) skewY(2deg) scaleY(1.06);opacity:.86}}
+@keyframes auroraCurtainSweep{0%{transform:translate3d(-4%,1%,0) skewY(-3deg) scale(1.04)}45%{transform:translate3d(1%,-1.4%,0) skewY(-.5deg) scale(1.09)}100%{transform:translate3d(4%,-.4%,0) skewY(2deg) scale(1.05)}}
+@keyframes auroraVeilParallax{0%{transform:translate3d(3%,1%,0) skewY(-1.5deg);opacity:.64}100%{transform:translate3d(-4%,-1%,0) skewY(1deg);opacity:.86}}
+@keyframes auroraRingRgbSplit{
+  0%,100%{filter:saturate(1.12) contrast(1.18) brightness(1.07)}
+  28%{filter:saturate(1.45) contrast(1.22) brightness(1.20) drop-shadow(-3px 0 rgba(255,58,99,.92)) drop-shadow(3px 0 rgba(62,229,255,.96))}
+  62%{filter:saturate(1.20) contrast(1.18) brightness(.94) drop-shadow(3px 0 rgba(255,58,99,.58)) drop-shadow(-3px 0 rgba(62,229,255,.68))}
+}
+@keyframes auroraNotchFault{0%,100%{opacity:.96;filter:none}35%{opacity:.35;filter:hue-rotate(145deg) brightness(1.45)}70%{opacity:1;filter:hue-rotate(-35deg) brightness(1.2)}}
+@keyframes auroraDialRgbRed{0%,100%{opacity:0;transform:translateX(0)}30%{opacity:.7;transform:translateX(-3px)}65%{opacity:.22;transform:translateX(2px)}}
+@keyframes auroraDialRgbCyan{0%,100%{opacity:0;transform:translateX(0)}30%{opacity:.76;transform:translateX(3px)}65%{opacity:.24;transform:translateX(-2px)}}
 
 @media(max-width:390px){.aurora-panel{padding-left:9px;padding-right:9px;}.aurora-dial{width:100%;}.aurora-ring-statuses{gap:6px;}.aurora-ring-status{padding:9px 6px;gap:5px;}.aurora-ring-status strong{font-size:8px;}.aurora-ring-status small{font-size:6px;}.aurora-mini-ring{flex-basis:21px;width:21px;height:21px;border-width:3px;}.aurora-compass span{font-size:26px;}}
-@media(prefers-reduced-motion:reduce){.aurora-panel::before,.aurora-panel::after,.aurora-atmosphere::before,.aurora-atmosphere::after,.aurora-field::before,.aurora-field::after,.aurora-ring::before,.aurora-compass span{animation:none!important;}.aurora-ring.lock-burst,.aurora-ring.wake,.aurora-final-wave.fire,.aurora-ring.final-surge,.aurora-dial.complete,.aurora-north.complete,.aurora-ring-status.active .aurora-mini-ring{animation-duration:.18s!important;animation-iteration-count:1!important;}}
+@media(prefers-reduced-motion:reduce){.aurora-panel::before,.aurora-panel::after,.aurora-atmosphere::before,.aurora-atmosphere::after,.aurora-field::before,.aurora-field::after,.aurora-ring::before,.aurora-compass span{animation:none!important;}.aurora-ring.lock-burst,.aurora-ring.wake,.aurora-final-wave.fire,.aurora-ring.final-surge,.aurora-dial.complete,.aurora-north.complete,.aurora-ring-status.active .aurora-mini-ring,.aurora-ring.desync img,.aurora-ring.desync .aurora-lock-notch,.aurora-dial.desync::before,.aurora-dial.desync::after{animation-duration:.12s!important;animation-iteration-count:1!important;}}
 
 .topbar{
   position:sticky;

@@ -607,3 +607,16 @@ This pass adds a self-contained static build for Vercel. No Vercel project-setti
 - Linked background atmosphere and in-dial energy intensity to the existing ring-charge states, so the environment subtly builds as each ring is captured and peaks during final lock.
 - Preserved reduced-motion behaviour and added no new artwork, audio, HUD, copy or gameplay behaviour.
 - Bumped runtime asset cache version to 7.17.0.
+
+
+## Pass 7.18.0 — Aurora Apex celestial instrument + desync feedback
+
+- Kept the accepted Pass 7.17 Aurora Apex layout, ring sizes, timing windows, hold-to-brake inner-ring control and completion flow.
+- Rebuilt all three Aurora ring WebP assets as translucent glass/energy annuli with crisp illuminated outer rims, darker inner bevels and flowing aurora ribbons, creating much stronger separation between rings and against the background.
+- Opened the dial field so the animated northern-lights environment is clearly visible through the instrument instead of being hidden behind an almost-opaque circular backing.
+- Strengthened the celestial environment with visible layered aurora curtains and parallax veils while preserving a dark, high-contrast navigation chamber rather than increasing global bloom.
+- Added a decisive active / tracking / locked visual hierarchy: tracking rings recede, the active ring carries the strongest edge and internal energy, and locked rings remain cleanly illuminated.
+- Strengthened the centre core and North Pole axis as the foreground plane above the ring system.
+- Added non-punitive mistimed-capture feedback: an incorrect tap/release gives the active ring a short stage-scaled overspin plus a restrained Starstream-style red/cyan RGB split before immediately returning to normal play. No progress is reset.
+- Preserved reduced-motion behaviour and introduced no new audio, HUD or explanatory copy.
+- Bumped runtime asset version to 7.18.0.

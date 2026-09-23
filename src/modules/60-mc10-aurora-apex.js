@@ -24,6 +24,7 @@
     const readyWindows={outer:38,middle:30,inner:24};
     const pulseSizes={outer:'91%',middle:'60%',inner:'34%'};
     const locked={outer:false,middle:false,inner:false};
+    const desyncVelocity={outer:0,middle:0,inner:0};
     const reduced=!!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
     const speedScale=reduced ? .72 : 1;
 
@@ -64,6 +65,7 @@
         const mode=locked[key]?'locked':i===activeIndex?'active':'tracking';
         setStatus(key,mode);
         ringEls[key].classList.toggle('active',mode==='active');
+        ringEls[key].classList.toggle('tracking',mode==='tracking');
       });
       if(active){
         stateEl.textContent=active==='inner'?'Inner ring active. Press and hold to brake it into the North Pole axis.':`${labels[active]} ring active. Tap when its marker reaches the North Pole axis.`;
@@ -135,11 +137,21 @@
     }
 
     function missCapture(key){
+      const kick={outer:210,middle:290,inner:380}[key]||240;
+      const direction=Math.sign(baseSpeeds[key]||1);
+      desyncVelocity[key]+=direction*kick;
+      ringEls[key].classList.remove('desync');
+      dial.classList.remove('desync');
+      void ringEls[key].offsetWidth;
+      ringEls[key].classList.add('desync');
+      dial.classList.add('desync');
       clearMomentClass(ringEls[key],'miss',260);
       clearMomentClass(dial,'miss',260);
+      feedbackTimers.push(setTimeout(()=>ringEls[key].classList.remove('desync'),key==='inner'?300:240));
+      feedbackTimers.push(setTimeout(()=>dial.classList.remove('desync'),220));
       stateEl.textContent=`${labels[key]} ring passed the capture window. Keep watching the North Pole axis.`;
-      ping(330,.035,.012);
-      haptic(8);
+      ping(key==='inner'?245:285,.045,.014);
+      haptic(key==='inner'?[10,18,8]:8);
     }
 
     function tryCapture(){
@@ -182,7 +194,10 @@
           let speed=baseSpeeds[key]*speedScale;
           if(key==='inner') speed*=1+.12*Math.sin(ts/620);
           if(key==='inner'&&active==='inner') speed*=brakeFactor;
+          speed+=desyncVelocity[key];
           angles[key]+=speed*dt;
+          desyncVelocity[key]*=Math.exp(-dt*11.5);
+          if(Math.abs(desyncVelocity[key])<.5)desyncVelocity[key]=0;
           renderRing(key);
         });
         updateReadiness();
