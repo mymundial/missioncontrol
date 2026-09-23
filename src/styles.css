@@ -5732,3 +5732,38 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 @media(prefers-reduced-motion:reduce){
   .aurora-atmosphere::before,.aurora-atmosphere::after,.aurora-compass span{animation:none!important;}
 }
+
+/* Pass 7.21.0 — Aurora Apex: designed aurora ring artwork, cleaner and more realistic */
+.aurora-ring{
+  opacity:.78;
+  filter:drop-shadow(0 7px 9px rgba(0,2,8,.42));
+}
+.aurora-ring img{
+  opacity:.98;
+  filter:saturate(.92) contrast(1.06) brightness(.92);
+}
+.aurora-ring::before{opacity:.025;}
+.aurora-ring.tracking{
+  opacity:.56;
+  filter:drop-shadow(0 5px 8px rgba(0,2,8,.36));
+}
+.aurora-ring.tracking img{filter:saturate(.78) contrast(1.05) brightness(.76);}
+.aurora-ring.tracking::before{opacity:.01;}
+.aurora-ring.active{
+  opacity:1;
+  filter:drop-shadow(0 8px 10px rgba(0,2,8,.46)) drop-shadow(0 0 5px rgba(104,227,233,.11));
+}
+.aurora-ring.active img{opacity:1;filter:saturate(1.04) contrast(1.08) brightness(1.02);}
+.aurora-ring.active::before{opacity:.07;}
+.aurora-ring.near-lock{
+  filter:drop-shadow(0 8px 10px rgba(0,2,8,.46)) drop-shadow(0 0 8px rgba(197,250,251,.18)) brightness(1.03);
+}
+.aurora-ring.braking{
+  filter:drop-shadow(0 8px 10px rgba(0,2,8,.46)) drop-shadow(0 0 7px rgba(155,235,245,.14));
+}
+.aurora-ring.locked{
+  opacity:.86;
+  filter:drop-shadow(0 6px 9px rgba(0,2,8,.42)) drop-shadow(0 0 5px rgba(120,232,188,.09));
+}
+.aurora-ring.locked img{filter:saturate(.96) contrast(1.06) brightness(.95) hue-rotate(2deg);}
+.aurora-ring.locked::before{opacity:.04;}

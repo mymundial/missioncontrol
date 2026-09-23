@@ -645,3 +645,13 @@ This pass adds a self-contained static build for Vercel. No Vercel project-setti
 - Reduced status-card visual weight so the navigation instrument remains the dominant element.
 - No layout, copy, audio, route, radio or other mission behaviour was changed.
 - Bumped runtime asset version to 7.20.0.
+
+## Pass 7.21.0 — Aurora Apex refined designed aurora rings
+
+- Kept the current Aurora Apex gameplay, timings, Inner hold-to-brake mechanic, mistimed overspin/RGB fault, centring and overall layout unchanged.
+- Replaced the procedural/minimal Option A ring treatment with three newly designed Aurora ring WebP assets built around the qualities preferred from the earliest Aurora Apex look: deep navy bases, lighter green aurora flow and subtle constellation detailing.
+- Cleaned the ring artwork substantially so the aurora feels more realistic and atmospheric rather than illustrative or synthetic; constellation lines/stars remain present but are sparser and more restrained.
+- Preserved the darker, cleaner chamber background from Pass 7.20 so the dial remains the hero and the rings are no longer fighting a visible wallpaper-like northern-lights backdrop.
+- Relaxed the extreme active/tracking suppression slightly so Middle and Inner remain visible enough to read the designed artwork while Outer still leads clearly as the active ring.
+- No copy, HUD structure, audio, route or other mission behaviour was changed.
+- Bumped runtime asset version to 7.21.0.

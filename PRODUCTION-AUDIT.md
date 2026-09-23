@@ -1,4 +1,4 @@
-# Pass 7.20.0 — Production Audit
+# Pass 7.21.0 — Production Audit
 
 ## Result
 
@@ -6,25 +6,23 @@
 
 ## Production footprint
 
-- `dist/`: **7.949 MiB**
+- `dist/`: **7.968 MiB**
 - Production files: **50**
-- Versus Pass 7.19.0: **-314 bytes** with **no file-count change**.
-- The three replacement Aurora ring WebPs are smaller overall; the extra CSS needed for the new visual hierarchy almost exactly offsets that saving.
+- Versus Pass 7.20.0: **+19,245 bytes** (**+18.8 KiB**) with **no file-count change**.
+- The footprint increase comes from the three replacement Aurora ring WebPs; no duplicate assets were added.
 - No WAV/source-master audio is deployed.
-- No Jingle Beams gameplay music is deployed; the rejected arena loop remains excluded by `build.js`.
 - No test/temp files are deployed.
-- Runtime images remain WebP/SVG and fonts WOFF2.
+- Runtime images remain WebP/SVG and fonts remain WOFF2.
 
-## Aurora Apex Option A verified
+## Aurora Apex verified
 
-- Current moving-ring gameplay, capture windows, Outer/Middle tap capture, Inner hold-to-brake interaction, mistimed overspin/RGB fault and final completion sequence remain unchanged.
-- Outer, Middle and Inner ring WebPs were rebuilt as darker premium-minimal celestial rings with restrained internal aurora energy, crisp perimeter light and significantly more negative space.
-- Tracking rings now recede strongly; the active ring carries the clearest luminance and colour; locked rings remain visible but calmer than the active state.
-- The previous visible northern-lights wallpaper treatment is suppressed. The existing `aurora-sky.webp` remains referenced only as faint peripheral atmosphere behind a dark celestial chamber.
-- The dial field, capture axis and ring marker now use quieter, lower-bloom precision cues rather than soft teal haze.
-- The centre star housing is darker and sharper, with restrained charge-state progression so the star remains the focal point.
-- No layout, copy, audio, route, radio or other mission behaviour was changed.
-- Pass 7.11 Jingle Beams gameplay/audio remains unchanged.
+- Current Aurora Apex gameplay, capture timing, Outer/Middle tap capture, Inner hold-to-brake control, mistimed overspin/RGB fault and completion sequence remain unchanged.
+- The dark minimal chamber/background introduced in Pass 7.20 remains intact.
+- `aurora-ring-outer.webp`, `aurora-ring-middle.webp` and `aurora-ring-inner.webp` were replaced with newly designed image-based ring assets that restore the preferred deep-blue/light-green aurora contrast and subtle celestial constellation detail.
+- The new ring artwork is cleaner and more realistic than the earliest versions: fewer stars, subtler line work, less illustrative clutter and more natural aurora flow.
+- Ring-state suppression was eased slightly so tracking rings still recede, but Middle and Inner remain visible enough for their artwork to read.
+- No HUD structure, copy, audio, routing or other mission behaviour was changed.
+- Pass 7.11 Jingle Beams remains unchanged.
 
 ## Automated checks passed
 
@@ -45,13 +43,9 @@
 
 ## Non-blocking warnings
 
-1. **Deployment footprint:** 7.95 MB exceeds the 7 MB audit target, primarily because the full Lapland Launch music track remains intentionally retained.
+1. **Deployment footprint:** 7.97 MB exceeds the 7 MB audit target, primarily because the full Lapland Launch music track remains intentionally retained.
 2. **ELF FM stream:** current Radio Mast URL is still identified as a test stream and should be replaced when the production stream is supplied.
 3. **Web app manifest:** no install icon is defined; normal browser/QR use is unaffected.
-
-## Visual verification
-
-The three replacement WebPs were inspected directly and a static dial composite was generated to verify ring scale, negative space, centre hierarchy and separation before build. Bundle generation, production build, asset references, CSS structure and audit all pass. A live Chromium playthrough is not claimed because the container browser remains unreliable for local graphical capture.
 
 ## Re-run
 
