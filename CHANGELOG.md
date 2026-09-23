@@ -620,3 +620,15 @@ This pass adds a self-contained static build for Vercel. No Vercel project-setti
 - Added non-punitive mistimed-capture feedback: an incorrect tap/release gives the active ring a short stage-scaled overspin plus a restrained Starstream-style red/cyan RGB split before immediately returning to normal play. No progress is reset.
 - Preserved reduced-motion behaviour and introduced no new audio, HUD or explanatory copy.
 - Bumped runtime asset version to 7.18.0.
+
+## Pass 7.19.0 — Aurora Apex visual correction + aurora sky
+
+- Kept the current Aurora Apex moving-ring gameplay, capture timing, concentric layout, Inner hold-to-brake control and completion flow unchanged.
+- Reverted the rejected Pass 7.18 neon/glass ring artwork to the softer accepted Pass 7.16 aurora-ring WebPs.
+- Added a dedicated lightweight `aurora-sky.webp` northern-lights backdrop with broad cyan/emerald curtains, deep navy negative space and sparse stars so the chamber reads as an actual celestial environment rather than a flat teal panel.
+- Opened the circular field enough for that environment to remain visible through the dial while retaining a dark central vignette for gameplay readability.
+- Simplified ring separation to one clean perimeter edge plus restrained depth shadow per ring; removed the dense multi-rim/mechanical look from Pass 7.18.
+- Preserved the useful Pass 7.18 mistimed-capture behaviour: incorrect attempts still create a short non-punitive overspin. The RGB fault treatment is now softer and restricted to the active ring/notch/axis.
+- No new HUD, copy, music or gameplay rules were introduced.
+- Bumped runtime asset version to 7.19.0.
+

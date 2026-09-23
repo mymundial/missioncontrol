@@ -1,4 +1,4 @@
-# Pass 7.18.0 — Production Audit
+# Pass 7.19.0 — Production Audit
 
 ## Result
 
@@ -6,26 +6,24 @@
 
 ## Production footprint
 
-- `dist/`: **7.978 MiB**
-- Production files: **49**
-- Versus Pass 7.17.0: **+43,844 bytes (~42.8 KiB)** with **no change in production file count**.
-- The increase is from the three rebuilt Aurora ring WebP assets plus the Aurora CSS/JS changes.
+- `dist/`: **7.950 MiB**
+- Production files: **50**
+- Versus Pass 7.18.0: **-29,704 bytes (~29.0 KiB)** with **+1 production file**.
+- The additional file is the lightweight `aurora-sky.webp` atmosphere asset; the net footprint falls because the three rejected Pass 7.18 ring WebPs are replaced by the smaller accepted Pass 7.16 soft-aurora assets.
 - No WAV/source-master audio is deployed.
 - No Jingle Beams gameplay music is deployed; the rejected arena loop remains excluded by `build.js`.
 - No test/temp files are deployed.
 - Runtime images remain WebP/SVG and fonts WOFF2.
 
-## Aurora Apex celestial-instrument pass verified
+## Aurora Apex correction verified
 
-- Pass 7.17 ring sizes, concentric layout, capture windows, Outer/Middle tap capture, Inner hold-to-brake interaction and final completion sequence are retained.
-- All three Aurora ring WebPs are rebuilt as transparent glass/energy annuli with visibly brighter rims, darker inner bevels and more negative space between aurora ribbons.
-- The dial backing is now translucent enough for the panel aurora environment to remain visible through the instrument while retaining a dark optical vignette for gameplay contrast.
-- Background northern-light curtains and veils are materially more visible in the static state and continue their slow ambient motion during play.
-- Ring state hierarchy is explicit: inactive tracking rings recede, the active ring has the strongest edge/internal energy, and locked rings remain illuminated without competing with the active ring.
-- Mistimed captures now add a brief stage-scaled angular overspin and a short red/cyan RGB split on the active ring/dial before normal tracking resumes. Progress is never reset.
-- Centre-core and North Pole-axis styling is strengthened as the foreground plane above the ring system.
-- Reduced-motion handling remains in place for ambient and transient visual effects.
-- No new audio, HUD panels or explanatory copy were introduced.
+- Current moving-ring gameplay, capture windows, Outer/Middle tap capture, Inner hold-to-brake interaction and final completion sequence remain unchanged.
+- The rejected Pass 7.18 neon/glass ring art has been removed; Outer, Middle and Inner use the softer accepted Pass 7.16 aurora WebPs again.
+- A dedicated WebP northern-lights sky now sits behind the instrument with broad cyan/emerald curtains, deep navy negative space and sparse stars, making the celestial environment visible without adding panel-wide bloom.
+- The circular field uses a dark transparent vignette rather than an opaque disc so the sky remains visible through the dial while the centre stays readable.
+- Ring separation is simplified to a single clean perimeter edge and restrained depth shadow per ring; the dense multi-rim/mechanical treatment from Pass 7.18 is gone.
+- The useful Pass 7.18 mistimed-capture overspin remains. RGB fault feedback is softened and restricted to the active ring, lock notch and North Pole axis; progress is never reset.
+- No new HUD, copy, music or gameplay rules were introduced.
 - Pass 7.11 Jingle Beams gameplay/audio remains unchanged.
 
 ## Automated checks passed
@@ -47,13 +45,13 @@
 
 ## Non-blocking warnings
 
-1. **Deployment footprint:** 7.98 MB exceeds the 7 MB audit target, primarily because the full Lapland Launch music track remains intentionally retained.
+1. **Deployment footprint:** 7.95 MB exceeds the 7 MB audit target, primarily because the full Lapland Launch music track remains intentionally retained.
 2. **ELF FM stream:** current Radio Mast URL is still identified as a test stream and should be replaced when the production stream is supplied.
 3. **Web app manifest:** no install icon is defined; normal browser/QR use is unaffected.
 
 ## Visual verification
 
-The rebuilt WebP ring assets were inspected directly and the CSS/JS production structure passes the automated audit. A reliable live Chromium screenshot/playthrough is **not** claimed: headless Chromium still fails to complete page capture in this environment.
+The restored ring WebPs and new aurora-sky WebP were inspected directly. Bundle generation, production build, asset references, CSS structure and audit all pass. A live Chromium playthrough is not claimed because the container browser remains unreliable for local graphical capture.
 
 ## Re-run
 
