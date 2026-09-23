@@ -5561,3 +5561,174 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   .aurora-atmosphere::before,.aurora-atmosphere::after{animation:none!important;}
   .aurora-ring.desync img,.aurora-ring.desync .aurora-lock-notch,.aurora-dial.desync .aurora-target-line{animation-duration:.10s!important;animation-iteration-count:1!important;}
 }
+
+/* Pass 7.20.0 — Aurora Apex Option A: premium minimal celestial instrument */
+/* Visual-only refinement. Preserve Pass 7.19 gameplay and desync behaviour. */
+.aurora-panel{
+  background:
+    radial-gradient(62% 46% at 50% 45%,rgba(19,70,84,.16),transparent 68%),
+    radial-gradient(34% 42% at 5% 52%,rgba(40,126,118,.055),transparent 76%),
+    radial-gradient(32% 38% at 96% 48%,rgba(42,101,135,.045),transparent 78%),
+    linear-gradient(180deg,#03131f 0%,#020e18 58%,#020b13 100%);
+}
+.aurora-panel::before{opacity:.16;filter:none;animation-duration:28s;}
+
+/* Atmosphere becomes peripheral rather than the hero. Keep the existing WebP referenced,
+   but reduce it to a barely-there celestial texture at the outer edges. */
+.aurora-atmosphere{opacity:.34;mix-blend-mode:screen;}
+.aurora-atmosphere::before{
+  left:-14%;right:-14%;top:2%;height:88%;
+  background:url("../assets/aurora-sky.webp") 50% 45% / 124% 124% no-repeat;
+  opacity:.075;
+  filter:blur(7px) saturate(.72) brightness(.58);
+  transform:scale(1.04);
+  animation:auroraMinimalSky 26s ease-in-out infinite alternate;
+}
+.aurora-atmosphere::after{
+  left:-10%;right:-10%;top:18%;height:66%;
+  background:
+    radial-gradient(ellipse at 7% 48%,rgba(70,205,177,.08),transparent 36%),
+    radial-gradient(ellipse at 94% 46%,rgba(75,172,213,.065),transparent 35%);
+  opacity:.48;
+  filter:blur(18px);
+  transform:none;
+  animation:auroraMinimalEdges 24s ease-in-out infinite alternate;
+}
+
+/* A dark precision well: the dial should read as negative space, not as another aurora image. */
+.aurora-field{
+  background:
+    radial-gradient(circle at 50% 50%,rgba(2,10,18,.998) 0 18%,rgba(3,16,26,.985) 19% 56%,rgba(2,12,21,.96) 72%,rgba(1,8,14,.92) 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(142,220,230,.045),
+    inset 0 0 46px rgba(0,3,9,.58),
+    0 10px 22px rgba(0,3,9,.22);
+}
+.aurora-field::before{opacity:.38;animation-duration:22s;}
+.aurora-field::after{opacity:.045;filter:blur(22px) saturate(.8);}
+
+/* Clean ring material: dark celestial glass with the energy carried by the WebP itself.
+   No additional faux mechanical rims. */
+.aurora-ring{
+  outline:none;
+  box-shadow:none;
+  filter:drop-shadow(0 7px 9px rgba(0,2,8,.48));
+  opacity:.70;
+}
+.aurora-ring img{
+  opacity:.94;
+  filter:saturate(.76) contrast(1.10) brightness(.78);
+}
+.aurora-ring::after{opacity:0;}
+.aurora-ring::before{
+  opacity:.035;
+  background:conic-gradient(from 26deg,transparent 0 12%,rgba(205,255,248,.16) 17%,transparent 23% 62%,rgba(118,224,236,.09) 68%,transparent 75% 100%);
+  mix-blend-mode:screen;
+  animation-duration:22s;
+}
+.aurora-ring-outer::before{animation-duration:24s;}
+.aurora-ring-middle::before{animation-duration:19s;}
+.aurora-ring-inner::before{animation-duration:15s;}
+
+/* Strong state hierarchy: tracking rings recede, only the current ring becomes luminous. */
+.aurora-ring.tracking{
+  opacity:.42;
+  outline:none;
+  box-shadow:none;
+  filter:drop-shadow(0 5px 8px rgba(0,2,8,.42));
+}
+.aurora-ring.tracking img{filter:saturate(.48) contrast(1.10) brightness(.58);}
+.aurora-ring.tracking::before{opacity:.015;}
+.aurora-ring.active{
+  opacity:1;
+  outline:none;
+  box-shadow:none;
+  filter:drop-shadow(0 8px 10px rgba(0,2,8,.52)) drop-shadow(0 0 6px rgba(104,227,233,.15));
+}
+.aurora-ring.active img{opacity:1;filter:saturate(.96) contrast(1.12) brightness(1.02);}
+.aurora-ring.active::before{opacity:.12;}
+.aurora-ring.near-lock{
+  outline:none;
+  box-shadow:none;
+  filter:drop-shadow(0 8px 10px rgba(0,2,8,.52)) drop-shadow(0 0 9px rgba(197,250,251,.25)) brightness(1.02);
+}
+.aurora-ring.braking{
+  outline:none;
+  box-shadow:none;
+  filter:drop-shadow(0 8px 10px rgba(0,2,8,.52)) drop-shadow(0 0 8px rgba(155,235,245,.20));
+}
+.aurora-ring.locked{
+  opacity:.88;
+  outline:none;
+  box-shadow:none;
+  filter:drop-shadow(0 6px 9px rgba(0,2,8,.47)) drop-shadow(0 0 5px rgba(120,232,188,.12));
+}
+.aurora-ring.locked img{filter:saturate(.80) contrast(1.10) brightness(.88) hue-rotate(3deg);}
+.aurora-ring.locked::before{opacity:.065;}
+
+/* Reduce the marker to a precise instrument cue instead of another glowing object. */
+.aurora-lock-notch{
+  width:4px;height:11px;top:0;
+  background:linear-gradient(180deg,#fff,#bdeff4 68%,rgba(134,221,232,.12));
+  box-shadow:0 0 4px rgba(231,255,255,.68);
+  opacity:.18;
+}
+.aurora-ring.active .aurora-lock-notch{opacity:.90;height:12px;box-shadow:0 0 5px rgba(236,255,255,.82),0 0 9px rgba(91,220,233,.22);}
+.aurora-ring.near-lock .aurora-lock-notch{filter:brightness(1.18);box-shadow:0 0 6px #fff,0 0 12px rgba(111,235,231,.44);}
+
+/* Foreground alignment system remains crisp and quiet. */
+.aurora-target-line{
+  width:1px;
+  background:linear-gradient(180deg,rgba(247,255,255,.90),rgba(132,224,235,.48) 26%,rgba(87,184,202,.12) 70%,transparent);
+  box-shadow:none;
+}
+.aurora-dial.capture-ready .aurora-target-line{width:1px;filter:brightness(1.18);box-shadow:0 0 5px rgba(220,255,255,.42);}
+.aurora-capture-gate{opacity:.56;}
+.aurora-dial.capture-ready .aurora-capture-gate{opacity:.92;filter:drop-shadow(0 0 5px rgba(169,242,249,.44));}
+
+/* Sharper, darker centre core: the star is the focal point, not its halo. */
+.aurora-compass{
+  width:18.5%;height:18.5%;
+  border:1px solid rgba(207,242,247,.66);
+  background:
+    radial-gradient(circle at 42% 36%,rgba(28,77,86,.24),transparent 28%),
+    radial-gradient(circle,rgba(4,22,33,.995) 0 48%,rgba(1,10,18,.998) 78%);
+  box-shadow:
+    0 9px 18px rgba(0,2,8,.58),
+    0 0 0 3px rgba(125,208,215,.035),
+    inset 0 0 0 1px rgba(84,168,179,.08),
+    inset 0 0 16px rgba(34,119,137,.06);
+}
+.aurora-compass::before,.aurora-compass::after{background:rgba(115,207,219,.14);}
+.aurora-compass span{
+  color:#fbffff;
+  text-shadow:0 0 5px rgba(222,255,255,.62);
+  animation:auroraMinimalCore 4.4s ease-in-out infinite;
+}
+.aurora-dial[data-charge="1"] .aurora-compass{box-shadow:0 9px 18px rgba(0,2,8,.58),0 0 10px rgba(85,204,210,.10),inset 0 0 14px rgba(56,173,181,.07);}
+.aurora-dial[data-charge="2"] .aurora-compass{border-color:rgba(214,247,239,.78);box-shadow:0 9px 18px rgba(0,2,8,.58),0 0 12px rgba(99,219,185,.14),inset 0 0 14px rgba(67,191,169,.08);}
+.aurora-dial[data-charge="3"] .aurora-compass{border-color:rgba(239,255,248,.92);box-shadow:0 9px 18px rgba(0,2,8,.58),0 0 16px rgba(121,239,194,.20),inset 0 0 15px rgba(78,213,178,.10);}
+.aurora-dial[data-charge="1"] .aurora-compass span{transform:scale(1.04);text-shadow:0 0 6px #efffff,0 0 11px rgba(108,226,220,.36);}
+.aurora-dial[data-charge="2"] .aurora-compass span{transform:scale(1.08);text-shadow:0 0 6px #fff,0 0 13px rgba(132,240,206,.46);}
+.aurora-dial[data-charge="3"] .aurora-compass span{transform:scale(1.13);text-shadow:0 0 6px #fff,0 0 15px rgba(150,248,211,.56);}
+
+/* Status cards stay functional but recede beneath the instrument. */
+.aurora-ring-status{background:rgba(2,16,26,.84);border-color:rgba(63,127,150,.58);box-shadow:inset 0 0 0 1px rgba(116,218,235,.025);}
+.aurora-ring-status.tracking{opacity:.58;}
+.aurora-ring-status.active{background:rgba(4,28,39,.92);border-color:rgba(92,208,230,.74);box-shadow:inset 0 0 0 1px rgba(151,236,246,.06);}
+.aurora-mini-ring{box-shadow:none;}
+.aurora-ring-status.active .aurora-mini-ring{box-shadow:0 0 7px rgba(76,201,238,.16);}
+
+@keyframes auroraMinimalSky{
+  0%{transform:translate3d(-1.2%,.4%,0) scale(1.04);opacity:.065}
+  100%{transform:translate3d(1.2%,-.4%,0) scale(1.055);opacity:.085}
+}
+@keyframes auroraMinimalEdges{
+  0%{transform:translate3d(-1%,0,0);opacity:.38}
+  100%{transform:translate3d(1%,0,0);opacity:.52}
+}
+@keyframes auroraMinimalCore{0%,100%{filter:brightness(.99)}50%{filter:brightness(1.06)}}
+
+@media(prefers-reduced-motion:reduce){
+  .aurora-atmosphere::before,.aurora-atmosphere::after,.aurora-compass span{animation:none!important;}
+}

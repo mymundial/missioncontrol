@@ -632,3 +632,16 @@ This pass adds a self-contained static build for Vercel. No Vercel project-setti
 - No new HUD, copy, music or gameplay rules were introduced.
 - Bumped runtime asset version to 7.19.0.
 
+
+## Pass 7.20.0 — Aurora Apex premium minimal celestial instrument
+
+- Kept the current Aurora Apex moving-ring gameplay, capture windows, Inner hold-to-brake interaction, mistimed overspin/RGB fault and completion flow unchanged.
+- Rebuilt all three Aurora ring WebPs around a premium-minimal celestial-instrument direction: dark translucent ring bodies, a single restrained internal aurora ribbon, crisp cyan-white perimeter light and substantially more negative space.
+- Removed the soft full-band teal/fog look from the ring artwork so Outer, Middle and Inner read as deliberate navigation layers rather than blurred aurora discs.
+- Reworked the visual hierarchy so tracking rings recede strongly, the active ring is the clear hero, and locked rings remain illuminated but calmer than the active state.
+- Replaced the visible northern-lights wallpaper treatment with a dark celestial chamber; the existing `aurora-sky.webp` is retained only as a very faint peripheral atmosphere so the dial remains the visual focus.
+- Simplified the dial field, target line, capture gate and marker lighting to precise low-bloom instrument cues.
+- Reworked the centre star housing as a sharper dark energy core with restrained charge-state progression and substantially less halo.
+- Reduced status-card visual weight so the navigation instrument remains the dominant element.
+- No layout, copy, audio, route, radio or other mission behaviour was changed.
+- Bumped runtime asset version to 7.20.0.

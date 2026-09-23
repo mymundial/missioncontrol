@@ -1,4 +1,4 @@
-# Pass 7.19.0 — Production Audit
+# Pass 7.20.0 — Production Audit
 
 ## Result
 
@@ -6,24 +6,24 @@
 
 ## Production footprint
 
-- `dist/`: **7.950 MiB**
+- `dist/`: **7.949 MiB**
 - Production files: **50**
-- Versus Pass 7.18.0: **-29,704 bytes (~29.0 KiB)** with **+1 production file**.
-- The additional file is the lightweight `aurora-sky.webp` atmosphere asset; the net footprint falls because the three rejected Pass 7.18 ring WebPs are replaced by the smaller accepted Pass 7.16 soft-aurora assets.
+- Versus Pass 7.19.0: **-314 bytes** with **no file-count change**.
+- The three replacement Aurora ring WebPs are smaller overall; the extra CSS needed for the new visual hierarchy almost exactly offsets that saving.
 - No WAV/source-master audio is deployed.
 - No Jingle Beams gameplay music is deployed; the rejected arena loop remains excluded by `build.js`.
 - No test/temp files are deployed.
 - Runtime images remain WebP/SVG and fonts WOFF2.
 
-## Aurora Apex correction verified
+## Aurora Apex Option A verified
 
-- Current moving-ring gameplay, capture windows, Outer/Middle tap capture, Inner hold-to-brake interaction and final completion sequence remain unchanged.
-- The rejected Pass 7.18 neon/glass ring art has been removed; Outer, Middle and Inner use the softer accepted Pass 7.16 aurora WebPs again.
-- A dedicated WebP northern-lights sky now sits behind the instrument with broad cyan/emerald curtains, deep navy negative space and sparse stars, making the celestial environment visible without adding panel-wide bloom.
-- The circular field uses a dark transparent vignette rather than an opaque disc so the sky remains visible through the dial while the centre stays readable.
-- Ring separation is simplified to a single clean perimeter edge and restrained depth shadow per ring; the dense multi-rim/mechanical treatment from Pass 7.18 is gone.
-- The useful Pass 7.18 mistimed-capture overspin remains. RGB fault feedback is softened and restricted to the active ring, lock notch and North Pole axis; progress is never reset.
-- No new HUD, copy, music or gameplay rules were introduced.
+- Current moving-ring gameplay, capture windows, Outer/Middle tap capture, Inner hold-to-brake interaction, mistimed overspin/RGB fault and final completion sequence remain unchanged.
+- Outer, Middle and Inner ring WebPs were rebuilt as darker premium-minimal celestial rings with restrained internal aurora energy, crisp perimeter light and significantly more negative space.
+- Tracking rings now recede strongly; the active ring carries the clearest luminance and colour; locked rings remain visible but calmer than the active state.
+- The previous visible northern-lights wallpaper treatment is suppressed. The existing `aurora-sky.webp` remains referenced only as faint peripheral atmosphere behind a dark celestial chamber.
+- The dial field, capture axis and ring marker now use quieter, lower-bloom precision cues rather than soft teal haze.
+- The centre star housing is darker and sharper, with restrained charge-state progression so the star remains the focal point.
+- No layout, copy, audio, route, radio or other mission behaviour was changed.
 - Pass 7.11 Jingle Beams gameplay/audio remains unchanged.
 
 ## Automated checks passed
@@ -51,7 +51,7 @@
 
 ## Visual verification
 
-The restored ring WebPs and new aurora-sky WebP were inspected directly. Bundle generation, production build, asset references, CSS structure and audit all pass. A live Chromium playthrough is not claimed because the container browser remains unreliable for local graphical capture.
+The three replacement WebPs were inspected directly and a static dial composite was generated to verify ring scale, negative space, centre hierarchy and separation before build. Bundle generation, production build, asset references, CSS structure and audit all pass. A live Chromium playthrough is not claimed because the container browser remains unreliable for local graphical capture.
 
 ## Re-run
 
