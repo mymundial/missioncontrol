@@ -1,4 +1,4 @@
-# Pass 7.16.0 — Production Audit
+# Pass 7.17.0 — Production Audit
 
 ## Result
 
@@ -6,27 +6,26 @@
 
 ## Production footprint
 
-- `dist/`: **7.929 MiB**
+- `dist/`: **7.936 MiB**
 - Production files: **49**
-- Versus accepted Pass 7.15.0: **+4,759 bytes (~4.6 KiB)** with **no change in production file count**.
-- The small increase is CSS only; no new runtime media assets were added.
+- Versus Pass 7.16.0: **+7,054 bytes (~6.9 KiB)** with **no change in production file count**.
+- The increase is CSS only; no new runtime media assets were added.
 - No WAV/source-master audio is deployed.
 - No Jingle Beams gameplay music is deployed; the rejected arena loop remains excluded by `build.js`.
 - No test/temp files are deployed.
 - Runtime images remain WebP/SVG and fonts WOFF2.
 
-## Aurora Apex atmospheric-depth pass verified
+## Aurora Apex dimensional-atmosphere pass verified
 
-- Pass 7.15 moving-ring capture gameplay, timing windows, ring sizes, centring and status UI are unchanged.
-- A low-contrast animated aurora curtain and secondary veil now move behind the navigation instrument, with sparse star drift for background depth.
-- The circular dial field now has restrained slow celestial motion behind the three rings rather than a flat static fill.
-- All three ring bands retain their existing centred WebP artwork and geometry, with masked animated light flow layered inside the annuli only.
-- Outer, middle and inner rings use different internal-flow speeds/directions so the bands feel alive without changing their gameplay rotation.
-- Added restrained rim/highlight layering and deeper shadow separation so the rings read as dimensional energy bands rather than flat discs.
-- The centre compass has a darker layered core and subtle idle star breathing while existing charge and final-lock feedback remain intact.
-- Ambient effects remain deliberately below the brightness of the active ring, capture marker and North Pole axis.
-- New ambient motion is disabled under `prefers-reduced-motion`.
-- No gameplay code, mission copy, HUD structure, artwork assets or audio files changed.
+- Pass 7.16 moving-ring capture gameplay, capture windows, ring sizes, concentric geometry, mission copy and status UI are unchanged.
+- The existing panel atmosphere is now materially stronger: a visible layered northern-lights field sits behind the dial with slow curtain and veil movement rather than near-invisible haze.
+- Background treatment remains spatially separated from the dial so the active ring, capture marker and North Pole axis retain priority.
+- All three ring bands retain the centred Pass 7.15 WebP artwork but now use stronger internal energy variation, specular rim definition, darker edge separation and deeper physical shadowing.
+- Active, near-lock and locked ring states retain the same gameplay logic while gaining clearer visual depth rather than additional bloom.
+- The centre compass uses a richer layered dark core and restrained luminous structure without changing size or geometry.
+- Existing ring-charge states now also raise the atmosphere and in-dial energy subtly as the player progresses, with the strongest environment state reserved for final lock.
+- Ambient motion remains disabled under `prefers-reduced-motion`.
+- No artwork, audio, HUD, copy or gameplay behaviour was added or changed.
 - Pass 7.11 Jingle Beams gameplay/audio remains unchanged.
 
 ## Automated checks passed
@@ -48,13 +47,13 @@
 
 ## Non-blocking warnings
 
-1. **Deployment footprint:** 7.93 MB exceeds the 7 MB audit target, primarily because the full Lapland Launch music track remains intentionally retained.
+1. **Deployment footprint:** 7.94 MB exceeds the 7 MB audit target, primarily because the full Lapland Launch music track remains intentionally retained.
 2. **ELF FM stream:** current Radio Mast URL is still identified as a test stream and should be replaced when the production stream is supplied.
 3. **Web app manifest:** no install icon is defined; normal browser/QR use is unaffected.
 
 ## Visual verification
 
-The CSS layering and geometry were inspected against the accepted Pass 7.15 structure, and the production audit confirms the ring assets and runtime references are unchanged. A headless Chromium screenshot was attempted, but Chromium cannot initialise a usable graphics backend in this container, so a live browser visual/playthrough check is not claimed.
+The visual pass was implemented without changing Aurora Apex gameplay code or ring assets. CSS structure and production references pass the automated audit. A reliable live browser visual/playthrough capture is not claimed in this environment.
 
 ## Re-run
 

@@ -596,3 +596,14 @@ This pass adds a self-contained static build for Vercel. No Vercel project-setti
 - Added reduced-motion fallbacks for all new ambient and ring-flow animations.
 - No new artwork, audio, HUD, copy or gameplay behaviour was added.
 - Bumped runtime asset cache version to 7.16.0.
+
+## Pass 7.17.0 — Aurora Apex dimensional atmosphere refinement
+
+- Kept Pass 7.16 Aurora Apex gameplay, capture timing, ring geometry, layout and copy unchanged.
+- Strengthened the northern-lights environment behind the dial with clearly visible slow aurora curtains, layered veils and sparse celestial depth while retaining the reduced-bloom discipline.
+- Increased foreground/background separation so the rings sit over the atmosphere rather than visually merging with the panel.
+- Deepened all three ring bands with stronger internal aurora variation, restrained specular rim lighting, darker edge separation and more physical shadow depth.
+- Enriched the centre compass with a layered dark core and restrained luminous structure so it reads as the instrument power source without increasing its size.
+- Linked background atmosphere and in-dial energy intensity to the existing ring-charge states, so the environment subtly builds as each ring is captured and peaks during final lock.
+- Preserved reduced-motion behaviour and added no new artwork, audio, HUD, copy or gameplay behaviour.
+- Bumped runtime asset cache version to 7.17.0.
