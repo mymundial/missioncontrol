@@ -693,3 +693,13 @@ This pass adds a self-contained static build for Vercel. No Vercel project-setti
 - Kept all three rings clearly visible from the opening state; the active ring receives only a modest luminance/saturation lift.
 - No copy, HUD structure, audio, route or other mission behaviour was changed.
 - Bumped runtime asset version to 7.25.0.
+
+## Pass 7.26.0 — Aurora Apex calm ring-art revert + larger geometry
+
+- Reverted Aurora Apex to the three calmer supplied ring artworks (`aurora-ring-outer.webp`, `aurora-ring-middle.webp`, `aurora-ring-inner.webp`) production-optimised for deployment with no redesign or remasking.
+- Scaled the complete concentric stack up to **Outer 99% / Middle 67% / Inner 41%**.
+- The Outer ring now fills the previously exposed dark outer dial zone, while fixed dark gaps remain between Outer, Middle and Inner.
+- Increased baseline ring visibility slightly so all three authored artworks remain readable from the opening state, with only modest active-ring emphasis.
+- Legacy procedural ring overlays remain disabled so the supplied artwork renders cleanly.
+- Aurora Apex gameplay, capture timing, mistimed overspin/RGB fault, centre core, HUD, audio and route behaviour are unchanged.
+- Bumped runtime asset version to 7.26.0.

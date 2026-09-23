@@ -5833,3 +5833,22 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .aurora-ring.active img{filter:saturate(1.00) contrast(1.05) brightness(.99);}
 .aurora-ring.locked{opacity:.94;}
 .aurora-ring.locked img{filter:saturate(.98) contrast(1.04) brightness(.95) hue-rotate(1deg);}
+
+/* Pass 7.26.0 — Aurora Apex calm ring-art revert + larger concentric geometry */
+/* Revert to the calmer three authored ring WebPs. Scale the complete stack up while
+   keeping fixed negative-space lanes between each ring. The outer ring now fills the
+   previously exposed dark outer dial zone instead of sitting inside it. */
+.aurora-ring-outer{width:99%;height:99%;}
+.aurora-ring-middle{width:67%;height:67%;}
+.aurora-ring-inner{width:41%;height:41%;}
+
+/* Preserve the authored artwork without additional procedural ring textures. */
+.aurora-ring::before,.aurora-ring::after{opacity:0!important;}
+.aurora-ring{opacity:.96;filter:drop-shadow(0 6px 9px rgba(0,2,8,.40));}
+.aurora-ring img{opacity:1;filter:saturate(.98) contrast(1.04) brightness(.96);}
+.aurora-ring.tracking{opacity:.91;filter:drop-shadow(0 6px 9px rgba(0,2,8,.38));}
+.aurora-ring.tracking img{filter:saturate(.94) contrast(1.04) brightness(.92);}
+.aurora-ring.active{opacity:1;filter:drop-shadow(0 7px 10px rgba(0,2,8,.44)) drop-shadow(0 0 5px rgba(104,227,233,.10));}
+.aurora-ring.active img{filter:saturate(1.02) contrast(1.05) brightness(1.00);}
+.aurora-ring.locked{opacity:.96;}
+.aurora-ring.locked img{filter:saturate(1.00) contrast(1.04) brightness(.97) hue-rotate(1deg);}

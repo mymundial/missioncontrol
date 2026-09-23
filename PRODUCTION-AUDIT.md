@@ -1,4 +1,4 @@
-# Pass 7.25.0 — Production Audit
+# Pass 7.26.0 — Production Audit
 
 ## Result
 
@@ -6,23 +6,24 @@
 
 ## Production footprint
 
-- `dist/`: **8.053 MiB**
+- `dist/`: **8.064 MiB**
 - Production files: **50**
-- Versus Pass 7.24.0: **+77,689 bytes** (**+75.9 KiB**) with **no file-count change**.
-- The increase comes from the three higher-detail approved Aurora ring WebPs; no duplicate assets were added.
-- No PNG source artwork is deployed; approved source PNGs were converted to WebP production assets only.
+- Versus Pass 7.25.0: **+11,286 bytes** (**+11.0 KiB**) with **no file-count change**.
+- The supplied calmer Aurora ring artworks were production-compressed as WebP without redesigning or remasking them.
+- No duplicate ring assets were added.
 - No WAV/source-master audio is deployed.
 - No test/temp files are deployed.
 - Runtime images remain WebP/SVG and fonts remain WOFF2.
 
 ## Aurora Apex verified
 
-- Current Aurora Apex gameplay, capture timing, Outer/Middle tap capture, Inner hold-to-brake control, mistimed overspin/RGB fault, darker chamber background and overall layout remain unchanged.
-- `aurora-ring-outer.webp`, `aurora-ring-middle.webp` and `aurora-ring-inner.webp` now use the three individually approved ring artworks as separate production assets.
-- Each approved source was converted to its own annulus with fixed geometry so the three rings preserve deliberate dark spacing when nested in the existing concentric wrappers.
-- Legacy procedural ring overlays are disabled for Aurora Apex so the approved ring artwork remains visually intact.
-- All three rings remain visible from the opening frame; the active ring receives only a modest emphasis.
-- No HUD structure, copy, audio, routing or other mission behaviour was changed.
+- Reverted to the three calmer supplied ring artworks for Outer, Middle and Inner.
+- Ring stack geometry is now **Outer 99% / Middle 67% / Inner 41%**.
+- The Outer ring fills the previously exposed dark outer dial zone.
+- Middle and Inner are also scaled up while preserving clear negative-space gaps between each concentric band.
+- Legacy procedural ring overlays remain disabled so the supplied artwork is not visually overwritten.
+- All three rings remain visible from the opening state with only modest active-ring emphasis.
+- Aurora Apex gameplay, capture timing, Inner hold-to-brake control, mistimed overspin/RGB fault, centre core, HUD, audio and route behaviour are unchanged.
 
 ## Automated checks passed
 
@@ -43,7 +44,7 @@
 
 ## Non-blocking warnings
 
-1. **Deployment footprint:** 8.05 MB exceeds the 7 MB audit target, primarily because the full Lapland Launch music track remains intentionally retained.
+1. **Deployment footprint:** 8.06 MB exceeds the 7 MB audit target, primarily because the full Lapland Launch music track remains intentionally retained.
 2. **ELF FM stream:** current Radio Mast URL is still identified as a test stream and should be replaced when the production stream is supplied.
 3. **Web app manifest:** no install icon is defined; normal browser/QR use is unaffected.
 
