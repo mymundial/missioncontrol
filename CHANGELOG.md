@@ -563,12 +563,13 @@ This pass adds a self-contained static build for Vercel. No Vercel project-setti
 - Retired `jingle-arena-loop.mp3` from production; the build explicitly excludes it so a 7.10 overlay cannot accidentally redeploy the rejected loop.
 - Bumped runtime asset cache version to 7.11.0.
 
-## Pass 7.12.0 — Aurora Apex navigation depth + route-lock payoff
+## Pass 7.13.0 — Aurora Apex vortex navigation
 
-- Kept the existing Aurora Apex visual language and three-ring structure while giving each ring a distinct handling profile.
-- Outer ring remains direct and forgiving; Middle Ring counter-rotates with a short controlled coast; Inner Ring responds faster with a tighter precision lock window.
-- Added magnetic near-lock feedback, ring-specific lock pulses and progressively stronger centre-star / aurora energy as each ring is secured.
-- Reworked the final completion beat into a 2.3-second North Pole vector payoff: all rings energise, the centre compass surges, the navigation beam fires toward the North Pole marker and an in-dial `NORTH POLE VECTOR LOCKED` confirmation appears before the standard completion card.
-- Added reduced-motion fallbacks and mission cleanup for the new coast/completion animation timers.
-- No new production assets or audio files were added.
-- Bumped runtime asset cache version to 7.12.0.
+- Replaced the rejected ring-alignment interaction with a coin-vortex-inspired celestial navigation game built from the Pass 7.11 visual baseline.
+- The player now swipes around the circular instrument to add momentum to a glowing aurora charge; the charge spirals from the outer route through middle and inner routes into the centre star.
+- Existing aurora ring artwork is retained, but the rings now counter-rotate during play and progressively energise as the charge crosses each route.
+- Added a curved multi-point comet trail, progressive centre-star power states, route-crossing pulses and compact OUTER / MIDDLE / INNER route indicators.
+- Replaced the old static alignment line with a subdued guide that becomes a full North Pole navigation beam only during the final lock sequence.
+- Final completion now holds on the activated instrument: centre impact, ring surge, outward energy wave, North Pole beam and `AURORA ROUTE LOCKED` confirmation before the standard mission-complete card.
+- No new image or audio assets were added; existing WebP aurora artwork and shared synthesized UI tones are reused.
+- Bumped runtime asset cache version to 7.13.0.

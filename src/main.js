@@ -625,7 +625,7 @@
       comet:'Lock 10 directional signals to restore Santa-1’s guidance path.',
       jingle:'Charge all 3 propulsion beams.',
       lando:'React the moment the lights go out to calibrate Santa-1 flight control.',
-      aurora:'Align the navigation rings and lock Santa-1 onto the North Pole.',
+      aurora:'Guide the aurora charge through the vortex and lock Santa-1 onto the North Pole.',
       lapland:'Final systems verification.',
       northern:'Authorise the restored sleigh for its final Northern Flight.'
     })[type]||'';
@@ -871,20 +871,24 @@
     </div>`;
   }
   function auroraBody(){
-    const rings=[['outer','Outer Ring'],['middle','Middle Ring'],['inner','Inner Ring']];
+    const rings=[['outer','Outer'],['middle','Middle'],['inner','Inner']];
     return `<div class="mission-instrument panel aurora-panel">
       <div class="aurora-atmosphere" aria-hidden="true"></div>
       <div class="aurora-north" aria-hidden="true"><span class="aurora-north-star">✦</span><strong>North Pole</strong><i></i></div>
-      <div class="aurora-dial" id="auroraDial" aria-label="Navigation ring alignment control">
+      <div class="aurora-dial" id="auroraDial" tabindex="0" role="application" aria-label="Aurora vortex guidance control. Swipe around the vortex to guide the charge inward.">
         <div class="aurora-field"></div>
-        <div class="aurora-target-line"></div>
-        ${rings.map(([key])=>`<div class="aurora-ring aurora-ring-${key}" data-aurora-ring="${key}"><img src="./assets/aurora-ring-${key}.webp" alt="" aria-hidden="true"><span class="aurora-lock-notch"></span></div>`).join('')}
-        <div class="aurora-lock-wave" id="auroraLockWave" aria-hidden="true"></div>
+        <div class="aurora-vortex-halo" aria-hidden="true"></div>
+        <div class="aurora-target-line" aria-hidden="true"></div>
+        ${rings.map(([key])=>`<div class="aurora-ring aurora-ring-${key}" data-aurora-ring="${key}"><img src="./assets/aurora-ring-${key}.webp" alt="" aria-hidden="true"></div>`).join('')}
+        <div class="aurora-trail" aria-hidden="true">${Array.from({length:9},()=>`<i class="aurora-trail-dot"></i>`).join('')}</div>
+        <div class="aurora-orb" id="auroraOrb" aria-hidden="true"><i></i></div>
         <div class="aurora-compass"><span>✦</span></div>
-        <div class="aurora-route-confirm" aria-hidden="true"><span>Route established</span><strong>North Pole Vector Locked</strong></div>
+        <div class="aurora-route-wave" aria-hidden="true"></div>
+        <div class="aurora-guide-prompt" id="auroraGuidePrompt" aria-hidden="true"><strong>SWIPE AROUND TO GUIDE</strong><span>Lead the charge into the centre</span></div>
+        <div class="aurora-lock-copy" id="auroraLockCopy" aria-hidden="true"><strong>AURORA ROUTE LOCKED</strong><span>NORTH POLE VECTOR ESTABLISHED</span></div>
       </div>
-      <div class="aurora-ring-statuses">${rings.map(([key,label],i)=>`<button type="button" class="aurora-ring-status ${i===0?'selected':''}" data-aurora-status="${key}" data-aurora-select="${key}"><span class="aurora-mini-ring"></span><div><strong>${label}</strong><small>${i===0?'Selected · align':'Align to lock'}</small></div></button>`).join('')}</div>
-      <div class="visually-hidden" id="auroraState" aria-live="polite">Outer ring awaiting alignment.</div>
+      <div class="aurora-ring-statuses" aria-label="Aurora route progress">${rings.map(([key,label],i)=>`<div class="aurora-ring-status ${i===0?'active':''}" data-aurora-status="${key}"><span class="aurora-mini-ring"></span><div><strong>${label}</strong><small>${i===0?'GUIDING':'STANDBY'}</small></div></div>`).join('')}</div>
+      <div class="visually-hidden" id="auroraState" aria-live="polite">Outer aurora route ready.</div>
     </div>`;
   }
   function laplandBody(){
@@ -3045,9 +3049,13 @@
 
   function bindAurora(){
     const dial=document.getElementById('auroraDial');
+    const orb=document.getElementById('auroraOrb');
     const panel=dial?.closest('.aurora-panel');
+    const prompt=document.getElementById('auroraGuidePrompt');
     const stateEl=document.getElementById('auroraState');
-    const lockWave=document.getElementById('auroraLockWave');
+    const lockCopy=document.getElementById('auroraLockCopy');
+    if(!dial||!orb||!stateEl) return;
+
     const ringEls={
       outer:document.querySelector('[data-aurora-ring="outer"]'),
       middle:document.querySelector('[data-aurora-ring="middle"]'),
@@ -3058,247 +3066,227 @@
       middle:document.querySelector('[data-aurora-status="middle"]'),
       inner:document.querySelector('[data-aurora-status="inner"]')
     };
-    if(!dial||!panel||!stateEl)return;
-
     const order=['outer','middle','inner'];
-    const labels={outer:'Outer',middle:'Middle',inner:'Inner'};
-    const rotations={outer:112,middle:-96,inner:148};
-    const locked={outer:false,middle:false,inner:false};
-    const ringCenters={outer:.785,middle:.485,inner:.275};
-    const config={
-      outer:{dragScale:1,snap:14,magnet:4,coast:0,wave:'91%'},
-      middle:{dragScale:-.88,snap:12,magnet:4,coast:.92,wave:'60%'},
-      inner:{dragScale:1.28,snap:9,magnet:3,coast:.78,wave:'34%'}
-    };
-    const idleCopy={outer:'Align to lock',middle:'Counter-rotate · align',inner:'Precision align'};
-    let selected='outer';
-    let active=null;
-    let pointerId=null;
-    let lastPointerAngle=0;
-    let lastMoveAt=0;
-    let angularVelocity=0;
-    let coastRaf=0;
-    let completionTimer=0;
-    let finished=false;
-    const nearPinged={outer:false,middle:false,inner:false};
+    const thresholds=[315,625,900];
+    const radii=[.405,.275,.155,.018];
+    const trailEls=Array.from(dial.querySelectorAll('.aurora-trail-dot'));
+    const trailHistory=[];
+    const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    const timers=[];
 
+    let raf=0;
+    let pointerId=null;
+    let dragging=false;
+    let started=false;
+    let finished=false;
+    let stage=0;
+    let angle=-62;
+    let angularVelocity=18;
+    let travel=0;
+    let lastPointerAngle=0;
+    let last=performance.now();
+    let trailTick=0;
+
+    const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
     const normalise=a=>((a%360)+360)%360;
     const signed=a=>{const n=normalise(a);return n>180?n-360:n;};
-    const angleForEvent=e=>{
+    const ease=p=>.5-Math.cos(Math.PI*clamp(p,0,1))*.5;
+    const delay=(fn,ms)=>{const id=setTimeout(fn,ms);timers.push(id);return id;};
+
+    function angleForEvent(e){
       const r=dial.getBoundingClientRect();
-      const cx=r.left+r.width/2,cy=r.top+r.height/2;
+      const cx=r.left+r.width/2;
+      const cy=r.top+r.height/2;
       return Math.atan2(e.clientY-cy,e.clientX-cx)*180/Math.PI;
-    };
-    function renderRing(key){
-      ringEls[key].style.setProperty('--aurora-rotation',`${rotations[key]}deg`);
     }
-    function radiusForEvent(e){
-      const r=dial.getBoundingClientRect();
-      const cx=r.left+r.width/2,cy=r.top+r.height/2;
-      return Math.hypot(e.clientX-cx,e.clientY-cy)/(Math.min(r.width,r.height)/2);
-    }
-    function ringFromPoint(e){
-      const radius=radiusForEvent(e);
-      if(radius<.29||radius>1.02)return null;
-      const candidates=order.filter(k=>!locked[k]);
-      if(!candidates.length)return null;
-      return candidates.reduce((best,key)=>Math.abs(radius-ringCenters[key])<Math.abs(radius-ringCenters[best])?key:best,candidates[0]);
-    }
-    function nextUnlocked(){return order.find(k=>!locked[k]);}
-    function smallCopy(key){
-      if(locked[key])return 'Locked ✓';
-      if(key!==selected)return idleCopy[key];
-      if(key==='middle')return 'Selected · counter-rotate';
-      if(key==='inner')return 'Selected · precision';
-      return 'Selected · align';
-    }
-    function refreshStatuses(){
-      order.forEach(key=>{
-        ringEls[key].classList.toggle('selected',key===selected&&!locked[key]);
-        statusEls[key].classList.toggle('selected',key===selected&&!locked[key]);
-        statusEls[key].querySelector('small').textContent=smallCopy(key);
-      });
-    }
-    function setSelected(key){
-      if(!key||locked[key]||finished)return;
-      selected=key;
-      refreshStatuses();
-      const instruction=key==='middle'?'Counter-rotate the middle ring into alignment.':key==='inner'?'Fine-align the inner ring to complete the vector.':`${labels[key]} ring awaiting alignment.`;
-      stateEl.textContent=instruction;
-    }
-    function pulseLock(key){
-      if(!lockWave)return;
-      lockWave.style.setProperty('--aurora-wave-size',config[key].wave);
-      lockWave.classList.remove('active');
-      void lockWave.offsetWidth;
-      lockWave.classList.add('active');
-    }
-    function updateLockStage(){
-      const count=order.filter(k=>locked[k]).length;
-      panel.classList.remove('aurora-stage-1','aurora-stage-2','aurora-stage-3');
-      if(count)panel.classList.add(`aurora-stage-${count}`);
-      panel.style.setProperty('--aurora-lock-progress',String(count));
-    }
-    function finalPayoff(){
-      finished=true;
-      dial.classList.add('complete');
-      panel.classList.add('aurora-route-locked');
-      stateEl.textContent='North Pole vector locked. Aurora route established.';
-      ping(1040,.14,.04);
-      setTimeout(()=>ping(1320,.12,.036),150);
-      setTimeout(()=>ping(1620,.18,.04),330);
-      haptic([30,18,45,18,85]);
-      completionTimer=setTimeout(()=>showCompletion('North Pole Vector Locked','Aurora route established.'),2300);
-    }
-    function lockRing(key){
-      if(locked[key]||finished)return;
-      rotations[key]=0;
-      renderRing(key);
-      locked[key]=true;
-      nearPinged[key]=false;
-      ringEls[key].classList.remove('selected','dragging','near-lock');
-      ringEls[key].classList.add('locked','lock-flash');
-      setTimeout(()=>ringEls[key]?.classList.remove('lock-flash'),560);
-      statusEls[key].classList.remove('selected');
-      statusEls[key].classList.add('locked');
-      statusEls[key].querySelector('small').textContent='Locked ✓';
-      pulseLock(key);
-      updateLockStage();
-      const index=order.indexOf(key);
-      ping(690+index*120,.09,.026+index*.004);
-      haptic(index===2?[22,18,52]:[16,14,34]);
-      const next=nextUnlocked();
-      if(next)setSelected(next);
-      if(order.every(k=>locked[k]))finalPayoff();
-    }
-    function updateNearLock(key){
-      const offset=Math.abs(signed(rotations[key]));
-      const near=offset<=18;
-      ringEls[key].classList.toggle('near-lock',near);
-      if(near&&!nearPinged[key]){
-        nearPinged[key]=true;
-        ping(430+order.indexOf(key)*38,.035,.01);
-      }else if(offset>24){
-        nearPinged[key]=false;
+    function radiusForTravel(value){
+      if(value<=thresholds[0]){
+        const p=ease(value/thresholds[0]);
+        return radii[0]+(radii[1]-radii[0])*p;
       }
-      return offset;
+      if(value<=thresholds[1]){
+        const p=ease((value-thresholds[0])/(thresholds[1]-thresholds[0]));
+        return radii[1]+(radii[2]-radii[1])*p;
+      }
+      const p=ease((value-thresholds[1])/(thresholds[2]-thresholds[1]));
+      return radii[2]+(radii[3]-radii[2])*p;
     }
-    function stopCoast(){
-      if(coastRaf){cancelAnimationFrame(coastRaf);coastRaf=0;}
-    }
-    function coastRing(key,startVelocity){
-      stopCoast();
-      const coast=config[key].coast;
-      if(!coast||Math.abs(startVelocity)<.035){setSelected(key);return;}
-      let velocity=Math.max(-.18,Math.min(.18,startVelocity))*coast;
-      let last=performance.now();
-      const started=last;
-      ringEls[key].classList.add('coasting');
-      const step=now=>{
-        if(finished||locked[key]){ringEls[key].classList.remove('coasting');coastRaf=0;return;}
-        const dt=Math.min(34,Math.max(8,now-last));
-        last=now;
-        rotations[key]+=velocity*dt;
-        renderRing(key);
-        const offset=updateNearLock(key);
-        if(offset<=config[key].magnet){
-          ringEls[key].classList.remove('coasting');
-          coastRaf=0;
-          lockRing(key);
-          return;
-        }
-        velocity*=Math.pow(.84,dt/16.67);
-        if(Math.abs(velocity)<.018||now-started>360){
-          ringEls[key].classList.remove('coasting');
-          coastRaf=0;
-          setSelected(key);
-          return;
-        }
-        coastRaf=requestAnimationFrame(step);
+    function pointFor(angleDeg,radius){
+      const radians=angleDeg*Math.PI/180;
+      return {
+        x:50+Math.cos(radians)*radius*100,
+        y:50+Math.sin(radians)*radius*100
       };
-      coastRaf=requestAnimationFrame(step);
     }
-    function endDrag(){
-      if(pointerId===null)return;
-      try{dial.releasePointerCapture(pointerId);}catch{}
-      if(active){
-        const key=active;
-        ringEls[key].classList.remove('dragging');
-        const offset=Math.abs(signed(rotations[key]));
-        if(offset<=config[key].snap)lockRing(key);
-        else coastRing(key,angularVelocity);
+    function renderTrail(point){
+      if(reduced){
+        trailEls.forEach(el=>el.style.opacity='0');
+        return;
       }
-      active=null;
-      pointerId=null;
-      angularVelocity=0;
-    }
-
-    dial.addEventListener('pointerdown',e=>{
-      if(finished)return;
-      stopCoast();
-      const direct=ringFromPoint(e);
-      const key=direct||selected||nextUnlocked();
-      if(!key||locked[key])return;
-      e.preventDefault();
-      setSelected(key);
-      active=key;
-      pointerId=e.pointerId;
-      lastPointerAngle=angleForEvent(e);
-      lastMoveAt=performance.now();
-      angularVelocity=0;
-      dial.setPointerCapture(e.pointerId);
-      ringEls[key].classList.add('dragging');
-      stateEl.textContent=`${labels[key]} ring aligning.`;
-    });
-    dial.addEventListener('pointermove',e=>{
-      if(!active||e.pointerId!==pointerId)return;
-      e.preventDefault();
-      const now=performance.now();
-      const nextAngle=angleForEvent(e);
-      const rawDelta=signed(nextAngle-lastPointerAngle);
-      const delta=rawDelta*config[active].dragScale;
-      const dt=Math.max(8,now-lastMoveAt);
-      lastPointerAngle=nextAngle;
-      lastMoveAt=now;
-      angularVelocity=delta/dt;
-      rotations[active]+=delta;
-      renderRing(active);
-      const offset=updateNearLock(active);
-      if(offset<=config[active].magnet){
-        const key=active;
-        try{dial.releasePointerCapture(pointerId);}catch{}
-        active=null;
-        pointerId=null;
-        angularVelocity=0;
-        lockRing(key);
+      trailTick++;
+      if(trailTick%2===0){
+        trailHistory.unshift(point);
+        if(trailHistory.length>trailEls.length*2) trailHistory.length=trailEls.length*2;
       }
-    });
-    dial.addEventListener('pointerup',endDrag);
-    dial.addEventListener('pointercancel',endDrag);
-
-    document.querySelectorAll('[data-aurora-select]').forEach(btn=>{
-      btn.addEventListener('click',()=>setSelected(btn.dataset.auroraSelect));
-      btn.addEventListener('keydown',e=>{
-        const key=btn.dataset.auroraSelect;
-        if(locked[key]||finished)return;
-        if(e.key==='ArrowLeft'||e.key==='ArrowRight'){
-          e.preventDefault();
-          stopCoast();
-          setSelected(key);
-          rotations[key]+=e.key==='ArrowLeft'?-8:8;
-          renderRing(key);
-          const offset=updateNearLock(key);
-          if(offset<=config[key].snap)lockRing(key);
-        }
+      trailEls.forEach((el,i)=>{
+        const p=trailHistory[Math.min(trailHistory.length-1,i*2)];
+        if(!p){el.style.opacity='0';return;}
+        el.style.left=`${p.x}%`;
+        el.style.top=`${p.y}%`;
+        el.style.opacity=`${Math.max(.04,.5-i*.055)}`;
+        el.style.transform=`translate(-50%,-50%) scale(${Math.max(.24,1-i*.085)})`;
       });
-    });
+    }
+    function renderOrb(){
+      const radius=finished?0:radiusForTravel(travel);
+      const point=finished?{x:50,y:50}:pointFor(angle,radius);
+      orb.style.left=`${point.x}%`;
+      orb.style.top=`${point.y}%`;
+      const speedGlow=clamp(Math.abs(angularVelocity)/330,.2,1);
+      orb.style.setProperty('--aurora-orb-glow',`${12+speedGlow*10}px`);
+      orb.style.setProperty('--aurora-orb-glow-wide',`${24+speedGlow*16}px`);
+      renderTrail(point);
+    }
+    function setStatus(index,state){
+      const key=order[index];
+      const el=statusEls[key];
+      if(!el) return;
+      el.classList.toggle('active',state==='active');
+      el.classList.toggle('locked',state==='locked');
+      const small=el.querySelector('small');
+      if(small) small.textContent=state==='locked'?'ROUTED':state==='active'?'GUIDING':'STANDBY';
+    }
+    function activateStage(index){
+      order.forEach((_,i)=>setStatus(i,i<index?'locked':i===index?'active':'standby'));
+      dial.dataset.stage=String(index+1);
+      stateEl.textContent=`${order[index][0].toUpperCase()+order[index].slice(1)} aurora route active.`;
+    }
+    function crossStage(index){
+      const key=order[index];
+      ringEls[key]?.classList.add('energised');
+      setStatus(index,'locked');
+      dial.classList.remove('route-pulse');
+      void dial.offsetWidth;
+      dial.classList.add('route-pulse');
+      delay(()=>dial.classList.remove('route-pulse'),480);
+      ping(690+index*120,.095,.035+index*.006);
+      haptic(index===2?[24,18,48]:[14,12,24]);
+      stage=index+1;
+      if(stage<order.length) activateStage(stage);
+    }
+    function finishRoute(){
+      if(finished) return;
+      finished=true;
+      dragging=false;
+      angularVelocity=0;
+      travel=thresholds[2];
+      order.forEach((_,i)=>setStatus(i,'locked'));
+      dial.dataset.stage='4';
+      dial.classList.add('route-locked');
+      panel?.classList.add('route-locked');
+      stateEl.textContent='Aurora route locked. North Pole vector established.';
+      renderOrb();
+      ping(930,.11,.045);
+      delay(()=>ping(1160,.15,.05),180);
+      delay(()=>ping(1390,.22,.055),420);
+      haptic([28,22,70]);
+      const hold=reduced?1900:3200;
+      delay(()=>showCompletion('Aurora Route Locked','North Pole navigation vector established. Santa-1 now has a confirmed route home.'),hold);
+    }
+    function advanceStages(){
+      while(stage<order.length&&travel>=thresholds[stage]){
+        crossStage(stage);
+        if(stage===order.length){finishRoute();break;}
+      }
+    }
+    function startGuidance(){
+      if(started) return;
+      started=true;
+      dial.classList.add('is-live');
+      prompt?.classList.add('is-hidden');
+      activateStage(0);
+      stateEl.textContent='Outer aurora route active. Swipe around the vortex to guide the charge inward.';
+      ping(540,.07,.024);
+    }
+    function applyImpulse(delta){
+      if(!delta||finished) return;
+      startGuidance();
+      const capped=clamp(delta,-24,24);
+      angularVelocity=clamp(angularVelocity+capped*7.8,-390,390);
+      if(Math.abs(angularVelocity)<72) angularVelocity=(angularVelocity<0?-1:1)*72;
+      dial.classList.toggle('is-counter',angularVelocity<0);
+    }
+    function tick(now){
+      const dt=Math.min(34,Math.max(0,now-last));
+      last=now;
+      if(!finished){
+        if(started){
+          const decay=dragging?.997:.986;
+          angularVelocity*=Math.pow(decay,dt/16.67);
+          if(Math.abs(angularVelocity)<7) angularVelocity=0;
+          angle+=angularVelocity*dt/1000;
+          if(Math.abs(angularVelocity)>6){
+            travel=Math.min(thresholds[2],travel+Math.abs(angularVelocity)*dt/1000);
+            advanceStages();
+          }
+        }else{
+          angle+=18*dt/1000;
+        }
+        renderOrb();
+      }
+      raf=requestAnimationFrame(tick);
+    }
+    function onPointerDown(e){
+      if(finished) return;
+      e.preventDefault();
+      pointerId=e.pointerId;
+      dragging=true;
+      lastPointerAngle=angleForEvent(e);
+      try{dial.setPointerCapture(pointerId);}catch{}
+      try{dial.focus({preventScroll:true});}catch{dial.focus();}
+      startGuidance();
+      dial.classList.add('is-guiding');
+    }
+    function onPointerMove(e){
+      if(!dragging||e.pointerId!==pointerId||finished) return;
+      e.preventDefault();
+      const next=angleForEvent(e);
+      const delta=signed(next-lastPointerAngle);
+      lastPointerAngle=next;
+      if(Math.abs(delta)>.45) applyImpulse(delta);
+    }
+    function endPointer(e){
+      if(e&&pointerId!==null&&e.pointerId!==pointerId) return;
+      dragging=false;
+      dial.classList.remove('is-guiding');
+      if(pointerId!==null){try{dial.releasePointerCapture(pointerId);}catch{}}
+      pointerId=null;
+    }
+    function onKeyDown(e){
+      if(finished) return;
+      if(!['ArrowLeft','ArrowRight','a','A','d','D',' '].includes(e.key)) return;
+      e.preventDefault();
+      const direction=['ArrowLeft','a','A'].includes(e.key)?-1:1;
+      applyImpulse(direction*14);
+    }
 
-    Object.keys(ringEls).forEach(renderRing);
-    updateLockStage();
-    setSelected('outer');
+    activateStage(0);
+    renderOrb();
+    dial.addEventListener('pointerdown',onPointerDown,{passive:false});
+    dial.addEventListener('pointermove',onPointerMove,{passive:false});
+    dial.addEventListener('pointerup',endPointer);
+    dial.addEventListener('pointercancel',endPointer);
+    dial.addEventListener('keydown',onKeyDown);
+    raf=requestAnimationFrame(tick);
+
     cleanupMission=()=>{
-      stopCoast();
-      if(completionTimer)clearTimeout(completionTimer);
+      cancelAnimationFrame(raf);
+      timers.forEach(clearTimeout);
+      dial.removeEventListener('pointerdown',onPointerDown);
+      dial.removeEventListener('pointermove',onPointerMove);
+      dial.removeEventListener('pointerup',endPointer);
+      dial.removeEventListener('pointercancel',endPointer);
+      dial.removeEventListener('keydown',onKeyDown);
     };
   }
   let laplandMusic=null;

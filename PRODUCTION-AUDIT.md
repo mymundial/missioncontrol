@@ -1,4 +1,4 @@
-# Pass 7.12.0 — Production Audit
+# Pass 7.13.0 — Production Audit
 
 ## Result
 
@@ -8,23 +8,23 @@
 
 - `dist/`: **8.339 MiB**
 - Production files: **49**
-- Versus Pass 7.11.0: **+11,376 bytes (~11.1 KiB)** and **no additional production files**.
-- The increase is JavaScript/CSS only; no new production artwork or audio was added.
+- Versus Pass 7.11.0 baseline: **+11,333 bytes (~11.1 KiB)** and **no additional production files**.
+- No new image or audio assets were added for Aurora Apex.
 - No WAV/source-master audio is deployed.
 - No test/temp files are deployed.
 - Runtime images remain WebP/SVG and fonts WOFF2.
 
 ## Aurora Apex update verified
 
-- Existing concentric aurora artwork, North Pole marker, three status controls and overall panel layout are retained.
-- Outer Ring remains direct and forgiving.
-- Middle Ring now counter-rotates relative to the drag gesture and carries a short damped coast after release when it is not already within the lock window.
-- Inner Ring responds faster to the drag gesture and uses the tightest precision lock window.
-- Near-lock feedback is magnetic and gives one restrained cue rather than continuously firing while the ring remains close to alignment.
-- Each successful ring lock sends a visible energy pulse inward and progressively increases the centre-star / aurora intensity.
-- The third ring triggers a dedicated 2.3-second route-lock payoff before the normal completion card: ring energy surge, centre-compass flare, navigation beam to the North Pole marker and an in-instrument `NORTH POLE VECTOR LOCKED` confirmation.
-- Reduced-motion users receive the locked end state without the new animated sequence.
-- Coast and completion animation state is cleaned up when the mission closes.
+- MC-10 no longer uses the three manually aligned navigation rings from the Pass 7.11 baseline.
+- The player now swipes around the circular instrument to impart momentum to an aurora charge that spirals through outer, middle and inner routes toward the centre star.
+- The existing three aurora WebP rings are retained and counter-rotate during live guidance rather than being replaced with new artwork.
+- Route crossings progressively energise the ring artwork, centre compass and OUTER / MIDDLE / INNER progress indicators.
+- The charge uses a multi-point curved trail driven by its actual orbit path; reduced-motion mode removes the trail and decorative ring rotation while retaining the playable interaction.
+- The final centre impact holds on the activated instrument and visibly fires the navigation beam to the North Pole marker before the standard mission-complete card appears.
+- Final on-instrument confirmation reads `AURORA ROUTE LOCKED` / `NORTH POLE VECTOR ESTABLISHED`.
+- Aurora mission instruction copy now describes guiding the aurora charge rather than aligning rings.
+- No new music or source audio is introduced; existing synthesized UI tones and haptics provide stage/lock feedback.
 
 ## Automated checks passed
 
@@ -49,9 +49,9 @@
 2. **ELF FM stream:** current Radio Mast URL is still identified as a test stream and should be replaced when the production stream is supplied.
 3. **Web app manifest:** no install icon is defined; normal browser/QR use is unaffected.
 
-## Visual smoke-test limitation
+## Visual test limitation
 
-A local Chromium attempt was made, but the managed browser blocks `127.0.0.1` pages. No live browser interaction is claimed as verified by this pass; build, generated syntax, static references and the production audit all pass.
+A local Chromium screenshot smoke test could not be completed reliably in this container because the headless browser process did not terminate cleanly against local file content. The production build, generated JavaScript syntax, CSS structure, asset references and automated audit all pass; this report does not claim a completed live browser playthrough.
 
 ## Re-run
 
