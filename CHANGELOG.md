@@ -655,3 +655,13 @@ This pass adds a self-contained static build for Vercel. No Vercel project-setti
 - Relaxed the extreme active/tracking suppression slightly so Middle and Inner remain visible enough to read the designed artwork while Outer still leads clearly as the active ring.
 - No copy, HUD structure, audio, route or other mission behaviour was changed.
 - Bumped runtime asset version to 7.21.0.
+
+## Pass 7.22.0 — Aurora Apex ring scale + visibility correction
+
+- Kept Pass 7.21 gameplay, layout, background, mistimed desync feedback and overall designed-ring art direction unchanged.
+- Rebuilt all three ring WebPs with ring-band proportions matched to the earlier successful Aurora artwork so Outer, Middle and Inner retain comparable apparent presence when placed in their 91% / 60% / 34% concentric containers.
+- Removed the excessive internal transparent padding that made the Pass 7.21 rings appear undersized.
+- Restored full opening-state legibility: Middle and Inner now remain clearly visible from the beginning rather than being heavily faded while tracking.
+- Active ring remains identifiable through a modest brightness/saturation lift and capture marker, rather than by suppressing the other two rings.
+- No gameplay, timings, controls, HUD structure, copy, audio, route or radio behaviour changed.
+- Bumped runtime asset version to 7.22.0.

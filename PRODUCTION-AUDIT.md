@@ -1,4 +1,4 @@
-# Pass 7.21.0 — Production Audit
+# Pass 7.22.0 — Production Audit
 
 ## Result
 
@@ -6,22 +6,22 @@
 
 ## Production footprint
 
-- `dist/`: **7.968 MiB**
+- `dist/`: **7.989 MiB**
 - Production files: **50**
-- Versus Pass 7.20.0: **+19,245 bytes** (**+18.8 KiB**) with **no file-count change**.
-- The footprint increase comes from the three replacement Aurora ring WebPs; no duplicate assets were added.
+- Versus Pass 7.21.0: **+22,417 bytes** (**+21.9 KiB**) with **no file-count change**.
+- The increase comes only from the three corrected Aurora ring WebPs; no duplicate assets were added.
 - No WAV/source-master audio is deployed.
 - No test/temp files are deployed.
 - Runtime images remain WebP/SVG and fonts remain WOFF2.
 
 ## Aurora Apex verified
 
-- Current Aurora Apex gameplay, capture timing, Outer/Middle tap capture, Inner hold-to-brake control, mistimed overspin/RGB fault and completion sequence remain unchanged.
-- The dark minimal chamber/background introduced in Pass 7.20 remains intact.
-- `aurora-ring-outer.webp`, `aurora-ring-middle.webp` and `aurora-ring-inner.webp` were replaced with newly designed image-based ring assets that restore the preferred deep-blue/light-green aurora contrast and subtle celestial constellation detail.
-- The new ring artwork is cleaner and more realistic than the earliest versions: fewer stars, subtler line work, less illustrative clutter and more natural aurora flow.
-- Ring-state suppression was eased slightly so tracking rings still recede, but Middle and Inner remain visible enough for their artwork to read.
-- No HUD structure, copy, audio, routing or other mission behaviour was changed.
+- Pass 7.21 gameplay, timings, Outer/Middle capture, Inner hold-to-brake, mistimed overspin/RGB fault, centring and completion flow remain unchanged.
+- Outer, Middle and Inner ring WebPs were rebuilt with progressively thicker artwork proportions to match the apparent visual weight of the earlier successful ring set inside the existing 91% / 60% / 34% wrappers.
+- Excess transparent padding was removed so the designed rings fill their containers correctly and no longer look undersized.
+- Tracking rings are no longer heavily faded: all three rings remain clearly visible from the start, while the active ring is distinguished with only a modest brightness/saturation lift and the capture marker.
+- The dark minimal chamber/background and designed deep-blue/light-green aurora direction from Pass 7.21 remain unchanged.
+- No copy, HUD structure, audio, routing, radio or other mission behaviour changed.
 - Pass 7.11 Jingle Beams remains unchanged.
 
 ## Automated checks passed
@@ -43,7 +43,7 @@
 
 ## Non-blocking warnings
 
-1. **Deployment footprint:** 7.97 MB exceeds the 7 MB audit target, primarily because the full Lapland Launch music track remains intentionally retained.
+1. **Deployment footprint:** 7.99 MB exceeds the 7 MB audit target, primarily because the full Lapland Launch music track remains intentionally retained.
 2. **ELF FM stream:** current Radio Mast URL is still identified as a test stream and should be replaced when the production stream is supplied.
 3. **Web app manifest:** no install icon is defined; normal browser/QR use is unaffected.
 

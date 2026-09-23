@@ -5767,3 +5767,22 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 }
 .aurora-ring.locked img{filter:saturate(.96) contrast(1.06) brightness(.95) hue-rotate(2deg);}
 .aurora-ring.locked::before{opacity:.04;}
+
+/* Pass 7.22.0 — Aurora Apex ring scale + visibility correction */
+/* Keep all three designed rings legible from the opening state. Active is highlighted;
+   upcoming rings are not visually suppressed. */
+.aurora-ring{opacity:.96;}
+.aurora-ring img{opacity:1;filter:saturate(.98) contrast(1.06) brightness(.96);}
+.aurora-ring.tracking{
+  opacity:.90;
+  filter:drop-shadow(0 5px 8px rgba(0,2,8,.38));
+}
+.aurora-ring.tracking img{filter:saturate(.94) contrast(1.06) brightness(.90);}
+.aurora-ring.tracking::before{opacity:.018;}
+.aurora-ring.active{
+  opacity:1;
+  filter:drop-shadow(0 8px 10px rgba(0,2,8,.46)) drop-shadow(0 0 6px rgba(104,227,233,.13));
+}
+.aurora-ring.active img{filter:saturate(1.05) contrast(1.08) brightness(1.03);}
+.aurora-ring.locked{opacity:.96;}
+.aurora-ring.locked img{filter:saturate(1.00) contrast(1.06) brightness(.98) hue-rotate(2deg);}
