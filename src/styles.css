@@ -5852,3 +5852,21 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .aurora-ring.active img{filter:saturate(1.02) contrast(1.05) brightness(1.00);}
 .aurora-ring.locked{opacity:.96;}
 .aurora-ring.locked img{filter:saturate(1.00) contrast(1.04) brightness(.97) hue-rotate(1deg);}
+
+/* Pass 7.28.0 — Aurora Apex concentric ring geometry correction */
+.aurora-ring{
+  opacity:.78;
+  filter:drop-shadow(0 7px 9px rgba(0,2,8,.48));
+}
+.aurora-ring img{
+  opacity:.97;
+  filter:saturate(.86) contrast(1.08) brightness(.92);
+}
+.aurora-ring::before{display:none;}
+.aurora-ring-outer{width:96%;height:96%;}
+.aurora-ring-middle{width:59%;height:59%;}
+.aurora-ring-inner{width:35%;height:35%;}
+.aurora-ring.tracking{opacity:.62;filter:drop-shadow(0 6px 8px rgba(0,2,8,.44));}
+.aurora-ring.tracking img{filter:saturate(.72) contrast(1.08) brightness(.82);}
+.aurora-ring.active{opacity:1;filter:drop-shadow(0 8px 10px rgba(0,2,8,.52)) drop-shadow(0 0 6px rgba(104,227,233,.14));}
+.aurora-ring.active img{opacity:1;filter:saturate(.96) contrast(1.10) brightness(1.0);}

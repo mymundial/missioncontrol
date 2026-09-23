@@ -711,3 +711,11 @@ This pass adds a self-contained static build for Vercel. No Vercel project-setti
 - The new production assets preserve the calmer deep-blue / light-green aurora treatment while removing the visibly misaligned, non-centred source-art behaviour seen previously.
 - No mission copy, HUD structure, audio, routing or interaction logic was changed.
 - Bumped runtime asset version to 7.27.0.
+
+## Pass 7.28.0 — Aurora Apex concentric ring fix
+
+- Rebuilt `aurora-ring-outer.webp`, `aurora-ring-middle.webp` and `aurora-ring-inner.webp` again from the approved calm Aurora art using clean centred annular masks, so each asset is now genuinely concentric with transparent inner/outer areas.
+- Corrected Aurora Apex ring stack geometry so the Outer ring fills the full circular field while preserving clear dark gaps between Outer/Middle and Middle/Inner.
+- Removed the residual procedural overlay from the ring layer and eased startup suppression so all three rings remain legible from the opening frame.
+- Kept Aurora Apex gameplay, copy, HUD structure, audio, routing and mistimed desync behaviour unchanged.
+- Bumped runtime asset version to 7.28.0.
