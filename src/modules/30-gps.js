@@ -114,6 +114,38 @@
     save();updateRadarLive();
   }
 
+  function activeRadarGeoPosition(){
+    if(state.mode==='demo'&&demoTrackPosition&&Number.isFinite(demoTrackPosition.lat)&&Number.isFinite(demoTrackPosition.lng)) return demoTrackPosition;
+    if(lastGps&&Number.isFinite(lastGps.lat)&&Number.isFinite(lastGps.lng)) return lastGps;
+    return null;
+  }
+  function updateCircuitRadar(cp,cfg){
+    const map=document.getElementById('trackRadarMap');
+    const art=document.getElementById('trackRadarArt');
+    const target=document.getElementById('trackRadarTarget');
+    if(!map||!art) return;
+    const fix=activeRadarGeoPosition();
+    if(!fix){map.classList.add('waiting');if(target)target.classList.add('hidden');return;}
+    const userPoint=geoToCircuitPoint(fix.lat,fix.lng);
+    if(!userPoint){map.classList.add('waiting');if(target)target.classList.add('hidden');return;}
+    map.classList.remove('waiting');
+    // The SVG is 210 units wide. At 4.6x radar width, each SVG unit occupies
+    // 4.6/210 of the radar diameter. Keeping the user fixed at 50/50 means the
+    // circuit moves beneath the centre point as GPS changes.
+    const zoom=4.6;
+    const unitPct=zoom*100/CIRCUIT_GEOREFERENCE.viewBoxWidth;
+    art.style.left=`calc(50% - ${userPoint.x*unitPct}%)`;
+    art.style.top=`calc(50% - ${userPoint.y*unitPct}%)`;
+    if(target&&cp&&cfg){
+      const targetPoint=geoToCircuitPoint(cfg.lat,cfg.lng);
+      if(targetPoint){
+        target.style.left=`calc(50% + ${(targetPoint.x-userPoint.x)*unitPct}%)`;
+        target.style.top=`calc(50% + ${(targetPoint.y-userPoint.y)*unitPct}%)`;
+        target.classList.toggle('hidden',!state.targetVisible);
+      }else target.classList.add('hidden');
+    }
+  }
+
   function updateRadarLive(){
     if(IS_ADMIN||state.nav!=='radar'||state.missionOpen) return;
     updateCommsBadge();
@@ -124,7 +156,11 @@
     const checkpointValue=document.querySelector('.status-cell:last-child .status-value');
     if(checkpointValue){const d=distanceToActivation(cp,state.distance);checkpointValue.textContent=!cp?'COMPLETE':state.targetVisible&&Number.isFinite(d)?`${Math.round(d)} M`:'SEARCHING';}
     const target=document.querySelector('.target-dot');
-    if(target&&cp&&cfg){
+    const circuitMode=state.completed.includes('entry');
+    if(circuitMode){
+      if(target) target.classList.add('hidden');
+      updateCircuitRadar(cp,cfg);
+    }else if(target&&cp&&cfg){
       const radial=state.targetInRange?5:Math.max(8,Math.min(39,(Number.isFinite(state.distance)?state.distance/cfg.detectionRadius:1)*39));
       const ang=(Number.isFinite(state.bearing)?state.bearing:0)-90;
       const x=50+Math.cos(toRad(ang))*radial, y=50+Math.sin(toRad(ang))*radial;

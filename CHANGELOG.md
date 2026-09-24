@@ -1,3 +1,12 @@
+## 7.38.0 — Georeferenced circuit radar
+- calibrated `f1-circuit.svg` to real Silverstone GP latitude/longitude coordinates using a single affine circuit georeference.
+- added `geoToCircuitPoint()` so checkpoint coordinates are now the single source of truth for both geofences and SVG placement.
+- MC01 Circuit Link node now derives from its master coordinate instead of a hard-coded SVG point.
+- after MC01 completion, Radar reveals a close-up circuit layer that moves beneath the fixed centre user marker.
+- next-checkpoint markers are placed from the checkpoint master lat/lng through the same calibration.
+- Demo Mode now approaches each post-MC01 checkpoint along the real lap direction before unlocking it, while still jumping between missions.
+- added a simplified real GP route centreline for route-progress/demo interpolation.
+
 ## 7.37.2 — MC01 circuit-entry correction
 - corrected the Circuit Link animation marker so it is aligned to the circuit SVG at the Village / National Link Road entry area rather than the previous manual 69% / 50% position.
 - marker/ripple overlay now shares the circuit SVG's 210×126 viewBox, keeping the marker registered to the track artwork across screen sizes.

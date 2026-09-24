@@ -6149,3 +6149,51 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   border-top-color:rgba(82,176,208,.46);
   box-shadow:0 -14px 28px rgba(2,13,22,.88),0 -1px 0 rgba(116,222,246,.12);
 }
+
+/* Pass 7.38.0 — georeferenced circuit radar */
+.mc01-energy-node,
+.mc01-energy-ripple{
+  transform-box:fill-box!important;
+  transform-origin:center!important;
+}
+.radar.circuit-radar{overflow:hidden;}
+.track-radar-map{
+  position:absolute;
+  inset:0;
+  z-index:1;
+  pointer-events:none;
+  overflow:visible;
+  opacity:1;
+  transition:opacity .2s ease;
+}
+.track-radar-map.waiting{opacity:.28;}
+.track-radar-art{
+  position:absolute;
+  width:460%;
+  max-width:none;
+  height:auto;
+  opacity:.6;
+  filter:brightness(0) saturate(100%) invert(83%) sepia(29%) saturate(1634%) hue-rotate(159deg) brightness(102%) contrast(101%) drop-shadow(0 0 2px rgba(91,220,255,.34));
+  transition:left .55s linear,top .55s linear;
+}
+.track-radar-target{
+  position:absolute;
+  z-index:4;
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  background:#fff;
+  box-shadow:0 0 7px #fff,0 0 15px #9ceaff,0 0 30px rgba(116,225,255,.8);
+  transform:translate(-50%,-50%);
+  transition:left .55s linear,top .55s linear,opacity .2s ease;
+  animation:targetPulse 1.4s ease-in-out infinite;
+}
+.track-radar-target.hidden{opacity:0;}
+.radar.circuit-radar .sweep{z-index:2;}
+.radar.circuit-radar .user-dot{z-index:5;}
+.radar.circuit-radar::before,
+.radar.circuit-radar::after{z-index:3;opacity:.52;}
+.radar.circuit-radar>.target-dot{display:none;}
+@media(prefers-reduced-motion:reduce){
+  .track-radar-art,.track-radar-target{transition:none!important;}
+}

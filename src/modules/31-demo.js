@@ -2,6 +2,7 @@
     clearDemo();
     stopGpsWatch();
     demoHoldUntil=Date.now()+900;
+    demoTrackPosition=null;
     state={...state,onboarded:true,bootDone:true,mode:'demo',gpsEnabled:false,nav:'radar',completed:[],available:[],routeIndex:1,targetVisible:false,targetInRange:false,distance:null,gpsCondition:'DEMO'};
     save();
     ensureOpeningMessage();
@@ -22,12 +23,49 @@
     // Fallback in case a navigation/render transition interrupted the first timer.
     setTimeout(arm,2600);
   }
+  function beginDemoCircuitApproach(cp,cfg){
+    const targetProjection=projectGeoToRoute(cfg.lat,cfg.lng);
+    if(!targetProjection) return false;
+    const activationRadius=Number(cfg.activationRadius)||30;
+    let remaining=Math.max(180,activationRadius+145);
+    const updatePosition=()=>{
+      const routePoint=routePointAtDistance(targetProjection.distance-remaining);
+      demoTrackPosition={lat:routePoint.lat,lng:routePoint.lng,accuracy:5,timestamp:Date.now()};
+      const d=distanceMetres(routePoint.lat,routePoint.lng,cfg.lat,cfg.lng);
+      state.distance=d;
+      state.bearing=bearingDegrees(routePoint.lat,routePoint.lng,cfg.lat,cfg.lng);
+      state.targetVisible=d<=Number(cfg.detectionRadius||120);
+      state.targetInRange=false;
+      save();updateRadarLive();
+      return d;
+    };
+    let d=updatePosition();
+    if(d<=activationRadius){
+      demoTrackPosition={lat:cfg.lat,lng:cfg.lng,accuracy:5,timestamp:Date.now()};
+      state.targetVisible=true;state.targetInRange=true;state.distance=0;unlockMission(cp.id);save();updateRadarLive();ping(700,.08,.04);haptic(30);return true;
+    }
+    demoInterval=setInterval(()=>{
+      if(!canRunDemoTarget()){clearInterval(demoInterval);demoInterval=null;return;}
+      const activeCp=current();const activeCfg=activeConfig(activeCp);
+      if(!activeCp||!activeCfg||activeCp.id!==cp.id){clearInterval(demoInterval);demoInterval=null;return;}
+      remaining=Math.max(0,remaining-16);
+      d=updatePosition();
+      if(d<=activationRadius||remaining<=0){
+        clearInterval(demoInterval);demoInterval=null;
+        demoTrackPosition={lat:activeCfg.lat,lng:activeCfg.lng,accuracy:5,timestamp:Date.now()};
+        state.targetVisible=true;state.targetInRange=true;state.distance=0;unlockMission(activeCp.id);save();updateRadarLive();ping(700,.08,.04);haptic(30);
+      }
+    },650);
+    return true;
+  }
+
   function beginDemoApproach(){
     if(!canRunDemoTarget()) return;
     const cp=current();
     const cfg=activeConfig(cp);
     if(!cp||!cfg) return;
     const activationRadius=Number(cfg.activationRadius)||30;
+    if(state.completed.includes('entry')&&cp.id!=='entry'&&beginDemoCircuitApproach(cp,cfg)) return;
     let d=state.targetVisible&&Number.isFinite(state.distance)
       ? Math.max(activationRadius,state.distance)
       : 180;

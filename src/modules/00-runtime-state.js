@@ -126,6 +126,7 @@
   let inRangeLatched = false;
   let demoTimer = null;
   let demoInterval = null;
+  let demoTrackPosition = null;
   let demoHoldUntil = 0;
 
   function load(){

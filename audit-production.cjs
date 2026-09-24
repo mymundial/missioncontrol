@@ -181,13 +181,25 @@ else fail('Reindeer Raceway hold control','Long-press protection is incomplete')
 if(fixedGeometry) ok('Reindeer Raceway high-speed geometry','Speed stretch remains fixed; JS does not scale scenery with velocity');
 else fail('Reindeer Raceway high-speed geometry','Dynamic scene scaling appears to be present');
 
-// 11) External runtime dependencies / launch notes.
+// 11) Circuit georeference integrity.
+const georef=read('src/modules/03-circuit-georef.js');
+if(/const CIRCUIT_GEOREFERENCE/.test(georef) && /function geoToCircuitPoint\(/.test(georef) && /const SILVERSTONE_GP_ROUTE/.test(georef)) {
+  ok('Circuit georeference','Real-world coordinate calibration and GP route centreline are present');
+} else fail('Circuit georeference','Circuit coordinate calibration is missing or incomplete');
+if(/geoToCircuitPoint\(cp\?\.lat,cp\?\.lng\)/.test(runtime) && /geoToCircuitPoint\(fix\.lat,fix\.lng\)/.test(runtime) && /geoToCircuitPoint\(cfg\.lat,cfg\.lng\)/.test(runtime)) {
+  ok('Coordinate single source','MC01, live radar and checkpoint markers derive SVG position from master lat/lng');
+} else fail('Coordinate single source','A circuit marker still appears to bypass the master lat/lng mapping');
+if(/beginDemoCircuitApproach/.test(runtime) && /routePointAtDistance\(targetProjection\.distance-remaining\)/.test(runtime)) {
+  ok('Circuit demo route','Post-MC01 Demo Mode approaches checkpoints along the calibrated lap route');
+} else fail('Circuit demo route','Demo Mode is not using calibrated route progression');
+
+// 12) External runtime dependencies / launch notes.
 const urls=[...runtime.matchAll(/https:\/\/[^'"`\s)]+/g)].map(m=>m[0]);
 const uniqueUrls=[...new Set(urls)];
 if(uniqueUrls.length) notes.push(`External runtime URL(s): ${uniqueUrls.join(', ')}`);
 if(runtime.includes('Test stream for ELF FM')) warn('ELF FM stream','Current build still identifies the Radio Mast URL as a test stream; replace before final public launch if a production stream is supplied');
 
-// 12) Manifest note.
+// 13) Manifest note.
 try {
   const manifest=JSON.parse(read('manifest.webmanifest'));
   if(Array.isArray(manifest.icons) && manifest.icons.length===0) warn('Web app manifest','No install icon is defined. This does not affect normal browser use, only add-to-home-screen presentation.');

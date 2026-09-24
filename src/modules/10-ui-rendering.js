@@ -144,7 +144,9 @@
   function renderRadar(){
     const cp=current();
     const modeClass=state.mode==='demo'?' demo-radar-page':'';
-    return `<section class="radar-page${modeClass}">${statusStrip()}<section class="radar-zone" aria-label="Live checkpoint radar"><section class="radar-wrap"><div class="radar"><div class="sweep"></div><div class="user-dot"></div>${cp?'<div class="target-dot hidden"></div>':''}</div></section></section>${radarMessage(cp)}</section>`;
+    const circuitMode=state.completed.includes('entry');
+    const circuitLayer=circuitMode?`<div class="track-radar-map" id="trackRadarMap" aria-hidden="true"><img class="track-radar-art" id="trackRadarArt" src="./assets/f1-circuit.svg" alt=""><span class="track-radar-target hidden" id="trackRadarTarget"></span></div>`:'';
+    return `<section class="radar-page${modeClass}">${statusStrip()}<section class="radar-zone" aria-label="Live checkpoint radar"><section class="radar-wrap"><div class="radar${circuitMode?' circuit-radar':''}">${circuitLayer}<div class="sweep"></div><div class="user-dot"></div>${cp?'<div class="target-dot hidden"></div>':''}</div></section></section>${radarMessage(cp)}</section>`;
   }
   function missionStatus(cp){
     const idx=checkpointIndex(cp.id);
@@ -274,15 +276,18 @@
     }
   }
   function circuitEntryBody(){
+    const cp=CHECKPOINTS.find(c=>c.id==='entry');
+    const node=geoToCircuitPoint(cp?.lat,cp?.lng)||{x:88.88,y:31.11};
+    const nodeX=node.x.toFixed(2),nodeY=node.y.toFixed(2);
     return `<div class="mission-instrument panel mc01-panel" id="mc01Activation" data-stage="detected">
       <div class="mc01-track-stage" aria-hidden="true">
         <div class="mc01-track-shadow"></div>
         <div class="mc01-track-outline"></div>
         <div class="mc01-track-energy"></div>
         <svg class="mc01-node-map" viewBox="0 0 210 126" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-          <circle class="mc01-energy-ripple ripple-a" cx="104.75" cy="36.5" r="3.5"></circle>
-          <circle class="mc01-energy-ripple ripple-b" cx="104.75" cy="36.5" r="3.5"></circle>
-          <circle class="mc01-energy-node" cx="104.75" cy="36.5" r="3.5"></circle>
+          <circle class="mc01-energy-ripple ripple-a" cx="${nodeX}" cy="${nodeY}" r="3.5"></circle>
+          <circle class="mc01-energy-ripple ripple-b" cx="${nodeX}" cy="${nodeY}" r="3.5"></circle>
+          <circle class="mc01-energy-node" cx="${nodeX}" cy="${nodeY}" r="3.5"></circle>
         </svg>
       </div>
       <div class="mc01-readout">
