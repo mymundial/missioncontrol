@@ -1,3 +1,7 @@
+## 7.37.0 — Missions top shade refinement
+- reduced the Missions top scroll shade from 18px to 8px so it no longer clips the active mission highlight.
+- slightly softened the shade opacity while preserving the masthead-as-scroll-boundary effect.
+
 ## 7.36.9 — Missions top-bar scroll boundary
 - removed the `MISSION LOG` heading and its separate divider line.
 - aligned the missions scroll region directly to the persistent top bar.

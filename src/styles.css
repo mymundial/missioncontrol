@@ -6114,9 +6114,9 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   left:0;
   right:0;
   top:0;
-  height:18px;
+  height:8px;
   pointer-events:none;
-  background:linear-gradient(180deg,rgba(3,19,31,.92) 0%,rgba(3,19,31,.42) 48%,rgba(3,19,31,0) 100%);
+  background:linear-gradient(180deg,rgba(3,19,31,.88) 0%,rgba(3,19,31,.30) 48%,rgba(3,19,31,0) 100%);
 }
 .missions-feed-scroll{
   height:100%;
