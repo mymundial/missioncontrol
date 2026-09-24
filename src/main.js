@@ -13,7 +13,7 @@
 
   const CHECKPOINTS = [
     {id:'gantry', mc:'MC-00', location:'Entrance Gantry', name:'Scan QR', type:'qr', playable:false, core:false, geofence:false, routeEnabled:false, lat:52.0735668895174, lng:-1.0234212294205571},
-    {id:'entry', mc:'MC-01', location:'National Link Road', name:'Circuit Link', type:'activation', playable:true, core:false, mission:'Circuit Link', geofence:true, lat:52.0742700024956, lng:-1.01353137321053, detectionRadius:80, activationRadius:30},
+    {id:'entry', mc:'MC-01', location:'National Link Road', name:'Circuit Link', type:'activation', playable:true, core:false, mission:'Circuit Link', geofence:true, lat:52.07317077672548, lng:-1.0116046670979981, detectionRadius:80, activationRadius:30},
     {id:'velocity', mc:'MC-02', location:'Wellington Straight', name:'Velocity Vault', type:'diagnostics', playable:true, core:true, mission:'Velocity Vault', lat:52.07672858114103, lng:-1.0179463765923242, detectionRadius:150, activationRadius:35},
     {id:'luffield', mc:'MC-03', location:'Luffield', name:'Comms Relay', type:'commsrelay', playable:true, core:false, mission:'Comms Relay', routeEnabled:true, geofence:true, lat:52.07588935484336, lng:-1.0202073683140254, detectionRadius:120, activationRadius:30},
     {id:'power', mc:'MC-04', location:'National Pit Straight', name:'Power Pulse', type:'artifacts', playable:true, core:true, mission:'Power Pulse', lat:52.07867166248026, lng:-1.0177768332976036, detectionRadius:150, activationRadius:35},
@@ -685,7 +685,7 @@
         <span class="mc01-energy-ripple ripple-b"></span>
       </div>
       <div class="mc01-readout">
-        <span class="mc01-bolt" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13.7 1.8 5.3 13h5.5l-.5 9.2L18.7 11h-5.5l.5-9.2Z"/></svg></span>
+        <span class="mc01-bolt" aria-hidden="true"><img src="./assets/system-power.svg" alt=""></span>
         <div class="mc01-readout-copy"><span id="mc01StateLabel">Circuit Energy</span><strong id="mc01State">Detected</strong></div>
         <div class="mc01-signal-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
       </div>
@@ -999,7 +999,7 @@
   }
   function showCompletion(title,copy){
     const mc=document.getElementById('missionContent'); if(!mc) return;
-    mc.innerHTML=`<div class="completion panel"><div class="check">✓</div><div class="kicker">Mission Complete</div><h2>${title}</h2>${copy?`<p>${copy}</p>`:''}<button class="btn primary wide" id="returnRadar">${state.missionReturnNav==='comms'?'Return to Comms':state.missionReturnNav==='missions'?'Return to Missions':'Return to Radar'}</button></div>`;
+    mc.innerHTML=`<div class="completion panel"><div class="check">✓</div><div class="kicker">Mission Complete</div><h2>${title}</h2>${copy?`<p>${copy}</p>`:''}<button class="btn primary wide" id="returnRadar">${state.missionReturnNav==='comms'?'Return to Comms':state.missionReturnNav==='missions'?'Continue':'Return to Radar'}</button></div>`;
     document.getElementById('returnRadar').onclick=()=>completeCurrent(); ping(880,.14,.05);haptic([30,35,70]);
   }
   function showRadioCompletion(){

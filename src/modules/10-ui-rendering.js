@@ -284,7 +284,7 @@
         <span class="mc01-energy-ripple ripple-b"></span>
       </div>
       <div class="mc01-readout">
-        <span class="mc01-bolt" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13.7 1.8 5.3 13h5.5l-.5 9.2L18.7 11h-5.5l.5-9.2Z"/></svg></span>
+        <span class="mc01-bolt" aria-hidden="true"><img src="./assets/system-power.svg" alt=""></span>
         <div class="mc01-readout-copy"><span id="mc01StateLabel">Circuit Energy</span><strong id="mc01State">Detected</strong></div>
         <div class="mc01-signal-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
       </div>

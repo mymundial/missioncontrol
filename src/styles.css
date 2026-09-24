@@ -2925,7 +2925,7 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .mc01-energy-node{
   position:absolute;
   width:12px;height:12px;
-  left:66%;top:43%;
+  left:69%;top:50%;
   border-radius:50%;
   background:#e9fcff;
   box-shadow:0 0 6px #d9fbff,0 0 16px #50dcff,0 0 28px rgba(80,220,255,.65);
@@ -2934,7 +2934,7 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 }
 .mc01-energy-ripple{
   position:absolute;
-  left:66%;top:43%;
+  left:69%;top:50%;
   width:12px;height:12px;
   border:1px solid rgba(103,224,255,.6);
   border-radius:50%;
@@ -2984,7 +2984,7 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   color:#8ae8ff;
   box-shadow:inset 0 0 14px rgba(73,200,240,.08);
 }
-.mc01-bolt svg{width:19px;height:19px;fill:currentColor;}
+.mc01-bolt img{width:21px;height:21px;display:block;object-fit:contain;}
 .mc01-readout-copy{display:grid;gap:3px;min-width:0;text-transform:uppercase;}
 .mc01-readout-copy span{
   color:#739fb0;

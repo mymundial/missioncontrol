@@ -1,3 +1,9 @@
+## 7.37.1 — MC01 Circuit Entry alignment
+- updated the MC01 master GPS coordinate to `52.07317077672548, -1.0116046670979981`.
+- moved the Circuit Link animation energy marker/ripples to the discussed circuit-entry point near Village.
+- replaced the MC01 Power Transfer bolt artwork with the shared `system-power.svg` icon used elsewhere in the app.
+- changed the mission completion CTA from `Return to Missions` to `Continue` when returning to the Missions page.
+
 ## 7.37.0 — Missions top shade refinement
 - reduced the Missions top scroll shade from 18px to 8px so it no longer clips the active mission highlight.
 - slightly softened the shade opacity while preserving the masthead-as-scroll-boundary effect.
