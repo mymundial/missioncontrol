@@ -1,4 +1,4 @@
-# Circuit georeference — Pass 7.38.6
+# Circuit georeference — Pass 7.38.7
 
 ## Purpose
 `CHECKPOINTS[*].lat/lng` is the single source of truth for each installation. The same coordinate now controls:
@@ -47,7 +47,7 @@ Only edit the checkpoint `lat` / `lng` in `src/modules/00-runtime-state.js` (or 
 ## Demo and radar behaviour
 Before MC01, Demo Mode retains the original generic radar. After MC01, Demo Mode maintains a persistent distance along `SILVERSTONE_GP_ROUTE`; it never reseeds near the next checkpoint. Each leg advances only forward along the closed route until it reaches the next checkpoint's projected route distance.
 
-The radar draws the original `assets/f1-circuit.svg` silhouette at a 1.3x close-up scale, while movement follows the calibrated route centreline. Both remain registered through the same coordinate→SVG georeference, so checkpoint lat/lng remains the single source of truth. The 1.3x scale deliberately makes the fixed centre marker visually larger than the SVG road ribbon and exposes more local circuit geometry around the guest.
+The radar draws the original `assets/f1-circuit.svg` silhouette at a 1.3x close-up scale, while movement follows the calibrated route centreline. Both remain registered through the same coordinate→SVG georeference, so checkpoint lat/lng remains the single source of truth. The 1.3x scale exposes local circuit geometry around the guest. In 7.38.7 the road is rendered at full opacity with only a tight edge halo; the fixed guest marker is a smaller, brighter GPS-style pulse, while installation markers are larger than the road and use the circuit cyan with a restrained glow.
 
 After MC01, the current route checkpoint remains visible on the circuit radar outside the old detection radius. Completing a mission hands navigation to the next checkpoint immediately. If a live guest has entered/unlocked a checkpoint but leaves its activation radius without completing it, that mission stays available in Missions and the route hands off to the next checkpoint after a short reliable-GPS dwell. Demo Mode performs the same immediate handoff and uses remaining calibrated route distance for the countdown meter.
 

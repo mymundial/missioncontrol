@@ -1,3 +1,10 @@
+## 7.38.7 — Radar marker visual hierarchy
+- Kept the approved 1.3x circuit framing and made the circuit body fully opaque for a cleaner, more solid navigation trace.
+- Added only a very tight 1.5px circuit edge halo so the road stays crisp under the radar sweep instead of reading as blurred neon.
+- Reduced the fixed guest marker from 18px to 12px and restored the bright white/cyan multi-stage glow used by the activation cue, making the user position smaller but more luminous.
+- Increased circuit installation markers to 20px, larger than the road ribbon, and restyled them in the circuit cyan with a bright edge and restrained glow rather than a large white pulse.
+- No georeferencing, route, checkpoint handoff, Demo countdown or scale behaviour changed in this pass.
+
 ## 7.38.6 — Circuit hierarchy + immediate checkpoint handoff
 - Pulled the visible post-MC01 circuit SVG back from 1.6x to 1.3x so the fixed user marker is clearly wider than the circuit ribbon.
 - Made the circuit user marker a fully opaque 18px core with a crisp border and removed the translucent halo treatment.

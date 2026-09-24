@@ -206,7 +206,7 @@ if(
   !/CIRCUIT_RADAR_POLYLINE_POINTS/.test(runtime) &&
   !/track-radar-line/.test(runtime)
 ) {
-  ok('Circuit radar artwork','Radar renders the original circuit SVG at the refined 1.3x marker-dominant scale');
+  ok('Circuit radar artwork','Radar renders the original circuit SVG at the refined 1.3x scale');
 } else fail('Circuit radar artwork','Radar is not using the original circuit SVG at the approved refined scale');
 
 if(
@@ -232,12 +232,13 @@ if(
 } else fail('Checkpoint handoff','Immediate next-marker or leave-without-completing checkpoint handoff logic is incomplete');
 
 if(
-  /\.radar\.circuit-radar \.user-dot\{[\s\S]*?width:18px;[\s\S]*?background:#f2fdff;[\s\S]*?border:2px solid #fff/.test(css) &&
-  /\.track-radar-art\{[\s\S]*?background:#69d4ef;[\s\S]*?filter:none;[\s\S]*?opacity:\.9;/.test(css) &&
+  /\.radar\.circuit-radar \.user-dot\{[\s\S]*?width:12px;[\s\S]*?background:#fff;[\s\S]*?border:0;[\s\S]*?0 0 26px rgba\(116,225,255,\.9\)/.test(css) &&
+  /\.track-radar-art\{[\s\S]*?background:#69d4ef;[\s\S]*?drop-shadow\(0 0 1\.5px rgba\(105,212,239,\.52\)\);[\s\S]*?opacity:1;/.test(css) &&
+  /\.track-radar-target\{[\s\S]*?width:20px;[\s\S]*?background:#69d4ef;[\s\S]*?border:2px solid #dffaff;/.test(css) &&
   /\.radar\.circuit-radar \.sweep\{z-index:1;\}/.test(css)
 ) {
-  ok('Circuit radar hierarchy','User marker is opaque and wider than the 1.3x track; circuit blur is removed and the sweep runs beneath the road layer');
-} else fail('Circuit radar hierarchy','Circuit/user-marker visual hierarchy does not match the approved sharp marker-dominant treatment');
+  ok('Circuit radar hierarchy','Guest marker is small and high-glow; circuit is fully opaque with a tight halo; installation markers are larger, circuit-coloured and restrained');
+} else fail('Circuit radar hierarchy','Circuit/user/installation marker visual hierarchy does not match the approved treatment');
 
 // 12) External runtime dependencies / launch notes.
 const urls=[...runtime.matchAll(/https:\/\/[^'"`\s)]+/g)].map(m=>m[0]);
