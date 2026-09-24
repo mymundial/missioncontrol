@@ -113,17 +113,17 @@
 
     startLaplandMusic();
 
-    // Final verification deliberately mirrors MC-00: the same seven restored
-    // systems resolve from STANDBY -> CHECKING -> ONLINE, then LAUNCH resolves
-    // STANDBY -> CHECKING -> CLEAR only after the route systems pass.
-    const checks=['power','luffield','spirit','comet','jingle','lando','aurora'];
-    const systemKeys=['power','comms','core','control','propulsion','response','navigation'];
+    // Final verification mirrors the same eight systems restored by MC-03 to MC-10.
+    // Each row resolves STANDBY -> CHECKING -> ONLINE/OFFLINE. Launch clearance
+    // is a verification outcome, not a ninth system state.
+    const checks=['luffield','power','spirit','escapade','comet','jingle','lando','aurora'];
+    const systemKeys=['comms','power','core','propulsion','guidance','control','response','navigation'];
     const setCharge=value=>panel.style.setProperty('--lapland-charge',String(Math.max(0,Math.min(1,value))));
     const setRowState=(key,nextState,label)=>{
       const row=document.querySelector(`[data-verify-system="${key}"]`);
       const status=document.querySelector(`[data-verify-status="${key}"]`);
       if(!row||!status) return;
-      row.classList.remove('is-standby','is-online','is-offline','is-checking','is-blocked','is-clear');
+      row.classList.remove('is-standby','is-online','is-offline','is-checking');
       row.classList.add(`is-${nextState}`);
       status.textContent=label;
     };
@@ -157,7 +157,6 @@
       startLaplandMusic();
       if(laplandMusic&&!laplandMusic.paused) fadeLaplandMusic(.34,220);
       systemKeys.forEach(key=>setRowState(key,'standby','Standby'));
-      setRowState('launch','standby','Standby');
 
       checks.forEach((checkpointId,i)=>laplandLater(()=>{
         const key=systemKeys[i];
@@ -173,29 +172,25 @@
 
           if(i===checks.length-1){
             laplandLater(()=>{
-              setRowState('launch','checking','Checking');
-              if(laplandMusic&&!laplandMusic.paused) fadeLaplandMusic(.08,520);
-              ping(770,.055,.018);
-              laplandLater(()=>{
-                const clear=!missing.length;
-                setRowState('launch',clear?'clear':'blocked',clear?'Clear':'Blocked');
-                setCharge(1);
-                panel.classList.remove('is-verifying');
+              const clear=!missing.length;
+              setCharge(1);
+              panel.classList.remove('is-verifying');
 
-                if(clear){
-                  head?.classList.add('is-launch-clear');
-                  btn.hidden=true;
-                  haptic([18,25,35]);
-                  playLaplandClearance(celebrate);
-                } else {
-                  if(laplandMusic&&!laplandMusic.paused) fadeLaplandMusic(.34,350);
-                  panel.classList.add('has-attention');
-                  btn.disabled=false; btn.dataset.review='true'; btn.textContent='View Missions';
-                  const note=document.createElement('div'); note.className='final-check-note';
-                  note.innerHTML=`<div class="kicker">Systems Require Attention</div><p>${missing.length} ${missing.length===1?'system':'systems'} must be restored before Santa-1 can be cleared for launch.</p>`;
-                  panel.appendChild(note); haptic([20,35,20]);
-                }
-              },520);
+              if(clear){
+                if(laplandMusic&&!laplandMusic.paused) fadeLaplandMusic(.08,520);
+                head?.classList.add('is-launch-clear');
+                btn.hidden=true;
+                ping(770,.055,.018);
+                haptic([18,25,35]);
+                playLaplandClearance(celebrate);
+              } else {
+                if(laplandMusic&&!laplandMusic.paused) fadeLaplandMusic(.34,350);
+                panel.classList.add('has-attention');
+                btn.disabled=false; btn.dataset.review='true'; btn.textContent='View Missions';
+                const note=document.createElement('div'); note.className='final-check-note';
+                note.innerHTML=`<div class="kicker">Systems Require Attention</div><p>${missing.length} ${missing.length===1?'system':'systems'} must be restored before Santa-1 can be cleared for launch.</p>`;
+                panel.appendChild(note); haptic([20,35,20]);
+              }
             },680);
           }
         },240);

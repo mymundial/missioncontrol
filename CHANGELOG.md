@@ -1,14 +1,35 @@
-# Mission Control — System Diagnostics correction (7.36.2)
+# Mission Control — core systems remap (7.36.3)
 
-## Corrected
-- Restored the Santa-1 sleigh visual in System Diagnostics by removing the JavaScript/CSS opacity gate introduced in 7.36.0.
-- Preloads `sleigh-stage-1.webp` and uses an empty image fallback alt so no text flashes in the visual while the WebP loads.
-- Uses the exact eight supplied subsystem SVGs, recoloured to a fixed Mission Control light blue.
-- System icons remain light blue regardless of Standby / Checking / Offline / Online / Blocked / Clear state.
-- System names remain the standard muted blue-grey regardless of status; only the status value changes colour.
-- Retains the agreed labels: CONTROL replaces RESPONSE, and GUIDANCE replaces CONTROL.
-- Retains the title SYSTEM DIAGNOSTICS.
+## Core system order
+The eight restored Santa-1 systems now follow the physical lap experience from MC-03 to MC-10:
 
-## Validation
-- Full production build completed successfully.
-- Production audit: 19 passed, 0 failures, 3 existing non-blocking warnings.
+1. Comms Relay — COMMS
+2. Power Pulse — POWER
+3. Spirit Depot — CORE
+4. Reindeer Raceway — PROPULSION
+5. Comet Curve — GUIDANCE
+6. Jingle Beams — CONTROL
+7. Lightspeed Lando — RESPONSE
+8. Aurora Apex — NAVIGATION
+
+## Diagnostics grid
+The two-column bank is intentionally row-interleaved so it reads top-down by column:
+
+- Left: COMMS / POWER / CORE / PROPULSION
+- Right: GUIDANCE / CONTROL / RESPONSE / NAVIGATION
+
+## State logic
+- Removed LAUNCH from the eight-system bank.
+- All eight core systems now use the same STANDBY -> CHECKING -> OFFLINE/ONLINE model.
+- Lapland Launch verifies those eight systems and produces launch clearance as the overall verification result, not as a system row.
+
+## Icons
+- GUIDANCE uses the supplied steering-wheel / drive icon.
+- CONTROL uses the supplied Caterham icon.
+- RESPONSE uses the supplied drift-course / traffic-cone icon.
+- All eight system icons remain fixed light blue.
+
+## Copy alignment
+- Reindeer Raceway completion now identifies PROPULSION.
+- Jingle Beams completion now identifies CONTROL.
+- Lightspeed Lando completion now identifies RESPONSE.

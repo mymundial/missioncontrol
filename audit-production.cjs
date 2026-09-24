@@ -168,9 +168,9 @@ const unhandled=[...new Set(checkpointTypes)].filter(t=>!handled.has(t));
 if(unhandled.length) fail('Mission handlers',`Unhandled checkpoint types: ${unhandled.join(', ')}`);
 else ok('Mission handlers','Every route checkpoint type has an audited render/bind or automatic flow');
 
-if(/const checks=\['power','luffield','spirit','comet','jingle','lando','aurora'\]/.test(runtime) && !/const checks=\[[^\]]*'elf-radio'/.test(runtime)) {
-  ok('Lapland Launch dependency','Comms verification is tied to MC-03 Luffield, not optional ELF FM tuning');
-} else fail('Lapland Launch dependency','Final verification dependency does not match the approved MC-03 rule');
+if(/const checks=\['luffield','power','spirit','escapade','comet','jingle','lando','aurora'\]/.test(runtime) && /const systemKeys=\['comms','power','core','propulsion','guidance','control','response','navigation'\]/.test(runtime) && !/const checks=\[[^\]]*'elf-radio'/.test(runtime)) {
+  ok('Lapland Launch dependency','Final verification follows the approved MC-03 to MC-10 eight-system sequence');
+} else fail('Lapland Launch dependency','Final verification dependency does not match the approved MC-03 to MC-10 system sequence');
 
 // 10) Reindeer Raceway acceleration-game mobile protections.
 const powerCssOK = /-webkit-touch-callout:none\s*!important/.test(css) && /\.power-accelerator[\s\S]*touch-action:none/.test(css);

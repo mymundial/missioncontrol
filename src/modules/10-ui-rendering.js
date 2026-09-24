@@ -1,12 +1,12 @@
   const SYSTEM_STATUS_META = {
-    power:{label:'Power',icon:'./assets/system-power.svg'},
-    propulsion:{label:'Propulsion',icon:'./assets/system-propulsion.svg'},
     comms:{label:'Comms',icon:'./assets/system-comms.svg'},
-    response:{label:'Control',icon:'./assets/system-control.svg'},
+    power:{label:'Power',icon:'./assets/system-power.svg'},
     core:{label:'Core',icon:'./assets/system-core.svg'},
-    navigation:{label:'Navigation',icon:'./assets/system-navigation.svg'},
-    control:{label:'Guidance',icon:'./assets/system-guidance.svg'},
-    launch:{label:'Launch',icon:'./assets/system-launch.svg'}
+    propulsion:{label:'Propulsion',icon:'./assets/system-propulsion.svg'},
+    guidance:{label:'Guidance',icon:'./assets/system-guidance.svg'},
+    control:{label:'Control',icon:'./assets/system-control.svg'},
+    response:{label:'Response',icon:'./assets/system-response.svg'},
+    navigation:{label:'Navigation',icon:'./assets/system-navigation.svg'}
   };
   function systemStatusEntry(key,status='Standby',state='standby'){
     const meta=SYSTEM_STATUS_META[key]||{label:key,icon:key};
@@ -126,14 +126,14 @@
     const setupHeader=topBar();
     if(step==='mc00-live'){
       const systems=[
-        systemStatusEntry('power'),
-        systemStatusEntry('propulsion'),
         systemStatusEntry('comms'),
-        systemStatusEntry('response'),
-        systemStatusEntry('core'),
-        systemStatusEntry('navigation'),
+        systemStatusEntry('guidance'),
+        systemStatusEntry('power'),
         systemStatusEntry('control'),
-        systemStatusEntry('launch')
+        systemStatusEntry('core'),
+        systemStatusEntry('response'),
+        systemStatusEntry('propulsion'),
+        systemStatusEntry('navigation')
       ];
       return `<section class="onboard with-masthead setup-page mc00-page">${setupHeader}<div class="onboard-card panel mc00-card" data-mc00-mode="${step}"><div class="mc00-copy"><h1>System Diagnostics</h1><p class="support-copy">Santa-1 Sleigh Recovery</p></div><div class="mc00-visual-wrap"><div class="mc00-sleigh-frame"><div class="sleigh-visual sleigh-stage-1 mc00-sleigh-visual" role="img" aria-label="Santa-1 sleigh system diagnostics visual"><div class="sleigh-glow" aria-hidden="true"></div><img class="sleigh-art" src="./assets/sleigh-stage-1.webp" alt="" aria-hidden="true" fetchpriority="high"><div class="mc00-scan-beam" aria-hidden="true"></div></div></div></div>${systemStatusBank(systems,'mc00-system-bank','mc00')}<div class="mc00-progress-row"><div class="mc00-progress" role="progressbar" aria-label="System diagnostics progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="mc00ProgressFill"></span></div><strong id="mc00ProgressValue">0%</strong></div><div class="mc00-complete-popup panel" id="mc00CompleteBlock" hidden><div class="mc00-complete-icon" aria-hidden="true">✓</div><h2>Scan Complete</h2><button class="btn primary wide" id="mc00Continue" data-mc00-continue="${step}">Continue</button></div></div></section>`;
     }
@@ -173,14 +173,14 @@
         ? {name:'Flight Ready',copy:'Lapland Launch has completed the final systems verification. Every rebuilt system is stable and Santa-1 is fully cleared for launch.'}
         : {name:info.name,copy:info.copy};
     const systems=[
-      systemStatusEntry('power',state.completed.includes('power')?'Online':'Offline',state.completed.includes('power')?'online':'offline'),
       systemStatusEntry('comms',state.completed.includes('luffield')?'Online':'Offline',state.completed.includes('luffield')?'online':'offline'),
+      systemStatusEntry('guidance',state.completed.includes('comet')?'Online':'Offline',state.completed.includes('comet')?'online':'offline'),
+      systemStatusEntry('power',state.completed.includes('power')?'Online':'Offline',state.completed.includes('power')?'online':'offline'),
+      systemStatusEntry('control',state.completed.includes('jingle')?'Online':'Offline',state.completed.includes('jingle')?'online':'offline'),
       systemStatusEntry('core',state.completed.includes('spirit')?'Online':'Offline',state.completed.includes('spirit')?'online':'offline'),
-      systemStatusEntry('control',state.completed.includes('comet')?'Online':'Offline',state.completed.includes('comet')?'online':'offline'),
-      systemStatusEntry('propulsion',state.completed.includes('jingle')?'Online':'Offline',state.completed.includes('jingle')?'online':'offline'),
       systemStatusEntry('response',state.completed.includes('lando')?'Online':'Offline',state.completed.includes('lando')?'online':'offline'),
-      systemStatusEntry('navigation',state.completed.includes('aurora')?'Online':'Offline',state.completed.includes('aurora')?'online':'offline'),
-      systemStatusEntry('launch',state.completed.includes('northern')?'Complete':state.completed.includes('lapland')?'Clear':'Blocked',state.completed.includes('northern')?'complete':state.completed.includes('lapland')?'clear':'blocked')
+      systemStatusEntry('propulsion',state.completed.includes('escapade')?'Online':'Offline',state.completed.includes('escapade')?'online':'offline'),
+      systemStatusEntry('navigation',state.completed.includes('aurora')?'Online':'Offline',state.completed.includes('aurora')?'online':'offline')
     ];
     return `<div class="sleigh-card panel"><div class="sleigh-title-row"><div><div class="kicker sleigh-pretitle">Sleigh Rebuild</div><h1>Santa-1</h1></div><strong class="sleigh-percent">${r}%</strong></div><div class="sleigh-development-bar" role="progressbar" aria-label="Santa-1 rebuild progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${r}"><div class="sleigh-development-spectrum" aria-hidden="true"></div><div class="sleigh-development-mask" style="left:${r}%" aria-hidden="true"></div></div><div class="sleigh-visual sleigh-stage-${stage}"><div class="sleigh-glow" aria-hidden="true"></div><img class="sleigh-art" src="${info.asset}" alt="Santa-1 ${postStatus.name} rebuild stage"></div><div class="sleigh-update-box panel soft"><div class="kicker sleigh-systems-title">Engineering Update</div><p class="sleigh-systems-copy">${postStatus.copy}</p></div><div class="sleigh-systems panel soft"><div class="kicker sleigh-systems-title">System Status</div>${systemStatusBank(systems,'sleigh-system-bank')}</div></div>`;
   }
@@ -509,18 +509,18 @@
     </div>`;
   }
   function laplandBody(){
-    // Row-major ordering is intentionally interleaved so the visual columns read
-    // POWER / COMMS / CORE / GUIDANCE on the left and PROPULSION / CONTROL /
-    // NAVIGATION / LAUNCH on the right, matching the MC-00 system bank.
+    // Row-major ordering is interleaved so the visual columns read top-down:
+    // COMMS / POWER / CORE / PROPULSION on the left and
+    // GUIDANCE / CONTROL / RESPONSE / NAVIGATION on the right.
     const systems=[
-      systemStatusEntry('power'),
-      systemStatusEntry('propulsion'),
       systemStatusEntry('comms'),
-      systemStatusEntry('response'),
-      systemStatusEntry('core'),
-      systemStatusEntry('navigation'),
+      systemStatusEntry('guidance'),
+      systemStatusEntry('power'),
       systemStatusEntry('control'),
-      systemStatusEntry('launch')
+      systemStatusEntry('core'),
+      systemStatusEntry('response'),
+      systemStatusEntry('propulsion'),
+      systemStatusEntry('navigation')
     ];
     return `<div class="mission-instrument panel lapland-panel" id="laplandPanel" style="--lapland-charge:0">
       <div class="lapland-verification-label"><span>Santa-1</span><strong>Final Verification</strong></div>

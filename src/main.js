@@ -62,10 +62,10 @@
     luffield:{sender:'COMMUNICATIONS',title:'COMMS LINK RESTORED',body:'Comms Relay has restored two-way communications with Santa-1. Mission Control is receiving Santa loud and clear.'},
     power:{sender:'ENGINEERING',title:'POWER STABILISED',body:'Power Pulse has isolated a clean, stable racing-energy supply for Santa-1. It is ready to be stored in the Spirit Core.'},
     spirit:{sender:'MISSION CONTROL',title:'SPIRIT CORE CHARGED',body:'Stored racing energy is stable and Santa-1’s primary power system is back online.'},
-    escapade:{sender:'REINDEER RACEWAY',title:'HIGH-SPEED RUN COMPLETE',body:'Reindeer Raceway has confirmed Santa-1’s recovered power can sustain the high-speed output required for flight.'},
+    escapade:{sender:'PROPULSION SYSTEM',title:'PROPULSION ONLINE',body:'Reindeer Raceway has confirmed Santa-1’s propulsion system can sustain the high-speed output required for flight.'},
     comet:{sender:'GUIDANCE SYSTEM',title:'GUIDANCE PATH RESTORED',body:'Santa-1 can now process the high-speed directional changes required for flight.'},
-    jingle:{sender:'PROPULSION SYSTEM',title:'PROPULSION SYNCHRONISED',body:'Thrust output is stable and responding within the required flight parameters.'},
-    lando:{sender:'FLIGHT CONTROL',title:'HIGH-SPEED CONTROL CALIBRATED',body:'Racing response data has been integrated into Santa-1’s flight-control system.'},
+    jingle:{sender:'CONTROL SYSTEM',title:'CONTROL SYNCHRONISED',body:'Jingle Beams has restored stable beam control and energy routing across Santa-1’s flight systems.'},
+    lando:{sender:'RESPONSE SYSTEM',title:'RESPONSE CALIBRATED',body:'Lightspeed Lando has calibrated Santa-1’s high-speed response timing for flight.'},
     aurora:{sender:'NAVIGATION',title:'NORTH POLE SIGNAL ACQUIRED',body:'Aurora Apex has restored Santa-1’s navigation link and confirmed the route home.'},
     lapland:{sender:'MISSION CONTROL',title:'ALL SYSTEMS GO',body:'Santa-1 has passed full-power verification and is cleared for launch.'},
     northern:{sender:'MISSION CONTROL',title:'RECOVERY MISSION COMPLETE',body:'Santa-1 is airborne and the Northern Flight is underway.'}
@@ -75,7 +75,7 @@
     {stage:1,progress:0,name:'Grounded',asset:'./assets/sleigh-stage-1.webp',milestone:'Initial State',next:'Circuit Link',copy:'Santa-1 remains grounded in stripped-back recovery condition. Mission Control is waiting for enough circuit energy to energise the chassis and begin the rebuild.'},
     {stage:2,progress:10,name:'Recovery Initiated',asset:'./assets/sleigh-stage-2.webp',milestone:'Circuit Link',next:'Velocity Vault',copy:'Initial circuit energy has been routed into Santa-1. The chassis is energised and the recovery sequence is underway, while the individual sleigh systems remain offline until they are restored.'},
     {stage:3,progress:40,name:'Core Recovery',asset:'./assets/sleigh-stage-3.webp',milestone:'Power Pulse',next:'Comet Curve',copy:'Power Pulse has isolated and stabilised a clean racing-energy supply for Santa-1. The energy is ready to be stored in the Spirit Core before the recovery can continue.'},
-    {stage:4,progress:70,name:'Flight Systems Recovery',asset:'./assets/sleigh-stage-4.webp',milestone:'Comet Curve',next:'Aurora Apex',copy:'Comet Curve has restored Santa-1’s guidance architecture. Flight systems are now being integrated, with steering vectors and control pathways aligned for the remaining propulsion, response and navigation calibrations.'},
+    {stage:4,progress:70,name:'Flight Systems Recovery',asset:'./assets/sleigh-stage-4.webp',milestone:'Comet Curve',next:'Aurora Apex',copy:'Comet Curve has restored Santa-1’s guidance architecture. Flight systems are now being integrated, with steering vectors and control pathways aligned for the remaining control, response and navigation calibrations.'},
     {stage:5,progress:100,name:'Rebuild Complete',asset:'./assets/sleigh-stage-5.webp',milestone:'Aurora Apex',next:'Lapland Launch',copy:'Aurora Apex has locked the navigation network and completed the rebuild. Santa-1 now has a fully restored frame, active flight systems and a confirmed route home, ready for final verification at Lapland Launch.'}
   ];
 
@@ -398,14 +398,14 @@
   }
 
   const SYSTEM_STATUS_META = {
-    power:{label:'Power',icon:'./assets/system-power.svg'},
-    propulsion:{label:'Propulsion',icon:'./assets/system-propulsion.svg'},
     comms:{label:'Comms',icon:'./assets/system-comms.svg'},
-    response:{label:'Control',icon:'./assets/system-control.svg'},
+    power:{label:'Power',icon:'./assets/system-power.svg'},
     core:{label:'Core',icon:'./assets/system-core.svg'},
-    navigation:{label:'Navigation',icon:'./assets/system-navigation.svg'},
-    control:{label:'Guidance',icon:'./assets/system-guidance.svg'},
-    launch:{label:'Launch',icon:'./assets/system-launch.svg'}
+    propulsion:{label:'Propulsion',icon:'./assets/system-propulsion.svg'},
+    guidance:{label:'Guidance',icon:'./assets/system-guidance.svg'},
+    control:{label:'Control',icon:'./assets/system-control.svg'},
+    response:{label:'Response',icon:'./assets/system-response.svg'},
+    navigation:{label:'Navigation',icon:'./assets/system-navigation.svg'}
   };
   function systemStatusEntry(key,status='Standby',state='standby'){
     const meta=SYSTEM_STATUS_META[key]||{label:key,icon:key};
@@ -525,14 +525,14 @@
     const setupHeader=topBar();
     if(step==='mc00-live'){
       const systems=[
-        systemStatusEntry('power'),
-        systemStatusEntry('propulsion'),
         systemStatusEntry('comms'),
-        systemStatusEntry('response'),
-        systemStatusEntry('core'),
-        systemStatusEntry('navigation'),
+        systemStatusEntry('guidance'),
+        systemStatusEntry('power'),
         systemStatusEntry('control'),
-        systemStatusEntry('launch')
+        systemStatusEntry('core'),
+        systemStatusEntry('response'),
+        systemStatusEntry('propulsion'),
+        systemStatusEntry('navigation')
       ];
       return `<section class="onboard with-masthead setup-page mc00-page">${setupHeader}<div class="onboard-card panel mc00-card" data-mc00-mode="${step}"><div class="mc00-copy"><h1>System Diagnostics</h1><p class="support-copy">Santa-1 Sleigh Recovery</p></div><div class="mc00-visual-wrap"><div class="mc00-sleigh-frame"><div class="sleigh-visual sleigh-stage-1 mc00-sleigh-visual" role="img" aria-label="Santa-1 sleigh system diagnostics visual"><div class="sleigh-glow" aria-hidden="true"></div><img class="sleigh-art" src="./assets/sleigh-stage-1.webp" alt="" aria-hidden="true" fetchpriority="high"><div class="mc00-scan-beam" aria-hidden="true"></div></div></div></div>${systemStatusBank(systems,'mc00-system-bank','mc00')}<div class="mc00-progress-row"><div class="mc00-progress" role="progressbar" aria-label="System diagnostics progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="mc00ProgressFill"></span></div><strong id="mc00ProgressValue">0%</strong></div><div class="mc00-complete-popup panel" id="mc00CompleteBlock" hidden><div class="mc00-complete-icon" aria-hidden="true">✓</div><h2>Scan Complete</h2><button class="btn primary wide" id="mc00Continue" data-mc00-continue="${step}">Continue</button></div></div></section>`;
     }
@@ -572,14 +572,14 @@
         ? {name:'Flight Ready',copy:'Lapland Launch has completed the final systems verification. Every rebuilt system is stable and Santa-1 is fully cleared for launch.'}
         : {name:info.name,copy:info.copy};
     const systems=[
-      systemStatusEntry('power',state.completed.includes('power')?'Online':'Offline',state.completed.includes('power')?'online':'offline'),
       systemStatusEntry('comms',state.completed.includes('luffield')?'Online':'Offline',state.completed.includes('luffield')?'online':'offline'),
+      systemStatusEntry('guidance',state.completed.includes('comet')?'Online':'Offline',state.completed.includes('comet')?'online':'offline'),
+      systemStatusEntry('power',state.completed.includes('power')?'Online':'Offline',state.completed.includes('power')?'online':'offline'),
+      systemStatusEntry('control',state.completed.includes('jingle')?'Online':'Offline',state.completed.includes('jingle')?'online':'offline'),
       systemStatusEntry('core',state.completed.includes('spirit')?'Online':'Offline',state.completed.includes('spirit')?'online':'offline'),
-      systemStatusEntry('control',state.completed.includes('comet')?'Online':'Offline',state.completed.includes('comet')?'online':'offline'),
-      systemStatusEntry('propulsion',state.completed.includes('jingle')?'Online':'Offline',state.completed.includes('jingle')?'online':'offline'),
       systemStatusEntry('response',state.completed.includes('lando')?'Online':'Offline',state.completed.includes('lando')?'online':'offline'),
-      systemStatusEntry('navigation',state.completed.includes('aurora')?'Online':'Offline',state.completed.includes('aurora')?'online':'offline'),
-      systemStatusEntry('launch',state.completed.includes('northern')?'Complete':state.completed.includes('lapland')?'Clear':'Blocked',state.completed.includes('northern')?'complete':state.completed.includes('lapland')?'clear':'blocked')
+      systemStatusEntry('propulsion',state.completed.includes('escapade')?'Online':'Offline',state.completed.includes('escapade')?'online':'offline'),
+      systemStatusEntry('navigation',state.completed.includes('aurora')?'Online':'Offline',state.completed.includes('aurora')?'online':'offline')
     ];
     return `<div class="sleigh-card panel"><div class="sleigh-title-row"><div><div class="kicker sleigh-pretitle">Sleigh Rebuild</div><h1>Santa-1</h1></div><strong class="sleigh-percent">${r}%</strong></div><div class="sleigh-development-bar" role="progressbar" aria-label="Santa-1 rebuild progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${r}"><div class="sleigh-development-spectrum" aria-hidden="true"></div><div class="sleigh-development-mask" style="left:${r}%" aria-hidden="true"></div></div><div class="sleigh-visual sleigh-stage-${stage}"><div class="sleigh-glow" aria-hidden="true"></div><img class="sleigh-art" src="${info.asset}" alt="Santa-1 ${postStatus.name} rebuild stage"></div><div class="sleigh-update-box panel soft"><div class="kicker sleigh-systems-title">Engineering Update</div><p class="sleigh-systems-copy">${postStatus.copy}</p></div><div class="sleigh-systems panel soft"><div class="kicker sleigh-systems-title">System Status</div>${systemStatusBank(systems,'sleigh-system-bank')}</div></div>`;
   }
@@ -908,18 +908,18 @@
     </div>`;
   }
   function laplandBody(){
-    // Row-major ordering is intentionally interleaved so the visual columns read
-    // POWER / COMMS / CORE / GUIDANCE on the left and PROPULSION / CONTROL /
-    // NAVIGATION / LAUNCH on the right, matching the MC-00 system bank.
+    // Row-major ordering is interleaved so the visual columns read top-down:
+    // COMMS / POWER / CORE / PROPULSION on the left and
+    // GUIDANCE / CONTROL / RESPONSE / NAVIGATION on the right.
     const systems=[
-      systemStatusEntry('power'),
-      systemStatusEntry('propulsion'),
       systemStatusEntry('comms'),
-      systemStatusEntry('response'),
-      systemStatusEntry('core'),
-      systemStatusEntry('navigation'),
+      systemStatusEntry('guidance'),
+      systemStatusEntry('power'),
       systemStatusEntry('control'),
-      systemStatusEntry('launch')
+      systemStatusEntry('core'),
+      systemStatusEntry('response'),
+      systemStatusEntry('propulsion'),
+      systemStatusEntry('navigation')
     ];
     return `<div class="mission-instrument panel lapland-panel" id="laplandPanel" style="--lapland-charge:0">
       <div class="lapland-verification-label"><span>Santa-1</span><strong>Final Verification</strong></div>
@@ -1088,14 +1088,14 @@
     stopMc00Scan();
 
     const scanSystems = [
-      { key:'power', start:3, end:14 },
-      { key:'comms', start:16, end:27 },
+      { key:'comms', start:3, end:14 },
+      { key:'power', start:16, end:27 },
       { key:'core', start:29, end:40 },
-      { key:'control', start:42, end:53 },
-      { key:'propulsion', start:55, end:66 },
-      { key:'response', start:68, end:79 },
-      { key:'navigation', start:81, end:91 },
-      { key:'launch', start:93, end:99, final:'blocked' }
+      { key:'propulsion', start:42, end:53 },
+      { key:'guidance', start:55, end:66 },
+      { key:'control', start:68, end:79 },
+      { key:'response', start:81, end:91 },
+      { key:'navigation', start:93, end:99 }
     ];
 
     let progressValue = 0;
@@ -1107,9 +1107,9 @@
       const item=document.querySelector(`[data-mc00-system="${key}"]`);
       const status=document.querySelector(`[data-mc00-status="${key}"]`);
       if(!item||!status) return;
-      item.classList.remove('is-standby','is-checking','is-offline','is-online','is-blocked','is-clear');
+      item.classList.remove('is-standby','is-checking','is-offline','is-online');
       item.classList.add(`is-${nextState}`);
-      status.textContent=nextState==='checking'?'Checking':nextState==='offline'?'Offline':nextState==='blocked'?'Blocked':'Standby';
+      status.textContent=nextState==='checking'?'Checking':nextState==='offline'?'Offline':nextState==='online'?'Online':'Standby';
     };
 
     const paint = ()=>{
@@ -1122,7 +1122,7 @@
           ? 'standby'
           : progressValue < system.end
             ? 'checking'
-            : (system.final || 'offline');
+            : 'offline';
         setSystemState(system.key,nextState);
       });
 
@@ -3471,17 +3471,17 @@
 
     startLaplandMusic();
 
-    // Final verification deliberately mirrors MC-00: the same seven restored
-    // systems resolve from STANDBY -> CHECKING -> ONLINE, then LAUNCH resolves
-    // STANDBY -> CHECKING -> CLEAR only after the route systems pass.
-    const checks=['power','luffield','spirit','comet','jingle','lando','aurora'];
-    const systemKeys=['power','comms','core','control','propulsion','response','navigation'];
+    // Final verification mirrors the same eight systems restored by MC-03 to MC-10.
+    // Each row resolves STANDBY -> CHECKING -> ONLINE/OFFLINE. Launch clearance
+    // is a verification outcome, not a ninth system state.
+    const checks=['luffield','power','spirit','escapade','comet','jingle','lando','aurora'];
+    const systemKeys=['comms','power','core','propulsion','guidance','control','response','navigation'];
     const setCharge=value=>panel.style.setProperty('--lapland-charge',String(Math.max(0,Math.min(1,value))));
     const setRowState=(key,nextState,label)=>{
       const row=document.querySelector(`[data-verify-system="${key}"]`);
       const status=document.querySelector(`[data-verify-status="${key}"]`);
       if(!row||!status) return;
-      row.classList.remove('is-standby','is-online','is-offline','is-checking','is-blocked','is-clear');
+      row.classList.remove('is-standby','is-online','is-offline','is-checking');
       row.classList.add(`is-${nextState}`);
       status.textContent=label;
     };
@@ -3515,7 +3515,6 @@
       startLaplandMusic();
       if(laplandMusic&&!laplandMusic.paused) fadeLaplandMusic(.34,220);
       systemKeys.forEach(key=>setRowState(key,'standby','Standby'));
-      setRowState('launch','standby','Standby');
 
       checks.forEach((checkpointId,i)=>laplandLater(()=>{
         const key=systemKeys[i];
@@ -3531,29 +3530,25 @@
 
           if(i===checks.length-1){
             laplandLater(()=>{
-              setRowState('launch','checking','Checking');
-              if(laplandMusic&&!laplandMusic.paused) fadeLaplandMusic(.08,520);
-              ping(770,.055,.018);
-              laplandLater(()=>{
-                const clear=!missing.length;
-                setRowState('launch',clear?'clear':'blocked',clear?'Clear':'Blocked');
-                setCharge(1);
-                panel.classList.remove('is-verifying');
+              const clear=!missing.length;
+              setCharge(1);
+              panel.classList.remove('is-verifying');
 
-                if(clear){
-                  head?.classList.add('is-launch-clear');
-                  btn.hidden=true;
-                  haptic([18,25,35]);
-                  playLaplandClearance(celebrate);
-                } else {
-                  if(laplandMusic&&!laplandMusic.paused) fadeLaplandMusic(.34,350);
-                  panel.classList.add('has-attention');
-                  btn.disabled=false; btn.dataset.review='true'; btn.textContent='View Missions';
-                  const note=document.createElement('div'); note.className='final-check-note';
-                  note.innerHTML=`<div class="kicker">Systems Require Attention</div><p>${missing.length} ${missing.length===1?'system':'systems'} must be restored before Santa-1 can be cleared for launch.</p>`;
-                  panel.appendChild(note); haptic([20,35,20]);
-                }
-              },520);
+              if(clear){
+                if(laplandMusic&&!laplandMusic.paused) fadeLaplandMusic(.08,520);
+                head?.classList.add('is-launch-clear');
+                btn.hidden=true;
+                ping(770,.055,.018);
+                haptic([18,25,35]);
+                playLaplandClearance(celebrate);
+              } else {
+                if(laplandMusic&&!laplandMusic.paused) fadeLaplandMusic(.34,350);
+                panel.classList.add('has-attention');
+                btn.disabled=false; btn.dataset.review='true'; btn.textContent='View Missions';
+                const note=document.createElement('div'); note.className='final-check-note';
+                note.innerHTML=`<div class="kicker">Systems Require Attention</div><p>${missing.length} ${missing.length===1?'system':'systems'} must be restored before Santa-1 can be cleared for launch.</p>`;
+                panel.appendChild(note); haptic([20,35,20]);
+              }
             },680);
           }
         },240);

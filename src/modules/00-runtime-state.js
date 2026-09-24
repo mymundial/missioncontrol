@@ -62,10 +62,10 @@
     luffield:{sender:'COMMUNICATIONS',title:'COMMS LINK RESTORED',body:'Comms Relay has restored two-way communications with Santa-1. Mission Control is receiving Santa loud and clear.'},
     power:{sender:'ENGINEERING',title:'POWER STABILISED',body:'Power Pulse has isolated a clean, stable racing-energy supply for Santa-1. It is ready to be stored in the Spirit Core.'},
     spirit:{sender:'MISSION CONTROL',title:'SPIRIT CORE CHARGED',body:'Stored racing energy is stable and Santa-1’s primary power system is back online.'},
-    escapade:{sender:'REINDEER RACEWAY',title:'HIGH-SPEED RUN COMPLETE',body:'Reindeer Raceway has confirmed Santa-1’s recovered power can sustain the high-speed output required for flight.'},
+    escapade:{sender:'PROPULSION SYSTEM',title:'PROPULSION ONLINE',body:'Reindeer Raceway has confirmed Santa-1’s propulsion system can sustain the high-speed output required for flight.'},
     comet:{sender:'GUIDANCE SYSTEM',title:'GUIDANCE PATH RESTORED',body:'Santa-1 can now process the high-speed directional changes required for flight.'},
-    jingle:{sender:'PROPULSION SYSTEM',title:'PROPULSION SYNCHRONISED',body:'Thrust output is stable and responding within the required flight parameters.'},
-    lando:{sender:'FLIGHT CONTROL',title:'HIGH-SPEED CONTROL CALIBRATED',body:'Racing response data has been integrated into Santa-1’s flight-control system.'},
+    jingle:{sender:'CONTROL SYSTEM',title:'CONTROL SYNCHRONISED',body:'Jingle Beams has restored stable beam control and energy routing across Santa-1’s flight systems.'},
+    lando:{sender:'RESPONSE SYSTEM',title:'RESPONSE CALIBRATED',body:'Lightspeed Lando has calibrated Santa-1’s high-speed response timing for flight.'},
     aurora:{sender:'NAVIGATION',title:'NORTH POLE SIGNAL ACQUIRED',body:'Aurora Apex has restored Santa-1’s navigation link and confirmed the route home.'},
     lapland:{sender:'MISSION CONTROL',title:'ALL SYSTEMS GO',body:'Santa-1 has passed full-power verification and is cleared for launch.'},
     northern:{sender:'MISSION CONTROL',title:'RECOVERY MISSION COMPLETE',body:'Santa-1 is airborne and the Northern Flight is underway.'}
@@ -75,7 +75,7 @@
     {stage:1,progress:0,name:'Grounded',asset:'./assets/sleigh-stage-1.webp',milestone:'Initial State',next:'Circuit Link',copy:'Santa-1 remains grounded in stripped-back recovery condition. Mission Control is waiting for enough circuit energy to energise the chassis and begin the rebuild.'},
     {stage:2,progress:10,name:'Recovery Initiated',asset:'./assets/sleigh-stage-2.webp',milestone:'Circuit Link',next:'Velocity Vault',copy:'Initial circuit energy has been routed into Santa-1. The chassis is energised and the recovery sequence is underway, while the individual sleigh systems remain offline until they are restored.'},
     {stage:3,progress:40,name:'Core Recovery',asset:'./assets/sleigh-stage-3.webp',milestone:'Power Pulse',next:'Comet Curve',copy:'Power Pulse has isolated and stabilised a clean racing-energy supply for Santa-1. The energy is ready to be stored in the Spirit Core before the recovery can continue.'},
-    {stage:4,progress:70,name:'Flight Systems Recovery',asset:'./assets/sleigh-stage-4.webp',milestone:'Comet Curve',next:'Aurora Apex',copy:'Comet Curve has restored Santa-1’s guidance architecture. Flight systems are now being integrated, with steering vectors and control pathways aligned for the remaining propulsion, response and navigation calibrations.'},
+    {stage:4,progress:70,name:'Flight Systems Recovery',asset:'./assets/sleigh-stage-4.webp',milestone:'Comet Curve',next:'Aurora Apex',copy:'Comet Curve has restored Santa-1’s guidance architecture. Flight systems are now being integrated, with steering vectors and control pathways aligned for the remaining control, response and navigation calibrations.'},
     {stage:5,progress:100,name:'Rebuild Complete',asset:'./assets/sleigh-stage-5.webp',milestone:'Aurora Apex',next:'Lapland Launch',copy:'Aurora Apex has locked the navigation network and completed the rebuild. Santa-1 now has a fully restored frame, active flight systems and a confirmed route home, ready for final verification at Lapland Launch.'}
   ];
 

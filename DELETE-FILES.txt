@@ -1,2 +1,1 @@
-Remove this obsolete production asset after applying the patch:
-assets/mission-audio-icon.webp
+assets/system-launch.svg

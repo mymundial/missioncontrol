@@ -24,14 +24,14 @@
     stopMc00Scan();
 
     const scanSystems = [
-      { key:'power', start:3, end:14 },
-      { key:'comms', start:16, end:27 },
+      { key:'comms', start:3, end:14 },
+      { key:'power', start:16, end:27 },
       { key:'core', start:29, end:40 },
-      { key:'control', start:42, end:53 },
-      { key:'propulsion', start:55, end:66 },
-      { key:'response', start:68, end:79 },
-      { key:'navigation', start:81, end:91 },
-      { key:'launch', start:93, end:99, final:'blocked' }
+      { key:'propulsion', start:42, end:53 },
+      { key:'guidance', start:55, end:66 },
+      { key:'control', start:68, end:79 },
+      { key:'response', start:81, end:91 },
+      { key:'navigation', start:93, end:99 }
     ];
 
     let progressValue = 0;
@@ -43,9 +43,9 @@
       const item=document.querySelector(`[data-mc00-system="${key}"]`);
       const status=document.querySelector(`[data-mc00-status="${key}"]`);
       if(!item||!status) return;
-      item.classList.remove('is-standby','is-checking','is-offline','is-online','is-blocked','is-clear');
+      item.classList.remove('is-standby','is-checking','is-offline','is-online');
       item.classList.add(`is-${nextState}`);
-      status.textContent=nextState==='checking'?'Checking':nextState==='offline'?'Offline':nextState==='blocked'?'Blocked':'Standby';
+      status.textContent=nextState==='checking'?'Checking':nextState==='offline'?'Offline':nextState==='online'?'Online':'Standby';
     };
 
     const paint = ()=>{
@@ -58,7 +58,7 @@
           ? 'standby'
           : progressValue < system.end
             ? 'checking'
-            : (system.final || 'offline');
+            : 'offline';
         setSystemState(system.key,nextState);
       });
 
