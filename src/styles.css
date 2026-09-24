@@ -5870,3 +5870,49 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .aurora-ring.tracking img{filter:saturate(.72) contrast(1.08) brightness(.82);}
 .aurora-ring.active{opacity:1;filter:drop-shadow(0 8px 10px rgba(0,2,8,.52)) drop-shadow(0 0 6px rgba(104,227,233,.14));}
 .aurora-ring.active img{opacity:1;filter:saturate(.96) contrast(1.10) brightness(1.0);}
+
+/* Pass 7.32.0 — Comms Mission Settings: GPS / Mission Audio / Radio */
+.mission-settings-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;}
+.mission-setting-toggle{
+  min-height:82px;
+  grid-template-columns:1fr;
+  grid-template-rows:36px auto;
+  justify-items:center;
+  align-content:center;
+  gap:7px;
+  padding:9px 6px 8px;
+  text-align:center;
+}
+.mission-setting-icon{width:36px;height:36px;border-radius:9px;}
+.mission-setting-icon img{
+  max-width:27px;
+  max-height:27px;
+  opacity:.68;
+  filter:brightness(0) saturate(100%) invert(57%) sepia(18%) saturate(839%) hue-rotate(155deg) brightness(88%) contrast(88%);
+  transition:opacity .16s ease,filter .16s ease,transform .16s ease;
+}
+.mission-setting-copy{justify-items:center;gap:4px;width:100%;}
+.mission-setting-copy>span{font-size:7.4px;letter-spacing:.075em;overflow:visible;text-overflow:clip;}
+.mission-setting-copy strong{font-size:13px;}
+.mission-setting-toggle.on .mission-setting-icon{
+  border-color:rgba(89,224,255,.72);
+  background:rgba(12,59,76,.82);
+  box-shadow:inset 0 0 13px rgba(65,208,243,.13),0 0 12px rgba(65,208,243,.11);
+}
+.mission-setting-toggle.on .mission-setting-icon img{
+  opacity:1;
+  filter:brightness(0) saturate(100%) invert(90%) sepia(43%) saturate(1732%) hue-rotate(152deg) brightness(106%) contrast(102%) drop-shadow(0 0 4px rgba(89,224,255,.75));
+  transform:scale(1.04);
+}
+.mission-setting-toggle.tune .mission-setting-copy strong{color:#8bb7c8;}
+.comms-radio.compact .comms-radio-head{justify-content:flex-start;}
+.comms-radio.compact .wave{margin-top:14px;}
+@media(max-width:360px){
+  .mission-settings-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;}
+  .mission-setting-toggle{grid-template-columns:1fr;grid-template-rows:32px auto;gap:6px;min-height:76px;padding:8px 4px 7px;}
+  .mission-setting-icon{width:32px;height:32px;}
+  .mission-setting-icon img{max-width:24px;max-height:24px;}
+  .mission-setting-copy>span{font-size:6.8px;letter-spacing:.055em;}
+  .mission-setting-copy strong{font-size:12px;}
+}
+.mission-setting-toggle[aria-disabled="true"]{opacity:.56;cursor:not-allowed;}

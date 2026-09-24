@@ -756,3 +756,14 @@ This pass adds a self-contained static build for Vercel. No Vercel project-setti
 - Updated the MC-03 completion transmission to refer to `Comms Relay` consistently.
 - No activation mechanics, timings, assets, audio, GPS coordinates or route order were changed.
 - Bumped runtime asset version to 7.31.0.
+
+## Pass 7.32.0 — Comms Mission Settings UI
+
+- Reworked Mission Settings into one three-control row: `GPS Location`, `Mission Audio` and `Radio`.
+- Added the supplied radio icon as `assets/radio-setting-icon.svg` for the new Radio setting control.
+- Fixed active-state icon treatment so enabled GPS, Mission Audio and Radio icons visibly illuminate cyan instead of remaining visually dark.
+- Removed the separate Radio On/Off pill from the ELF FM waveform panel; radio playback is now controlled from Mission Settings.
+- Before ELF FM is tuned, the Radio setting reads `TUNE` and opens the existing tuner. Once tuned it becomes an `ON / OFF` playback control.
+- Kept the ELF FM waveform and simplified its state line to `PLAYING`, `RADIO OFF` or `SIGNAL AVAILABLE` as appropriate.
+- No mission gameplay, route order, GPS geofence configuration, radio stream source or mission-audio priority behaviour was changed.
+- Bumped runtime asset version to 7.32.0.
