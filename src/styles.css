@@ -1472,8 +1472,9 @@ body.admin-mode button{
   .demo-system-icon .demo-scan-radar{width:50px;height:50px;}
 }
 
-:root{--nav-h:72px;--page-gutter:16px;--page-gap:12px;--viewport-h:100svh;}
-@supports(height:100dvh){:root{--viewport-h:100dvh;}}
+:root{--nav-h:66px;--nav-safe:12px;--page-gutter:16px;--page-gap:12px;--viewport-h:100vh;}
+@supports(height:100svh){:root{--viewport-h:100svh;}}
+@supports(padding:max(0px)){:root{--nav-safe:max(env(safe-area-inset-bottom),12px);}}
 
 /* The phone frame itself is edge-to-edge. Individual content regions own their gutters. */
 .app-shell{height:var(--viewport-h);min-height:var(--viewport-h);overflow:hidden;}
@@ -1485,7 +1486,7 @@ body.admin-mode button{
   overflow:hidden;
 }
 .screen{
-  height:calc(100% - var(--nav-h) - env(safe-area-inset-bottom));
+  height:calc(100% - var(--nav-h) - var(--nav-safe));
   min-height:0;
   padding:0;
   overflow:hidden;
@@ -1529,15 +1530,17 @@ body.admin-mode button{
 .hero .topbar{padding:0;background:none;border:0;box-shadow:none;overflow:visible;}
 
 /* Bottom navigation is fixed to the frame and compact. */
-.nav{height:calc(var(--nav-h) + max(env(safe-area-inset-bottom),8px));padding-top:5px;padding-bottom:max(env(safe-area-inset-bottom),6px);overflow:visible;}
-.nav button{gap:4px;font-size:8px;line-height:1.02;padding:4px 0 3px;min-height:100%;justify-content:flex-start;overflow:visible;}
-.nav button>span:last-child{display:block;padding-bottom:1px;transform:translateY(0);}
+.nav{height:calc(var(--nav-h) + var(--nav-safe));padding:4px 0 var(--nav-safe);overflow:hidden;}
+.nav button{gap:4px;font-size:8px;line-height:1;padding:2px 0 1px;min-height:0;justify-content:center;overflow:visible;}
+.nav button>span:last-child{display:block;padding:0 0 1px;line-height:10px;}
 .nav .ico{height:22px;flex:0 0 22px;}
 .nav .ico svg{width:30px;height:18px;}
-.nav-sleigh-icon-wrap{display:grid;place-items:center;width:34px;height:22px;}
-.nav-sleigh-svg{width:34px;height:22px;overflow:visible;display:block;}
-.nav-sleigh-svg path{fill:none;stroke:currentColor;stroke-width:1.55;stroke-linecap:round;stroke-linejoin:round;}
-.nav button.active .nav-sleigh-svg{filter:drop-shadow(0 0 4px rgba(98,216,255,.34));}
+.nav-sleigh-icon-wrap{position:relative;display:block;width:34px;height:22px;}
+.nav-sleigh-icon{position:absolute;inset:0;width:34px;height:22px;object-fit:contain;object-position:center;transition:opacity .14s ease,filter .14s ease;}
+.nav-sleigh-off{opacity:1;}
+.nav-sleigh-on{opacity:0;}
+.nav button.active .nav-sleigh-off{opacity:0;}
+.nav button.active .nav-sleigh-on{opacity:1;filter:drop-shadow(0 0 4px rgba(98,216,255,.28));}
 
 /* ---------- RADAR ---------- */
 .radar-page{
@@ -6068,7 +6071,7 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   box-shadow:0 -14px 28px rgba(2,13,22,.88),0 -1px 0 rgba(116,222,246,.12);
 }
 .phone:has(.nav-view[data-view="comms"]) .comms-feed-scroll{
-  padding-bottom:calc(var(--nav-h) + max(env(safe-area-inset-bottom),6px) + 12px);
+  padding-bottom:calc(var(--nav-h) + var(--nav-safe) + 12px);
 }
 
 /* ELF FM uses the same illuminated-state language as the other settings; no action/status sublabel. */

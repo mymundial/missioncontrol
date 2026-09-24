@@ -1,0 +1,2 @@
+Remove this obsolete production asset after applying the patch:
+assets/mission-audio-icon.webp

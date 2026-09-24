@@ -1,14 +1,40 @@
-# Production Audit — Pass 7.35.1
+# Production Audit — Pass 7.35.2
+
+## Result
+
+**19 automated checks passed · 0 failures · 3 non-blocking warnings.**
 
 ## Scope
-Correction pass to address remaining Comms/nav UI issues from 7.35.0.
 
-## Verified
-- JavaScript syntax check passed for `src/main.js`
-- JavaScript syntax check passed for `src/modules/10-ui-rendering.js`
-- Onboarding Mission Audio now uses the same outline speaker glyph as the Comms Mission Audio tile
-- Bottom navigation vertical sizing and label positioning adjusted to reduce browser-edge clipping
-- Sleigh tab icon replaced with a thinner outline redraw closer to the previous silhouette language
+- Restored the bottom-nav sleigh to the original bitmap silhouette rather than the temporary redrawn SVG.
+- Rebuilt the selected/unselected sleigh WebPs from that exact original outline with a lighter line weight.
+- Kept the new outline Mission Audio glyph in both Comms and the onboarding Mission Audio screen.
+- Reworked bottom-nav viewport/safe-area sizing around a single shared safe-area value to prevent lower-edge clipping in browser chrome.
+- Removed the now-unused legacy `assets/mission-audio-icon.webp` production asset.
 
-## Constraints
-- No build/bundle/audit scripts were present in this updated-files subset, so a full production rebuild/audit could not be rerun from this package alone.
+## Production footprint
+
+- Production files: **50**
+- `dist/`: **8.15 MB** (audit-reported)
+- No duplicate sleigh assets added; existing selected/unselected WebP filenames are reused.
+
+## Automated checks
+
+- Production build completed successfully.
+- Generated JavaScript parses successfully.
+- Generated JS/CSS match deployed copies.
+- Runtime references resolve.
+- Every deployed asset/font is referenced.
+- No legacy PNG/JPEG/WAV/TTF/OTF or test/temp files are deployed.
+- Asset signatures match extensions.
+- CSS braces are balanced.
+- Vercel/build configuration remains valid.
+- Mission route and handlers remain intact.
+- Lapland Launch dependency remains tied to MC-03 Comms Relay.
+- Reindeer Raceway mobile hold protections and high-speed geometry remain intact.
+
+## Non-blocking warnings
+
+1. Deployment footprint remains above the 7 MB target.
+2. ELF FM still uses the Radio Mast test stream.
+3. Web app manifest has no install icon.

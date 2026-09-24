@@ -28,7 +28,7 @@
     return `<svg class="mission-setting-svg audio-setting-svg" viewBox="0 0 32 32" aria-hidden="true"><path d="M14 9 10.2 12.2H7.5v7.6h2.7L14 23z"/><path d="M18 12.1a5.1 5.1 0 0 1 0 7.8"/><path d="M20.9 9.4a8.75 8.75 0 0 1 0 13.2"/></svg>`;
   }
   function navSleighIcon(){
-    return `<span class="nav-sleigh-icon-wrap" aria-hidden="true"><svg class="nav-sleigh-svg" viewBox="0 0 64 28" aria-hidden="true"><path d="M8 22.2h38.8c4.8 0 8.9-1.5 12-4.4"/><path d="M15.4 18.4h26.2c3.4 0 6.1 2.7 6.1 6.1"/><path d="M19.2 18.3 23.7 11h12.2l6.4 3.8"/><path d="M25.6 11H37.8"/><path d="M12 22.2c2.6-.9 4.7-2.8 6-5.3"/></svg></span>`;
+    return `<span class="nav-sleigh-icon-wrap" aria-hidden="true"><img class="nav-sleigh-icon nav-sleigh-off" src="./assets/nav-sleigh-unselected.webp?v=7.35.2" alt=""><img class="nav-sleigh-icon nav-sleigh-on" src="./assets/nav-sleigh-selected.webp?v=7.35.2" alt=""></span>`;
   }
   function navIcon(id){
     const icons={

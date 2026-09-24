@@ -807,3 +807,12 @@ This pass adds a self-contained static build for Vercel. No Vercel project-setti
 - Increased bottom-nav vertical allowance and adjusted label positioning so nav labels do not clip at the bottom edge in-browser.
 - Replaced the temporary sleigh tab mark with a lighter outline redraw closer to the original sleigh silhouette.
 - Updated the onboarding Mission Audio icon to use the same outline speaker glyph as the Comms Mission Audio tile.
+
+
+## Pass 7.35.2 — Original sleigh asset refinement + nav viewport fix
+
+- Restored the bottom-nav sleigh to the original bitmap silhouette rather than the temporary redrawn SVG.
+- Rebuilt the selected/unselected sleigh assets from that exact original outline with a lighter line weight while preserving shape and proportions.
+- Kept the new outline Mission Audio glyph in both Comms and the onboarding Mission Audio screen.
+- Reworked bottom-nav viewport/safe-area sizing around one shared `--nav-safe` value and the stable visible viewport height so nav labels remain inside the browser-visible area.
+- Kept the Comms feed extending beneath the nav, with its scroll padding matched to the corrected nav height.
