@@ -1,4 +1,4 @@
-# Pass 7.33.0 — Production Audit
+# Pass 7.34.0 — Production Audit
 
 ## Result
 
@@ -6,9 +6,9 @@
 
 ## Production footprint
 
-- `dist/`: **8.157 MiB**
+- `dist/`: **8.158 MiB**
 - Production files: **51**
-- Versus Pass 7.32.0: **+3,265 bytes** (**+3.2 KiB**) with **no file-count change**.
+- Versus Pass 7.33.0: **+880 bytes** with **no file-count change**.
 - No new production assets were added in this pass.
 - No WAV/source-master audio is deployed.
 - No test/temp files are deployed.
@@ -16,14 +16,14 @@
 
 ## Comms page verified
 
-- Removed the separate ELF FM player/station card from the Communications page.
-- Mission Settings remains a single three-control row: GPS Location, Mission Audio and Radio.
-- GPS Location and Mission Audio now communicate visible on/off state through illuminated button/icon treatment rather than duplicate `ON / OFF` text.
-- Radio shows `TUNE` until the ELF FM tuning mission has been successfully completed. Exiting the tuner before locking the signal leaves the Radio tile in its untuned state.
-- Once tuned, Radio becomes the single on/off control and uses illuminated state plus a restrained active pulse; no duplicate `PLAYING`, `RADIO OFF` or waveform player state remains on the Comms page.
-- Radio on/off state remains exposed through `aria-pressed` and dynamic accessible labels.
-- Message Feed now scrolls within a dedicated clipped viewport with matched top and bottom boundary lines and no overlay fade on message content.
-- GPS behaviour, tuner mechanics, mission progression, audio priority, message copy and route logic remain unchanged.
+- Kept the existing top Message Feed boundary line.
+- Removed the separate bottom Message Feed divider.
+- On the Comms view, the feed now continues beneath the fixed bottom navigation bar; the nav bar's own top edge and shadow form the clean lower boundary and messages disappear naturally behind it.
+- Added sufficient bottom scroll padding so the final message can still be scrolled fully above the navigation bar.
+- Renamed the Mission Settings radio tile from `Radio` to `ELF FM`.
+- Removed the visible `TUNE` sublabel. Before tuning, tapping the ELF FM tile still opens the existing tuning challenge; after a successful lock the same tile becomes the radio on/off control.
+- Removed the guest toast element, eliminating transient guest pop-ups such as Mission Audio on/off and GPS permission/status notices. Admin-page toasts remain intact.
+- GPS logic, Mission Audio behaviour, ELF FM tuner mechanics, radio playback logic, message content, mission progression and route logic remain unchanged.
 
 ## Automated checks passed
 

@@ -6042,3 +6042,24 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 @media(prefers-reduced-motion:reduce){
   .mission-setting-toggle.radio-setting.on .mission-setting-icon{animation:none!important;}
 }
+
+
+/* Pass 7.34.0 — Comms lower-boundary + clean settings refinement */
+/* The top viewport line remains; the bottom line is now the fixed navigation bar itself. */
+.comms-feed-viewport::after{display:none;}
+.nav-view>.comms-feed,
+.screen>.comms-feed{margin-bottom:0;}
+
+/* On Comms only, allow the feed to continue beneath the fixed button bar so messages
+   disappear naturally behind its clean top edge and shadow. */
+.phone:has(.nav-view[data-view="comms"]) .screen{height:100%;}
+.phone:has(.nav-view[data-view="comms"]) .nav{
+  border-top-color:rgba(82,176,208,.46);
+  box-shadow:0 -14px 28px rgba(2,13,22,.88),0 -1px 0 rgba(116,222,246,.12);
+}
+.phone:has(.nav-view[data-view="comms"]) .comms-feed-scroll{
+  padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom) + 12px);
+}
+
+/* ELF FM uses the same illuminated-state language as the other settings; no action/status sublabel. */
+.mission-setting-toggle.radio-setting .mission-setting-copy{gap:0;}

@@ -778,3 +778,14 @@ This pass adds a self-contained static build for Vercel. No Vercel project-setti
 - Updated radio accessibility labels so on/off state remains explicit to assistive technology even though the visible state text has been removed.
 - No GPS behaviour, tuning mechanics, mission progression, audio priority, route logic or message copy was changed.
 - Bumped runtime asset version to 7.33.0.
+
+## Pass 7.34.0 — Comms boundary + ELF FM refinement
+
+- Removed the separate bottom divider from the Message Feed; the fixed bottom navigation bar is now the visual lower boundary.
+- On the Comms view, the feed extends beneath the bottom navigation so messages disappear naturally behind the bar, with the bar's top edge and restrained shadow providing the required lower shading.
+- Kept the existing top Message Feed boundary unchanged.
+- Renamed the Mission Settings radio control from `Radio` to `ELF FM`.
+- Removed the visible `TUNE` sublabel. Before tuning, tapping the ELF FM tile still opens the tuner; after a successful lock the same tile becomes the radio on/off control.
+- Removed the guest toast container so transient pop-up messages such as Mission Audio on/off and GPS permission/status notices are no longer displayed in the guest experience. Admin toasts remain available on the admin page.
+- No GPS logic, audio logic, tuner mechanics, messages, missions or route behaviour changed.
+- Bumped runtime asset version to 7.34.0.
