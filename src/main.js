@@ -16,9 +16,9 @@
     {id:'entry', mc:'MC-01', location:'Village', name:'Circuit Entry', type:'activation', playable:true, core:false, mission:'Circuit Entry', geofence:true, lat:52.0742700024956, lng:-1.01353137321053, detectionRadius:80, activationRadius:30},
     {id:'velocity', mc:'MC-02', location:'Wellington Straight', name:'Velocity Vault', type:'diagnostics', playable:true, core:true, mission:'Performance Scan', lat:52.07672858114103, lng:-1.0179463765923242, detectionRadius:150, activationRadius:35},
     {id:'luffield', mc:'MC-03', location:'Luffield', name:'ELF FM', type:'commsrelay', playable:true, core:false, mission:'Santa-1 Signal Relay', routeEnabled:true, geofence:true, lat:52.07588935484336, lng:-1.0202073683140254, detectionRadius:120, activationRadius:30},
-    {id:'power', mc:'MC-04', location:'National Pit Straight', name:'Power Pulse', type:'power', playable:true, core:true, mission:'Acceleration Run', lat:52.07867166248026, lng:-1.0177768332976036, detectionRadius:150, activationRadius:35},
+    {id:'power', mc:'MC-04', location:'National Pit Straight', name:'Power Pulse', type:'artifacts', playable:true, core:true, mission:'Energy Stabilisation', lat:52.07867166248026, lng:-1.0177768332976036, detectionRadius:150, activationRadius:35},
     {id:'spirit', mc:'MC-05', location:'Copse', name:'Spirit Depot', type:'spirit', playable:true, core:true, mission:'Charge the Spirit Core', lat:52.07895798720806, lng:-1.0124059222979016, detectionRadius:120, activationRadius:30},
-    {id:'escapade', mc:'MC-06', location:'Escapade', name:'Starstream Escapade', type:'artifacts', playable:true, core:true, mission:'Starstream Stabilisation', lat:52.07480005189975, lng:-1.0102119794664433, detectionRadius:120, activationRadius:30},
+    {id:'escapade', mc:'MC-06', location:'Escapade', name:'Reindeer Raceway', type:'power', playable:true, core:true, mission:'High-Speed Run', lat:52.07480005189975, lng:-1.0102119794664433, detectionRadius:120, activationRadius:30},
     {id:'comet', mc:'MC-07', location:'Becketts', name:'Comet Curve', type:'comet', playable:true, core:true, mission:'Guidance Calibration', lat:52.07247136741095, lng:-1.0099658493552224, detectionRadius:140, activationRadius:30},
     {id:'jingle', mc:'MC-08', location:'Hangar Straight', name:'Jingle Beams', type:'jingle', playable:true, core:true, mission:'Jingle Beams', lat:52.067475902465475, lng:-1.0132842109045421, detectionRadius:150, activationRadius:35},
     {id:'lando', mc:'MC-09', location:'Stowe', name:'Lightspeed Lando', type:'lando', playable:true, core:true, mission:'High-Speed Control', lat:52.06363909240851, lng:-1.017077251994755, detectionRadius:120, activationRadius:30},
@@ -60,9 +60,9 @@
     entry:{sender:'MISSION CONTROL',title:'RECOVERY INITIATED',body:'Circuit energy has been routed into Santa-1. The recovery sequence is now underway.'},
     velocity:{sender:'ENGINEERING',title:'RACING PERFORMANCE PROFILE CONFIRMED',body:'Velocity Vault has captured the racing performance data needed to tune Santa-1’s recovery systems.'},
     luffield:{sender:'COMMUNICATIONS',title:'COMMS LINK RESTORED',body:'Signal Relay has restored two-way communications with Santa-1. Mission Control is receiving Santa loud and clear.'},
-    power:{sender:'ENGINEERING',title:'MAXIMUM POWER CAPTURED',body:'Power Pulse has captured a high-output racing energy profile for Santa-1.'},
+    power:{sender:'ENGINEERING',title:'POWER STABILISED',body:'Power Pulse has isolated a clean, stable racing-energy supply for Santa-1. It is ready to be stored in the Spirit Core.'},
     spirit:{sender:'MISSION CONTROL',title:'SPIRIT CORE CHARGED',body:'Stored racing energy is stable and Santa-1’s primary power system is back online.'},
-    escapade:{sender:'STARSTREAM ESCAPADE',title:'STARSTREAM STABILISED',body:'Stable energy has been isolated from the interference. The Starstream is now feeding clean energy into Santa-1’s recovery systems.'},
+    escapade:{sender:'REINDEER RACEWAY',title:'HIGH-SPEED RUN COMPLETE',body:'Reindeer Raceway has confirmed Santa-1’s recovered power can sustain the high-speed output required for flight.'},
     comet:{sender:'GUIDANCE SYSTEM',title:'GUIDANCE PATH RESTORED',body:'Santa-1 can now process the high-speed directional changes required for flight.'},
     jingle:{sender:'PROPULSION SYSTEM',title:'PROPULSION SYNCHRONISED',body:'Thrust output is stable and responding within the required flight parameters.'},
     lando:{sender:'FLIGHT CONTROL',title:'HIGH-SPEED CONTROL CALIBRATED',body:'Racing response data has been integrated into Santa-1’s flight-control system.'},
@@ -74,7 +74,7 @@
   const SLEIGH_STAGES = [
     {stage:1,progress:0,name:'Grounded',asset:'./assets/sleigh-stage-1.webp',milestone:'Initial State',next:'Circuit Entry',copy:'Santa-1 remains grounded in stripped-back recovery condition. Mission Control is waiting for enough circuit energy to energise the chassis and begin the rebuild.'},
     {stage:2,progress:10,name:'Recovery Initiated',asset:'./assets/sleigh-stage-2.webp',milestone:'Circuit Entry',next:'Velocity Vault',copy:'Initial circuit energy has been routed into Santa-1. The chassis is energised and the recovery sequence is underway, while the individual sleigh systems remain offline until they are restored.'},
-    {stage:3,progress:40,name:'Core Recovery',asset:'./assets/sleigh-stage-3.webp',milestone:'Power Pulse',next:'Comet Curve',copy:'Power Pulse has captured the high-output energy Santa-1 needs. The main supply is responding, but the Spirit Core still needs to be charged and stabilised before full recovery can continue.'},
+    {stage:3,progress:40,name:'Core Recovery',asset:'./assets/sleigh-stage-3.webp',milestone:'Power Pulse',next:'Comet Curve',copy:'Power Pulse has isolated and stabilised a clean racing-energy supply for Santa-1. The energy is ready to be stored in the Spirit Core before the recovery can continue.'},
     {stage:4,progress:70,name:'Flight Systems Recovery',asset:'./assets/sleigh-stage-4.webp',milestone:'Comet Curve',next:'Aurora Apex',copy:'Comet Curve has restored Santa-1’s guidance architecture. Flight systems are now being integrated, with steering vectors and control pathways aligned for the remaining propulsion, response and navigation calibrations.'},
     {stage:5,progress:100,name:'Rebuild Complete',asset:'./assets/sleigh-stage-5.webp',milestone:'Aurora Apex',next:'Lapland Launch',copy:'Aurora Apex has locked the navigation network and completed the rebuild. Santa-1 now has a fully restored frame, active flight systems and a confirmed route home, ready for final verification at Lapland Launch.'}
   ];
@@ -618,10 +618,10 @@
       diagnostics:'Capture the engineering data needed for Santa-1.',
       radio:'Tune the receiver to 87.7 FM and establish a link with ELF FM.',
       commsrelay:'Relay the transmission and restore two-way communications with Santa-1.',
-      power:'Reach maximum velocity and capture racing power for Santa-1.',
+      power:'Put the recovered power to the test and reach maximum velocity.',
       spirit:'Balance the charge between both storage banks to stabilise the Spirit Core.',
       placeholder:'This checkpoint is reserved while the final installation game is developed.',
-      artifacts:'Capture stable blue signatures and reject red interference to stabilise the Starstream.',
+      artifacts:'Capture stable blue energy pulses and reject red interference to stabilise racing power for Santa-1.',
       comet:'Lock 10 directional signals to restore Santa-1’s guidance path.',
       jingle:'Charge all 3 propulsion beams.',
       lando:'React the moment the lights go out to calibrate Santa-1 flight control.',
@@ -751,11 +751,11 @@
       <div class="power-arcade" id="powerArcade">
         <div class="power-scanlines" aria-hidden="true"></div>
         <div class="power-hud">
-          <div><span>Power Run</span><strong id="powerRunState">READY</strong></div>
-          <div><span>Energy Output</span><strong id="powerOutput">0%</strong></div>
+          <div><span>Raceway Run</span><strong id="powerRunState">READY</strong></div>
+          <div><span>Speed Output</span><strong id="powerOutput">0%</strong></div>
           <div class="power-speed-hud"><span>Speed</span><strong><b id="powerSpeed">000</b><small> MPH</small></strong></div>
         </div>
-        <div class="power-rev-wrap"><span>POWER</span><div class="power-rev" id="powerRev">${revSegments}</div></div>
+        <div class="power-rev-wrap"><span>PACE</span><div class="power-rev" id="powerRev">${revSegments}</div></div>
         <div class="power-road-scene" id="powerRoad">
           <div class="power-sky-sprite" aria-hidden="true"></div>
           <div class="power-ground" aria-hidden="true">
@@ -770,7 +770,7 @@
           </div>
           <div class="power-burst" id="powerBurst" aria-hidden="true"><i></i><i></i><i></i></div>
         </div>
-        <div class="power-max-hold"><span>Sustain Max Power</span><div><i id="powerMaxFill"></i></div><strong id="powerMaxState">STANDBY</strong></div>
+        <div class="power-max-hold"><span>Sustain Max Speed</span><div><i id="powerMaxFill"></i></div><strong id="powerMaxState">STANDBY</strong></div>
       </div>
       <div class="visually-hidden" id="powerState" aria-live="polite">Ready</div>
       <button class="btn primary wide power-accelerator" id="powerAccelerator">Press &amp; Hold to Accelerate</button>
@@ -800,10 +800,10 @@
   function placeholderBody(cp){const location=cp?.location||'Checkpoint';return `<div class="mission-instrument panel" style="text-align:center;padding:30px 18px"><div class="onboard-icon">?</div><div class="kicker">${location} / Creative Hold</div><h2 style="font-family:var(--display);text-transform:uppercase;font-size:28px;margin:8px 0">Mission TBC</h2><p class="sub">This checkpoint is reserved while the final installation game is developed. GPS activation, route progression and completion behaviour remain active for testing.</p><button class="btn primary wide" style="margin-top:16px" id="completePlaceholder">Complete Demo Step</button></div>`}
   function artifactBody(){
     return `<div class="mission-instrument panel artifact-panel">
-      <div class="artifact-score"><span>FIELD STABILITY</span><strong id="artifactProgress">0 / 10</strong></div>
+      <div class="artifact-score"><span>POWER STABILITY</span><strong id="artifactProgress">0 / 10</strong></div>
       <div class="artifact-progress-track" aria-hidden="true">${Array.from({length:10},(_,i)=>`<i data-artifact-step="${i}"></i>`).join('')}</div>
       <div class="artifact-instruction">Capture <span class="signature-rule-blue">BLUE</span> signatures. Avoid <span class="signature-rule-red">RED</span> interference.</div>
-      <div class="artifact-field" id="artifactField" data-intensity="1" aria-label="Fast-moving Starstream energy field">
+      <div class="artifact-field" id="artifactField" data-intensity="1" aria-label="Power Pulse energy stabilisation field">
         <canvas class="starstream-canvas" id="starstreamCanvas" aria-hidden="true"></canvas>
         <div class="starstream-nebula" aria-hidden="true"></div>
         <div class="starstream-vignette" aria-hidden="true"></div>
@@ -811,7 +811,7 @@
         <div class="artifact-layer" id="artifactLayer"></div>
         <div class="artifact-burst-layer" id="artifactBurstLayer" aria-hidden="true"></div>
       </div>
-      <div class="signal-state artifact-state" id="artifactState">Blue stabilises · red destabilises</div>
+      <div class="signal-state artifact-state" id="artifactState">Blue power stabilises · red interference destabilises</div>
     </div>`;
   }
   function cometBody(){
@@ -1733,8 +1733,8 @@
       button.classList.toggle('pressed',holding);
       if(holding){
         startPowerAudio();
-        runState.textContent=speed>190?'MAX ATTACK':'ACCELERATING';
-        stateEl.textContent=speed>190?'Hold maximum velocity':'Building racing power…';
+        runState.textContent=speed>190?'FULL GALLOP':'ACCELERATING';
+        stateEl.textContent=speed>190?'Hold maximum velocity':'Building raceway speed…';
       }else{
         pausePowerAudio();
         runState.textContent=speed>1?'COASTING':'READY';
@@ -1795,8 +1795,8 @@
       outputEl.textContent='100%';
       maxFill.style.width='100%';
       maxState.textContent='LOCKED';
-      stateEl.textContent='Maximum racing power captured';
-      button.textContent='MAX POWER CAPTURED';
+      stateEl.textContent='Maximum raceway speed confirmed';
+      button.textContent='MAX SPEED CONFIRMED';
       button.disabled=true;
       arcade.classList.add('captured');
       car.classList.add('captured');
@@ -1814,7 +1814,7 @@
         if(!powerAudio.paused)fadePowerAudio(0,520,()=>{try{powerAudio.pause();}catch{}});
       }
       cancelAnimationFrame(raf);
-      setTimeout(()=>showCompletion('Power Captured',''),1100);
+      setTimeout(()=>showCompletion('Raceway Run Complete',''),1100);
     }
 
     function frame(now){
@@ -1826,10 +1826,10 @@
         sustain=Math.min(sustainRequired,sustain+dt);
         runState.textContent='MAX VELOCITY';
         maxState.textContent='CAPTURING';
-        stateEl.textContent='Hold maximum velocity to capture power';
+        stateEl.textContent='Hold maximum velocity to confirm the run';
       }else{
         sustain=Math.max(0,sustain-dt*1.7);
-        maxState.textContent=sustain>0?'HOLD POWER':'STANDBY';
+        maxState.textContent=sustain>0?'HOLD SPEED':'STANDBY';
         if(!holding&&speed<1){runState.textContent='READY';}
       }
       maxFill.style.width=(sustain/sustainRequired*100).toFixed(1)+'%';
@@ -2235,7 +2235,7 @@
       cleared=Math.min(10,cleared+1);
       renderStability();
       ping(630+cleared*20,.045,.018);haptic(18);
-      stateEl.textContent=cleared===10?'Starstream stabilised':cleared>=7?'Interference critical · capture blue':`Blue captured · ${10-cleared} remaining`;
+      stateEl.textContent=cleared===10?'Power stabilised':cleared>=7?'Interference critical · capture blue':`Blue power captured · ${10-cleared} remaining`;
       if(cleared>=10){finish();return;}
       later(createSignature,cleared>=7?90:cleared>=3?125:170);
     }
@@ -2257,7 +2257,7 @@
     function passRed(item){
       if(finished||!active||active!==item||item.locked) return;
       removeSignature(item,'passed',190);
-      stateEl.textContent='Red interference passed';
+      stateEl.textContent='Interference avoided';
       later(createSignature,150);
     }
 
@@ -2271,7 +2271,7 @@
       beam.classList.add('active');
       progress.textContent='10 / 10';
       ping(920,.12,.045);haptic([28,24,58]);
-      setTimeout(()=>showCompletion('Starstream Stabilised',''),900);
+      setTimeout(()=>showCompletion('Power Stabilised',''),900);
     }
 
     renderStability();

@@ -213,7 +213,7 @@
       cleared=Math.min(10,cleared+1);
       renderStability();
       ping(630+cleared*20,.045,.018);haptic(18);
-      stateEl.textContent=cleared===10?'Starstream stabilised':cleared>=7?'Interference critical · capture blue':`Blue captured · ${10-cleared} remaining`;
+      stateEl.textContent=cleared===10?'Power stabilised':cleared>=7?'Interference critical · capture blue':`Blue power captured · ${10-cleared} remaining`;
       if(cleared>=10){finish();return;}
       later(createSignature,cleared>=7?90:cleared>=3?125:170);
     }
@@ -235,7 +235,7 @@
     function passRed(item){
       if(finished||!active||active!==item||item.locked) return;
       removeSignature(item,'passed',190);
-      stateEl.textContent='Red interference passed';
+      stateEl.textContent='Interference avoided';
       later(createSignature,150);
     }
 
@@ -249,7 +249,7 @@
       beam.classList.add('active');
       progress.textContent='10 / 10';
       ping(920,.12,.045);haptic([28,24,58]);
-      setTimeout(()=>showCompletion('Starstream Stabilised',''),900);
+      setTimeout(()=>showCompletion('Power Stabilised',''),900);
     }
 
     renderStability();

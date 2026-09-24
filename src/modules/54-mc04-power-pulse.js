@@ -71,8 +71,8 @@
       button.classList.toggle('pressed',holding);
       if(holding){
         startPowerAudio();
-        runState.textContent=speed>190?'MAX ATTACK':'ACCELERATING';
-        stateEl.textContent=speed>190?'Hold maximum velocity':'Building racing power…';
+        runState.textContent=speed>190?'FULL GALLOP':'ACCELERATING';
+        stateEl.textContent=speed>190?'Hold maximum velocity':'Building raceway speed…';
       }else{
         pausePowerAudio();
         runState.textContent=speed>1?'COASTING':'READY';
@@ -133,8 +133,8 @@
       outputEl.textContent='100%';
       maxFill.style.width='100%';
       maxState.textContent='LOCKED';
-      stateEl.textContent='Maximum racing power captured';
-      button.textContent='MAX POWER CAPTURED';
+      stateEl.textContent='Maximum raceway speed confirmed';
+      button.textContent='MAX SPEED CONFIRMED';
       button.disabled=true;
       arcade.classList.add('captured');
       car.classList.add('captured');
@@ -152,7 +152,7 @@
         if(!powerAudio.paused)fadePowerAudio(0,520,()=>{try{powerAudio.pause();}catch{}});
       }
       cancelAnimationFrame(raf);
-      setTimeout(()=>showCompletion('Power Captured',''),1100);
+      setTimeout(()=>showCompletion('Raceway Run Complete',''),1100);
     }
 
     function frame(now){
@@ -164,10 +164,10 @@
         sustain=Math.min(sustainRequired,sustain+dt);
         runState.textContent='MAX VELOCITY';
         maxState.textContent='CAPTURING';
-        stateEl.textContent='Hold maximum velocity to capture power';
+        stateEl.textContent='Hold maximum velocity to confirm the run';
       }else{
         sustain=Math.max(0,sustain-dt*1.7);
-        maxState.textContent=sustain>0?'HOLD POWER':'STANDBY';
+        maxState.textContent=sustain>0?'HOLD SPEED':'STANDBY';
         if(!holding&&speed<1){runState.textContent='READY';}
       }
       maxFill.style.width=(sustain/sustainRequired*100).toFixed(1)+'%';

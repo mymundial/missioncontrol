@@ -1,4 +1,4 @@
-# Pass 7.29.0 — Production Audit
+# Pass 7.30.0 — Production Audit
 
 ## Result
 
@@ -6,37 +6,24 @@
 
 ## Production footprint
 
-- `dist/`: **8.149 MiB**
+- `dist/`: **8.150 MiB**
 - Production files: **50**
-- Versus Pass 7.28.0: **+154 bytes** with **no file-count change**.
-- This pass changes copy only; no visual, audio or gameplay assets were added.
+- Versus Pass 7.29.0: **+33 bytes** with **no file-count change**.
+- No new assets were added and no existing visual/audio assets were modified.
 - No WAV/source-master audio is deployed.
 - No test/temp files are deployed.
 - Runtime images remain WebP/SVG and fonts remain WOFF2.
 
-## Narrative copy changes verified
+## Power Pulse / Reindeer Raceway swap verified
 
-- Mission Briefing now describes broad recovery signals rather than implying every checkpoint is an energy source.
-- Velocity Vault completion now describes a racing-performance profile, matching its engineering scan.
-- MC-03 is identified as a Santa-1 signal relay while ELF FM remains the activation/radio identity; completion copy now describes restored two-way communications.
-- Spirit Depot instructions now describe balancing both storage banks to stabilise the Spirit Core.
-- Starstream Escapade now describes the current mechanic: capture stable blue signatures and reject red interference; its completion message no longer references clearing obsolete energy artefacts.
-- The 40% Sleigh Rebuild update no longer claims the Spirit Core is already charged before Spirit Depot.
-- The 70% stage is now `Flight Systems Recovery`, explicitly leaving propulsion, response and navigation calibrations still to complete.
-- The 100% stage is now `Rebuild Complete` rather than `Development Complete`.
-- Persistent telemetry now uses `Sleigh Rebuild` rather than `Sleigh System`.
-- Generic radar searching language now refers to recovery signals.
-- Comet Curve completion now reads `Guidance Path Locked`.
-- ELF FM tuning completion now says the station is available from Communications instead of claiming it is already playing.
-
-## Scope protection
-
-- No mission gameplay logic was changed.
-- No interaction timings were changed.
-- No route/geofence values were changed.
-- No layout/CSS was changed.
-- No visual assets were changed.
-- No audio behaviour or files were changed.
+- MC-04 remains **Power Pulse** at National Pit Straight but now uses the existing blue/red energy-stabilisation mechanic.
+- Power Pulse guest-facing copy now frames the task as isolating stable blue racing-energy pulses while rejecting red interference before the energy is stored at Spirit Depot.
+- MC-06 at Escapade is now **Reindeer Raceway** and uses the existing acceleration/high-speed driving mechanic previously assigned to Power Pulse.
+- Reindeer Raceway HUD/live-state/completion copy now describes a high-speed run rather than capturing Power Pulse energy.
+- Completion Comms messages have been updated for both activations.
+- The 40% Sleigh Rebuild milestone now reflects the new sequence: Power Pulse stabilises the energy, Spirit Depot stores it, and Reindeer Raceway later validates high-speed output.
+- GPS coordinates, route order, gameplay physics, acceleration timings, energy-stabilisation rules and audio assets are unchanged.
+- Existing checkpoint IDs remain `power` and `escapade`, preserving saved route/progression compatibility.
 
 ## Automated checks passed
 
@@ -53,7 +40,8 @@
 - Service worker remains retirement-only with no fetch interception/runtime caching.
 - The 13-checkpoint route and handlers remain intact.
 - Lapland Launch still verifies Comms via MC-03 Luffield.
-- Power Pulse mobile protections and fixed high-speed geometry remain intact.
+- Reindeer Raceway acceleration control retains iOS long-press protections.
+- Reindeer Raceway high-speed scene geometry remains fixed and does not dynamically scale with velocity.
 
 ## Non-blocking warnings
 

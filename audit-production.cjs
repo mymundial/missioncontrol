@@ -172,14 +172,14 @@ if(/const checks=\['power','luffield','spirit','comet','jingle','lando','aurora'
   ok('Lapland Launch dependency','Comms verification is tied to MC-03 Luffield, not optional ELF FM tuning');
 } else fail('Lapland Launch dependency','Final verification dependency does not match the approved MC-03 rule');
 
-// 10) Power Pulse mobile protections.
+// 10) Reindeer Raceway acceleration-game mobile protections.
 const powerCssOK = /-webkit-touch-callout:none\s*!important/.test(css) && /\.power-accelerator[\s\S]*touch-action:none/.test(css);
 const powerJsOK = /button\.addEventListener\(['"]contextmenu['"],e=>e\.preventDefault\(\)\)/.test(runtime);
 const fixedGeometry = /--speed-stretch:1/.test(css) && !/setProperty\(['"]--speed-stretch/.test(runtime);
-if(powerCssOK && powerJsOK) ok('Power Pulse hold control','iOS selection/callout suppression and context-menu prevention are present');
-else fail('Power Pulse hold control','Long-press protection is incomplete');
-if(fixedGeometry) ok('Power Pulse high-speed geometry','Speed stretch remains fixed; JS does not scale scenery with velocity');
-else fail('Power Pulse high-speed geometry','Dynamic scene scaling appears to be present');
+if(powerCssOK && powerJsOK) ok('Reindeer Raceway hold control','iOS selection/callout suppression and context-menu prevention are present');
+else fail('Reindeer Raceway hold control','Long-press protection is incomplete');
+if(fixedGeometry) ok('Reindeer Raceway high-speed geometry','Speed stretch remains fixed; JS does not scale scenery with velocity');
+else fail('Reindeer Raceway high-speed geometry','Dynamic scene scaling appears to be present');
 
 // 11) External runtime dependencies / launch notes.
 const urls=[...runtime.matchAll(/https:\/\/[^'"`\s)]+/g)].map(m=>m[0]);

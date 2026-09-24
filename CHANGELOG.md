@@ -734,3 +734,13 @@ This pass adds a self-contained static build for Vercel. No Vercel project-setti
 - Changed Comet Curve completion from `Guidance Signal Locked` to `Guidance Path Locked`.
 - Removed the ELF FM completion claim that the station is `now playing`; it now correctly says the tuned station is available from Communications.
 - No gameplay logic, timings, layouts, art, audio or mission routing were changed.
+
+## Pass 7.30.0 — Power Pulse / Reindeer Raceway game swap
+
+- Replaced MC-06 `Starstream Escapade` with `Reindeer Raceway` while preserving its Escapade route position and geofence.
+- Swapped the two existing mechanics rather than rebuilding them: Power Pulse now runs the blue/red energy-stabilisation game, while Reindeer Raceway now runs the acceleration/high-speed driving game.
+- Reframed Power Pulse copy around isolating and stabilising clean racing energy before Spirit Depot stores it.
+- Reframed the acceleration game around a Reindeer Raceway high-speed test, including its HUD, live states, completion screen and Comms message.
+- Updated the 40% sleigh milestone copy so the sequence now reads Power Pulse stabilisation → Spirit Depot storage → Reindeer Raceway speed validation.
+- No gameplay physics, acceleration timings, stabilisation rules, audio assets, GPS coordinates, route order or visual assets were changed.
+- Bumped runtime asset version to 7.30.0.

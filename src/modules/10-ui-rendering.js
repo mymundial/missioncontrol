@@ -217,10 +217,10 @@
       diagnostics:'Capture the engineering data needed for Santa-1.',
       radio:'Tune the receiver to 87.7 FM and establish a link with ELF FM.',
       commsrelay:'Relay the transmission and restore two-way communications with Santa-1.',
-      power:'Reach maximum velocity and capture racing power for Santa-1.',
+      power:'Put the recovered power to the test and reach maximum velocity.',
       spirit:'Balance the charge between both storage banks to stabilise the Spirit Core.',
       placeholder:'This checkpoint is reserved while the final installation game is developed.',
-      artifacts:'Capture stable blue signatures and reject red interference to stabilise the Starstream.',
+      artifacts:'Capture stable blue energy pulses and reject red interference to stabilise racing power for Santa-1.',
       comet:'Lock 10 directional signals to restore Santa-1’s guidance path.',
       jingle:'Charge all 3 propulsion beams.',
       lando:'React the moment the lights go out to calibrate Santa-1 flight control.',
@@ -350,11 +350,11 @@
       <div class="power-arcade" id="powerArcade">
         <div class="power-scanlines" aria-hidden="true"></div>
         <div class="power-hud">
-          <div><span>Power Run</span><strong id="powerRunState">READY</strong></div>
-          <div><span>Energy Output</span><strong id="powerOutput">0%</strong></div>
+          <div><span>Raceway Run</span><strong id="powerRunState">READY</strong></div>
+          <div><span>Speed Output</span><strong id="powerOutput">0%</strong></div>
           <div class="power-speed-hud"><span>Speed</span><strong><b id="powerSpeed">000</b><small> MPH</small></strong></div>
         </div>
-        <div class="power-rev-wrap"><span>POWER</span><div class="power-rev" id="powerRev">${revSegments}</div></div>
+        <div class="power-rev-wrap"><span>PACE</span><div class="power-rev" id="powerRev">${revSegments}</div></div>
         <div class="power-road-scene" id="powerRoad">
           <div class="power-sky-sprite" aria-hidden="true"></div>
           <div class="power-ground" aria-hidden="true">
@@ -369,7 +369,7 @@
           </div>
           <div class="power-burst" id="powerBurst" aria-hidden="true"><i></i><i></i><i></i></div>
         </div>
-        <div class="power-max-hold"><span>Sustain Max Power</span><div><i id="powerMaxFill"></i></div><strong id="powerMaxState">STANDBY</strong></div>
+        <div class="power-max-hold"><span>Sustain Max Speed</span><div><i id="powerMaxFill"></i></div><strong id="powerMaxState">STANDBY</strong></div>
       </div>
       <div class="visually-hidden" id="powerState" aria-live="polite">Ready</div>
       <button class="btn primary wide power-accelerator" id="powerAccelerator">Press &amp; Hold to Accelerate</button>
@@ -399,10 +399,10 @@
   function placeholderBody(cp){const location=cp?.location||'Checkpoint';return `<div class="mission-instrument panel" style="text-align:center;padding:30px 18px"><div class="onboard-icon">?</div><div class="kicker">${location} / Creative Hold</div><h2 style="font-family:var(--display);text-transform:uppercase;font-size:28px;margin:8px 0">Mission TBC</h2><p class="sub">This checkpoint is reserved while the final installation game is developed. GPS activation, route progression and completion behaviour remain active for testing.</p><button class="btn primary wide" style="margin-top:16px" id="completePlaceholder">Complete Demo Step</button></div>`}
   function artifactBody(){
     return `<div class="mission-instrument panel artifact-panel">
-      <div class="artifact-score"><span>FIELD STABILITY</span><strong id="artifactProgress">0 / 10</strong></div>
+      <div class="artifact-score"><span>POWER STABILITY</span><strong id="artifactProgress">0 / 10</strong></div>
       <div class="artifact-progress-track" aria-hidden="true">${Array.from({length:10},(_,i)=>`<i data-artifact-step="${i}"></i>`).join('')}</div>
       <div class="artifact-instruction">Capture <span class="signature-rule-blue">BLUE</span> signatures. Avoid <span class="signature-rule-red">RED</span> interference.</div>
-      <div class="artifact-field" id="artifactField" data-intensity="1" aria-label="Fast-moving Starstream energy field">
+      <div class="artifact-field" id="artifactField" data-intensity="1" aria-label="Power Pulse energy stabilisation field">
         <canvas class="starstream-canvas" id="starstreamCanvas" aria-hidden="true"></canvas>
         <div class="starstream-nebula" aria-hidden="true"></div>
         <div class="starstream-vignette" aria-hidden="true"></div>
@@ -410,7 +410,7 @@
         <div class="artifact-layer" id="artifactLayer"></div>
         <div class="artifact-burst-layer" id="artifactBurstLayer" aria-hidden="true"></div>
       </div>
-      <div class="signal-state artifact-state" id="artifactState">Blue stabilises · red destabilises</div>
+      <div class="signal-state artifact-state" id="artifactState">Blue power stabilises · red interference destabilises</div>
     </div>`;
   }
   function cometBody(){
