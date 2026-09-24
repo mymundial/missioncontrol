@@ -253,14 +253,17 @@ if(
 if(
   /silverstone-s-mark\.webp/.test(runtime) &&
   /christmas-magic-01\.mp3/.test(runtime) &&
-  /showMc01EnergyBloom/.test(runtime) &&
-  /},4650\);/.test(runtime) &&
-  /},9350\);/.test(runtime) &&
-  /Energy Transfer Complete/.test(runtime) &&
-  /\.mc01-energy-bloom/.test(css)
+  /setProgress\(50\)/.test(runtime) &&
+  /setStage\('recovery','Recovery Sequence','Initiated',100\)/.test(runtime) &&
+  /},4950\);/.test(runtime) &&
+  /},7950\);/.test(runtime) &&
+  /finishMc01EnergyBloom/.test(runtime) &&
+  /Energy Transfer Complete<\/h1><\/div>/.test(runtime) &&
+  !/Energy Transfer Complete<\/h1><p>/.test(runtime) &&
+  /\.mc01-energy-bloom\.is-exiting/.test(css)
 ) {
-  ok('MC01 energy bloom','100% scan holds for 1.5 s, then shows a readable full-screen energy bloom before the mission-complete card');
-} else fail('MC01 energy bloom','MC01 bloom sequencing, copy or visual layer is incomplete');
+  ok('MC01 energy bloom','Scan registers 25/50/75/100, holds 100% for 750 ms, shows ENERGY TRANSFER COMPLETE for 3.0 s, then reveals the completion card without returning to the scan');
+} else fail('MC01 energy bloom','MC01 scan pacing or direct bloom-to-completion handoff is incomplete');
 
 const mc01Audio=path.join(root,'assets','christmas-magic-01.mp3');
 const mc01Mark=path.join(root,'assets','silverstone-s-mark.webp');

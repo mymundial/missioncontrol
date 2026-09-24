@@ -1344,9 +1344,9 @@
     return mc01BloomAudio;
   }
 
-  function stopMc01Bloom(){
+  function stopMc01Bloom(stopAudio=true){
     if(mc01BloomEl){mc01BloomEl.remove();mc01BloomEl=null;}
-    if(mc01BloomAudio){
+    if(stopAudio&&mc01BloomAudio){
       try{mc01BloomAudio.pause();mc01BloomAudio.currentTime=0;}catch{}
     }
   }
@@ -1354,7 +1354,7 @@
   function stopMc01Activation(){
     mc01Timers.forEach(clearTimeout);
     mc01Timers=[];
-    stopMc01Bloom();
+    stopMc01Bloom(true);
   }
 
   function mc01Later(fn,delay){
@@ -1371,7 +1371,7 @@
     el.className='mc01-energy-bloom';
     el.setAttribute('role','status');
     el.setAttribute('aria-live','polite');
-    el.innerHTML=`<div class="mc01-bloom-field" aria-hidden="true"><i></i><i></i><i></i></div><div class="mc01-bloom-copy"><img class="mc01-bloom-mark" src="./assets/silverstone-s-mark.webp" alt=""><div class="kicker">Circuit Link</div><h1>Energy Transfer Complete</h1><p>Circuit energy has been routed to Santa-1. Recovery sequence initiated.</p></div>`;
+    el.innerHTML=`<div class="mc01-bloom-field" aria-hidden="true"><i></i><i></i><i></i></div><div class="mc01-bloom-copy"><img class="mc01-bloom-mark" src="./assets/silverstone-s-mark.webp" alt=""><div class="kicker">Circuit Link</div><h1>Energy Transfer Complete</h1></div>`;
     document.body.appendChild(el);
     mc01BloomEl=el;
     if(state.audio){
@@ -1379,6 +1379,21 @@
       try{audio.currentTime=0;audio.play().catch(()=>{});}catch{}
     }
     haptic([45,35,90]);
+  }
+
+  function finishMc01EnergyBloom(){
+    if(state.missionOpen!=='entry') return;
+    // Build the stable completion state while the full-screen bloom still covers
+    // the mission, so there is never a frame where the completed scan reappears.
+    document.querySelector('.mc01-brand')?.remove();
+    showCompletion('Circuit Link Complete',"Santa-1's recovery has begun.");
+    const bloom=mc01BloomEl;
+    if(!bloom) return;
+    bloom.classList.add('is-exiting');
+    mc01Later(()=>{
+      if(bloom.isConnected) bloom.remove();
+      if(mc01BloomEl===bloom) mc01BloomEl=null;
+    },260);
   }
 
   function bindCircuitEntryActivation(){
@@ -1409,38 +1424,43 @@
     ping(560,.08,.025);
 
     mc01Later(()=>{
-      setStage('routing','Track Energy','Routing',34);
+      setStage('routing','Track Energy','Routing',25);
       ping(640,.06,.025);
       haptic(18);
-    },750);
+    },800);
+
+    // Extra visible scan beat: keep the same routing state while allowing the
+    // 50% marker to register before the transfer stage advances.
+    mc01Later(()=>{
+      setProgress(50);
+      ping(680,.055,.022);
+      haptic(14);
+    },1850);
 
     mc01Later(()=>{
-      setStage('transfer','Power Transfer','Routing to Santa-1',72);
+      setStage('transfer','Power Transfer','Routing to Santa-1',75);
       ping(720,.08,.03);
       haptic([18,28,24]);
-    },1850);
+    },3000);
 
     mc01Later(()=>{
       setStage('recovery','Recovery Sequence','Initiated',100);
       ping(880,.14,.05);
       haptic([30,35,70]);
-    },3150);
+    },4200);
 
-    // Leave the completed 100% scan on screen long enough to register before
-    // the full-screen energy reaction begins.
+    // The scan now spends more of its runtime progressing through 25/50/75/100,
+    // then holds 100% only briefly before the energy-transfer payoff begins.
     mc01Later(()=>{
       showMc01EnergyBloom();
-    },4650);
+    },4950);
 
-    // The bloom is a readable payoff state, not a single-frame transition.
-    // Its duration is aligned to the 4.57 s production sting before returning
-    // to the stable mission-complete card.
+    // Hold ENERGY TRANSFER COMPLETE for three seconds. The completion card is
+    // rendered underneath the overlay first, then the overlay fades away so the
+    // scan can never flash back on screen between the two states.
     mc01Later(()=>{
-      stopMc01Activation();
-      if(state.missionOpen!=='entry') return;
-      document.querySelector('.mc01-brand')?.remove();
-      showCompletion('Circuit Link Complete',"Santa-1's recovery has begun.");
-    },9350);
+      finishMc01EnergyBloom();
+    },7950);
   }
   function startGpsWatch(){
     if(state.gpsEnabled===false||gpsWatchId!==null||!navigator.geolocation) return;

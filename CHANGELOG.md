@@ -1,3 +1,10 @@
+## 7.38.10 — MC01 scan pacing + direct completion handoff
+- redistributed MC01 scan timing across visible 25% / 50% / 75% / 100% beats, adding a mid-scan percentage marker while shortening the final 100% hold to 750 ms.
+- removed the small explanatory paragraph from the `ENERGY TRANSFER COMPLETE` payoff so the state is cleaner and readable at a glance.
+- holds `ENERGY TRANSFER COMPLETE` for 3.0 seconds.
+- renders `CIRCUIT LINK COMPLETE` underneath the bloom before fading the bloom away, preventing the scan screen from flashing back between payoff and completion.
+- retained the supplied Silverstone S mark and optimised Christmas Magic sting.
+
 ## 7.38.9 — MC01 energy bloom payoff
 - Added the supplied Silverstone S mark above the Circuit Link title on the MC01 scan screen, using an optimised transparent WebP asset.
 - MC01 now holds the completed 100% Energy Transfer state for 1.5 seconds so guests can consciously register the successful scan before the reaction begins.
