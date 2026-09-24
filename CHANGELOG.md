@@ -1,3 +1,9 @@
+## 7.36.9 — Missions top-bar scroll boundary
+- removed the `MISSION LOG` heading and its separate divider line.
+- aligned the missions scroll region directly to the persistent top bar.
+- added a subtle top fade and stronger masthead shadow so mission rows disappear naturally beneath the top bar while scrolling.
+- retained the existing bottom-nav scroll boundary behaviour.
+
 
 ## 7.36.8 — Missions log header + boundary polish
 - replaced the plain Missions list with a dedicated `MISSION LOG` header section, matching the Comms page treatment.
