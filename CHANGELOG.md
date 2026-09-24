@@ -1,3 +1,11 @@
+# Pass 7.38.12 — MC01 Circuit Link scan language
+
+- changed the MC01 mission subtitle to `You have now entered the live circuit zone.` from the moment the activation opens, including the scan state.
+- removed the Silverstone S mark from the initial MC01 mission header; the S mark remains reserved for the ENERGY TRANSFER COMPLETE payoff.
+- standardised the staged scan language around the mission name: `CIRCUIT LINK / SIGNAL DETECTED` → `CIRCUIT LINK / CONNECTION ESTABLISHING` → `CIRCUIT LINK / ENERGY ROUTING` → `POWER TRANSFER / ROUTING TO SANTA-1` → `RECOVERY SEQUENCE / INITIATED`.
+- retained the kinetic-energy explanation as the supporting copy beneath the universal `MISSION COMPLETE` heading.
+- scan timing, 3-second ENERGY TRANSFER COMPLETE hold, audio bloom and direct completion handoff are unchanged.
+
 ## 7.38.11 — Universal mission-complete hierarchy
 - Standardised activation completion cards so the small redundant `MISSION COMPLETE` kicker is removed and the main completion heading is always `MISSION COMPLETE`.
 - Preserved each activation's mission-specific outcome as the supporting sentence beneath the generic completion heading; when an existing completion had no separate copy, its previous completion title is retained as that outcome line.

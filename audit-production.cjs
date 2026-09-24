@@ -253,7 +253,7 @@ if(
 if(
   /silverstone-s-mark\.webp/.test(runtime) &&
   /christmas-magic-01\.mp3/.test(runtime) &&
-  /setProgress\(50\)/.test(runtime) &&
+  /setStage\('routing','Circuit Link','Energy Routing',50\)/.test(runtime) &&
   /setStage\('recovery','Recovery Sequence','Initiated',100\)/.test(runtime) &&
   /},4950\);/.test(runtime) &&
   /},7950\);/.test(runtime) &&
@@ -269,12 +269,25 @@ if(
   /const outcome=copy\|\|title\|\|'';/.test(runtime) &&
   /<div class=\"completion panel\"><div class=\"check\">✓<\/div><h2>Mission Complete<\/h2>/.test(runtime) &&
   !/<div class=\"kicker\">Mission Complete<\/div><h2>\$\{title\}<\/h2>/.test(runtime) &&
-  /You have now entered the live circuit zone\./.test(runtime) &&
-  /showCompletion\('Circuit Link Complete',missionInstruction\('activation'\)\)/.test(runtime) &&
+  /activation:'You have now entered the live circuit zone\.'/.test(runtime) &&
+  !/mc01-brand/.test(runtime) &&
+  /showCompletion\('Circuit Link Complete','Kinetic energy generated on track has created enough power to initiate Santa-1’s recovery\.'\)/.test(runtime) &&
   /\.completion p\{color:#a9c8d5;font-size:var\(--challenge-support-size\);line-height:var\(--challenge-support-line\);font-weight:400;max-width:380px;/.test(css)
 ) {
   ok('Mission completion hierarchy','Activation completion cards use a single MISSION COMPLETE heading with mission-specific outcome copy; MC01 also announces entry into the live circuit zone');
 } else fail('Mission completion hierarchy','Completion-card hierarchy or MC01 completion copy does not match the approved system');
+
+if(
+  /setStage\('detected','Circuit Link','Signal Detected',0\)/.test(runtime) &&
+  /setStage\('routing','Circuit Link','Connection Establishing',25\)/.test(runtime) &&
+  /setStage\('routing','Circuit Link','Energy Routing',50\)/.test(runtime) &&
+  /setStage\('transfer','Power Transfer','Routing to Santa-1',75\)/.test(runtime) &&
+  /setStage\('recovery','Recovery Sequence','Initiated',100\)/.test(runtime) &&
+  !/Track Energy/.test(runtime) &&
+  !/Circuit Energy/.test(runtime)
+) {
+  ok('MC01 scan language','Circuit Link terminology stays consistent through detection, connection, routing, transfer and recovery');
+} else fail('MC01 scan language','MC01 scan-stage terminology does not match the approved Circuit Link sequence');
 
 const mc01Audio=path.join(root,'assets','christmas-magic-01.mp3');
 const mc01Mark=path.join(root,'assets','silverstone-s-mark.webp');

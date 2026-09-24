@@ -2854,13 +2854,6 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   max-width:390px;
   text-align:center;
 }
-.mc01-brand{
-  width:78px;
-  margin:13px auto 9px;
-  opacity:.96;
-  filter:drop-shadow(0 0 7px rgba(101,221,255,.18));
-}
-.mc01-brand img{display:block;width:100%;height:auto;}
 .mission-activation .mission-content{
   align-content:start;
 }

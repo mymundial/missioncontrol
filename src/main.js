@@ -789,7 +789,7 @@
       return `<div class="mission-head diagnostics-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><div class="diagnostics-brand"><img src="./assets/audi-rings.webp" alt="Audi"></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
     }
     if(cp.type==='activation'){
-      return `<div class="mission-head mc01-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><div class="mc01-brand"><img src="./assets/silverstone-s-mark.webp" alt="Silverstone"></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
+      return `<div class="mission-head mc01-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
     }
     if(cp.type==='spirit'){
       return `<div class="mission-head spirit-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
@@ -801,7 +801,7 @@
   }
   function missionInstruction(type){
     return ({
-      activation:'Kinetic energy generated on track has created enough power to initiate Santa-1’s recovery.',
+      activation:'You have now entered the live circuit zone.',
       diagnostics:'Capture the engineering data needed for Santa-1.',
       radio:'Tune the receiver to 87.7 and establish a link with ELF FM.',
       commsrelay:'Relay the transmission and restore two-way communications with Santa-1.',
@@ -857,10 +857,10 @@
       </div>
       <div class="mc01-readout">
         <span class="mc01-bolt" aria-hidden="true"><img src="./assets/system-power.svg" alt=""></span>
-        <div class="mc01-readout-copy"><span id="mc01StateLabel">Circuit Energy</span><strong id="mc01State">Detected</strong></div>
+        <div class="mc01-readout-copy"><span id="mc01StateLabel">Circuit Link</span><strong id="mc01State">Signal Detected</strong></div>
         <div class="mc01-signal-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
       </div>
-      <div class="mc01-transfer" aria-label="Circuit energy transfer progress">
+      <div class="mc01-transfer" aria-label="Circuit Link energy transfer progress">
         <div class="mc01-transfer-meta"><span>Energy Transfer</span><strong id="mc01TransferValue">0%</strong></div>
         <div class="mc01-transfer-track"><i id="mc01TransferFill"></i></div>
       </div>
@@ -1235,7 +1235,7 @@
     if(state.mode==='demo') clearDemo();
     if(state.missionOpen==='entry') return;
     resetGeofenceRuntime();
-    state={...state,missionOpen:'entry',missionReturnNav:state.nav||'radar',targetVisible:true,targetInRange:true,lastMessage:'CIRCUIT ENERGY DETECTED'};
+    state={...state,missionOpen:'entry',missionReturnNav:state.nav||'radar',targetVisible:true,targetInRange:true,lastMessage:'CIRCUIT LINK SIGNAL DETECTED'};
     save();render();
   }
 
@@ -1386,10 +1386,7 @@
     if(state.missionOpen!=='entry') return;
     // Build the stable completion state while the full-screen bloom still covers
     // the mission, so there is never a frame where the completed scan reappears.
-    document.querySelector('.mc01-brand')?.remove();
-    const missionSupport=document.querySelector('.mc01-head .support-copy');
-    if(missionSupport) missionSupport.textContent='You have now entered the live circuit zone.';
-    showCompletion('Circuit Link Complete',missionInstruction('activation'));
+    showCompletion('Circuit Link Complete','Kinetic energy generated on track has created enough power to initiate Santa-1’s recovery.');
     const bloom=mc01BloomEl;
     if(!bloom) return;
     bloom.classList.add('is-exiting');
@@ -1423,19 +1420,19 @@
       setProgress(progress);
     };
 
-    setStage('detected','Circuit Energy','Detected',0);
+    setStage('detected','Circuit Link','Signal Detected',0);
     ping(560,.08,.025);
 
     mc01Later(()=>{
-      setStage('routing','Track Energy','Routing',25);
+      setStage('routing','Circuit Link','Connection Establishing',25);
       ping(640,.06,.025);
       haptic(18);
     },800);
 
-    // Extra visible scan beat: keep the same routing state while allowing the
-    // 50% marker to register before the transfer stage advances.
+    // Extra visible scan beat: advance the Circuit Link state so the 50%
+    // marker communicates a distinct routing step before power transfer.
     mc01Later(()=>{
-      setProgress(50);
+      setStage('routing','Circuit Link','Energy Routing',50);
       ping(680,.055,.022);
       haptic(14);
     },1850);

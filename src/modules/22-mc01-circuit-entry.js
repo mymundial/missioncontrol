@@ -52,10 +52,7 @@
     if(state.missionOpen!=='entry') return;
     // Build the stable completion state while the full-screen bloom still covers
     // the mission, so there is never a frame where the completed scan reappears.
-    document.querySelector('.mc01-brand')?.remove();
-    const missionSupport=document.querySelector('.mc01-head .support-copy');
-    if(missionSupport) missionSupport.textContent='You have now entered the live circuit zone.';
-    showCompletion('Circuit Link Complete',missionInstruction('activation'));
+    showCompletion('Circuit Link Complete','Kinetic energy generated on track has created enough power to initiate Santa-1’s recovery.');
     const bloom=mc01BloomEl;
     if(!bloom) return;
     bloom.classList.add('is-exiting');
@@ -89,19 +86,19 @@
       setProgress(progress);
     };
 
-    setStage('detected','Circuit Energy','Detected',0);
+    setStage('detected','Circuit Link','Signal Detected',0);
     ping(560,.08,.025);
 
     mc01Later(()=>{
-      setStage('routing','Track Energy','Routing',25);
+      setStage('routing','Circuit Link','Connection Establishing',25);
       ping(640,.06,.025);
       haptic(18);
     },800);
 
-    // Extra visible scan beat: keep the same routing state while allowing the
-    // 50% marker to register before the transfer stage advances.
+    // Extra visible scan beat: advance the Circuit Link state so the 50%
+    // marker communicates a distinct routing step before power transfer.
     mc01Later(()=>{
-      setProgress(50);
+      setStage('routing','Circuit Link','Energy Routing',50);
       ping(680,.055,.022);
       haptic(14);
     },1850);

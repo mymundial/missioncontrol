@@ -128,7 +128,7 @@
     if(state.mode==='demo') clearDemo();
     if(state.missionOpen==='entry') return;
     resetGeofenceRuntime();
-    state={...state,missionOpen:'entry',missionReturnNav:state.nav||'radar',targetVisible:true,targetInRange:true,lastMessage:'CIRCUIT ENERGY DETECTED'};
+    state={...state,missionOpen:'entry',missionReturnNav:state.nav||'radar',targetVisible:true,targetInRange:true,lastMessage:'CIRCUIT LINK SIGNAL DETECTED'};
     save();render();
   }
 
