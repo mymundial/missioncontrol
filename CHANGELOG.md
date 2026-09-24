@@ -1,3 +1,9 @@
+## 7.38.4 — Circuit radar framing + opacity refinement
+- Pulled the post-MC01 circuit SVG back from 2.3x to 1.95x so more local track geometry is visible around the fixed user marker.
+- Increased the visible circuit body to approximately 75% opacity so the road reads more confidently without overpowering the centre marker.
+- Reduced the circuit glow radius/intensity so the SVG reads as a cleaner technical navigation trace rather than a soft neon ribbon.
+- Demo/GPS movement, checkpoint positioning, georeferencing and refresh/bootstrap behaviour are unchanged.
+
 ## 7.38.3 — Circuit radar state bootstrap fix
 - Post-MC01 circuit radar now renders hidden by default and is only revealed after a valid user/circuit position has been calculated, eliminating the unpositioned SVG flash seen immediately after Circuit Link and on refresh.
 - Demo Mode now persists its calibrated lap distance in saved app state and restores the exact route position after refresh.

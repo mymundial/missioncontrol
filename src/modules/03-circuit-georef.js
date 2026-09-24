@@ -77,10 +77,10 @@
 
 
   // Radar uses the original filled circuit SVG as the visible road shape while
-  // GPS/Demo movement still follows SILVERSTONE_GP_ROUTE. At 2.3x zoom the
-  // circuit ribbon is roughly the same visual width as the fixed centre marker
-  // (including its halo) on the maximum-size radar.
-  const CIRCUIT_RADAR_ZOOM=2.3;
+  // GPS/Demo movement still follows SILVERSTONE_GP_ROUTE. The visible SVG is
+  // pulled back slightly so more local circuit context stays in-frame while the
+  // ribbon remains close to the fixed centre marker's perceived width.
+  const CIRCUIT_RADAR_ZOOM=1.95;
 
   function forwardRouteDistance(fromDistance,toDistance){
     return normaliseRouteDistance(Number(toDistance)-Number(fromDistance));
