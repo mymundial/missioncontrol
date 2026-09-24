@@ -799,3 +799,11 @@ This pass adds a self-contained static build for Vercel. No Vercel project-setti
 - Tightened bottom-nav sizing and spacing so labels sit more comfortably within the bar.
 - Stabilised the app viewport sizing with a shared viewport-height variable so browser rendering is less prone to clipping the bottom navigation.
 - Kept the Comms feed passing underneath the nav bar, but matched its bottom padding to the revised nav height.
+
+
+## Pass 7.35.1 — Bottom-nav clipping fix + sleigh/icon correction
+
+### Updated
+- Increased bottom-nav vertical allowance and adjusted label positioning so nav labels do not clip at the bottom edge in-browser.
+- Replaced the temporary sleigh tab mark with a lighter outline redraw closer to the original sleigh silhouette.
+- Updated the onboarding Mission Audio icon to use the same outline speaker glyph as the Comms Mission Audio tile.

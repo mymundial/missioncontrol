@@ -1368,6 +1368,7 @@ body.admin-mode button{
   object-fit:contain;
   filter:brightness(0) saturate(100%) invert(79%) sepia(49%) saturate(1524%) hue-rotate(160deg) brightness(102%) contrast(101%);
 }
+.setup-icon-glyph svg{display:block;width:100%;height:100%;max-width:50px;max-height:50px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 4px rgba(89,224,255,.16));}
 .setup-page .setup-card h1{
   margin:0;
   min-height:46px;
@@ -1409,7 +1410,7 @@ body.admin-mode button{
   }
   .setup-page .setup-icon{width:78px;height:78px;padding:14px;}
   .setup-icon-glyph{width:50px;height:50px;}
-  .setup-icon-glyph img{max-width:48px;max-height:48px;}
+  .setup-icon-glyph img,.setup-icon-glyph svg{max-width:48px;max-height:48px;}
   .setup-page .setup-card h1{font-size:31px;min-height:43px;}
   .setup-page .setup-card .support-copy{min-height:92px;}
   .setup-page.briefing-page .setup-card,
@@ -1471,7 +1472,7 @@ body.admin-mode button{
   .demo-system-icon .demo-scan-radar{width:50px;height:50px;}
 }
 
-:root{--nav-h:62px;--page-gutter:16px;--page-gap:12px;--viewport-h:100svh;}
+:root{--nav-h:72px;--page-gutter:16px;--page-gap:12px;--viewport-h:100svh;}
 @supports(height:100dvh){:root{--viewport-h:100dvh;}}
 
 /* The phone frame itself is edge-to-edge. Individual content regions own their gutters. */
@@ -1528,13 +1529,14 @@ body.admin-mode button{
 .hero .topbar{padding:0;background:none;border:0;box-shadow:none;overflow:visible;}
 
 /* Bottom navigation is fixed to the frame and compact. */
-.nav{height:calc(var(--nav-h) + max(env(safe-area-inset-bottom),6px));padding-top:3px;padding-bottom:max(env(safe-area-inset-bottom),4px);}
-.nav button{gap:3px;font-size:8px;line-height:1.04;padding:2px 0 0;}
-.nav .ico{height:23px;}
+.nav{height:calc(var(--nav-h) + max(env(safe-area-inset-bottom),8px));padding-top:5px;padding-bottom:max(env(safe-area-inset-bottom),6px);overflow:visible;}
+.nav button{gap:4px;font-size:8px;line-height:1.02;padding:4px 0 3px;min-height:100%;justify-content:flex-start;overflow:visible;}
+.nav button>span:last-child{display:block;padding-bottom:1px;transform:translateY(0);}
+.nav .ico{height:22px;flex:0 0 22px;}
 .nav .ico svg{width:30px;height:18px;}
 .nav-sleigh-icon-wrap{display:grid;place-items:center;width:34px;height:22px;}
-.nav-sleigh-svg{width:34px;height:22px;overflow:visible;}
-.nav-sleigh-svg path{fill:none;stroke:currentColor;stroke-width:2.15;stroke-linecap:round;stroke-linejoin:round;}
+.nav-sleigh-svg{width:34px;height:22px;overflow:visible;display:block;}
+.nav-sleigh-svg path{fill:none;stroke:currentColor;stroke-width:1.55;stroke-linecap:round;stroke-linejoin:round;}
 .nav button.active .nav-sleigh-svg{filter:drop-shadow(0 0 4px rgba(98,216,255,.34));}
 
 /* ---------- RADAR ---------- */
@@ -1626,7 +1628,7 @@ body.admin-mode button{
 .setup-page .briefing-icon,
 .setup-page .audio-icon{width:68px;height:68px;padding:11px;}
 .setup-icon-glyph{width:44px;height:44px;}
-.setup-icon-glyph img,.setup-page .briefing-icon img,.setup-page .audio-icon img{max-width:44px;max-height:44px;}
+.setup-icon-glyph img,.setup-icon-glyph svg,.setup-page .briefing-icon img,.setup-page .audio-icon img{max-width:44px;max-height:44px;}
 .setup-page .setup-card h1,.setup-page.demo-scan-page .demo-scan-card h1{font-size:28px;line-height:1;}
 .setup-page .setup-card .support-copy,.setup-page.demo-scan-page .demo-scan-card p{font-size:15px;line-height:21px;}
 .setup-page .setup-actions{align-self:end;}

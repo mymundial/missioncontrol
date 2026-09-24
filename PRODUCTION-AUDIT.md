@@ -1,15 +1,14 @@
-# Production Audit — Pass 7.35.0
+# Production Audit — Pass 7.35.1
 
 ## Scope
-Incremental UI refinement pass based on 7.34.0.
+Correction pass to address remaining Comms/nav UI issues from 7.35.0.
 
 ## Verified
 - JavaScript syntax check passed for `src/main.js`
 - JavaScript syntax check passed for `src/modules/10-ui-rendering.js`
-- Mission Audio settings tile now uses inline outline SVG artwork
-- Bottom navigation sleigh icon now uses inline outline SVG artwork
-- Viewport sizing and nav spacing updated to reduce lower-edge clipping in-browser
-- Comms feed still scrolls beneath the fixed nav boundary
+- Onboarding Mission Audio now uses the same outline speaker glyph as the Comms Mission Audio tile
+- Bottom navigation vertical sizing and label positioning adjusted to reduce browser-edge clipping
+- Sleigh tab icon replaced with a thinner outline redraw closer to the previous silhouette language
 
-## Notes
-This patch package contains the updated source files and documentation subset only.
+## Constraints
+- No build/bundle/audit scripts were present in this updated-files subset, so a full production rebuild/audit could not be rerun from this package alone.
