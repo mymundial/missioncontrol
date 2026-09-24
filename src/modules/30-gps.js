@@ -199,8 +199,13 @@
     const checkpointValue=document.querySelector('.status-cell:last-child .status-value');
     if(checkpointValue){const d=distanceToActivation(cp,state.distance);checkpointValue.textContent=!cp?'COMPLETE':state.targetVisible&&Number.isFinite(d)?`${Math.round(d)} M`:'SEARCHING';}
     const target=document.querySelector('.target-dot');
-    const circuitMode=state.completed.includes('entry');
-    if(circuitMode){
+    const finalCircuitOverview=state.completed.includes('northern');
+    const circuitMode=state.completed.includes('entry')||finalCircuitOverview;
+    if(finalCircuitOverview){
+      if(target) target.classList.add('hidden');
+      // Final mission state is a static full-circuit overview. GPS/Demo movement
+      // no longer translates the artwork, but the radar sweep remains active.
+    }else if(circuitMode){
       if(target) target.classList.add('hidden');
       updateCircuitRadar(cp,cfg);
     }else if(target&&cp&&cfg){

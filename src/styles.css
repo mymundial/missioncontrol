@@ -6150,7 +6150,7 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   box-shadow:0 -14px 28px rgba(2,13,22,.88),0 -1px 0 rgba(116,222,246,.12);
 }
 
-/* Pass 7.38.7 — circuit / user / installation marker hierarchy */
+/* Pass 7.38.8 — circuit radar navigation + final full-circuit overview */
 .mc01-energy-node,
 .mc01-energy-ripple{
   transform-box:fill-box!important;
@@ -6167,6 +6167,17 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   transition:opacity .2s ease;
 }
 .track-radar-map.waiting{opacity:0;}
+.track-radar-map.final-overview{
+  opacity:1;
+}
+.track-radar-map.final-overview .track-radar-art{
+  left:50%!important;
+  top:50%!important;
+  width:84%;
+  height:50.4%;
+  transform:translate(-50%,-50%);
+  transition:none;
+}
 .track-radar-art{
   position:absolute;
   width:calc(var(--circuit-radar-zoom,1.3) * 100%);
@@ -6204,6 +6215,9 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .radar.circuit-radar::before,
 .radar.circuit-radar::after{z-index:3;opacity:.52;}
 .radar.circuit-radar>.target-dot{display:none;}
+.radar.circuit-overview-radar .user-dot,
+.radar.circuit-overview-radar .track-radar-target,
+.radar.circuit-overview-radar>.target-dot{display:none!important;}
 @media(prefers-reduced-motion:reduce){
   .track-radar-art,.track-radar-target{transition:none!important;}
 }

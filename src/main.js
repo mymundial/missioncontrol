@@ -702,9 +702,16 @@
   function renderRadar(){
     const cp=current();
     const modeClass=state.mode==='demo'?' demo-radar-page':'';
-    const circuitMode=state.completed.includes('entry');
-    const circuitLayer=circuitMode?`<div class="track-radar-map waiting" id="trackRadarMap" aria-hidden="true" style="--circuit-radar-zoom:${CIRCUIT_RADAR_ZOOM}"><div class="track-radar-art" id="trackRadarArt"></div><span class="track-radar-target hidden" id="trackRadarTarget"></span></div>`:'';
-    return `<section class="radar-page${modeClass}">${statusStrip()}<section class="radar-zone" aria-label="Live checkpoint radar"><section class="radar-wrap"><div class="radar${circuitMode?' circuit-radar':''}">${circuitLayer}<div class="sweep"></div><div class="user-dot"></div>${cp?'<div class="target-dot hidden"></div>':''}</div></section></section>${radarMessage(cp)}</section>`;
+    const finalCircuitOverview=state.completed.includes('northern');
+    const circuitMode=state.completed.includes('entry')||finalCircuitOverview;
+    const circuitLayer=finalCircuitOverview
+      ? `<div class="track-radar-map final-overview" id="trackRadarMap" aria-hidden="true"><div class="track-radar-art" id="trackRadarArt"></div></div>`
+      : circuitMode
+        ? `<div class="track-radar-map waiting" id="trackRadarMap" aria-hidden="true" style="--circuit-radar-zoom:${CIRCUIT_RADAR_ZOOM}"><div class="track-radar-art" id="trackRadarArt"></div><span class="track-radar-target hidden" id="trackRadarTarget"></span></div>`
+        : '';
+    const userMarker=finalCircuitOverview?'':'<div class="user-dot"></div>';
+    const targetMarker=!finalCircuitOverview&&cp?'<div class="target-dot hidden"></div>':'';
+    return `<section class="radar-page${modeClass}">${statusStrip()}<section class="radar-zone" aria-label="Live checkpoint radar"><section class="radar-wrap"><div class="radar${circuitMode?' circuit-radar':''}${finalCircuitOverview?' circuit-overview-radar':''}">${circuitLayer}<div class="sweep"></div>${userMarker}${targetMarker}</div></section></section>${radarMessage(cp)}</section>`;
   }
   function missionStatus(cp){
     const idx=checkpointIndex(cp.id);
@@ -1590,8 +1597,13 @@
     const checkpointValue=document.querySelector('.status-cell:last-child .status-value');
     if(checkpointValue){const d=distanceToActivation(cp,state.distance);checkpointValue.textContent=!cp?'COMPLETE':state.targetVisible&&Number.isFinite(d)?`${Math.round(d)} M`:'SEARCHING';}
     const target=document.querySelector('.target-dot');
-    const circuitMode=state.completed.includes('entry');
-    if(circuitMode){
+    const finalCircuitOverview=state.completed.includes('northern');
+    const circuitMode=state.completed.includes('entry')||finalCircuitOverview;
+    if(finalCircuitOverview){
+      if(target) target.classList.add('hidden');
+      // Final mission state is a static full-circuit overview. GPS/Demo movement
+      // no longer translates the artwork, but the radar sweep remains active.
+    }else if(circuitMode){
       if(target) target.classList.add('hidden');
       updateCircuitRadar(cp,cfg);
     }else if(target&&cp&&cfg){

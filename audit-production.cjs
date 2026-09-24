@@ -240,6 +240,16 @@ if(
   ok('Circuit radar hierarchy','Guest marker is small and high-glow; circuit is fully opaque with a tight halo; installation markers are larger, circuit-coloured and restrained');
 } else fail('Circuit radar hierarchy','Circuit/user/installation marker visual hierarchy does not match the approved treatment');
 
+if(
+  /const finalCircuitOverview=state\.completed\.includes\('northern'\)/.test(runtime) &&
+  /track-radar-map final-overview/.test(runtime) &&
+  /const userMarker=finalCircuitOverview\?'':'<div class=\"user-dot\"><\/div>'/.test(runtime) &&
+  /if\(finalCircuitOverview\)\{[\s\S]*?no longer translates the artwork/.test(runtime) &&
+  /\.track-radar-map\.final-overview \.track-radar-art\{[\s\S]*?left:50%!important;[\s\S]*?top:50%!important;[\s\S]*?width:84%;[\s\S]*?height:50\.4%;[\s\S]*?translate\(-50%,-50%\)/.test(css)
+) {
+  ok('Final circuit overview','Northern Flight completion shows the full centred circuit with no user/checkpoint navigation markers while the radar sweep remains active');
+} else fail('Final circuit overview','Post-MC12 full-circuit completion state is incomplete');
+
 // 12) External runtime dependencies / launch notes.
 const urls=[...runtime.matchAll(/https:\/\/[^'"`\s)]+/g)].map(m=>m[0]);
 const uniqueUrls=[...new Set(urls)];

@@ -1,3 +1,10 @@
+## 7.38.8 — Final full-circuit radar state
+- After MC12 / Northern Flight is completed, Radar now leaves the moving local-navigation view and shows the complete Silverstone circuit SVG centred within the radar face.
+- The final circuit overview is fixed at 84% radar width (50.4% height to preserve the 210:126 SVG aspect ratio), giving the full circuit comfortable breathing room inside the bezel.
+- The guest/user marker and all checkpoint/installation markers are removed in the final state.
+- GPS and Demo position no longer translate the circuit after mission completion; the radar grid and sweep continue running so the screen still feels live.
+- The post-MC01 navigation radar remains unchanged before Northern Flight is completed.
+
 ## 7.38.7 — Radar marker visual hierarchy
 - Kept the approved 1.3x circuit framing and made the circuit body fully opaque for a cleaner, more solid navigation trace.
 - Added only a very tight 1.5px circuit edge halo so the road stays crisp under the radar sweep instead of reading as blurred neon.
