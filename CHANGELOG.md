@@ -767,3 +767,14 @@ This pass adds a self-contained static build for Vercel. No Vercel project-setti
 - Kept the ELF FM waveform and simplified its state line to `PLAYING`, `RADIO OFF` or `SIGNAL AVAILABLE` as appropriate.
 - No mission gameplay, route order, GPS geofence configuration, radio stream source or mission-audio priority behaviour was changed.
 - Bumped runtime asset version to 7.32.0.
+
+## Pass 7.33.0 — Comms page simplification
+
+- Removed the separate ELF FM station/player panel from Communications. The Radio tile in Mission Settings is now the only persistent radio control and state surface.
+- GPS Location and Mission Audio no longer repeat `ON / OFF` text; their illuminated icon/button state communicates whether each setting is active.
+- Radio continues to display `TUNE` until the ELF FM tuning challenge has been completed successfully. Exiting the tuner before locking 87.7 leaves the tile in the `TUNE` state.
+- Once tuned, Radio becomes a normal illuminated on/off toggle with no duplicate `ON / OFF` wording. Its active icon receives a restrained pulse, disabled when reduced-motion is requested.
+- Rebuilt Message Feed as a dedicated clipped scrolling viewport with matching subtle top and bottom boundary lines. Messages remain fully opaque and scroll behind the boundaries; no content fade is applied.
+- Updated radio accessibility labels so on/off state remains explicit to assistive technology even though the visible state text has been removed.
+- No GPS behaviour, tuning mechanics, mission progression, audio priority, route logic or message copy was changed.
+- Bumped runtime asset version to 7.33.0.

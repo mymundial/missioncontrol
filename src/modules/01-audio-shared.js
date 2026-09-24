@@ -12,9 +12,7 @@
     const btn=document.getElementById('elfAudioToggle'); if(!btn) return;
     btn.classList.toggle('on',state.elfAudioOn);btn.classList.toggle('off',!state.elfAudioOn);
     btn.setAttribute('aria-pressed',state.elfAudioOn?'true':'false');
-    const strong=btn.querySelector('strong');if(strong)strong.textContent=state.elfAudioOn?'On':'Off';
-    const status=document.getElementById('elfStreamState');if(status)status.textContent=ELF_STREAM_URL?(state.elfAudioOn?'Playing':'Ready'):'Pending';
-    document.querySelector('.comms-radio .wave')?.classList.toggle('live',state.elfAudioOn);
+    btn.setAttribute('aria-label',`Radio ${state.elfAudioOn?'on':'off'}`);
   }
   async function toggleElfAudio(){
     if(!state.elfUnlocked) return;
