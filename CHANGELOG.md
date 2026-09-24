@@ -719,3 +719,18 @@ This pass adds a self-contained static build for Vercel. No Vercel project-setti
 - Removed the residual procedural overlay from the ring layer and eased startup suppression so all three rings remain legible from the opening frame.
 - Kept Aurora Apex gameplay, copy, HUD structure, audio, routing and mistimed desync behaviour unchanged.
 - Bumped runtime asset version to 7.28.0.
+
+## Pass 7.29.0 — Narrative copy alignment
+
+- Updated the Mission Briefing from a narrow `energy signatures` premise to broader recovery signals covering energy, engineering data and system calibrations.
+- Clarified MC-03 as a Santa-1 signal relay while keeping ELF FM as the Luffield activation identity and separate optional radio experience.
+- Updated Velocity Vault completion language from a racing-energy profile to a racing-performance profile so it matches the actual Aero / Stability / Power / Control / Traction / Response scan.
+- Corrected the 40% Sleigh Rebuild update so it no longer claims the Spirit Core is already holding charge before Spirit Depot.
+- Renamed the 70% stage from `Flight Systems Active` to `Flight Systems Recovery` and made the copy explicit that propulsion, response and navigation calibrations still remain.
+- Renamed the 100% Sleigh stage from `Development Complete` to `Rebuild Complete` and updated the persistent telemetry label from `Sleigh System` to `Sleigh Rebuild`.
+- Reframed Spirit Depot instructions around balancing both storage banks to stabilise the Spirit Core.
+- Reframed Starstream Escapade around capturing stable blue signatures and rejecting red interference; completion copy now describes isolating clean energy rather than clearing obsolete `artefacts`.
+- Updated generic radar searching copy from energy/signature language to recovery-signal language.
+- Changed Comet Curve completion from `Guidance Signal Locked` to `Guidance Path Locked`.
+- Removed the ELF FM completion claim that the station is `now playing`; it now correctly says the tuned station is available from Communications.
+- No gameplay logic, timings, layouts, art, audio or mission routing were changed.

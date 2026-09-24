@@ -248,7 +248,7 @@
         stopMusic();
         playCompletionSound();
         haptic([30,22,60]);
-        setTimeout(()=>showCompletion('Guidance Signal Locked',''),900);
+        setTimeout(()=>showCompletion('Guidance Path Locked',''),900);
       }
     }
     function frame(){

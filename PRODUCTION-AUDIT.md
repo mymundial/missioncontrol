@@ -1,4 +1,4 @@
-# Pass 7.28.0 — Production Audit
+# Pass 7.29.0 — Production Audit
 
 ## Result
 
@@ -8,19 +8,35 @@
 
 - `dist/`: **8.149 MiB**
 - Production files: **50**
-- Versus Pass 7.27.0: **-47,840 bytes** (**-46.7 KiB**) with **no file-count change**.
-- The footprint reduction comes from the corrected Aurora ring WebPs replacing the previous larger set; no duplicate assets were added.
+- Versus Pass 7.28.0: **+154 bytes** with **no file-count change**.
+- This pass changes copy only; no visual, audio or gameplay assets were added.
 - No WAV/source-master audio is deployed.
 - No test/temp files are deployed.
 - Runtime images remain WebP/SVG and fonts remain WOFF2.
 
-## Aurora Apex verified
+## Narrative copy changes verified
 
-- Rebuilt `aurora-ring-outer.webp`, `aurora-ring-middle.webp` and `aurora-ring-inner.webp` from the approved calm Aurora artwork using clean centred annular masks with transparent inner/outer areas.
-- Corrected the Aurora ring stack so the Outer ring fills the full circular field while preserving clear dark gaps between Outer/Middle and Middle/Inner.
-- Removed the residual procedural ring overlay and eased tracking suppression so all three rings remain legible from the opening frame.
-- Aurora Apex gameplay, timing, copy, HUD structure, audio, routing and mistimed desync behaviour remain unchanged.
-- `src/main.js` was regenerated via `node bundle-js.cjs` and remained byte-identical in output behaviour, so it is not included in the updated-files ZIP.
+- Mission Briefing now describes broad recovery signals rather than implying every checkpoint is an energy source.
+- Velocity Vault completion now describes a racing-performance profile, matching its engineering scan.
+- MC-03 is identified as a Santa-1 signal relay while ELF FM remains the activation/radio identity; completion copy now describes restored two-way communications.
+- Spirit Depot instructions now describe balancing both storage banks to stabilise the Spirit Core.
+- Starstream Escapade now describes the current mechanic: capture stable blue signatures and reject red interference; its completion message no longer references clearing obsolete energy artefacts.
+- The 40% Sleigh Rebuild update no longer claims the Spirit Core is already charged before Spirit Depot.
+- The 70% stage is now `Flight Systems Recovery`, explicitly leaving propulsion, response and navigation calibrations still to complete.
+- The 100% stage is now `Rebuild Complete` rather than `Development Complete`.
+- Persistent telemetry now uses `Sleigh Rebuild` rather than `Sleigh System`.
+- Generic radar searching language now refers to recovery signals.
+- Comet Curve completion now reads `Guidance Path Locked`.
+- ELF FM tuning completion now says the station is available from Communications instead of claiming it is already playing.
+
+## Scope protection
+
+- No mission gameplay logic was changed.
+- No interaction timings were changed.
+- No route/geofence values were changed.
+- No layout/CSS was changed.
+- No visual assets were changed.
+- No audio behaviour or files were changed.
 
 ## Automated checks passed
 

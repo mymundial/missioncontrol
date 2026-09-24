@@ -68,7 +68,7 @@
   }
   function showRadioCompletion(){
     const mc=document.getElementById('missionContent'); if(!mc) return;
-    mc.innerHTML=`<div class="completion panel"><div class="check">✓</div><div class="kicker">Signal Locked</div><h2>ELF FM Locked</h2><p>Signal acquired at 87.7. ELF FM is now playing and remains available from Communications.</p><button class="btn primary wide" id="returnComms">Return to Comms</button></div>`;
+    mc.innerHTML=`<div class="completion panel"><div class="check">✓</div><div class="kicker">Signal Locked</div><h2>ELF FM Locked</h2><p>Signal acquired at 87.7. ELF FM is now available from Communications.</p><button class="btn primary wide" id="returnComms">Return to Comms</button></div>`;
     document.getElementById('returnComms').onclick=()=>{
       state={...state,elfUnlocked:true,missionOpen:null,missionReturnNav:'radar',nav:'comms'};
       save();render();
@@ -89,7 +89,7 @@
     if(idx===routeIndex) routeIndex=nextRouteIndex(routeIndex);
     const returnNav=state.missionReturnNav||'radar';
     resetGeofenceRuntime();
-    state={...state,completed:done,available,missionOpen:null,routeIndex,targetVisible:false,targetInRange:false,distance:null,lastMessage:'SEARCHING FOR NEXT SIGNATURE',nav:returnNav};
+    state={...state,completed:done,available,missionOpen:null,routeIndex,targetVisible:false,targetInRange:false,distance:null,lastMessage:'SEARCHING FOR NEXT RECOVERY SIGNAL',nav:returnNav};
     if(state.mode==='demo'){
       clearDemo();
       demoHoldUntil=Date.now()+1100;
@@ -107,7 +107,7 @@
     const cp=current(); if(!cp) return;
     if(cp.playable&&!state.completed.includes(cp.id)) unlockMission(cp.id);
     state.routeIndex=nextRouteIndex(state.routeIndex);
-    state.targetVisible=false;state.targetInRange=false;state.distance=null;state.lastMessage='SEARCHING FOR NEXT SIGNATURE';
+    state.targetVisible=false;state.targetInRange=false;state.distance=null;state.lastMessage='SEARCHING FOR NEXT RECOVERY SIGNAL';
     resetGeofenceRuntime();save();
     if(cp.playable&&!state.completed.includes(cp.id)){
       addMessage(`missed:${cp.id}`,'MISSION CONTROL','CHECKPOINT STORED',`${cp.name} has been stored for later. Continue your route or complete the mission at any time from Missions.`,cp.id);
