@@ -92,10 +92,14 @@
     state={...state,completed:done,available,missionOpen:null,routeIndex,targetVisible:false,targetInRange:false,distance:null,lastMessage:'SEARCHING FOR NEXT RECOVERY SIGNAL',nav:returnNav};
     if(state.mode==='demo'){
       clearDemo();
-      demoHoldUntil=Date.now()+1100;
+      demoHoldUntil=0;
     }
+    // As soon as a mission is completed, expose the next checkpoint from the
+    // guest's current circuit position. Demo Mode also gets its route distance
+    // immediately so the status strip begins counting down without a SEARCHING gap.
+    primeCurrentCircuitTarget();
     save();checkpointCompletionMessage(id);render();
-    if(state.mode==='demo'&&returnNav==='radar') rearmDemoRoute(650);
+    if(state.mode==='demo'&&returnNav==='radar') rearmDemoRoute(0);
     if(state.mode==='live'&&lastGps) setTimeout(()=>processGps(lastGps,true),50);
   }
   function unlockMission(id){
@@ -108,7 +112,12 @@
     if(cp.playable&&!state.completed.includes(cp.id)) unlockMission(cp.id);
     state.routeIndex=nextRouteIndex(state.routeIndex);
     state.targetVisible=false;state.targetInRange=false;state.distance=null;state.lastMessage='SEARCHING FOR NEXT RECOVERY SIGNAL';
-    resetGeofenceRuntime();save();
+    resetGeofenceRuntime();
+    // If the guest leaves an activation without completing it, immediately
+    // move navigation on to the next checkpoint while keeping the skipped
+    // mission stored in Missions for later.
+    primeCurrentCircuitTarget();
+    save();
     if(cp.playable&&!state.completed.includes(cp.id)){
       addMessage(`missed:${cp.id}`,'MISSION CONTROL','CHECKPOINT STORED',`${cp.name} has been stored for later. Continue your route or complete the mission at any time from Missions.`,cp.id);
     } else updateRadarLive();

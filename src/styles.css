@@ -6150,7 +6150,7 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   box-shadow:0 -14px 28px rgba(2,13,22,.88),0 -1px 0 rgba(116,222,246,.12);
 }
 
-/* Pass 7.38.5 — circuit radar scale refinement */
+/* Pass 7.38.6 — circuit radar hierarchy + checkpoint handoff */
 .mc01-energy-node,
 .mc01-energy-ripple{
   transform-box:fill-box!important;
@@ -6160,7 +6160,7 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .track-radar-map{
   position:absolute;
   inset:0;
-  z-index:1;
+  z-index:2;
   pointer-events:none;
   overflow:visible;
   opacity:1;
@@ -6169,14 +6169,14 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .track-radar-map.waiting{opacity:0;}
 .track-radar-art{
   position:absolute;
-  width:calc(var(--circuit-radar-zoom,1.6) * 100%);
-  height:calc(var(--circuit-radar-zoom,1.6) * 60%);
+  width:calc(var(--circuit-radar-zoom,1.3) * 100%);
+  height:calc(var(--circuit-radar-zoom,1.3) * 60%);
   max-width:none;
-  background:rgba(104,210,238,.75);
+  background:#69d4ef;
   -webkit-mask:url('../assets/f1-circuit.svg') 0 0/100% 100% no-repeat;
   mask:url('../assets/f1-circuit.svg') 0 0/100% 100% no-repeat;
-  filter:drop-shadow(0 0 1px rgba(125,226,249,.26)) drop-shadow(0 0 3px rgba(68,190,226,.10));
-  opacity:1;
+  filter:none;
+  opacity:.9;
   transition:left .12s linear,top .12s linear;
 }
 .track-radar-target{
@@ -6192,8 +6192,15 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   animation:targetPulse 1.4s ease-in-out infinite;
 }
 .track-radar-target.hidden{opacity:0;}
-.radar.circuit-radar .sweep{z-index:2;}
-.radar.circuit-radar .user-dot{z-index:5;}
+.radar.circuit-radar .sweep{z-index:1;}
+.radar.circuit-radar .user-dot{
+  z-index:5;
+  width:18px;
+  height:18px;
+  background:#f2fdff;
+  border:2px solid #fff;
+  box-shadow:0 0 8px #70ddff;
+}
 .radar.circuit-radar::before,
 .radar.circuit-radar::after{z-index:3;opacity:.52;}
 .radar.circuit-radar>.target-dot{display:none;}

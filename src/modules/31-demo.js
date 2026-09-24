@@ -19,7 +19,7 @@
     if(expectedIndex!==state.routeIndex){state.routeIndex=expectedIndex;save();}
     const arm=()=>{
       if(state.mode!=='demo'||state.nav!=='radar'||state.missionOpen||state.routeIndex!==expectedIndex||state.targetInRange) return;
-      if(!state.targetVisible) forceDemoTarget(0);
+      if(demoTimer===null&&demoInterval===null) forceDemoTarget(0);
     };
     setTimeout(arm,Math.max(0,Number(delay)||0));
     // Fallback in case a navigation/render transition interrupted the first timer.
@@ -94,12 +94,15 @@
     const speedMetresPerSecond=180;
     let travelled=0;
 
-    const updatePosition=routeDistance=>{
+    const updatePosition=(routeDistance,remainingRouteDistance)=>{
       const routePoint=setDemoCircuitPosition(routeDistance);
       const d=distanceMetres(routePoint.lat,routePoint.lng,cfg.lat,cfg.lng);
-      state.distance=d;
+      state.distance=Math.max(0,Number.isFinite(remainingRouteDistance)?remainingRouteDistance:d);
       state.bearing=bearingDegrees(routePoint.lat,routePoint.lng,cfg.lat,cfg.lng);
-      state.targetVisible=d<=Number(cfg.detectionRadius||120);
+      // Post-MC01 Demo navigation always exposes the next checkpoint from the
+      // moment the previous mission is cleared, rather than waiting to enter
+      // the normal live detection radius.
+      state.targetVisible=true;
       state.targetInRange=false;
       save();updateRadarLive();
       return d;
@@ -113,7 +116,7 @@
       unlockMission(cp.id);save();updateRadarLive();ping(700,.08,.04);haptic(30);
     };
 
-    let d=updatePosition(startDistance);
+    let d=updatePosition(startDistance,routeTravel);
     if(routeTravel<1){finishAtTarget();return true;}
 
     demoInterval=setInterval(()=>{
@@ -121,7 +124,7 @@
       const activeCp=current();const activeCfg=activeConfig(activeCp);
       if(!activeCp||!activeCfg||activeCp.id!==cp.id){clearInterval(demoInterval);demoInterval=null;return;}
       travelled=Math.min(routeTravel,travelled+speedMetresPerSecond*(tickMs/1000));
-      d=updatePosition(startDistance+travelled);
+      d=updatePosition(startDistance+travelled,routeTravel-travelled);
       if(travelled>=routeTravel){
         clearInterval(demoInterval);demoInterval=null;finishAtTarget();
       }

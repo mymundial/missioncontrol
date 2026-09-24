@@ -36,7 +36,7 @@
   const DETECTION_ACCURACY_MAX = 100;
   const PASS_ACCURACY_MAX = 40;
   const NEXT_PASS_ACCURACY_MAX = 35;
-  const PASS_DWELL_MS = 8000;
+  const PASS_DWELL_MS = 1200;
   const ACTIVATION_HITS_REQUIRED = 2;
   const ACTIVATION_DWELL_MS = 1200;
   const NEXT_PASS_DWELL_MS = 1800;
@@ -483,9 +483,9 @@
 
   // Radar uses the original filled circuit SVG as the visible road shape while
   // GPS/Demo movement still follows SILVERSTONE_GP_ROUTE. The visible SVG is
-  // pulled back further so the fixed centre marker is deliberately larger than
-  // the circuit ribbon while still retaining useful local track context.
-  const CIRCUIT_RADAR_ZOOM=1.6;
+  // pulled back further so the fixed centre marker is clearly wider than the
+  // circuit ribbon while still retaining useful local track context.
+  const CIRCUIT_RADAR_ZOOM=1.3;
 
   function forwardRouteDistance(fromDistance,toDistance){
     return normaliseRouteDistance(Number(toDistance)-Number(fromDistance));
@@ -1192,10 +1192,14 @@
     state={...state,completed:done,available,missionOpen:null,routeIndex,targetVisible:false,targetInRange:false,distance:null,lastMessage:'SEARCHING FOR NEXT RECOVERY SIGNAL',nav:returnNav};
     if(state.mode==='demo'){
       clearDemo();
-      demoHoldUntil=Date.now()+1100;
+      demoHoldUntil=0;
     }
+    // As soon as a mission is completed, expose the next checkpoint from the
+    // guest's current circuit position. Demo Mode also gets its route distance
+    // immediately so the status strip begins counting down without a SEARCHING gap.
+    primeCurrentCircuitTarget();
     save();checkpointCompletionMessage(id);render();
-    if(state.mode==='demo'&&returnNav==='radar') rearmDemoRoute(650);
+    if(state.mode==='demo'&&returnNav==='radar') rearmDemoRoute(0);
     if(state.mode==='live'&&lastGps) setTimeout(()=>processGps(lastGps,true),50);
   }
   function unlockMission(id){
@@ -1208,7 +1212,12 @@
     if(cp.playable&&!state.completed.includes(cp.id)) unlockMission(cp.id);
     state.routeIndex=nextRouteIndex(state.routeIndex);
     state.targetVisible=false;state.targetInRange=false;state.distance=null;state.lastMessage='SEARCHING FOR NEXT RECOVERY SIGNAL';
-    resetGeofenceRuntime();save();
+    resetGeofenceRuntime();
+    // If the guest leaves an activation without completing it, immediately
+    // move navigation on to the next checkpoint while keeping the skipped
+    // mission stored in Missions for later.
+    primeCurrentCircuitTarget();
+    save();
     if(cp.playable&&!state.completed.includes(cp.id)){
       addMessage(`missed:${cp.id}`,'MISSION CONTROL','CHECKPOINT STORED',`${cp.name} has been stored for later. Continue your route or complete the mission at any time from Missions.`,cp.id);
     } else updateRadarLive();
@@ -1432,7 +1441,7 @@
     const reliable=Number.isFinite(accuracy)&&accuracy<=ACTIVATION_ACCURACY_MAX;
     const passReliable=Number.isFinite(accuracy)&&accuracy<=PASS_ACCURACY_MAX;
     const detectable=Number.isFinite(accuracy)&&accuracy<=DETECTION_ACCURACY_MAX&&d<=cfg.detectionRadius;
-    const exitRadius=(cfg.activationRadius||30)+35;
+    const exitRadius=(cfg.activationRadius||30);
     const nextCp=nextRouteCheckpoint(state.routeIndex);
     const nextCfg=activeConfig(nextCp);
     const nextDistance=nextCfg&&nextCfg.geofence!==false?distanceMetres(fix.lat,fix.lng,nextCfg.lat,nextCfg.lng):Infinity;
@@ -1473,9 +1482,24 @@
     }
 
     if(!inRangeLatched){
-      state.targetVisible=detectable;
-      if(registerActivationFix()){
-        inRangeLatched=true;state.targetVisible=true;state.targetInRange=true;unlockMission(cp.id);ping(700,.08,.04);haptic(30);
+      // Once Circuit Link has been completed the circuit itself becomes the
+      // navigation environment, so the current/next checkpoint remains visible
+      // even when it is outside the old proximity-only detection radius.
+      state.targetVisible=state.completed.includes('entry')?true:detectable;
+
+      // `available` is persisted when a checkpoint has already been entered.
+      // This lets a refresh recover the same leave-without-completing behaviour:
+      // once a reliable fix confirms the guest is outside that activation radius,
+      // navigation can hand off to the next checkpoint without forcing re-entry.
+      if(state.available.includes(cp.id)&&passReliable&&d>exitRadius){
+        state.targetInRange=false;
+        if(!outsideSince) outsideSince=now;
+        if(now-outsideSince>=PASS_DWELL_MS){passCurrentCheckpoint('left unlocked activation');if(lastGps)setTimeout(()=>processGps(lastGps,true),25);return;}
+      } else {
+        outsideSince=null;
+        if(registerActivationFix()){
+          inRangeLatched=true;state.targetVisible=true;state.targetInRange=true;unlockMission(cp.id);ping(700,.08,.04);haptic(30);
+        }
       }
     } else {
       state.targetVisible=true;state.targetInRange=true;
@@ -1505,6 +1529,29 @@
     }
     if(lastGps&&Number.isFinite(lastGps.lat)&&Number.isFinite(lastGps.lng)) return lastGps;
     return null;
+  }
+  function primeCurrentCircuitTarget(){
+    if(!state.completed.includes('entry')) return false;
+    const cp=current();
+    const cfg=activeConfig(cp);
+    if(!cp||!cfg) return false;
+    const fix=activeRadarGeoPosition();
+    if(!fix) return false;
+
+    let distance=distanceMetres(fix.lat,fix.lng,cfg.lat,cfg.lng);
+    if(state.mode==='demo'){
+      const fromDistance=Number.isFinite(demoTrackDistance)
+        ? normaliseRouteDistance(demoTrackDistance)
+        : projectGeoToRoute(fix.lat,fix.lng)?.distance;
+      const targetProjection=projectGeoToRoute(cfg.lat,cfg.lng);
+      if(Number.isFinite(fromDistance)&&targetProjection) distance=forwardRouteDistance(fromDistance,targetProjection.distance);
+    }
+
+    state.targetVisible=true;
+    state.targetInRange=false;
+    state.distance=distance;
+    state.bearing=bearingDegrees(fix.lat,fix.lng,cfg.lat,cfg.lng);
+    return true;
   }
   function updateCircuitRadar(cp,cfg){
     const map=document.getElementById('trackRadarMap');
@@ -1585,7 +1632,7 @@
     if(expectedIndex!==state.routeIndex){state.routeIndex=expectedIndex;save();}
     const arm=()=>{
       if(state.mode!=='demo'||state.nav!=='radar'||state.missionOpen||state.routeIndex!==expectedIndex||state.targetInRange) return;
-      if(!state.targetVisible) forceDemoTarget(0);
+      if(demoTimer===null&&demoInterval===null) forceDemoTarget(0);
     };
     setTimeout(arm,Math.max(0,Number(delay)||0));
     // Fallback in case a navigation/render transition interrupted the first timer.
@@ -1660,12 +1707,15 @@
     const speedMetresPerSecond=180;
     let travelled=0;
 
-    const updatePosition=routeDistance=>{
+    const updatePosition=(routeDistance,remainingRouteDistance)=>{
       const routePoint=setDemoCircuitPosition(routeDistance);
       const d=distanceMetres(routePoint.lat,routePoint.lng,cfg.lat,cfg.lng);
-      state.distance=d;
+      state.distance=Math.max(0,Number.isFinite(remainingRouteDistance)?remainingRouteDistance:d);
       state.bearing=bearingDegrees(routePoint.lat,routePoint.lng,cfg.lat,cfg.lng);
-      state.targetVisible=d<=Number(cfg.detectionRadius||120);
+      // Post-MC01 Demo navigation always exposes the next checkpoint from the
+      // moment the previous mission is cleared, rather than waiting to enter
+      // the normal live detection radius.
+      state.targetVisible=true;
       state.targetInRange=false;
       save();updateRadarLive();
       return d;
@@ -1679,7 +1729,7 @@
       unlockMission(cp.id);save();updateRadarLive();ping(700,.08,.04);haptic(30);
     };
 
-    let d=updatePosition(startDistance);
+    let d=updatePosition(startDistance,routeTravel);
     if(routeTravel<1){finishAtTarget();return true;}
 
     demoInterval=setInterval(()=>{
@@ -1687,7 +1737,7 @@
       const activeCp=current();const activeCfg=activeConfig(activeCp);
       if(!activeCp||!activeCfg||activeCp.id!==cp.id){clearInterval(demoInterval);demoInterval=null;return;}
       travelled=Math.min(routeTravel,travelled+speedMetresPerSecond*(tickMs/1000));
-      d=updatePosition(startDistance+travelled);
+      d=updatePosition(startDistance+travelled,routeTravel-travelled);
       if(travelled>=routeTravel){
         clearInterval(demoInterval);demoInterval=null;finishAtTarget();
       }

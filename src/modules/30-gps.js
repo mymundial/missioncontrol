@@ -50,7 +50,7 @@
     const reliable=Number.isFinite(accuracy)&&accuracy<=ACTIVATION_ACCURACY_MAX;
     const passReliable=Number.isFinite(accuracy)&&accuracy<=PASS_ACCURACY_MAX;
     const detectable=Number.isFinite(accuracy)&&accuracy<=DETECTION_ACCURACY_MAX&&d<=cfg.detectionRadius;
-    const exitRadius=(cfg.activationRadius||30)+35;
+    const exitRadius=(cfg.activationRadius||30);
     const nextCp=nextRouteCheckpoint(state.routeIndex);
     const nextCfg=activeConfig(nextCp);
     const nextDistance=nextCfg&&nextCfg.geofence!==false?distanceMetres(fix.lat,fix.lng,nextCfg.lat,nextCfg.lng):Infinity;
@@ -91,9 +91,24 @@
     }
 
     if(!inRangeLatched){
-      state.targetVisible=detectable;
-      if(registerActivationFix()){
-        inRangeLatched=true;state.targetVisible=true;state.targetInRange=true;unlockMission(cp.id);ping(700,.08,.04);haptic(30);
+      // Once Circuit Link has been completed the circuit itself becomes the
+      // navigation environment, so the current/next checkpoint remains visible
+      // even when it is outside the old proximity-only detection radius.
+      state.targetVisible=state.completed.includes('entry')?true:detectable;
+
+      // `available` is persisted when a checkpoint has already been entered.
+      // This lets a refresh recover the same leave-without-completing behaviour:
+      // once a reliable fix confirms the guest is outside that activation radius,
+      // navigation can hand off to the next checkpoint without forcing re-entry.
+      if(state.available.includes(cp.id)&&passReliable&&d>exitRadius){
+        state.targetInRange=false;
+        if(!outsideSince) outsideSince=now;
+        if(now-outsideSince>=PASS_DWELL_MS){passCurrentCheckpoint('left unlocked activation');if(lastGps)setTimeout(()=>processGps(lastGps,true),25);return;}
+      } else {
+        outsideSince=null;
+        if(registerActivationFix()){
+          inRangeLatched=true;state.targetVisible=true;state.targetInRange=true;unlockMission(cp.id);ping(700,.08,.04);haptic(30);
+        }
       }
     } else {
       state.targetVisible=true;state.targetInRange=true;
@@ -123,6 +138,29 @@
     }
     if(lastGps&&Number.isFinite(lastGps.lat)&&Number.isFinite(lastGps.lng)) return lastGps;
     return null;
+  }
+  function primeCurrentCircuitTarget(){
+    if(!state.completed.includes('entry')) return false;
+    const cp=current();
+    const cfg=activeConfig(cp);
+    if(!cp||!cfg) return false;
+    const fix=activeRadarGeoPosition();
+    if(!fix) return false;
+
+    let distance=distanceMetres(fix.lat,fix.lng,cfg.lat,cfg.lng);
+    if(state.mode==='demo'){
+      const fromDistance=Number.isFinite(demoTrackDistance)
+        ? normaliseRouteDistance(demoTrackDistance)
+        : projectGeoToRoute(fix.lat,fix.lng)?.distance;
+      const targetProjection=projectGeoToRoute(cfg.lat,cfg.lng);
+      if(Number.isFinite(fromDistance)&&targetProjection) distance=forwardRouteDistance(fromDistance,targetProjection.distance);
+    }
+
+    state.targetVisible=true;
+    state.targetInRange=false;
+    state.distance=distance;
+    state.bearing=bearingDegrees(fix.lat,fix.lng,cfg.lat,cfg.lng);
+    return true;
   }
   function updateCircuitRadar(cp,cfg){
     const map=document.getElementById('trackRadarMap');

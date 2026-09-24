@@ -1,3 +1,12 @@
+## 7.38.6 — Circuit hierarchy + immediate checkpoint handoff
+- Pulled the visible post-MC01 circuit SVG back from 1.6x to 1.3x so the fixed user marker is clearly wider than the circuit ribbon.
+- Made the circuit user marker a fully opaque 18px core with a crisp border and removed the translucent halo treatment.
+- Removed the circuit-art blur/drop-shadow and moved the radar sweep behind the circuit layer so the track remains sharp as the sweep passes.
+- Increased the circuit body opacity to 90% for a cleaner plotted-road appearance without relying on glow.
+- After a completed challenge, the next circuit checkpoint is exposed immediately instead of waiting for its proximity detection radius.
+- If a live user enters a checkpoint but does not complete it, route navigation advances once they have reliably left that checkpoint's activation radius; the skipped mission remains stored in Missions.
+- Demo Mode now reveals the next checkpoint immediately on completion, restarts route travel without the previous handoff delay, and counts down remaining calibrated route metres monotonically while travelling to it.
+
 ## 7.38.5 — Circuit radar scale refinement
 - Pulled the post-MC01 circuit SVG back again from 1.95x to 1.6x so the fixed centre marker is clearly larger than the track ribbon.
 - More surrounding circuit geometry is now visible within the radar, improving route context without changing the calibrated coordinate mapping.

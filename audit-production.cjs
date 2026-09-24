@@ -193,20 +193,20 @@ if(
   /beginDemoCircuitApproach/.test(runtime) &&
   /demoTrackDistance/.test(runtime) &&
   /forwardRouteDistance\(startDistance,targetProjection\.distance\)/.test(runtime) &&
-  /updatePosition\(startDistance\+travelled\)/.test(runtime) &&
+  /updatePosition\(startDistance\+travelled,routeTravel-travelled\)/.test(runtime) &&
   !/targetProjection\.distance-remaining/.test(runtime)
 ) {
   ok('Circuit demo route','Post-MC01 Demo Mode persists lap position and travels continuously forward along the calibrated route');
 } else fail('Circuit demo route','Demo Mode is not using continuous calibrated route progression');
 
 if(
-  /const CIRCUIT_RADAR_ZOOM=1\.6/.test(georef) &&
+  /const CIRCUIT_RADAR_ZOOM=1\.3/.test(georef) &&
   /style=\"--circuit-radar-zoom:\$\{CIRCUIT_RADAR_ZOOM\}\"/.test(runtime) &&
   /\.track-radar-art\{[\s\S]*?f1-circuit\.svg/.test(css) &&
   !/CIRCUIT_RADAR_POLYLINE_POINTS/.test(runtime) &&
   !/track-radar-line/.test(runtime)
 ) {
-  ok('Circuit radar artwork','Radar renders the original circuit SVG at the refined 1.6x marker-dominant scale');
+  ok('Circuit radar artwork','Radar renders the original circuit SVG at the refined 1.3x marker-dominant scale');
 } else fail('Circuit radar artwork','Radar is not using the original circuit SVG at the approved refined scale');
 
 if(
@@ -219,6 +219,25 @@ if(
 ) {
   ok('Circuit radar bootstrap','Unpositioned circuit art stays hidden; Demo lap distance is persisted and restored after refresh');
 } else fail('Circuit radar bootstrap','Circuit radar refresh/bootstrap protections are incomplete');
+
+if(
+  /function primeCurrentCircuitTarget\(/.test(runtime) &&
+  /primeCurrentCircuitTarget\(\);[\s\S]*?rearmDemoRoute\(0\)/.test(runtime) &&
+  /state\.targetVisible=state\.completed\.includes\('entry'\)\?true:detectable/.test(runtime) &&
+  /state\.available\.includes\(cp\.id\)&&passReliable&&d>exitRadius/.test(runtime) &&
+  /const PASS_DWELL_MS = 1200;/.test(runtime) &&
+  /state\.distance=Math\.max\(0,Number\.isFinite\(remainingRouteDistance\)\?remainingRouteDistance:d\)/.test(runtime)
+) {
+  ok('Checkpoint handoff','Completed missions expose the next circuit checkpoint immediately; skipped unlocked activations advance after leaving their radius; Demo counts down route metres');
+} else fail('Checkpoint handoff','Immediate next-marker or leave-without-completing checkpoint handoff logic is incomplete');
+
+if(
+  /\.radar\.circuit-radar \.user-dot\{[\s\S]*?width:18px;[\s\S]*?background:#f2fdff;[\s\S]*?border:2px solid #fff/.test(css) &&
+  /\.track-radar-art\{[\s\S]*?background:#69d4ef;[\s\S]*?filter:none;[\s\S]*?opacity:\.9;/.test(css) &&
+  /\.radar\.circuit-radar \.sweep\{z-index:1;\}/.test(css)
+) {
+  ok('Circuit radar hierarchy','User marker is opaque and wider than the 1.3x track; circuit blur is removed and the sweep runs beneath the road layer');
+} else fail('Circuit radar hierarchy','Circuit/user-marker visual hierarchy does not match the approved sharp marker-dominant treatment');
 
 // 12) External runtime dependencies / launch notes.
 const urls=[...runtime.matchAll(/https:\/\/[^'"`\s)]+/g)].map(m=>m[0]);
