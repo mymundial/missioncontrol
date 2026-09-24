@@ -336,8 +336,7 @@ body.admin-mode button{
 .sleigh-glow{position:absolute;z-index:0;inset:14% 8% 10%;border-radius:50%;background:radial-gradient(circle,rgba(70,199,240,.12),transparent 65%);filter:blur(10px);opacity:.7;pointer-events:none;}
 .sleigh-stage-3 .sleigh-glow{background:radial-gradient(circle,rgba(255,173,53,.13),rgba(70,199,240,.08) 35%,transparent 67%);}
 .sleigh-stage-4 .sleigh-glow,.sleigh-stage-5 .sleigh-glow{background:radial-gradient(circle at 57% 48%,rgba(255,173,53,.13),rgba(70,199,240,.12) 42%,transparent 70%);opacity:.9;}
-.sleigh-art{position:absolute;z-index:1;inset:5% 2% 8%;width:96%;height:87%;object-fit:contain;object-position:center;filter:drop-shadow(0 0 12px rgba(76,206,247,.14));user-select:none;-webkit-user-drag:none;opacity:0;font-size:0;color:transparent;transition:opacity .22s ease;}
-.sleigh-art.is-ready{opacity:1;}
+.sleigh-art{position:absolute;z-index:1;inset:5% 2% 8%;width:96%;height:87%;object-fit:contain;object-position:center;filter:drop-shadow(0 0 12px rgba(76,206,247,.14));user-select:none;-webkit-user-drag:none;}
 .sleigh-stage-3 .sleigh-art,.sleigh-stage-4 .sleigh-art,.sleigh-stage-5 .sleigh-art{filter:drop-shadow(0 0 13px rgba(76,206,247,.13)) drop-shadow(0 0 10px rgba(255,173,53,.06));}
 .sleigh-badge{z-index:2;bottom:11px;padding:5px 8px;border-radius:999px;border:1px solid rgba(87,189,224,.22);background:rgba(2,17,27,.68);backdrop-filter:blur(5px);white-space:nowrap;}
 .sleigh-milestones{grid-template-columns:repeat(5,minmax(0,1fr));}
@@ -2753,37 +2752,24 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   flex:0 0 auto;
   width:16px;
   height:16px;
-  display:inline-block;
-  background-color:currentColor;
-  opacity:.78;
-  -webkit-mask:var(--system-glyph) center / contain no-repeat;
-  mask:var(--system-glyph) center / contain no-repeat;
-  transition:opacity .18s ease,transform .18s ease,filter .18s ease;
+  display:block;
+  object-fit:contain;
+  opacity:.92;
+  filter:none!important;
+  transform:none!important;
 }
-.system-glyph-power{--system-glyph:url("../assets/system-power.svg");}
-.system-glyph-propulsion{--system-glyph:url("../assets/system-propulsion.svg");}
-.system-glyph-comms{--system-glyph:url("../assets/system-comms.svg");}
-.system-glyph-control{--system-glyph:url("../assets/system-control.svg");}
-.system-glyph-core{--system-glyph:url("../assets/system-core.svg");}
-.system-glyph-navigation{--system-glyph:url("../assets/system-navigation.svg");}
-.system-glyph-guidance{--system-glyph:url("../assets/system-guidance.svg");}
-.system-glyph-launch{--system-glyph:url("../assets/system-launch.svg");}
 .system-status-item.is-checking .system-node{
   border-color:rgba(104,223,255,.88);
   background:radial-gradient(circle at 40% 36%,#e2fbff 0 10%,#6ddfff 25%,#176f92 62%,#073047 100%);
   box-shadow:0 0 7px rgba(72,211,250,.7),0 0 14px rgba(72,211,250,.22),inset 0 0 6px rgba(225,251,255,.32);
   animation:systemNodePulse .72s ease-in-out infinite;
 }
-.system-status-item.is-checking .system-status-name{color:#74ddfb;}
-.system-status-item.is-checking .system-glyph{opacity:1;filter:drop-shadow(0 0 6px rgba(116,221,251,.28));transform:scale(1.03);}
 .system-status-item.is-checking .system-status-value{color:#74ddfb;}
 .system-status-item.is-offline .system-node{
   border-color:rgba(255,122,122,.78);
   background:radial-gradient(circle at 40% 36%,#ffd8d8 0 8%,#ff8a8a 20%,#c63a45 48%,#611725 74%,#26030e 100%);
   box-shadow:0 0 7px rgba(255,86,101,.34),0 0 14px rgba(255,86,101,.16),inset 0 0 7px rgba(255,236,236,.2);
 }
-.system-status-item.is-offline .system-status-name,.system-status-item.is-blocked .system-status-name{color:#c4939b;}
-.system-status-item.is-offline .system-glyph,.system-status-item.is-blocked .system-glyph{opacity:.9;}
 .system-status-item.is-offline .system-status-value{color:#ff979e;}
 .system-status-item.is-online .system-node,
 .system-status-item.is-complete .system-node{
@@ -2791,8 +2777,6 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   background:radial-gradient(circle at 40% 36%,#e7fff0 0 7%,#83efad 20%,#35c96f 44%,#147b42 72%,#073b25 100%);
   box-shadow:0 0 6px rgba(76,226,132,.46),0 0 12px rgba(57,203,111,.24),inset 0 0 8px rgba(231,255,240,.3);
 }
-.system-status-item.is-online .system-status-name,.system-status-item.is-complete .system-status-name{color:#8de5ae;}
-.system-status-item.is-online .system-glyph,.system-status-item.is-complete .system-glyph{opacity:1;filter:drop-shadow(0 0 6px rgba(114,230,155,.24));}
 .system-status-item.is-online .system-status-value,
 .system-status-item.is-complete .system-status-value{color:#72e69b;}
 .system-status-item.is-clear .system-node{
@@ -2800,8 +2784,6 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   background:radial-gradient(circle at 40% 36%,#fff4d9 0 7%,#ffd277 20%,#f59a2f 46%,#9a5017 72%,#4b2108 100%);
   box-shadow:0 0 6px rgba(255,174,63,.48),0 0 12px rgba(245,154,47,.24),inset 0 0 8px rgba(255,246,221,.28);
 }
-.system-status-item.is-clear .system-status-name{color:#ffcc84;}
-.system-status-item.is-clear .system-glyph{opacity:1;filter:drop-shadow(0 0 6px rgba(255,179,79,.24));}
 .system-status-item.is-clear .system-status-value{color:#ffb34f;}
 .system-status-item.is-blocked .system-node{
   border-color:rgba(255,122,122,.78);
@@ -5251,16 +5233,9 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   font-size:8.5px;
   transition:color .2s ease,text-shadow .2s ease,border-color .2s ease;
 }
-.lapland-panel .system-status-item.is-checking .system-status-name,
 .lapland-panel .system-status-item.is-checking .system-status-value{
   color:#6fddfa;
   text-shadow:0 0 8px rgba(77,211,248,.35);
-}
-.lapland-panel .system-status-item.is-online .system-status-name,
-.lapland-panel .system-status-item.is-clear .system-status-name{
-  color:#a8edff;
-  text-shadow:0 0 9px rgba(76,212,249,.24);
-  border-bottom-color:rgba(101,203,235,.25);
 }
 .lapland-panel .system-status-item.is-online .system-status-value{
   color:#72e69b;
@@ -5271,10 +5246,6 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   color:#ffb34f;
   text-shadow:0 0 9px rgba(255,179,79,.3);
   border-bottom-color:rgba(101,203,235,.25);
-}
-.lapland-panel .system-status-item.is-offline .system-status-name,
-.lapland-panel .system-status-item.is-blocked .system-status-name{
-  color:#d88f96;
 }
 .lapland-test-btn{
   position:relative;

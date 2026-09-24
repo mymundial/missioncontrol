@@ -1,25 +1,14 @@
-# Mission Control — System Scan icons & sleigh preload pass (7.36.0)
+# Mission Control — System Diagnostics correction (7.36.2)
 
-## Updated
-- Added the agreed eight-system icon set to the shared system status bank used by System Scan, Sleigh and Lapland Launch.
-- Updated displayed system naming to the agreed structure:
-  - Response -> Control
-  - Control -> Guidance
-- Styled subsystem icons to remain subtle by default and illuminate with the row state.
-- Fixed the System Scan sleigh visual loading behaviour by preloading the sleigh stage images and only revealing `.sleigh-art` once loaded.
+## Corrected
+- Restored the Santa-1 sleigh visual in System Diagnostics by removing the JavaScript/CSS opacity gate introduced in 7.36.0.
+- Preloads `sleigh-stage-1.webp` and uses an empty image fallback alt so no text flashes in the visual while the WebP loads.
+- Uses the exact eight supplied subsystem SVGs, recoloured to a fixed Mission Control light blue.
+- System icons remain light blue regardless of Standby / Checking / Offline / Online / Blocked / Clear state.
+- System names remain the standard muted blue-grey regardless of status; only the status value changes colour.
+- Retains the agreed labels: CONTROL replaces RESPONSE, and GUIDANCE replaces CONTROL.
+- Retains the title SYSTEM DIAGNOSTICS.
 
-## Added assets
-- `assets/system-power.svg`
-- `assets/system-propulsion.svg`
-- `assets/system-comms.svg`
-- `assets/system-control.svg`
-- `assets/system-core.svg`
-- `assets/system-navigation.svg`
-- `assets/system-guidance.svg`
-- `assets/system-launch.svg`
-
-
-## Pass 7.36.1 — System Diagnostics title
-
-- Renamed the opening `System Scan` heading to `System Diagnostics`.
-- Kept `Santa-1 Sleigh Recovery` unchanged as the supporting line.
+## Validation
+- Full production build completed successfully.
+- Production audit: 19 passed, 0 failures, 3 existing non-blocking warnings.

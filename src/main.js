@@ -11,26 +11,6 @@
     document.body.classList.add('admin-mode');
   }
 
-
-  const SYSTEM_STATUS_META = {
-    power:{label:'Power',icon:'power'},
-    propulsion:{label:'Propulsion',icon:'propulsion'},
-    comms:{label:'Comms',icon:'comms'},
-    response:{label:'Control',icon:'control'},
-    core:{label:'Core',icon:'core'},
-    navigation:{label:'Navigation',icon:'navigation'},
-    control:{label:'Guidance',icon:'guidance'},
-    launch:{label:'Launch',icon:'launch'}
-  };
-
-  const SLEIGH_PRELOAD_ASSETS = [
-    './assets/sleigh-stage-1.webp',
-    './assets/sleigh-stage-2.webp',
-    './assets/sleigh-stage-3.webp',
-    './assets/sleigh-stage-4.webp',
-    './assets/sleigh-stage-5.webp'
-  ];
-
   const CHECKPOINTS = [
     {id:'gantry', mc:'MC-00', location:'Entrance Gantry', name:'Scan QR', type:'qr', playable:false, core:false, geofence:false, routeEnabled:false, lat:52.0735668895174, lng:-1.0234212294205571},
     {id:'entry', mc:'MC-01', location:'National Link Road', name:'Circuit Link', type:'activation', playable:true, core:false, mission:'Circuit Link', geofence:true, lat:52.0742700024956, lng:-1.01353137321053, detectionRadius:80, activationRadius:30},
@@ -417,6 +397,20 @@
     return Math.max(0,distance-(cfg.activationRadius||0));
   }
 
+  const SYSTEM_STATUS_META = {
+    power:{label:'Power',icon:'./assets/system-power.svg'},
+    propulsion:{label:'Propulsion',icon:'./assets/system-propulsion.svg'},
+    comms:{label:'Comms',icon:'./assets/system-comms.svg'},
+    response:{label:'Control',icon:'./assets/system-control.svg'},
+    core:{label:'Core',icon:'./assets/system-core.svg'},
+    navigation:{label:'Navigation',icon:'./assets/system-navigation.svg'},
+    control:{label:'Guidance',icon:'./assets/system-guidance.svg'},
+    launch:{label:'Launch',icon:'./assets/system-launch.svg'}
+  };
+  function systemStatusEntry(key,status='Standby',state='standby'){
+    const meta=SYSTEM_STATUS_META[key]||{label:key,icon:key};
+    return {key,label:meta.label,icon:meta.icon,status,state};
+  }
   function shell(content, nav=true){ return `<main class="phone ${nav?'':'no-nav'}"><div class="screen">${content}</div>${nav?navBar():''}</main>`; }
   function navPageContent(){
     if(state.nav==='missions') return renderMissions();
@@ -497,38 +491,6 @@
   }
 
 
-
-  function preloadCriticalImages(){
-    SLEIGH_PRELOAD_ASSETS.forEach(src=>{
-      const img=new Image();
-      img.decoding='async';
-      img.src=src;
-    });
-  }
-
-  function prepareSleighArt(scope=document){
-    scope.querySelectorAll('.sleigh-art').forEach(img=>{
-      if(img.dataset.prepared==='1'){
-        if(img.complete && img.naturalWidth>0) img.classList.add('is-ready');
-        return;
-      }
-      img.dataset.prepared='1';
-      const reveal=()=>img.classList.add('is-ready');
-      if(img.complete && img.naturalWidth>0){
-        reveal();
-      } else {
-        img.classList.remove('is-ready');
-        img.addEventListener('load', reveal, {once:true});
-        img.addEventListener('error', reveal, {once:true});
-      }
-    });
-  }
-
-  function systemStatusEntry(key,status='Standby',state='standby'){
-    const meta=SYSTEM_STATUS_META[key]||{label:key,icon:key};
-    return {key,label:meta.label,icon:meta.icon,status,state};
-  }
-
   function render(){
     if(IS_ADMIN){ renderAdmin(); return; }
     if(cleanupMission){ cleanupMission(); cleanupMission=null; }
@@ -572,7 +534,7 @@
         systemStatusEntry('control'),
         systemStatusEntry('launch')
       ];
-      return `<section class="onboard with-masthead setup-page mc00-page">${setupHeader}<div class="onboard-card panel mc00-card" data-mc00-mode="${step}"><div class="mc00-copy"><h1>System Diagnostics</h1><p class="support-copy">Santa-1 Sleigh Recovery</p></div><div class="mc00-visual-wrap"><div class="mc00-sleigh-frame"><div class="sleigh-visual sleigh-stage-1 mc00-sleigh-visual"><div class="sleigh-glow" aria-hidden="true"></div><img class="sleigh-art" src="./assets/sleigh-stage-1.webp" alt="Santa-1 sleigh system scan visual"><div class="mc00-scan-beam" aria-hidden="true"></div></div></div></div>${systemStatusBank(systems,'mc00-system-bank','mc00')}<div class="mc00-progress-row"><div class="mc00-progress" role="progressbar" aria-label="System scan progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="mc00ProgressFill"></span></div><strong id="mc00ProgressValue">0%</strong></div><div class="mc00-complete-popup panel" id="mc00CompleteBlock" hidden><div class="mc00-complete-icon" aria-hidden="true">✓</div><h2>Scan Complete</h2><button class="btn primary wide" id="mc00Continue" data-mc00-continue="${step}">Continue</button></div></div></section>`;
+      return `<section class="onboard with-masthead setup-page mc00-page">${setupHeader}<div class="onboard-card panel mc00-card" data-mc00-mode="${step}"><div class="mc00-copy"><h1>System Diagnostics</h1><p class="support-copy">Santa-1 Sleigh Recovery</p></div><div class="mc00-visual-wrap"><div class="mc00-sleigh-frame"><div class="sleigh-visual sleigh-stage-1 mc00-sleigh-visual" role="img" aria-label="Santa-1 sleigh system diagnostics visual"><div class="sleigh-glow" aria-hidden="true"></div><img class="sleigh-art" src="./assets/sleigh-stage-1.webp" alt="" aria-hidden="true" fetchpriority="high"><div class="mc00-scan-beam" aria-hidden="true"></div></div></div></div>${systemStatusBank(systems,'mc00-system-bank','mc00')}<div class="mc00-progress-row"><div class="mc00-progress" role="progressbar" aria-label="System diagnostics progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="mc00ProgressFill"></span></div><strong id="mc00ProgressValue">0%</strong></div><div class="mc00-complete-popup panel" id="mc00CompleteBlock" hidden><div class="mc00-complete-icon" aria-hidden="true">✓</div><h2>Scan Complete</h2><button class="btn primary wide" id="mc00Continue" data-mc00-continue="${step}">Continue</button></div></div></section>`;
     }
     if(step==='brief') return `<section class="onboard with-masthead setup-page briefing-page">${setupHeader}<div class="onboard-card panel setup-card"><div class="onboard-icon setup-icon"><span class="setup-icon-glyph"><img src="./assets/mission-briefing-icon.svg" alt=""></span></div><h1>Mission Briefing</h1><p class="support-copy">Santa-1 has lost power. Recovery signals have been detected around the circuit. Complete each mission to recover the energy, data and system calibrations needed to restore the sleigh.</p><div class="setup-actions"><button class="btn primary wide" data-onboard="audio">Continue</button></div></div></section>`;
     if(step==='audio') return `<section class="onboard with-masthead setup-page audio-page">${setupHeader}<div class="onboard-card panel setup-card"><div class="onboard-icon setup-icon"><span class="setup-icon-glyph">${settingAudioIcon()}</span></div><h1>Mission Audio</h1><p class="support-copy">Mission Control uses proximity alerts, system sounds and live transmissions. You can change Mission Audio at any time in Comms.</p><div class="setup-actions stack"><button class="btn primary wide" data-audio="on">Enable Mission Audio</button><button class="btn secondary wide" data-audio="off">Continue Without Audio</button></div></div></section>`;
@@ -626,8 +588,8 @@
     return `<div class="system-status-bank ${extraClass}">${systems.map((system,i)=>{
       const stateClass=system.state?` is-${system.state}`:'';
       const dataAttr=dataPrefix?` data-${dataPrefix}-system="${system.key}"`:'';
-      const iconName=system.icon||SYSTEM_STATUS_META[system.key]?.icon||system.key;
-      return `<div class="system-status-item${stateClass}"${dataAttr}><div class="system-status-name"><span class="system-node" aria-hidden="true"></span><span class="system-glyph system-glyph-${iconName}" aria-hidden="true"></span><span>${system.label}</span></div><div class="system-status-value"${dataPrefix?` data-${dataPrefix}-status="${system.key}"`:''}>${system.status}</div></div>`;
+      const iconSrc=system.icon||SYSTEM_STATUS_META[system.key]?.icon||'';
+      return `<div class="system-status-item${stateClass}"${dataAttr}><div class="system-status-name"><span class="system-node" aria-hidden="true"></span><img class="system-glyph" src="${iconSrc}" alt="" aria-hidden="true"><span>${system.label}</span></div><div class="system-status-value"${dataPrefix?` data-${dataPrefix}-status="${system.key}"`:''}>${system.status}</div></div>`;
     }).join('')}</div>`;
   }
   function messageActivationLabel(message){
@@ -971,7 +933,6 @@
 
 
   function bindGlobal(){
-    prepareSleighArt(app);
     document.querySelectorAll('[data-nav]').forEach(b=>{
       if(b.dataset.navBound==='1') return;
       b.dataset.navBound='1';
@@ -3599,8 +3560,6 @@
       },260+i*430));
     };
   }
-
-  preloadCriticalImages();
 
   if(IS_ADMIN){renderAdmin();}
   else {

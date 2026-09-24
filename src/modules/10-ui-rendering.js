@@ -1,3 +1,17 @@
+  const SYSTEM_STATUS_META = {
+    power:{label:'Power',icon:'./assets/system-power.svg'},
+    propulsion:{label:'Propulsion',icon:'./assets/system-propulsion.svg'},
+    comms:{label:'Comms',icon:'./assets/system-comms.svg'},
+    response:{label:'Control',icon:'./assets/system-control.svg'},
+    core:{label:'Core',icon:'./assets/system-core.svg'},
+    navigation:{label:'Navigation',icon:'./assets/system-navigation.svg'},
+    control:{label:'Guidance',icon:'./assets/system-guidance.svg'},
+    launch:{label:'Launch',icon:'./assets/system-launch.svg'}
+  };
+  function systemStatusEntry(key,status='Standby',state='standby'){
+    const meta=SYSTEM_STATUS_META[key]||{label:key,icon:key};
+    return {key,label:meta.label,icon:meta.icon,status,state};
+  }
   function shell(content, nav=true){ return `<main class="phone ${nav?'':'no-nav'}"><div class="screen">${content}</div>${nav?navBar():''}</main>`; }
   function navPageContent(){
     if(state.nav==='missions') return renderMissions();
@@ -112,16 +126,16 @@
     const setupHeader=topBar();
     if(step==='mc00-live'){
       const systems=[
-        {key:'power',label:'Power',status:'Standby'},
-        {key:'propulsion',label:'Propulsion',status:'Standby'},
-        {key:'comms',label:'Comms',status:'Standby'},
-        {key:'response',label:'Response',status:'Standby'},
-        {key:'core',label:'Core',status:'Standby'},
-        {key:'navigation',label:'Navigation',status:'Standby'},
-        {key:'control',label:'Control',status:'Standby'},
-        {key:'launch',label:'Launch',status:'Standby'}
+        systemStatusEntry('power'),
+        systemStatusEntry('propulsion'),
+        systemStatusEntry('comms'),
+        systemStatusEntry('response'),
+        systemStatusEntry('core'),
+        systemStatusEntry('navigation'),
+        systemStatusEntry('control'),
+        systemStatusEntry('launch')
       ];
-      return `<section class="onboard with-masthead setup-page mc00-page">${setupHeader}<div class="onboard-card panel mc00-card" data-mc00-mode="${step}"><div class="mc00-copy"><h1>System Scan</h1><p class="support-copy">Santa-1 Sleigh Recovery</p></div><div class="mc00-visual-wrap"><div class="mc00-sleigh-frame"><div class="sleigh-visual sleigh-stage-1 mc00-sleigh-visual"><div class="sleigh-glow" aria-hidden="true"></div><img class="sleigh-art" src="./assets/sleigh-stage-1.webp" alt="Santa-1 sleigh system scan visual"><div class="mc00-scan-beam" aria-hidden="true"></div></div></div></div>${systemStatusBank(systems,'mc00-system-bank','mc00')}<div class="mc00-progress-row"><div class="mc00-progress" role="progressbar" aria-label="System scan progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="mc00ProgressFill"></span></div><strong id="mc00ProgressValue">0%</strong></div><div class="mc00-complete-popup panel" id="mc00CompleteBlock" hidden><div class="mc00-complete-icon" aria-hidden="true">✓</div><h2>Scan Complete</h2><button class="btn primary wide" id="mc00Continue" data-mc00-continue="${step}">Continue</button></div></div></section>`;
+      return `<section class="onboard with-masthead setup-page mc00-page">${setupHeader}<div class="onboard-card panel mc00-card" data-mc00-mode="${step}"><div class="mc00-copy"><h1>System Diagnostics</h1><p class="support-copy">Santa-1 Sleigh Recovery</p></div><div class="mc00-visual-wrap"><div class="mc00-sleigh-frame"><div class="sleigh-visual sleigh-stage-1 mc00-sleigh-visual" role="img" aria-label="Santa-1 sleigh system diagnostics visual"><div class="sleigh-glow" aria-hidden="true"></div><img class="sleigh-art" src="./assets/sleigh-stage-1.webp" alt="" aria-hidden="true" fetchpriority="high"><div class="mc00-scan-beam" aria-hidden="true"></div></div></div></div>${systemStatusBank(systems,'mc00-system-bank','mc00')}<div class="mc00-progress-row"><div class="mc00-progress" role="progressbar" aria-label="System diagnostics progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="mc00ProgressFill"></span></div><strong id="mc00ProgressValue">0%</strong></div><div class="mc00-complete-popup panel" id="mc00CompleteBlock" hidden><div class="mc00-complete-icon" aria-hidden="true">✓</div><h2>Scan Complete</h2><button class="btn primary wide" id="mc00Continue" data-mc00-continue="${step}">Continue</button></div></div></section>`;
     }
     if(step==='brief') return `<section class="onboard with-masthead setup-page briefing-page">${setupHeader}<div class="onboard-card panel setup-card"><div class="onboard-icon setup-icon"><span class="setup-icon-glyph"><img src="./assets/mission-briefing-icon.svg" alt=""></span></div><h1>Mission Briefing</h1><p class="support-copy">Santa-1 has lost power. Recovery signals have been detected around the circuit. Complete each mission to recover the energy, data and system calibrations needed to restore the sleigh.</p><div class="setup-actions"><button class="btn primary wide" data-onboard="audio">Continue</button></div></div></section>`;
     if(step==='audio') return `<section class="onboard with-masthead setup-page audio-page">${setupHeader}<div class="onboard-card panel setup-card"><div class="onboard-icon setup-icon"><span class="setup-icon-glyph">${settingAudioIcon()}</span></div><h1>Mission Audio</h1><p class="support-copy">Mission Control uses proximity alerts, system sounds and live transmissions. You can change Mission Audio at any time in Comms.</p><div class="setup-actions stack"><button class="btn primary wide" data-audio="on">Enable Mission Audio</button><button class="btn secondary wide" data-audio="off">Continue Without Audio</button></div></div></section>`;
@@ -159,14 +173,14 @@
         ? {name:'Flight Ready',copy:'Lapland Launch has completed the final systems verification. Every rebuilt system is stable and Santa-1 is fully cleared for launch.'}
         : {name:info.name,copy:info.copy};
     const systems=[
-      {key:'power',label:'Power',status:state.completed.includes('power')?'Online':'Offline',state:state.completed.includes('power')?'online':'offline'},
-      {key:'comms',label:'Comms',status:state.completed.includes('luffield')?'Online':'Offline',state:state.completed.includes('luffield')?'online':'offline'},
-      {key:'core',label:'Core',status:state.completed.includes('spirit')?'Online':'Offline',state:state.completed.includes('spirit')?'online':'offline'},
-      {key:'control',label:'Control',status:state.completed.includes('comet')?'Online':'Offline',state:state.completed.includes('comet')?'online':'offline'},
-      {key:'propulsion',label:'Propulsion',status:state.completed.includes('jingle')?'Online':'Offline',state:state.completed.includes('jingle')?'online':'offline'},
-      {key:'response',label:'Response',status:state.completed.includes('lando')?'Online':'Offline',state:state.completed.includes('lando')?'online':'offline'},
-      {key:'navigation',label:'Navigation',status:state.completed.includes('aurora')?'Online':'Offline',state:state.completed.includes('aurora')?'online':'offline'},
-      {key:'launch',label:'Launch',status:state.completed.includes('northern')?'Complete':state.completed.includes('lapland')?'Clear':'Blocked',state:state.completed.includes('northern')?'complete':state.completed.includes('lapland')?'clear':'blocked'}
+      systemStatusEntry('power',state.completed.includes('power')?'Online':'Offline',state.completed.includes('power')?'online':'offline'),
+      systemStatusEntry('comms',state.completed.includes('luffield')?'Online':'Offline',state.completed.includes('luffield')?'online':'offline'),
+      systemStatusEntry('core',state.completed.includes('spirit')?'Online':'Offline',state.completed.includes('spirit')?'online':'offline'),
+      systemStatusEntry('control',state.completed.includes('comet')?'Online':'Offline',state.completed.includes('comet')?'online':'offline'),
+      systemStatusEntry('propulsion',state.completed.includes('jingle')?'Online':'Offline',state.completed.includes('jingle')?'online':'offline'),
+      systemStatusEntry('response',state.completed.includes('lando')?'Online':'Offline',state.completed.includes('lando')?'online':'offline'),
+      systemStatusEntry('navigation',state.completed.includes('aurora')?'Online':'Offline',state.completed.includes('aurora')?'online':'offline'),
+      systemStatusEntry('launch',state.completed.includes('northern')?'Complete':state.completed.includes('lapland')?'Clear':'Blocked',state.completed.includes('northern')?'complete':state.completed.includes('lapland')?'clear':'blocked')
     ];
     return `<div class="sleigh-card panel"><div class="sleigh-title-row"><div><div class="kicker sleigh-pretitle">Sleigh Rebuild</div><h1>Santa-1</h1></div><strong class="sleigh-percent">${r}%</strong></div><div class="sleigh-development-bar" role="progressbar" aria-label="Santa-1 rebuild progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${r}"><div class="sleigh-development-spectrum" aria-hidden="true"></div><div class="sleigh-development-mask" style="left:${r}%" aria-hidden="true"></div></div><div class="sleigh-visual sleigh-stage-${stage}"><div class="sleigh-glow" aria-hidden="true"></div><img class="sleigh-art" src="${info.asset}" alt="Santa-1 ${postStatus.name} rebuild stage"></div><div class="sleigh-update-box panel soft"><div class="kicker sleigh-systems-title">Engineering Update</div><p class="sleigh-systems-copy">${postStatus.copy}</p></div><div class="sleigh-systems panel soft"><div class="kicker sleigh-systems-title">System Status</div>${systemStatusBank(systems,'sleigh-system-bank')}</div></div>`;
   }
@@ -175,7 +189,8 @@
     return `<div class="system-status-bank ${extraClass}">${systems.map((system,i)=>{
       const stateClass=system.state?` is-${system.state}`:'';
       const dataAttr=dataPrefix?` data-${dataPrefix}-system="${system.key}"`:'';
-      return `<div class="system-status-item${stateClass}"${dataAttr}><div class="system-status-name"><span class="system-node" aria-hidden="true"></span><span>${system.label}</span></div><div class="system-status-value"${dataPrefix?` data-${dataPrefix}-status="${system.key}"`:''}>${system.status}</div></div>`;
+      const iconSrc=system.icon||SYSTEM_STATUS_META[system.key]?.icon||'';
+      return `<div class="system-status-item${stateClass}"${dataAttr}><div class="system-status-name"><span class="system-node" aria-hidden="true"></span><img class="system-glyph" src="${iconSrc}" alt="" aria-hidden="true"><span>${system.label}</span></div><div class="system-status-value"${dataPrefix?` data-${dataPrefix}-status="${system.key}"`:''}>${system.status}</div></div>`;
     }).join('')}</div>`;
   }
   function messageActivationLabel(message){
@@ -495,17 +510,17 @@
   }
   function laplandBody(){
     // Row-major ordering is intentionally interleaved so the visual columns read
-    // POWER / COMMS / CORE / CONTROL on the left and PROPULSION / RESPONSE /
+    // POWER / COMMS / CORE / GUIDANCE on the left and PROPULSION / CONTROL /
     // NAVIGATION / LAUNCH on the right, matching the MC-00 system bank.
     const systems=[
-      {key:'power',label:'Power',status:'Standby'},
-      {key:'propulsion',label:'Propulsion',status:'Standby'},
-      {key:'comms',label:'Comms',status:'Standby'},
-      {key:'response',label:'Response',status:'Standby'},
-      {key:'core',label:'Core',status:'Standby'},
-      {key:'navigation',label:'Navigation',status:'Standby'},
-      {key:'control',label:'Control',status:'Standby'},
-      {key:'launch',label:'Launch',status:'Standby'}
+      systemStatusEntry('power'),
+      systemStatusEntry('propulsion'),
+      systemStatusEntry('comms'),
+      systemStatusEntry('response'),
+      systemStatusEntry('core'),
+      systemStatusEntry('navigation'),
+      systemStatusEntry('control'),
+      systemStatusEntry('launch')
     ];
     return `<div class="mission-instrument panel lapland-panel" id="laplandPanel" style="--lapland-charge:0">
       <div class="lapland-verification-label"><span>Santa-1</span><strong>Final Verification</strong></div>
