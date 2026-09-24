@@ -75,6 +75,19 @@
     };
   }
 
+
+  // Radar rendering uses the same georeferenced route model as GPS/demo movement.
+  // This avoids drawing the older thick filled circuit silhouette and guarantees
+  // that the user dot stays centred on the exact route the demo follows.
+  const CIRCUIT_RADAR_POLYLINE_POINTS=SILVERSTONE_GP_ROUTE.map(([lat,lng])=>{
+    const point=geoToCircuitPoint(lat,lng);
+    return `${point.x.toFixed(3)},${point.y.toFixed(3)}`;
+  }).join(' ');
+
+  function forwardRouteDistance(fromDistance,toDistance){
+    return normaliseRouteDistance(Number(toDistance)-Number(fromDistance));
+  }
+
   const SILVERSTONE_ROUTE_METRES = SILVERSTONE_GP_ROUTE.map(([lat,lng])=>{
     const p=geoToCircuitMeters(lat,lng);return {lat,lng,x:p.x,y:p.y};
   });

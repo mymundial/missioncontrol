@@ -127,6 +127,7 @@
   let demoTimer = null;
   let demoInterval = null;
   let demoTrackPosition = null;
+  let demoTrackDistance = null;
   let demoHoldUntil = 0;
 
   function load(){

@@ -189,9 +189,19 @@ if(/const CIRCUIT_GEOREFERENCE/.test(georef) && /function geoToCircuitPoint\(/.t
 if(/geoToCircuitPoint\(cp\?\.lat,cp\?\.lng\)/.test(runtime) && /geoToCircuitPoint\(fix\.lat,fix\.lng\)/.test(runtime) && /geoToCircuitPoint\(cfg\.lat,cfg\.lng\)/.test(runtime)) {
   ok('Coordinate single source','MC01, live radar and checkpoint markers derive SVG position from master lat/lng');
 } else fail('Coordinate single source','A circuit marker still appears to bypass the master lat/lng mapping');
-if(/beginDemoCircuitApproach/.test(runtime) && /routePointAtDistance\(targetProjection\.distance-remaining\)/.test(runtime)) {
-  ok('Circuit demo route','Post-MC01 Demo Mode approaches checkpoints along the calibrated lap route');
-} else fail('Circuit demo route','Demo Mode is not using calibrated route progression');
+if(
+  /beginDemoCircuitApproach/.test(runtime) &&
+  /demoTrackDistance/.test(runtime) &&
+  /forwardRouteDistance\(startDistance,targetProjection\.distance\)/.test(runtime) &&
+  /updatePosition\(startDistance\+travelled\)/.test(runtime) &&
+  !/targetProjection\.distance-remaining/.test(runtime)
+) {
+  ok('Circuit demo route','Post-MC01 Demo Mode persists lap position and travels continuously forward along the calibrated route');
+} else fail('Circuit demo route','Demo Mode is not using continuous calibrated route progression');
+
+if(/CIRCUIT_RADAR_POLYLINE_POINTS/.test(runtime) && /track-radar-line/.test(runtime) && /vector-effect:non-scaling-stroke/.test(css)) {
+  ok('Circuit radar line','Radar circuit is rendered from the calibrated centreline with a thin non-scaling stroke');
+} else fail('Circuit radar line','Radar circuit is not using the calibrated thin centreline treatment');
 
 // 12) External runtime dependencies / launch notes.
 const urls=[...runtime.matchAll(/https:\/\/[^'"`\s)]+/g)].map(m=>m[0]);

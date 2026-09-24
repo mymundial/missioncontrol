@@ -127,6 +127,7 @@
   let demoTimer = null;
   let demoInterval = null;
   let demoTrackPosition = null;
+  let demoTrackDistance = null;
   let demoHoldUntil = 0;
 
   function load(){
@@ -477,6 +478,19 @@
     };
   }
 
+
+  // Radar rendering uses the same georeferenced route model as GPS/demo movement.
+  // This avoids drawing the older thick filled circuit silhouette and guarantees
+  // that the user dot stays centred on the exact route the demo follows.
+  const CIRCUIT_RADAR_POLYLINE_POINTS=SILVERSTONE_GP_ROUTE.map(([lat,lng])=>{
+    const point=geoToCircuitPoint(lat,lng);
+    return `${point.x.toFixed(3)},${point.y.toFixed(3)}`;
+  }).join(' ');
+
+  function forwardRouteDistance(fromDistance,toDistance){
+    return normaliseRouteDistance(Number(toDistance)-Number(fromDistance));
+  }
+
   const SILVERSTONE_ROUTE_METRES = SILVERSTONE_GP_ROUTE.map(([lat,lng])=>{
     const p=geoToCircuitMeters(lat,lng);return {lat,lng,x:p.x,y:p.y};
   });
@@ -689,7 +703,7 @@
     const cp=current();
     const modeClass=state.mode==='demo'?' demo-radar-page':'';
     const circuitMode=state.completed.includes('entry');
-    const circuitLayer=circuitMode?`<div class="track-radar-map" id="trackRadarMap" aria-hidden="true"><img class="track-radar-art" id="trackRadarArt" src="./assets/f1-circuit.svg" alt=""><span class="track-radar-target hidden" id="trackRadarTarget"></span></div>`:'';
+    const circuitLayer=circuitMode?`<div class="track-radar-map" id="trackRadarMap" aria-hidden="true"><svg class="track-radar-art track-radar-svg" id="trackRadarArt" viewBox="0 0 ${CIRCUIT_GEOREFERENCE.viewBoxWidth} ${CIRCUIT_GEOREFERENCE.viewBoxHeight}" preserveAspectRatio="xMinYMin meet"><polyline class="track-radar-glow" points="${CIRCUIT_RADAR_POLYLINE_POINTS}"></polyline><polyline class="track-radar-line" points="${CIRCUIT_RADAR_POLYLINE_POINTS}"></polyline></svg><span class="track-radar-target hidden" id="trackRadarTarget"></span></div>`:'';
     return `<section class="radar-page${modeClass}">${statusStrip()}<section class="radar-zone" aria-label="Live checkpoint radar"><section class="radar-wrap"><div class="radar${circuitMode?' circuit-radar':''}">${circuitLayer}<div class="sweep"></div><div class="user-dot"></div>${cp?'<div class="target-dot hidden"></div>':''}</div></section></section>${radarMessage(cp)}</section>`;
   }
   function missionStatus(cp){
@@ -1550,6 +1564,7 @@
     stopGpsWatch();
     demoHoldUntil=Date.now()+900;
     demoTrackPosition=null;
+    demoTrackDistance=null;
     state={...state,onboarded:true,bootDone:true,mode:'demo',gpsEnabled:false,nav:'radar',completed:[],available:[],routeIndex:1,targetVisible:false,targetInRange:false,distance:null,gpsCondition:'DEMO'};
     save();
     ensureOpeningMessage();
@@ -1570,13 +1585,37 @@
     // Fallback in case a navigation/render transition interrupted the first timer.
     setTimeout(arm,2600);
   }
+  function demoRouteSeedDistance(cp){
+    if(Number.isFinite(demoTrackDistance)) return normaliseRouteDistance(demoTrackDistance);
+    const targetIndex=checkpointIndex(cp?.id);
+    for(let i=targetIndex-1;i>=ROUTE_START_INDEX;i--){
+      const previous=CHECKPOINTS[i];
+      if(!previous||!state.completed.includes(previous.id)) continue;
+      const previousCfg=activeConfig(previous);
+      if(!previousCfg) continue;
+      const projected=projectGeoToRoute(previousCfg.lat,previousCfg.lng);
+      if(projected) return projected.distance;
+    }
+    return null;
+  }
+
   function beginDemoCircuitApproach(cp,cfg){
     const targetProjection=projectGeoToRoute(cfg.lat,cfg.lng);
     if(!targetProjection) return false;
     const activationRadius=Number(cfg.activationRadius)||30;
-    let remaining=Math.max(180,activationRadius+145);
-    const updatePosition=()=>{
-      const routePoint=routePointAtDistance(targetProjection.distance-remaining);
+    const startDistance=demoRouteSeedDistance(cp);
+    if(!Number.isFinite(startDistance)) return false;
+
+    // Travel continuously forward around the calibrated lap. Demo compresses time
+    // but never teleports, reverses, or cuts across the circuit between missions.
+    const routeTravel=forwardRouteDistance(startDistance,targetProjection.distance);
+    const tickMs=100;
+    const speedMetresPerSecond=180;
+    let travelled=0;
+
+    const updatePosition=routeDistance=>{
+      const routePoint=routePointAtDistance(routeDistance);
+      demoTrackDistance=routePoint.distance;
       demoTrackPosition={lat:routePoint.lat,lng:routePoint.lng,accuracy:5,timestamp:Date.now()};
       const d=distanceMetres(routePoint.lat,routePoint.lng,cfg.lat,cfg.lng);
       state.distance=d;
@@ -1586,23 +1625,30 @@
       save();updateRadarLive();
       return d;
     };
-    let d=updatePosition();
-    if(d<=activationRadius){
-      demoTrackPosition={lat:cfg.lat,lng:cfg.lng,accuracy:5,timestamp:Date.now()};
-      state.targetVisible=true;state.targetInRange=true;state.distance=0;unlockMission(cp.id);save();updateRadarLive();ping(700,.08,.04);haptic(30);return true;
-    }
+
+    const finishAtTarget=()=>{
+      const routePoint=routePointAtDistance(targetProjection.distance);
+      demoTrackDistance=routePoint.distance;
+      demoTrackPosition={lat:routePoint.lat,lng:routePoint.lng,accuracy:5,timestamp:Date.now()};
+      const d=distanceMetres(routePoint.lat,routePoint.lng,cfg.lat,cfg.lng);
+      state.targetVisible=true;state.targetInRange=true;state.distance=d;
+      state.bearing=bearingDegrees(routePoint.lat,routePoint.lng,cfg.lat,cfg.lng);
+      unlockMission(cp.id);save();updateRadarLive();ping(700,.08,.04);haptic(30);
+    };
+
+    let d=updatePosition(startDistance);
+    if(routeTravel<1){finishAtTarget();return true;}
+
     demoInterval=setInterval(()=>{
       if(!canRunDemoTarget()){clearInterval(demoInterval);demoInterval=null;return;}
       const activeCp=current();const activeCfg=activeConfig(activeCp);
       if(!activeCp||!activeCfg||activeCp.id!==cp.id){clearInterval(demoInterval);demoInterval=null;return;}
-      remaining=Math.max(0,remaining-16);
-      d=updatePosition();
-      if(d<=activationRadius||remaining<=0){
-        clearInterval(demoInterval);demoInterval=null;
-        demoTrackPosition={lat:activeCfg.lat,lng:activeCfg.lng,accuracy:5,timestamp:Date.now()};
-        state.targetVisible=true;state.targetInRange=true;state.distance=0;unlockMission(activeCp.id);save();updateRadarLive();ping(700,.08,.04);haptic(30);
+      travelled=Math.min(routeTravel,travelled+speedMetresPerSecond*(tickMs/1000));
+      d=updatePosition(startDistance+travelled);
+      if(travelled>=routeTravel){
+        clearInterval(demoInterval);demoInterval=null;finishAtTarget();
       }
-    },650);
+    },tickMs);
     return true;
   }
 

@@ -46,3 +46,6 @@ Only edit the checkpoint `lat` / `lng` in `src/modules/00-runtime-state.js` (or 
 
 ## Demo behaviour
 Before MC01, Demo Mode retains the original generic radar. After MC01, the circuit is revealed and each subsequent demo approach starts roughly 180 m before the next checkpoint along the GP route, then progresses in lap direction until the mission activates.
+## Demo route behaviour (7.38.1)
+After MC01, Demo Mode maintains a persistent distance along `SILVERSTONE_GP_ROUTE`. It never seeds itself near the next checkpoint. Each demo leg advances only forward along the closed route until it reaches the next checkpoint's projected route distance. This same route centreline is also drawn inside the radar, so the animated user position and the visible circuit path are mathematically identical.
+

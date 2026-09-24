@@ -1,3 +1,11 @@
+## 7.38.1 — Continuous Demo circuit travel + radar track refinement
+- Demo Mode now keeps a persistent route-distance position after MC01 and moves continuously forward around the calibrated GP lap between every subsequent mission.
+- Removed the old behaviour that restarted Demo 180 m before each next checkpoint, eliminating backward movement and cross-track jumps.
+- Demo traverses the full calibrated route distance to each installation before unlocking it, including the MC07 → MC08 lap wrap.
+- Radar circuit rendering now uses the georeferenced route centreline itself rather than the thick filled `f1-circuit.svg` silhouette.
+- Added a thin 1.35 px centreline plus restrained glow, both non-scaling, so the track remains crisp at the close radar zoom.
+- Radar movement transitions shortened to match the smoother 100 ms demo route updates.
+
 ## 7.38.0 — Georeferenced circuit radar
 - calibrated `f1-circuit.svg` to real Silverstone GP latitude/longitude coordinates using a single affine circuit georeference.
 - added `geoToCircuitPoint()` so checkpoint coordinates are now the single source of truth for both geofences and SVG placement.
