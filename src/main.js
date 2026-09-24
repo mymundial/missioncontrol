@@ -72,11 +72,11 @@
   };
 
   const SLEIGH_STAGES = [
-    {stage:1,progress:0,name:'Grounded',asset:'./assets/sleigh-stage-1.webp',milestone:'Initial State',next:'Circuit Link',copy:'Santa-1 remains grounded in stripped-back recovery condition. Mission Control is waiting for enough circuit energy to energise the chassis and begin the rebuild.'},
-    {stage:2,progress:10,name:'Recovery Initiated',asset:'./assets/sleigh-stage-2.webp',milestone:'Circuit Link',next:'Velocity Vault',copy:'Initial circuit energy has been routed into Santa-1. The chassis is energised and the recovery sequence is underway, while the individual sleigh systems remain offline until they are restored.'},
-    {stage:3,progress:40,name:'Core Recovery',asset:'./assets/sleigh-stage-3.webp',milestone:'Power Pulse',next:'Comet Curve',copy:'Power Pulse has isolated and stabilised a clean racing-energy supply for Santa-1. The energy is ready to be stored in the Spirit Core before the recovery can continue.'},
-    {stage:4,progress:70,name:'Flight Systems Recovery',asset:'./assets/sleigh-stage-4.webp',milestone:'Comet Curve',next:'Aurora Apex',copy:'Comet Curve has restored Santa-1’s guidance architecture. Flight systems are now being integrated, with steering vectors and control pathways aligned for the remaining control, response and navigation calibrations.'},
-    {stage:5,progress:100,name:'Rebuild Complete',asset:'./assets/sleigh-stage-5.webp',milestone:'Aurora Apex',next:'Lapland Launch',copy:'Aurora Apex has locked the navigation network and completed the rebuild. Santa-1 now has a fully restored frame, active flight systems and a confirmed route home, ready for final verification at Lapland Launch.'}
+    {stage:1,trigger:null,name:'Grounded',asset:'./assets/sleigh-stage-1.webp',milestone:'Initial State',next:'Circuit Link',copy:'Santa-1 remains grounded in stripped-back recovery condition. Mission Control is waiting for enough circuit energy to energise the chassis and begin the rebuild.'},
+    {stage:2,trigger:'entry',name:'Recovery Initiated',asset:'./assets/sleigh-stage-2.webp',milestone:'Circuit Link',next:'Spirit Depot',copy:'Initial circuit energy has been routed into Santa-1. The chassis is energised and the recovery sequence is underway, while the individual sleigh systems remain offline until they are restored.'},
+    {stage:3,trigger:'spirit',name:'Core Recovery',asset:'./assets/sleigh-stage-3.webp',milestone:'Spirit Depot',next:'Jingle Beams',copy:'Spirit Depot has brought the Spirit Core online. Santa-1’s major body and core systems are now energised and the physical rebuild is visibly advancing.'},
+    {stage:4,trigger:'jingle',name:'Flight Systems Recovery',asset:'./assets/sleigh-stage-4.webp',milestone:'Jingle Beams',next:'Aurora Apex',copy:'Jingle Beams has brought Santa-1’s control system online. Flight hardware is now substantially restored and the sleigh is approaching full operational condition.'},
+    {stage:5,trigger:'aurora',name:'Rebuild Complete',asset:'./assets/sleigh-stage-5.webp',milestone:'Aurora Apex',next:'Lapland Launch',copy:'Aurora Apex has brought navigation online and completed the rebuild. Santa-1 now has a fully restored frame, active flight systems and a confirmed route home, ready for final verification at Lapland Launch.'}
   ];
 
   const defaults = {
@@ -335,8 +335,10 @@
     return 0;
   }
   function sleighStage(){
-    const progress=recovery();
-    for(let i=SLEIGH_STAGES.length-1;i>=0;i--){ if(progress>=SLEIGH_STAGES[i].progress) return SLEIGH_STAGES[i]; }
+    for(let i=SLEIGH_STAGES.length-1;i>=1;i--){
+      const trigger=SLEIGH_STAGES[i].trigger;
+      if(trigger&&state.completed.includes(trigger)) return SLEIGH_STAGES[i];
+    }
     return SLEIGH_STAGES[0];
   }
   function current(){

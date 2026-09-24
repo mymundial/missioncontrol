@@ -1,3 +1,13 @@
+# Pass 7.36.4 — Sleigh milestone image triggers
+
+- Separated sleigh artwork stages from rebuild percentage thresholds.
+- Stage 1: initial grounded state.
+- Stage 2: MC01 Circuit Link / recovery initiated.
+- Stage 3: MC05 Spirit Depot / CORE online.
+- Stage 4: MC08 Jingle Beams / CONTROL online.
+- Stage 5: MC10 Aurora Apex / NAVIGATION online / rebuild complete.
+- Rebuild percentage behaviour is unchanged in this pass.
+
 # Mission Control — core systems remap (7.36.3)
 
 ## Core system order

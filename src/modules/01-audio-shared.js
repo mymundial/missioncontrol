@@ -134,8 +134,10 @@
     return 0;
   }
   function sleighStage(){
-    const progress=recovery();
-    for(let i=SLEIGH_STAGES.length-1;i>=0;i--){ if(progress>=SLEIGH_STAGES[i].progress) return SLEIGH_STAGES[i]; }
+    for(let i=SLEIGH_STAGES.length-1;i>=1;i--){
+      const trigger=SLEIGH_STAGES[i].trigger;
+      if(trigger&&state.completed.includes(trigger)) return SLEIGH_STAGES[i];
+    }
     return SLEIGH_STAGES[0];
   }
   function current(){
