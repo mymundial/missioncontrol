@@ -744,3 +744,15 @@ This pass adds a self-contained static build for Vercel. No Vercel project-setti
 - Updated the 40% sleigh milestone copy so the sequence now reads Power Pulse stabilisation → Spirit Depot storage → Reindeer Raceway speed validation.
 - No gameplay physics, acceleration timings, stabilisation rules, audio assets, GPS coordinates, route order or visual assets were changed.
 - Bumped runtime asset version to 7.30.0.
+
+## Pass 7.31.0 — Activation title / location standardisation
+
+- Standardised every open MC activation header to `MC## / TRACK LOCATION` followed by the activation title as the page H1.
+- Removed mission-type labels such as Performance Scan, Energy Stabilisation, High-Speed Run, Guidance Calibration, High-Speed Control, Aurora Lock, Final Systems Test and Launch Sequence from the main activation-title position.
+- Updated MC-01 activation title from `Circuit Entry` to `Circuit Link`.
+- Updated MC-01 location from `Village` to `National Link Road`.
+- Updated MC-03 activation title from `ELF FM` to `Comms Relay`; the separate optional ELF FM radio/tuner remains named ELF FM.
+- Updated MC-01 radar/completion/Sleigh milestone references to use `Circuit Link` consistently.
+- Updated the MC-03 completion transmission to refer to `Comms Relay` consistently.
+- No activation mechanics, timings, assets, audio, GPS coordinates or route order were changed.
+- Bumped runtime asset version to 7.31.0.

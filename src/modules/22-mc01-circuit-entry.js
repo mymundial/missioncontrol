@@ -60,6 +60,6 @@
     mc01Later(()=>{
       stopMc01Activation();
       if(state.missionOpen!=='entry') return;
-      showCompletion('Circuit Entry Complete',"Santa-1's recovery has begun.");
+      showCompletion('Circuit Link Complete',"Santa-1's recovery has begun.");
     },4350);
   }

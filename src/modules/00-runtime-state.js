@@ -13,18 +13,18 @@
 
   const CHECKPOINTS = [
     {id:'gantry', mc:'MC-00', location:'Entrance Gantry', name:'Scan QR', type:'qr', playable:false, core:false, geofence:false, routeEnabled:false, lat:52.0735668895174, lng:-1.0234212294205571},
-    {id:'entry', mc:'MC-01', location:'Village', name:'Circuit Entry', type:'activation', playable:true, core:false, mission:'Circuit Entry', geofence:true, lat:52.0742700024956, lng:-1.01353137321053, detectionRadius:80, activationRadius:30},
-    {id:'velocity', mc:'MC-02', location:'Wellington Straight', name:'Velocity Vault', type:'diagnostics', playable:true, core:true, mission:'Performance Scan', lat:52.07672858114103, lng:-1.0179463765923242, detectionRadius:150, activationRadius:35},
-    {id:'luffield', mc:'MC-03', location:'Luffield', name:'ELF FM', type:'commsrelay', playable:true, core:false, mission:'Santa-1 Signal Relay', routeEnabled:true, geofence:true, lat:52.07588935484336, lng:-1.0202073683140254, detectionRadius:120, activationRadius:30},
-    {id:'power', mc:'MC-04', location:'National Pit Straight', name:'Power Pulse', type:'artifacts', playable:true, core:true, mission:'Energy Stabilisation', lat:52.07867166248026, lng:-1.0177768332976036, detectionRadius:150, activationRadius:35},
-    {id:'spirit', mc:'MC-05', location:'Copse', name:'Spirit Depot', type:'spirit', playable:true, core:true, mission:'Charge the Spirit Core', lat:52.07895798720806, lng:-1.0124059222979016, detectionRadius:120, activationRadius:30},
-    {id:'escapade', mc:'MC-06', location:'Escapade', name:'Reindeer Raceway', type:'power', playable:true, core:true, mission:'High-Speed Run', lat:52.07480005189975, lng:-1.0102119794664433, detectionRadius:120, activationRadius:30},
-    {id:'comet', mc:'MC-07', location:'Becketts', name:'Comet Curve', type:'comet', playable:true, core:true, mission:'Guidance Calibration', lat:52.07247136741095, lng:-1.0099658493552224, detectionRadius:140, activationRadius:30},
+    {id:'entry', mc:'MC-01', location:'National Link Road', name:'Circuit Link', type:'activation', playable:true, core:false, mission:'Circuit Link', geofence:true, lat:52.0742700024956, lng:-1.01353137321053, detectionRadius:80, activationRadius:30},
+    {id:'velocity', mc:'MC-02', location:'Wellington Straight', name:'Velocity Vault', type:'diagnostics', playable:true, core:true, mission:'Velocity Vault', lat:52.07672858114103, lng:-1.0179463765923242, detectionRadius:150, activationRadius:35},
+    {id:'luffield', mc:'MC-03', location:'Luffield', name:'Comms Relay', type:'commsrelay', playable:true, core:false, mission:'Comms Relay', routeEnabled:true, geofence:true, lat:52.07588935484336, lng:-1.0202073683140254, detectionRadius:120, activationRadius:30},
+    {id:'power', mc:'MC-04', location:'National Pit Straight', name:'Power Pulse', type:'artifacts', playable:true, core:true, mission:'Power Pulse', lat:52.07867166248026, lng:-1.0177768332976036, detectionRadius:150, activationRadius:35},
+    {id:'spirit', mc:'MC-05', location:'Copse', name:'Spirit Depot', type:'spirit', playable:true, core:true, mission:'Spirit Depot', lat:52.07895798720806, lng:-1.0124059222979016, detectionRadius:120, activationRadius:30},
+    {id:'escapade', mc:'MC-06', location:'Escapade', name:'Reindeer Raceway', type:'power', playable:true, core:true, mission:'Reindeer Raceway', lat:52.07480005189975, lng:-1.0102119794664433, detectionRadius:120, activationRadius:30},
+    {id:'comet', mc:'MC-07', location:'Becketts', name:'Comet Curve', type:'comet', playable:true, core:true, mission:'Comet Curve', lat:52.07247136741095, lng:-1.0099658493552224, detectionRadius:140, activationRadius:30},
     {id:'jingle', mc:'MC-08', location:'Hangar Straight', name:'Jingle Beams', type:'jingle', playable:true, core:true, mission:'Jingle Beams', lat:52.067475902465475, lng:-1.0132842109045421, detectionRadius:150, activationRadius:35},
-    {id:'lando', mc:'MC-09', location:'Stowe', name:'Lightspeed Lando', type:'lando', playable:true, core:true, mission:'High-Speed Control', lat:52.06363909240851, lng:-1.017077251994755, detectionRadius:120, activationRadius:30},
-    {id:'aurora', mc:'MC-10', location:'Vale', name:'Aurora Apex', type:'aurora', playable:true, core:true, mission:'Aurora Lock', lat:52.065488708771205, lng:-1.0204674536551839, detectionRadius:120, activationRadius:30},
-    {id:'lapland', mc:'MC-11', location:'Hamilton Straight', name:'Lapland Launch', type:'lapland', playable:true, core:true, mission:'Final Systems Test', lat:52.06828247188286, lng:-1.0234649670014986, detectionRadius:150, activationRadius:35},
-    {id:'northern', mc:'MC-12', location:'Farm Curve', name:'Northern Flight', type:'northern', playable:true, core:true, mission:'Launch Sequence', lat:52.07236283289121, lng:-1.0138972673152702, detectionRadius:120, activationRadius:30}
+    {id:'lando', mc:'MC-09', location:'Stowe', name:'Lightspeed Lando', type:'lando', playable:true, core:true, mission:'Lightspeed Lando', lat:52.06363909240851, lng:-1.017077251994755, detectionRadius:120, activationRadius:30},
+    {id:'aurora', mc:'MC-10', location:'Vale', name:'Aurora Apex', type:'aurora', playable:true, core:true, mission:'Aurora Apex', lat:52.065488708771205, lng:-1.0204674536551839, detectionRadius:120, activationRadius:30},
+    {id:'lapland', mc:'MC-11', location:'Hamilton Straight', name:'Lapland Launch', type:'lapland', playable:true, core:true, mission:'Lapland Launch', lat:52.06828247188286, lng:-1.0234649670014986, detectionRadius:150, activationRadius:35},
+    {id:'northern', mc:'MC-12', location:'Farm Curve', name:'Northern Flight', type:'northern', playable:true, core:true, mission:'Northern Flight', lat:52.07236283289121, lng:-1.0138972673152702, detectionRadius:120, activationRadius:30}
   ];
 
   const ELF_RADIO_MISSION = {id:'elf-radio', mc:'COMMS', location:'Communications', name:'ELF FM', type:'radio', playable:true, core:false, mission:'Tune In'};
@@ -59,7 +59,7 @@
   const COMPLETION_MESSAGES = {
     entry:{sender:'MISSION CONTROL',title:'RECOVERY INITIATED',body:'Circuit energy has been routed into Santa-1. The recovery sequence is now underway.'},
     velocity:{sender:'ENGINEERING',title:'RACING PERFORMANCE PROFILE CONFIRMED',body:'Velocity Vault has captured the racing performance data needed to tune Santa-1’s recovery systems.'},
-    luffield:{sender:'COMMUNICATIONS',title:'COMMS LINK RESTORED',body:'Signal Relay has restored two-way communications with Santa-1. Mission Control is receiving Santa loud and clear.'},
+    luffield:{sender:'COMMUNICATIONS',title:'COMMS LINK RESTORED',body:'Comms Relay has restored two-way communications with Santa-1. Mission Control is receiving Santa loud and clear.'},
     power:{sender:'ENGINEERING',title:'POWER STABILISED',body:'Power Pulse has isolated a clean, stable racing-energy supply for Santa-1. It is ready to be stored in the Spirit Core.'},
     spirit:{sender:'MISSION CONTROL',title:'SPIRIT CORE CHARGED',body:'Stored racing energy is stable and Santa-1’s primary power system is back online.'},
     escapade:{sender:'REINDEER RACEWAY',title:'HIGH-SPEED RUN COMPLETE',body:'Reindeer Raceway has confirmed Santa-1’s recovered power can sustain the high-speed output required for flight.'},
@@ -72,8 +72,8 @@
   };
 
   const SLEIGH_STAGES = [
-    {stage:1,progress:0,name:'Grounded',asset:'./assets/sleigh-stage-1.webp',milestone:'Initial State',next:'Circuit Entry',copy:'Santa-1 remains grounded in stripped-back recovery condition. Mission Control is waiting for enough circuit energy to energise the chassis and begin the rebuild.'},
-    {stage:2,progress:10,name:'Recovery Initiated',asset:'./assets/sleigh-stage-2.webp',milestone:'Circuit Entry',next:'Velocity Vault',copy:'Initial circuit energy has been routed into Santa-1. The chassis is energised and the recovery sequence is underway, while the individual sleigh systems remain offline until they are restored.'},
+    {stage:1,progress:0,name:'Grounded',asset:'./assets/sleigh-stage-1.webp',milestone:'Initial State',next:'Circuit Link',copy:'Santa-1 remains grounded in stripped-back recovery condition. Mission Control is waiting for enough circuit energy to energise the chassis and begin the rebuild.'},
+    {stage:2,progress:10,name:'Recovery Initiated',asset:'./assets/sleigh-stage-2.webp',milestone:'Circuit Link',next:'Velocity Vault',copy:'Initial circuit energy has been routed into Santa-1. The chassis is energised and the recovery sequence is underway, while the individual sleigh systems remain offline until they are restored.'},
     {stage:3,progress:40,name:'Core Recovery',asset:'./assets/sleigh-stage-3.webp',milestone:'Power Pulse',next:'Comet Curve',copy:'Power Pulse has isolated and stabilised a clean racing-energy supply for Santa-1. The energy is ready to be stored in the Spirit Core before the recovery can continue.'},
     {stage:4,progress:70,name:'Flight Systems Recovery',asset:'./assets/sleigh-stage-4.webp',milestone:'Comet Curve',next:'Aurora Apex',copy:'Comet Curve has restored Santa-1’s guidance architecture. Flight systems are now being integrated, with steering vectors and control pathways aligned for the remaining propulsion, response and navigation calibrations.'},
     {stage:5,progress:100,name:'Rebuild Complete',asset:'./assets/sleigh-stage-5.webp',milestone:'Aurora Apex',next:'Lapland Launch',copy:'Aurora Apex has locked the navigation network and completed the rebuild. Santa-1 now has a fully restored frame, active flight systems and a confirmed route home, ready for final verification at Lapland Launch.'}

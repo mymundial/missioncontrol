@@ -1,4 +1,4 @@
-# Pass 7.30.0 — Production Audit
+# Pass 7.31.0 — Production Audit
 
 ## Result
 
@@ -6,24 +6,47 @@
 
 ## Production footprint
 
-- `dist/`: **8.150 MiB**
+- `dist/`: **8.149 MiB**
 - Production files: **50**
-- Versus Pass 7.29.0: **+33 bytes** with **no file-count change**.
-- No new assets were added and no existing visual/audio assets were modified.
+- Versus Pass 7.30.0: **-48 bytes** with **no file-count change**.
+- No new assets were added.
 - No WAV/source-master audio is deployed.
 - No test/temp files are deployed.
 - Runtime images remain WebP/SVG and fonts remain WOFF2.
 
-## Power Pulse / Reindeer Raceway swap verified
+## Activation header standard verified
 
-- MC-04 remains **Power Pulse** at National Pit Straight but now uses the existing blue/red energy-stabilisation mechanic.
-- Power Pulse guest-facing copy now frames the task as isolating stable blue racing-energy pulses while rejecting red interference before the energy is stored at Spirit Depot.
-- MC-06 at Escapade is now **Reindeer Raceway** and uses the existing acceleration/high-speed driving mechanic previously assigned to Power Pulse.
-- Reindeer Raceway HUD/live-state/completion copy now describes a high-speed run rather than capturing Power Pulse energy.
-- Completion Comms messages have been updated for both activations.
-- The 40% Sleigh Rebuild milestone now reflects the new sequence: Power Pulse stabilises the energy, Spirit Depot stores it, and Reindeer Raceway later validates high-speed output.
-- GPS coordinates, route order, gameplay physics, acceleration timings, energy-stabilisation rules and audio assets are unchanged.
-- Existing checkpoint IDs remain `power` and `escapade`, preserving saved route/progression compatibility.
+Every open MC activation now uses the shared format:
+
+- `MC## / TRACK LOCATION`
+- `ACTIVATION TITLE`
+
+The activation title, rather than a mission-type label, is now the H1 across the route.
+
+Current route headings:
+
+- MC-01 / National Link Road — Circuit Link
+- MC-02 / Wellington Straight — Velocity Vault
+- MC-03 / Luffield — Comms Relay
+- MC-04 / National Pit Straight — Power Pulse
+- MC-05 / Copse — Spirit Depot
+- MC-06 / Escapade — Reindeer Raceway
+- MC-07 / Becketts — Comet Curve
+- MC-08 / Hangar Straight — Jingle Beams
+- MC-09 / Stowe — Lightspeed Lando
+- MC-10 / Vale — Aurora Apex
+- MC-11 / Hamilton Straight — Lapland Launch
+- MC-12 / Farm Curve — Northern Flight
+
+The separate optional radio/tuner remains named ELF FM.
+
+## Other verified changes
+
+- MC-01 radar and completion references use `Circuit Link`.
+- MC-01 Sleigh milestone/next references use `Circuit Link`.
+- MC-03 completion transmission uses `Comms Relay`.
+- Checkpoint mission metadata was normalised to the activation titles so stale labels such as Performance Scan or Launch Sequence cannot reappear as primary titles.
+- No gameplay, timing, visual assets, audio, GPS coordinates or route order were changed.
 
 ## Automated checks passed
 
@@ -40,8 +63,7 @@
 - Service worker remains retirement-only with no fetch interception/runtime caching.
 - The 13-checkpoint route and handlers remain intact.
 - Lapland Launch still verifies Comms via MC-03 Luffield.
-- Reindeer Raceway acceleration control retains iOS long-press protections.
-- Reindeer Raceway high-speed scene geometry remains fixed and does not dynamically scale with velocity.
+- Reindeer Raceway mobile protections and fixed high-speed geometry remain intact.
 
 ## Non-blocking warnings
 
