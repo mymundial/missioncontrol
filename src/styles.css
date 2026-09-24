@@ -6150,7 +6150,7 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   box-shadow:0 -14px 28px rgba(2,13,22,.88),0 -1px 0 rgba(116,222,246,.12);
 }
 
-/* Pass 7.38.4 — circuit radar framing + opacity refinement */
+/* Pass 7.38.5 — circuit radar scale refinement */
 .mc01-energy-node,
 .mc01-energy-ripple{
   transform-box:fill-box!important;
@@ -6169,8 +6169,8 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .track-radar-map.waiting{opacity:0;}
 .track-radar-art{
   position:absolute;
-  width:calc(var(--circuit-radar-zoom,1.95) * 100%);
-  height:calc(var(--circuit-radar-zoom,1.95) * 60%);
+  width:calc(var(--circuit-radar-zoom,1.6) * 100%);
+  height:calc(var(--circuit-radar-zoom,1.6) * 60%);
   max-width:none;
   background:rgba(104,210,238,.75);
   -webkit-mask:url('../assets/f1-circuit.svg') 0 0/100% 100% no-repeat;

@@ -200,13 +200,13 @@ if(
 } else fail('Circuit demo route','Demo Mode is not using continuous calibrated route progression');
 
 if(
-  /const CIRCUIT_RADAR_ZOOM=1\.95/.test(georef) &&
+  /const CIRCUIT_RADAR_ZOOM=1\.6/.test(georef) &&
   /style=\"--circuit-radar-zoom:\$\{CIRCUIT_RADAR_ZOOM\}\"/.test(runtime) &&
   /\.track-radar-art\{[\s\S]*?f1-circuit\.svg/.test(css) &&
   !/CIRCUIT_RADAR_POLYLINE_POINTS/.test(runtime) &&
   !/track-radar-line/.test(runtime)
 ) {
-  ok('Circuit radar artwork','Radar renders the original circuit SVG at the refined 1.95x local-context scale');
+  ok('Circuit radar artwork','Radar renders the original circuit SVG at the refined 1.6x marker-dominant scale');
 } else fail('Circuit radar artwork','Radar is not using the original circuit SVG at the approved refined scale');
 
 if(

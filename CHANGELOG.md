@@ -1,3 +1,9 @@
+## 7.38.5 — Circuit radar scale refinement
+- Pulled the post-MC01 circuit SVG back again from 1.95x to 1.6x so the fixed centre marker is clearly larger than the track ribbon.
+- More surrounding circuit geometry is now visible within the radar, improving route context without changing the calibrated coordinate mapping.
+- Retained the existing approximately 75% circuit opacity and restrained glow from 7.38.4.
+- Demo/GPS movement, checkpoint positioning, georeferencing and refresh/bootstrap behaviour are unchanged.
+
 ## 7.38.4 — Circuit radar framing + opacity refinement
 - Pulled the post-MC01 circuit SVG back from 2.3x to 1.95x so more local track geometry is visible around the fixed user marker.
 - Increased the visible circuit body to approximately 75% opacity so the road reads more confidently without overpowering the centre marker.

@@ -1,4 +1,4 @@
-# Circuit georeference — Pass 7.38.2
+# Circuit georeference — Pass 7.38.5
 
 ## Purpose
 `CHECKPOINTS[*].lat/lng` is the single source of truth for each installation. The same coordinate now controls:
@@ -47,5 +47,5 @@ Only edit the checkpoint `lat` / `lng` in `src/modules/00-runtime-state.js` (or 
 ## Demo and radar behaviour
 Before MC01, Demo Mode retains the original generic radar. After MC01, Demo Mode maintains a persistent distance along `SILVERSTONE_GP_ROUTE`; it never reseeds near the next checkpoint. Each leg advances only forward along the closed route until it reaches the next checkpoint's projected route distance.
 
-The radar draws the original `assets/f1-circuit.svg` silhouette at a 2.3x close-up scale, while movement follows the calibrated route centreline. Both remain registered through the same coordinate→SVG georeference, so checkpoint lat/lng remains the single source of truth. The reduced 2.3x scale makes the SVG road ribbon approximately the same visual width as the fixed centre marker including its halo on the maximum-size radar.
+The radar draws the original `assets/f1-circuit.svg` silhouette at a 1.6x close-up scale, while movement follows the calibrated route centreline. Both remain registered through the same coordinate→SVG georeference, so checkpoint lat/lng remains the single source of truth. The 1.6x scale deliberately makes the fixed centre marker visually larger than the SVG road ribbon and exposes more local circuit geometry around the guest.
 
