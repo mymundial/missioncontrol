@@ -1,12 +1,12 @@
-# Pass 7.38.10 — Production Audit
+# Pass 7.38.11 — Production Audit
 
-**29 automated checks passed · 0 failures · 3 non-blocking warnings.**
+**30 automated checks passed · 0 failures · 3 non-blocking warnings.**
 
-Validated: production build, generated JS syntax, source/deploy parity, runtime references, dead-asset hygiene, asset integrity, CSS balance, route/handler coverage, the eight-system Lapland dependency, Reindeer Raceway mobile protections, circuit georeferencing, coordinate single-source behaviour, continuous forward Demo route travel, original circuit SVG radar rendering at 1.3x, post-MC01 circuit-radar bootstrap/refresh state, immediate checkpoint handoff, leave-without-completing route progression, Demo route-distance countdown, circuit/user/installation visual hierarchy, post-MC12 full-circuit overview, and the revised MC01 staged scan / direct energy-bloom handoff with web-optimised media.
+Validated: production build, generated JS syntax, source/deploy parity, runtime references, dead-asset hygiene, asset integrity, CSS balance, route/handler coverage, the eight-system Lapland dependency, Reindeer Raceway mobile protections, circuit georeferencing, coordinate single-source behaviour, continuous forward Demo route travel, original circuit SVG radar rendering at 1.3x, post-MC01 circuit-radar bootstrap/refresh state, immediate checkpoint handoff, leave-without-completing route progression, Demo route-distance countdown, circuit/user/installation visual hierarchy, post-MC12 full-circuit overview, MC01 staged scan / direct energy-bloom handoff, and the new universal activation completion hierarchy.
 
-Pass 7.38.10 redistributes MC01 scan timing across visible 25% / 50% / 75% / 100% beats. The scan now reaches 100% after 4.2 seconds and holds there for 750 ms before the energy bloom begins, so more of the waiting time is experienced as active scan progress rather than a static 100% state.
+Pass 7.38.11 removes the redundant small `MISSION COMPLETE` kicker from activation completion cards and makes the main completion heading consistently `MISSION COMPLETE`. Existing mission-specific completion outcomes are preserved as the supporting sentence beneath it, including missions that previously only used a custom completion title.
 
-The `ENERGY TRANSFER COMPLETE` payoff no longer carries the small explanatory paragraph and remains on screen for 3.0 seconds. The `CIRCUIT LINK COMPLETE` card is rendered beneath the full-screen bloom before the bloom fades away, preventing the completed scan from flashing back on screen during the handoff. The supplied Silverstone S mark and optimised Christmas Magic sting remain unchanged.
+For MC01, the mission header support copy changes to `You have now entered the live circuit zone.` when the energy-transfer payoff completes. The original Circuit Link explanation — `Kinetic energy generated on track has created enough power to initiate Santa-1’s recovery.` — now moves into the completion card beneath `MISSION COMPLETE`, replacing `Santa-1's recovery has begun.`. Completion supporting copy uses the same approved challenge support-copy size, line-height and colour treatment as mission-header support text.
 
 No browser visual test was run in this pass.
 

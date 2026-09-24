@@ -1170,7 +1170,8 @@
   }
   function showCompletion(title,copy){
     const mc=document.getElementById('missionContent'); if(!mc) return;
-    mc.innerHTML=`<div class="completion panel"><div class="check">✓</div><div class="kicker">Mission Complete</div><h2>${title}</h2>${copy?`<p>${copy}</p>`:''}<button class="btn primary wide" id="returnRadar">Continue</button></div>`;
+    const outcome=copy||title||'';
+    mc.innerHTML=`<div class="completion panel"><div class="check">✓</div><h2>Mission Complete</h2>${outcome?`<p>${outcome}</p>`:''}<button class="btn primary wide" id="returnRadar">Continue</button></div>`;
     document.getElementById('returnRadar').onclick=()=>completeCurrent(); ping(880,.14,.05);haptic([30,35,70]);
   }
   function showRadioCompletion(){
@@ -1386,7 +1387,9 @@
     // Build the stable completion state while the full-screen bloom still covers
     // the mission, so there is never a frame where the completed scan reappears.
     document.querySelector('.mc01-brand')?.remove();
-    showCompletion('Circuit Link Complete',"Santa-1's recovery has begun.");
+    const missionSupport=document.querySelector('.mc01-head .support-copy');
+    if(missionSupport) missionSupport.textContent='You have now entered the live circuit zone.';
+    showCompletion('Circuit Link Complete',missionInstruction('activation'));
     const bloom=mc01BloomEl;
     if(!bloom) return;
     bloom.classList.add('is-exiting');

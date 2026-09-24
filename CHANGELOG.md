@@ -1,3 +1,10 @@
+## 7.38.11 — Universal mission-complete hierarchy
+- Standardised activation completion cards so the small redundant `MISSION COMPLETE` kicker is removed and the main completion heading is always `MISSION COMPLETE`.
+- Preserved each activation's mission-specific outcome as the supporting sentence beneath the generic completion heading; when an existing completion had no separate copy, its previous completion title is retained as that outcome line.
+- MC01 now changes the header support copy on completion to `You have now entered the live circuit zone.`
+- MC01 moves the original Circuit Link recovery explanation into the completion card beneath `MISSION COMPLETE`, replacing `Santa-1's recovery has begun.`
+- Completion supporting copy now uses the same approved challenge support-copy size, line-height and colour treatment as the mission-header support text.
+
 ## 7.38.10 — MC01 scan pacing + direct completion handoff
 - redistributed MC01 scan timing across visible 25% / 50% / 75% / 100% beats, adding a mid-scan percentage marker while shortening the final 100% hold to 750 ms.
 - removed the small explanatory paragraph from the `ENERGY TRANSFER COMPLETE` payoff so the state is cleaner and readable at a glance.

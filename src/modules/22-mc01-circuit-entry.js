@@ -53,7 +53,9 @@
     // Build the stable completion state while the full-screen bloom still covers
     // the mission, so there is never a frame where the completed scan reappears.
     document.querySelector('.mc01-brand')?.remove();
-    showCompletion('Circuit Link Complete',"Santa-1's recovery has begun.");
+    const missionSupport=document.querySelector('.mc01-head .support-copy');
+    if(missionSupport) missionSupport.textContent='You have now entered the live circuit zone.';
+    showCompletion('Circuit Link Complete',missionInstruction('activation'));
     const bloom=mc01BloomEl;
     if(!bloom) return;
     bloom.classList.add('is-exiting');

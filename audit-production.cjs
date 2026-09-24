@@ -265,6 +265,17 @@ if(
   ok('MC01 energy bloom','Scan registers 25/50/75/100, holds 100% for 750 ms, shows ENERGY TRANSFER COMPLETE for 3.0 s, then reveals the completion card without returning to the scan');
 } else fail('MC01 energy bloom','MC01 scan pacing or direct bloom-to-completion handoff is incomplete');
 
+if(
+  /const outcome=copy\|\|title\|\|'';/.test(runtime) &&
+  /<div class=\"completion panel\"><div class=\"check\">✓<\/div><h2>Mission Complete<\/h2>/.test(runtime) &&
+  !/<div class=\"kicker\">Mission Complete<\/div><h2>\$\{title\}<\/h2>/.test(runtime) &&
+  /You have now entered the live circuit zone\./.test(runtime) &&
+  /showCompletion\('Circuit Link Complete',missionInstruction\('activation'\)\)/.test(runtime) &&
+  /\.completion p\{color:#a9c8d5;font-size:var\(--challenge-support-size\);line-height:var\(--challenge-support-line\);font-weight:400;max-width:380px;/.test(css)
+) {
+  ok('Mission completion hierarchy','Activation completion cards use a single MISSION COMPLETE heading with mission-specific outcome copy; MC01 also announces entry into the live circuit zone');
+} else fail('Mission completion hierarchy','Completion-card hierarchy or MC01 completion copy does not match the approved system');
+
 const mc01Audio=path.join(root,'assets','christmas-magic-01.mp3');
 const mc01Mark=path.join(root,'assets','silverstone-s-mark.webp');
 if(
