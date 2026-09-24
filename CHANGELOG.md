@@ -789,3 +789,13 @@ This pass adds a self-contained static build for Vercel. No Vercel project-setti
 - Removed the guest toast container so transient pop-up messages such as Mission Audio on/off and GPS permission/status notices are no longer displayed in the guest experience. Admin toasts remain available on the admin page.
 - No GPS logic, audio logic, tuner mechanics, messages, missions or route behaviour changed.
 - Bumped runtime asset version to 7.34.0.
+
+
+## Pass 7.35.0 — Comms browser-fit + icon weight refinement
+
+### Updated
+- Switched the Comms Mission Audio tile from the heavy bitmap artwork to a lighter outline speaker glyph that matches the surrounding UI language.
+- Replaced the bottom-nav sleigh bitmap icon with a slimmer outline sleigh mark so the full nav icon set shares the same visual weight.
+- Tightened bottom-nav sizing and spacing so labels sit more comfortably within the bar.
+- Stabilised the app viewport sizing with a shared viewport-height variable so browser rendering is less prone to clipping the bottom navigation.
+- Kept the Comms feed passing underneath the nav bar, but matched its bottom padding to the revised nav height.
