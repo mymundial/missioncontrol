@@ -145,7 +145,7 @@
     const cp=current();
     const modeClass=state.mode==='demo'?' demo-radar-page':'';
     const circuitMode=state.completed.includes('entry');
-    const circuitLayer=circuitMode?`<div class="track-radar-map" id="trackRadarMap" aria-hidden="true"><svg class="track-radar-art track-radar-svg" id="trackRadarArt" viewBox="0 0 ${CIRCUIT_GEOREFERENCE.viewBoxWidth} ${CIRCUIT_GEOREFERENCE.viewBoxHeight}" preserveAspectRatio="xMinYMin meet"><polyline class="track-radar-glow" points="${CIRCUIT_RADAR_POLYLINE_POINTS}"></polyline><polyline class="track-radar-line" points="${CIRCUIT_RADAR_POLYLINE_POINTS}"></polyline></svg><span class="track-radar-target hidden" id="trackRadarTarget"></span></div>`:'';
+    const circuitLayer=circuitMode?`<div class="track-radar-map" id="trackRadarMap" aria-hidden="true" style="--circuit-radar-zoom:${CIRCUIT_RADAR_ZOOM}"><div class="track-radar-art" id="trackRadarArt"></div><span class="track-radar-target hidden" id="trackRadarTarget"></span></div>`:'';
     return `<section class="radar-page${modeClass}">${statusStrip()}<section class="radar-zone" aria-label="Live checkpoint radar"><section class="radar-wrap"><div class="radar${circuitMode?' circuit-radar':''}">${circuitLayer}<div class="sweep"></div><div class="user-dot"></div>${cp?'<div class="target-dot hidden"></div>':''}</div></section></section>${radarMessage(cp)}</section>`;
   }
   function missionStatus(cp){

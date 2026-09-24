@@ -76,13 +76,11 @@
   }
 
 
-  // Radar rendering uses the same georeferenced route model as GPS/demo movement.
-  // This avoids drawing the older thick filled circuit silhouette and guarantees
-  // that the user dot stays centred on the exact route the demo follows.
-  const CIRCUIT_RADAR_POLYLINE_POINTS=SILVERSTONE_GP_ROUTE.map(([lat,lng])=>{
-    const point=geoToCircuitPoint(lat,lng);
-    return `${point.x.toFixed(3)},${point.y.toFixed(3)}`;
-  }).join(' ');
+  // Radar uses the original filled circuit SVG as the visible road shape while
+  // GPS/Demo movement still follows SILVERSTONE_GP_ROUTE. At 2.3x zoom the
+  // circuit ribbon is roughly the same visual width as the fixed centre marker
+  // (including its halo) on the maximum-size radar.
+  const CIRCUIT_RADAR_ZOOM=2.3;
 
   function forwardRouteDistance(fromDistance,toDistance){
     return normaliseRouteDistance(Number(toDistance)-Number(fromDistance));

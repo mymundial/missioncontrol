@@ -129,10 +129,10 @@
     const userPoint=geoToCircuitPoint(fix.lat,fix.lng);
     if(!userPoint){map.classList.add('waiting');if(target)target.classList.add('hidden');return;}
     map.classList.remove('waiting');
-    // The SVG is 210 units wide. At 4.6x radar width, each SVG unit occupies
-    // 4.6/210 of the radar diameter. Keeping the user fixed at 50/50 means the
-    // circuit moves beneath the centre point as GPS changes.
-    const zoom=4.6;
+    // Keep the user fixed at 50/50 while the original circuit SVG moves below
+    // them. The shared reduced zoom keeps the SVG road ribbon approximately the
+    // same visual width as the centre marker instead of reading as a heavy band.
+    const zoom=CIRCUIT_RADAR_ZOOM;
     const unitPct=zoom*100/CIRCUIT_GEOREFERENCE.viewBoxWidth;
     art.style.left=`calc(50% - ${userPoint.x*unitPct}%)`;
     art.style.top=`calc(50% - ${userPoint.y*unitPct}%)`;

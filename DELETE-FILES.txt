@@ -1,1 +1,2 @@
 assets/system-launch.svg
+assets/mission-audio-icon.webp

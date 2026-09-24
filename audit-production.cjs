@@ -199,9 +199,15 @@ if(
   ok('Circuit demo route','Post-MC01 Demo Mode persists lap position and travels continuously forward along the calibrated route');
 } else fail('Circuit demo route','Demo Mode is not using continuous calibrated route progression');
 
-if(/CIRCUIT_RADAR_POLYLINE_POINTS/.test(runtime) && /track-radar-line/.test(runtime) && /vector-effect:non-scaling-stroke/.test(css)) {
-  ok('Circuit radar line','Radar circuit is rendered from the calibrated centreline with a thin non-scaling stroke');
-} else fail('Circuit radar line','Radar circuit is not using the calibrated thin centreline treatment');
+if(
+  /const CIRCUIT_RADAR_ZOOM=2\.3/.test(georef) &&
+  /style=\"--circuit-radar-zoom:\$\{CIRCUIT_RADAR_ZOOM\}\"/.test(runtime) &&
+  /\.track-radar-art\{[\s\S]*?f1-circuit\.svg/.test(css) &&
+  !/CIRCUIT_RADAR_POLYLINE_POINTS/.test(runtime) &&
+  !/track-radar-line/.test(runtime)
+) {
+  ok('Circuit radar artwork','Radar renders the original circuit SVG at the reduced 2.3x marker-matched scale');
+} else fail('Circuit radar artwork','Radar is not using the original circuit SVG at the approved reduced scale');
 
 // 12) External runtime dependencies / launch notes.
 const urls=[...runtime.matchAll(/https:\/\/[^'"`\s)]+/g)].map(m=>m[0]);

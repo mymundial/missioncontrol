@@ -1,3 +1,10 @@
+## 7.38.2 — Circuit SVG radar scale correction
+- Restored the original `assets/f1-circuit.svg` silhouette as the visible post-MC01 radar circuit instead of the thin route-centreline polyline.
+- Reduced circuit radar zoom from 4.6x to 2.3x so the SVG road ribbon reads at approximately the same visual width as the fixed centre user marker including its halo.
+- Kept the calibrated `SILVERSTONE_GP_ROUTE` exclusively for GPS/Demo movement, so Demo Mode continues to travel monotonically along the circuit without changing the visual asset.
+- The circuit SVG is rendered as a restrained cyan mask with a minimal glow while installation positions continue to derive from master lat/lng coordinates.
+- Removed two already-retired, unreferenced production assets (`mission-audio-icon.webp` and `system-launch.svg`) so the expanded production audit remains clean.
+
 ## 7.38.1 — Continuous Demo circuit travel + radar track refinement
 - Demo Mode now keeps a persistent route-distance position after MC01 and moves continuously forward around the calibrated GP lap between every subsequent mission.
 - Removed the old behaviour that restarted Demo 180 m before each next checkpoint, eliminating backward movement and cross-track jumps.

@@ -6150,7 +6150,7 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   box-shadow:0 -14px 28px rgba(2,13,22,.88),0 -1px 0 rgba(116,222,246,.12);
 }
 
-/* Pass 7.38.0 — georeferenced circuit radar */
+/* Pass 7.38.2 — original circuit SVG at marker-matched radar scale */
 .mc01-energy-node,
 .mc01-energy-ripple{
   transform-box:fill-box!important;
@@ -6169,28 +6169,15 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .track-radar-map.waiting{opacity:.28;}
 .track-radar-art{
   position:absolute;
-  width:460%;
+  width:calc(var(--circuit-radar-zoom,2.3) * 100%);
+  height:calc(var(--circuit-radar-zoom,2.3) * 60%);
   max-width:none;
-  height:auto;
-  overflow:visible;
-  opacity:.9;
+  background:rgba(104,210,238,.34);
+  -webkit-mask:url('../assets/f1-circuit.svg') 0 0/100% 100% no-repeat;
+  mask:url('../assets/f1-circuit.svg') 0 0/100% 100% no-repeat;
+  filter:drop-shadow(0 0 1px rgba(125,226,249,.34)) drop-shadow(0 0 5px rgba(68,190,226,.14));
+  opacity:.86;
   transition:left .12s linear,top .12s linear;
-}
-.track-radar-svg{display:block;}
-.track-radar-svg polyline{
-  fill:none;
-  stroke-linecap:round;
-  stroke-linejoin:round;
-  vector-effect:non-scaling-stroke;
-}
-.track-radar-glow{
-  stroke:rgba(82,204,238,.18);
-  stroke-width:5px;
-  filter:drop-shadow(0 0 3px rgba(77,211,247,.2));
-}
-.track-radar-line{
-  stroke:rgba(135,225,248,.82);
-  stroke-width:1.35px;
 }
 .track-radar-target{
   position:absolute;

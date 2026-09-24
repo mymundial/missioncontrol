@@ -479,13 +479,11 @@
   }
 
 
-  // Radar rendering uses the same georeferenced route model as GPS/demo movement.
-  // This avoids drawing the older thick filled circuit silhouette and guarantees
-  // that the user dot stays centred on the exact route the demo follows.
-  const CIRCUIT_RADAR_POLYLINE_POINTS=SILVERSTONE_GP_ROUTE.map(([lat,lng])=>{
-    const point=geoToCircuitPoint(lat,lng);
-    return `${point.x.toFixed(3)},${point.y.toFixed(3)}`;
-  }).join(' ');
+  // Radar uses the original filled circuit SVG as the visible road shape while
+  // GPS/Demo movement still follows SILVERSTONE_GP_ROUTE. At 2.3x zoom the
+  // circuit ribbon is roughly the same visual width as the fixed centre marker
+  // (including its halo) on the maximum-size radar.
+  const CIRCUIT_RADAR_ZOOM=2.3;
 
   function forwardRouteDistance(fromDistance,toDistance){
     return normaliseRouteDistance(Number(toDistance)-Number(fromDistance));
@@ -703,7 +701,7 @@
     const cp=current();
     const modeClass=state.mode==='demo'?' demo-radar-page':'';
     const circuitMode=state.completed.includes('entry');
-    const circuitLayer=circuitMode?`<div class="track-radar-map" id="trackRadarMap" aria-hidden="true"><svg class="track-radar-art track-radar-svg" id="trackRadarArt" viewBox="0 0 ${CIRCUIT_GEOREFERENCE.viewBoxWidth} ${CIRCUIT_GEOREFERENCE.viewBoxHeight}" preserveAspectRatio="xMinYMin meet"><polyline class="track-radar-glow" points="${CIRCUIT_RADAR_POLYLINE_POINTS}"></polyline><polyline class="track-radar-line" points="${CIRCUIT_RADAR_POLYLINE_POINTS}"></polyline></svg><span class="track-radar-target hidden" id="trackRadarTarget"></span></div>`:'';
+    const circuitLayer=circuitMode?`<div class="track-radar-map" id="trackRadarMap" aria-hidden="true" style="--circuit-radar-zoom:${CIRCUIT_RADAR_ZOOM}"><div class="track-radar-art" id="trackRadarArt"></div><span class="track-radar-target hidden" id="trackRadarTarget"></span></div>`:'';
     return `<section class="radar-page${modeClass}">${statusStrip()}<section class="radar-zone" aria-label="Live checkpoint radar"><section class="radar-wrap"><div class="radar${circuitMode?' circuit-radar':''}">${circuitLayer}<div class="sweep"></div><div class="user-dot"></div>${cp?'<div class="target-dot hidden"></div>':''}</div></section></section>${radarMessage(cp)}</section>`;
   }
   function missionStatus(cp){
@@ -1511,10 +1509,10 @@
     const userPoint=geoToCircuitPoint(fix.lat,fix.lng);
     if(!userPoint){map.classList.add('waiting');if(target)target.classList.add('hidden');return;}
     map.classList.remove('waiting');
-    // The SVG is 210 units wide. At 4.6x radar width, each SVG unit occupies
-    // 4.6/210 of the radar diameter. Keeping the user fixed at 50/50 means the
-    // circuit moves beneath the centre point as GPS changes.
-    const zoom=4.6;
+    // Keep the user fixed at 50/50 while the original circuit SVG moves below
+    // them. The shared reduced zoom keeps the SVG road ribbon approximately the
+    // same visual width as the centre marker instead of reading as a heavy band.
+    const zoom=CIRCUIT_RADAR_ZOOM;
     const unitPct=zoom*100/CIRCUIT_GEOREFERENCE.viewBoxWidth;
     art.style.left=`calc(50% - ${userPoint.x*unitPct}%)`;
     art.style.top=`calc(50% - ${userPoint.y*unitPct}%)`;
