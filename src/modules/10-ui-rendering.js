@@ -231,7 +231,7 @@
       return `<div class="mission-head diagnostics-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><div class="diagnostics-brand"><img src="./assets/audi-rings.webp" alt="Audi"></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
     }
     if(cp.type==='activation'){
-      return `<div class="mission-head mc01-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
+      return `<div class="mission-head mc01-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><div class="mc01-brand"><img src="./assets/silverstone-s-mark.webp" alt="Silverstone"></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
     }
     if(cp.type==='spirit'){
       return `<div class="mission-head spirit-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;

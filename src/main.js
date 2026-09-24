@@ -789,7 +789,7 @@
       return `<div class="mission-head diagnostics-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><div class="diagnostics-brand"><img src="./assets/audi-rings.webp" alt="Audi"></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
     }
     if(cp.type==='activation'){
-      return `<div class="mission-head mc01-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
+      return `<div class="mission-head mc01-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><div class="mc01-brand"><img src="./assets/silverstone-s-mark.webp" alt="Silverstone"></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
     }
     if(cp.type==='spirit'){
       return `<div class="mission-head spirit-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
@@ -1332,10 +1332,29 @@
     }, 45);
   }
   let mc01Timers=[];
+  let mc01BloomEl=null;
+  let mc01BloomAudio=null;
+
+  function getMc01BloomAudio(){
+    if(!mc01BloomAudio){
+      mc01BloomAudio=new Audio('./assets/christmas-magic-01.mp3');
+      mc01BloomAudio.preload='auto';
+      mc01BloomAudio.volume=.92;
+    }
+    return mc01BloomAudio;
+  }
+
+  function stopMc01Bloom(){
+    if(mc01BloomEl){mc01BloomEl.remove();mc01BloomEl=null;}
+    if(mc01BloomAudio){
+      try{mc01BloomAudio.pause();mc01BloomAudio.currentTime=0;}catch{}
+    }
+  }
 
   function stopMc01Activation(){
     mc01Timers.forEach(clearTimeout);
     mc01Timers=[];
+    stopMc01Bloom();
   }
 
   function mc01Later(fn,delay){
@@ -1344,6 +1363,22 @@
       fn();
     },delay);
     mc01Timers.push(timer);
+  }
+
+  function showMc01EnergyBloom(){
+    if(state.missionOpen!=='entry'||mc01BloomEl) return;
+    const el=document.createElement('div');
+    el.className='mc01-energy-bloom';
+    el.setAttribute('role','status');
+    el.setAttribute('aria-live','polite');
+    el.innerHTML=`<div class="mc01-bloom-field" aria-hidden="true"><i></i><i></i><i></i></div><div class="mc01-bloom-copy"><img class="mc01-bloom-mark" src="./assets/silverstone-s-mark.webp" alt=""><div class="kicker">Circuit Link</div><h1>Energy Transfer Complete</h1><p>Circuit energy has been routed to Santa-1. Recovery sequence initiated.</p></div>`;
+    document.body.appendChild(el);
+    mc01BloomEl=el;
+    if(state.audio){
+      const audio=getMc01BloomAudio();
+      try{audio.currentTime=0;audio.play().catch(()=>{});}catch{}
+    }
+    haptic([45,35,90]);
   }
 
   function bindCircuitEntryActivation(){
@@ -1355,6 +1390,7 @@
     if(!panel||!stateLabel||!stateValue||!transferValue||!transferFill) return;
 
     stopMc01Activation();
+    if(state.audio) getMc01BloomAudio();
 
     const setProgress=value=>{
       const progress=Math.max(0,Math.min(100,Number(value)||0));
@@ -1390,11 +1426,21 @@
       haptic([30,35,70]);
     },3150);
 
+    // Leave the completed 100% scan on screen long enough to register before
+    // the full-screen energy reaction begins.
+    mc01Later(()=>{
+      showMc01EnergyBloom();
+    },4650);
+
+    // The bloom is a readable payoff state, not a single-frame transition.
+    // Its duration is aligned to the 4.57 s production sting before returning
+    // to the stable mission-complete card.
     mc01Later(()=>{
       stopMc01Activation();
       if(state.missionOpen!=='entry') return;
+      document.querySelector('.mc01-brand')?.remove();
       showCompletion('Circuit Link Complete',"Santa-1's recovery has begun.");
-    },4350);
+    },9350);
   }
   function startGpsWatch(){
     if(state.gpsEnabled===false||gpsWatchId!==null||!navigator.geolocation) return;

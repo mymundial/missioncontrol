@@ -250,6 +250,27 @@ if(
   ok('Final circuit overview','Northern Flight completion shows the full centred circuit with no user/checkpoint navigation markers while the radar sweep remains active');
 } else fail('Final circuit overview','Post-MC12 full-circuit completion state is incomplete');
 
+if(
+  /silverstone-s-mark\.webp/.test(runtime) &&
+  /christmas-magic-01\.mp3/.test(runtime) &&
+  /showMc01EnergyBloom/.test(runtime) &&
+  /},4650\);/.test(runtime) &&
+  /},9350\);/.test(runtime) &&
+  /Energy Transfer Complete/.test(runtime) &&
+  /\.mc01-energy-bloom/.test(css)
+) {
+  ok('MC01 energy bloom','100% scan holds for 1.5 s, then shows a readable full-screen energy bloom before the mission-complete card');
+} else fail('MC01 energy bloom','MC01 bloom sequencing, copy or visual layer is incomplete');
+
+const mc01Audio=path.join(root,'assets','christmas-magic-01.mp3');
+const mc01Mark=path.join(root,'assets','silverstone-s-mark.webp');
+if(
+  fs.existsSync(mc01Audio) && fs.statSync(mc01Audio).size<=64*1024 &&
+  fs.existsSync(mc01Mark) && fs.statSync(mc01Mark).size<=12*1024
+) {
+  ok('MC01 web assets',`Bloom audio ${formatBytes(fs.statSync(mc01Audio).size)}; S mark ${formatBytes(fs.statSync(mc01Mark).size)}`);
+} else fail('MC01 web assets','Bloom audio or S mark exceeds the intended web-optimised footprint');
+
 // 12) External runtime dependencies / launch notes.
 const urls=[...runtime.matchAll(/https:\/\/[^'"`\s)]+/g)].map(m=>m[0]);
 const uniqueUrls=[...new Set(urls)];

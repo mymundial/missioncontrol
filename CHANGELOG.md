@@ -1,3 +1,11 @@
+## 7.38.9 — MC01 energy bloom payoff
+- Added the supplied Silverstone S mark above the Circuit Link title on the MC01 scan screen, using an optimised transparent WebP asset.
+- MC01 now holds the completed 100% Energy Transfer state for 1.5 seconds so guests can consciously register the successful scan before the reaction begins.
+- Added a full-screen Circuit Link energy bloom with a fast cyan/white sweep, radial energy pulse and a readable `ENERGY TRANSFER COMPLETE` payoff state.
+- The energy bloom remains visible for 4.7 seconds before returning to the existing stable `CIRCUIT LINK COMPLETE` screen and `CONTINUE` CTA.
+- Added the supplied `Christmas Magic 01` sting, web-optimised from 320 kbps to 96 kbps MP3 (about 54 KB), preloaded with MC01 when Mission Audio is enabled and fired with the bloom.
+- Exiting MC01 now also cleans up any active bloom overlay and stops/resets the bloom audio.
+
 ## 7.38.8 — Final full-circuit radar state
 - After MC12 / Northern Flight is completed, Radar now leaves the moving local-navigation view and shows the complete Silverstone circuit SVG centred within the radar face.
 - The final circuit overview is fixed at 84% radar width (50.4% height to preserve the 210:126 SVG aspect ratio), giving the full circuit comfortable breathing room inside the bezel.
