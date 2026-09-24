@@ -1925,6 +1925,16 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   margin-left:auto!important;
   margin-right:auto!important;
 }
+/* ELF FM instruction is short enough to read as one clean line; let it use the full mission-header width. */
+.mission-radio .mission-head{
+  margin-left:8px;
+  margin-right:8px;
+}
+.mission-radio .mission-head p.support-copy{
+  width:100%;
+  max-width:none!important;
+  white-space:nowrap;
+}
 @media(max-height:740px), (max-height:660px){
   .mission-head h1,
   .diagnostics-head h1{font-size:var(--challenge-title-size)!important;line-height:1.05!important;}
