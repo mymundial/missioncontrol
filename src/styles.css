@@ -6086,3 +6086,68 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 
 /* ELF FM uses the same illuminated-state language as the other settings; no action/status sublabel. */
 .mission-setting-toggle.radio-setting .mission-setting-copy{gap:0;}
+
+
+/* Pass 7.36.8 — Missions log header + scrolling boundary polish */
+.screen>.missions-log,
+.nav-view>.missions-log{
+  flex:1 1 auto;
+  min-height:0;
+  overflow:hidden;
+  margin:0 var(--page-gutter) 0;
+  padding:0;
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  gap:0;
+}
+.missions-log .comms-section-title{
+  position:relative;
+  top:auto;
+  z-index:4;
+  flex:0 0 auto;
+  background:transparent;
+  padding:4px 2px 8px;
+}
+.missions-feed-viewport{
+  position:relative;
+  flex:1 1 auto;
+  min-height:0;
+  overflow:hidden;
+}
+.missions-feed-viewport::before,
+.missions-feed-viewport::after{
+  content:"";
+  position:absolute;
+  z-index:4;
+  left:0;
+  right:0;
+  height:1px;
+  pointer-events:none;
+  background:linear-gradient(90deg,rgba(87,199,230,.08),rgba(116,222,246,.46) 18%,rgba(116,222,246,.46) 82%,rgba(87,199,230,.08));
+}
+.missions-feed-viewport::before{top:0;}
+.missions-feed-viewport::after{display:none;}
+.missions-feed-scroll{
+  height:100%;
+  min-height:0;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  display:block;
+  padding:9px 0 calc(var(--nav-h) + var(--nav-safe) + 12px);
+  scrollbar-width:none;
+}
+.missions-feed-scroll::-webkit-scrollbar{display:none;}
+.missions-log .missions-list{
+  margin-top:0;
+  padding-bottom:0;
+  gap:10px;
+}
+.missions-log .mission-row{
+  align-self:start;
+}
+.phone:has(.nav-view[data-view="missions"]) .nav{
+  border-top-color:rgba(82,176,208,.46);
+  box-shadow:0 -14px 28px rgba(2,13,22,.88),0 -1px 0 rgba(116,222,246,.12);
+}
