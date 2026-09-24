@@ -1,3 +1,11 @@
+# Pass 7.38.13 — Radar circuit crispness + scan layering
+
+- removed the white outline from post-MC01 installation markers; markers now use a solid circuit-cyan body with only a tight restrained cyan halo.
+- removed the remaining circuit SVG drop-shadow so the full-opacity circuit mask renders as a cleaner, harder-edged navigation trace.
+- moved the radar sweep above both the circuit SVG and installation markers so they are visibly scanned by the radar beam.
+- kept the fixed guest marker above the sweep so the user position remains the clearest navigation reference.
+- circuit scale, georeferencing, route movement, checkpoint handoff and Demo countdown behaviour are unchanged.
+
 # Pass 7.38.12 — MC01 Circuit Link scan language
 
 - changed the MC01 mission subtitle to `You have now entered the live circuit zone.` from the moment the activation opens, including the scan state.

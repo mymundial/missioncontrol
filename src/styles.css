@@ -6275,7 +6275,7 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   background:#69d4ef;
   -webkit-mask:url('../assets/f1-circuit.svg') 0 0/100% 100% no-repeat;
   mask:url('../assets/f1-circuit.svg') 0 0/100% 100% no-repeat;
-  filter:drop-shadow(0 0 1.5px rgba(105,212,239,.52));
+  filter:none;
   opacity:1;
   transition:left .12s linear,top .12s linear;
 }
@@ -6286,15 +6286,15 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   height:20px;
   border-radius:50%;
   background:#69d4ef;
-  border:2px solid #dffaff;
-  box-shadow:0 0 4px rgba(223,250,255,.9),0 0 9px rgba(105,212,239,.45);
+  border:0;
+  box-shadow:0 0 4px rgba(105,212,239,.28);
   transform:translate(-50%,-50%);
   transition:left .12s linear,top .12s linear,opacity .2s ease;
 }
 .track-radar-target.hidden{opacity:0;}
-.radar.circuit-radar .sweep{z-index:1;}
+.radar.circuit-radar .sweep{z-index:5;pointer-events:none;}
 .radar.circuit-radar .user-dot{
-  z-index:5;
+  z-index:6;
   width:12px;
   height:12px;
   background:#fff;
