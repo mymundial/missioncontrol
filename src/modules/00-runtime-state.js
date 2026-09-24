@@ -103,6 +103,7 @@
     messages:[],
     messageSeq:0,
     messageAlert:false,
+    demoRouteDistance:null,
     routeRevision:5
   };
 
@@ -161,7 +162,8 @@
         distance:liveMode?null:(Number.isFinite(parsed.distance)?parsed.distance:null),
         gpsAccuracy:liveMode?null:(Number.isFinite(parsed.gpsAccuracy)?parsed.gpsAccuracy:null),
         gpsCondition:liveMode?(parsed.gpsEnabled===false?'OFF':'WAITING'):(parsed.gpsCondition||defaults.gpsCondition),
-        gpsEnabled:parsed.gpsEnabled!==undefined?Boolean(parsed.gpsEnabled):liveMode
+        gpsEnabled:parsed.gpsEnabled!==undefined?Boolean(parsed.gpsEnabled):liveMode,
+        demoRouteDistance:parsed.mode==='demo'&&parsed.demoRouteDistance!==null&&parsed.demoRouteDistance!==undefined&&Number.isFinite(Number(parsed.demoRouteDistance))?Number(parsed.demoRouteDistance):null
       };
     } catch { return {...defaults}; }
   }

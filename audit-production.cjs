@@ -209,6 +209,17 @@ if(
   ok('Circuit radar artwork','Radar renders the original circuit SVG at the reduced 2.3x marker-matched scale');
 } else fail('Circuit radar artwork','Radar is not using the original circuit SVG at the approved reduced scale');
 
+if(
+  /demoRouteDistance:null/.test(runtime) &&
+  /state\.demoRouteDistance=routePoint\.distance/.test(runtime) &&
+  /function restoreDemoCircuitPosition\(/.test(runtime) &&
+  /track-radar-map waiting/.test(runtime) &&
+  /\.track-radar-map\.waiting\{opacity:0;\}/.test(css) &&
+  /map\.classList\.remove\('waiting'\)/.test(runtime)
+) {
+  ok('Circuit radar bootstrap','Unpositioned circuit art stays hidden; Demo lap distance is persisted and restored after refresh');
+} else fail('Circuit radar bootstrap','Circuit radar refresh/bootstrap protections are incomplete');
+
 // 12) External runtime dependencies / launch notes.
 const urls=[...runtime.matchAll(/https:\/\/[^'"`\s)]+/g)].map(m=>m[0]);
 const uniqueUrls=[...new Set(urls)];

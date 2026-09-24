@@ -103,6 +103,7 @@
     messages:[],
     messageSeq:0,
     messageAlert:false,
+    demoRouteDistance:null,
     routeRevision:5
   };
 
@@ -161,7 +162,8 @@
         distance:liveMode?null:(Number.isFinite(parsed.distance)?parsed.distance:null),
         gpsAccuracy:liveMode?null:(Number.isFinite(parsed.gpsAccuracy)?parsed.gpsAccuracy:null),
         gpsCondition:liveMode?(parsed.gpsEnabled===false?'OFF':'WAITING'):(parsed.gpsCondition||defaults.gpsCondition),
-        gpsEnabled:parsed.gpsEnabled!==undefined?Boolean(parsed.gpsEnabled):liveMode
+        gpsEnabled:parsed.gpsEnabled!==undefined?Boolean(parsed.gpsEnabled):liveMode,
+        demoRouteDistance:parsed.mode==='demo'&&parsed.demoRouteDistance!==null&&parsed.demoRouteDistance!==undefined&&Number.isFinite(Number(parsed.demoRouteDistance))?Number(parsed.demoRouteDistance):null
       };
     } catch { return {...defaults}; }
   }
@@ -701,7 +703,7 @@
     const cp=current();
     const modeClass=state.mode==='demo'?' demo-radar-page':'';
     const circuitMode=state.completed.includes('entry');
-    const circuitLayer=circuitMode?`<div class="track-radar-map" id="trackRadarMap" aria-hidden="true" style="--circuit-radar-zoom:${CIRCUIT_RADAR_ZOOM}"><div class="track-radar-art" id="trackRadarArt"></div><span class="track-radar-target hidden" id="trackRadarTarget"></span></div>`:'';
+    const circuitLayer=circuitMode?`<div class="track-radar-map waiting" id="trackRadarMap" aria-hidden="true" style="--circuit-radar-zoom:${CIRCUIT_RADAR_ZOOM}"><div class="track-radar-art" id="trackRadarArt"></div><span class="track-radar-target hidden" id="trackRadarTarget"></span></div>`:'';
     return `<section class="radar-page${modeClass}">${statusStrip()}<section class="radar-zone" aria-label="Live checkpoint radar"><section class="radar-wrap"><div class="radar${circuitMode?' circuit-radar':''}">${circuitLayer}<div class="sweep"></div><div class="user-dot"></div>${cp?'<div class="target-dot hidden"></div>':''}</div></section></section>${radarMessage(cp)}</section>`;
   }
   function missionStatus(cp){
@@ -1495,7 +1497,12 @@
   }
 
   function activeRadarGeoPosition(){
-    if(state.mode==='demo'&&demoTrackPosition&&Number.isFinite(demoTrackPosition.lat)&&Number.isFinite(demoTrackPosition.lng)) return demoTrackPosition;
+    if(state.mode==='demo'){
+      if(demoTrackPosition&&Number.isFinite(demoTrackPosition.lat)&&Number.isFinite(demoTrackPosition.lng)) return demoTrackPosition;
+      const restored=restoreDemoCircuitPosition();
+      if(restored) return restored;
+      return null;
+    }
     if(lastGps&&Number.isFinite(lastGps.lat)&&Number.isFinite(lastGps.lng)) return lastGps;
     return null;
   }
@@ -1508,10 +1515,9 @@
     if(!fix){map.classList.add('waiting');if(target)target.classList.add('hidden');return;}
     const userPoint=geoToCircuitPoint(fix.lat,fix.lng);
     if(!userPoint){map.classList.add('waiting');if(target)target.classList.add('hidden');return;}
-    map.classList.remove('waiting');
     // Keep the user fixed at 50/50 while the original circuit SVG moves below
-    // them. The shared reduced zoom keeps the SVG road ribbon approximately the
-    // same visual width as the centre marker instead of reading as a heavy band.
+    // them. Position the artwork completely before revealing the layer so a
+    // refresh can never paint the SVG at its uninitialised 0/0 browser default.
     const zoom=CIRCUIT_RADAR_ZOOM;
     const unitPct=zoom*100/CIRCUIT_GEOREFERENCE.viewBoxWidth;
     art.style.left=`calc(50% - ${userPoint.x*unitPct}%)`;
@@ -1524,6 +1530,7 @@
         target.classList.toggle('hidden',!state.targetVisible);
       }else target.classList.add('hidden');
     }
+    map.classList.remove('waiting');
   }
 
   function updateRadarLive(){
@@ -1560,10 +1567,11 @@
   function startDemoExperience(){
     clearDemo();
     stopGpsWatch();
+    lastGps=null;
     demoHoldUntil=Date.now()+900;
     demoTrackPosition=null;
     demoTrackDistance=null;
-    state={...state,onboarded:true,bootDone:true,mode:'demo',gpsEnabled:false,nav:'radar',completed:[],available:[],routeIndex:1,targetVisible:false,targetInRange:false,distance:null,gpsCondition:'DEMO'};
+    state={...state,onboarded:true,bootDone:true,mode:'demo',gpsEnabled:false,nav:'radar',completed:[],available:[],routeIndex:1,targetVisible:false,targetInRange:false,distance:null,gpsCondition:'DEMO',demoRouteDistance:null};
     save();
     ensureOpeningMessage();
     render();
@@ -1583,8 +1591,49 @@
     // Fallback in case a navigation/render transition interrupted the first timer.
     setTimeout(arm,2600);
   }
+
+  function setDemoCircuitPosition(routeDistance){
+    if(routeDistance===null||routeDistance===undefined||!Number.isFinite(Number(routeDistance))) return null;
+    const routePoint=routePointAtDistance(Number(routeDistance));
+    demoTrackDistance=routePoint.distance;
+    demoTrackPosition={lat:routePoint.lat,lng:routePoint.lng,accuracy:5,timestamp:Date.now()};
+    state.demoRouteDistance=routePoint.distance;
+    return routePoint;
+  }
+
+  function restoreDemoCircuitPosition(){
+    if(state.mode!=='demo'||!state.completed.includes('entry')) return null;
+    if(demoTrackPosition&&Number.isFinite(demoTrackPosition.lat)&&Number.isFinite(demoTrackPosition.lng)) return demoTrackPosition;
+
+    const persisted=state.demoRouteDistance;
+    if(persisted!==null&&persisted!==undefined&&Number.isFinite(Number(persisted))){
+      const routePoint=setDemoCircuitPosition(Number(persisted));
+      return routePoint?demoTrackPosition:null;
+    }
+
+    // Older/demo sessions can reach the post-MC01 radar without a persisted
+    // route distance. Seed from the checkpoint the guest is actually at, or
+    // otherwise from the most recently completed route checkpoint.
+    let seedCp=null;
+    const activeCp=current();
+    if(state.targetInRange&&activeCp) seedCp=activeCp;
+    if(!seedCp){
+      for(let i=Math.min(CHECKPOINTS.length-1,Math.max(ROUTE_START_INDEX,state.routeIndex-1));i>=ROUTE_START_INDEX;i--){
+        const candidate=CHECKPOINTS[i];
+        if(candidate&&state.completed.includes(candidate.id)){seedCp=candidate;break;}
+      }
+    }
+    const seedCfg=activeConfig(seedCp);
+    const projected=seedCfg?projectGeoToRoute(seedCfg.lat,seedCfg.lng):null;
+    if(!projected) return null;
+    const routePoint=setDemoCircuitPosition(projected.distance);
+    save();
+    return routePoint?demoTrackPosition:null;
+  }
   function demoRouteSeedDistance(cp){
     if(Number.isFinite(demoTrackDistance)) return normaliseRouteDistance(demoTrackDistance);
+    const restored=restoreDemoCircuitPosition();
+    if(restored&&Number.isFinite(demoTrackDistance)) return normaliseRouteDistance(demoTrackDistance);
     const targetIndex=checkpointIndex(cp?.id);
     for(let i=targetIndex-1;i>=ROUTE_START_INDEX;i--){
       const previous=CHECKPOINTS[i];
@@ -1612,9 +1661,7 @@
     let travelled=0;
 
     const updatePosition=routeDistance=>{
-      const routePoint=routePointAtDistance(routeDistance);
-      demoTrackDistance=routePoint.distance;
-      demoTrackPosition={lat:routePoint.lat,lng:routePoint.lng,accuracy:5,timestamp:Date.now()};
+      const routePoint=setDemoCircuitPosition(routeDistance);
       const d=distanceMetres(routePoint.lat,routePoint.lng,cfg.lat,cfg.lng);
       state.distance=d;
       state.bearing=bearingDegrees(routePoint.lat,routePoint.lng,cfg.lat,cfg.lng);
@@ -1625,9 +1672,7 @@
     };
 
     const finishAtTarget=()=>{
-      const routePoint=routePointAtDistance(targetProjection.distance);
-      demoTrackDistance=routePoint.distance;
-      demoTrackPosition={lat:routePoint.lat,lng:routePoint.lng,accuracy:5,timestamp:Date.now()};
+      const routePoint=setDemoCircuitPosition(targetProjection.distance);
       const d=distanceMetres(routePoint.lat,routePoint.lng,cfg.lat,cfg.lng);
       state.targetVisible=true;state.targetInRange=true;state.distance=d;
       state.bearing=bearingDegrees(routePoint.lat,routePoint.lng,cfg.lat,cfg.lng);

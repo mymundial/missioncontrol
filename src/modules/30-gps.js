@@ -115,7 +115,12 @@
   }
 
   function activeRadarGeoPosition(){
-    if(state.mode==='demo'&&demoTrackPosition&&Number.isFinite(demoTrackPosition.lat)&&Number.isFinite(demoTrackPosition.lng)) return demoTrackPosition;
+    if(state.mode==='demo'){
+      if(demoTrackPosition&&Number.isFinite(demoTrackPosition.lat)&&Number.isFinite(demoTrackPosition.lng)) return demoTrackPosition;
+      const restored=restoreDemoCircuitPosition();
+      if(restored) return restored;
+      return null;
+    }
     if(lastGps&&Number.isFinite(lastGps.lat)&&Number.isFinite(lastGps.lng)) return lastGps;
     return null;
   }
@@ -128,10 +133,9 @@
     if(!fix){map.classList.add('waiting');if(target)target.classList.add('hidden');return;}
     const userPoint=geoToCircuitPoint(fix.lat,fix.lng);
     if(!userPoint){map.classList.add('waiting');if(target)target.classList.add('hidden');return;}
-    map.classList.remove('waiting');
     // Keep the user fixed at 50/50 while the original circuit SVG moves below
-    // them. The shared reduced zoom keeps the SVG road ribbon approximately the
-    // same visual width as the centre marker instead of reading as a heavy band.
+    // them. Position the artwork completely before revealing the layer so a
+    // refresh can never paint the SVG at its uninitialised 0/0 browser default.
     const zoom=CIRCUIT_RADAR_ZOOM;
     const unitPct=zoom*100/CIRCUIT_GEOREFERENCE.viewBoxWidth;
     art.style.left=`calc(50% - ${userPoint.x*unitPct}%)`;
@@ -144,6 +148,7 @@
         target.classList.toggle('hidden',!state.targetVisible);
       }else target.classList.add('hidden');
     }
+    map.classList.remove('waiting');
   }
 
   function updateRadarLive(){

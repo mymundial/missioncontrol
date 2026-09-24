@@ -1,3 +1,10 @@
+## 7.38.3 — Circuit radar state bootstrap fix
+- Post-MC01 circuit radar now renders hidden by default and is only revealed after a valid user/circuit position has been calculated, eliminating the unpositioned SVG flash seen immediately after Circuit Link and on refresh.
+- Demo Mode now persists its calibrated lap distance in saved app state and restores the exact route position after refresh.
+- Older Demo sessions with no saved lap distance are seeded from the current in-range checkpoint or most recently completed checkpoint; immediately after MC01 this resolves from the Circuit Link master coordinate.
+- Live-mode refresh keeps the circuit hidden until a fresh GPS fix is available rather than exposing stale/default SVG placement.
+- Demo startup now clears any previous live GPS fix so Demo radar positioning cannot inherit stale live coordinates.
+
 ## 7.38.2 — Circuit SVG radar scale correction
 - Restored the original `assets/f1-circuit.svg` silhouette as the visible post-MC01 radar circuit instead of the thin route-centreline polyline.
 - Reduced circuit radar zoom from 4.6x to 2.3x so the SVG road ribbon reads at approximately the same visual width as the fixed centre user marker including its halo.

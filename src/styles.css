@@ -6150,7 +6150,7 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   box-shadow:0 -14px 28px rgba(2,13,22,.88),0 -1px 0 rgba(116,222,246,.12);
 }
 
-/* Pass 7.38.2 — original circuit SVG at marker-matched radar scale */
+/* Pass 7.38.3 — circuit radar bootstrap + marker-matched SVG scale */
 .mc01-energy-node,
 .mc01-energy-ripple{
   transform-box:fill-box!important;
@@ -6166,7 +6166,7 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   opacity:1;
   transition:opacity .2s ease;
 }
-.track-radar-map.waiting{opacity:.28;}
+.track-radar-map.waiting{opacity:0;}
 .track-radar-art{
   position:absolute;
   width:calc(var(--circuit-radar-zoom,2.3) * 100%);

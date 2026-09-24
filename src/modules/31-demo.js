@@ -1,10 +1,11 @@
   function startDemoExperience(){
     clearDemo();
     stopGpsWatch();
+    lastGps=null;
     demoHoldUntil=Date.now()+900;
     demoTrackPosition=null;
     demoTrackDistance=null;
-    state={...state,onboarded:true,bootDone:true,mode:'demo',gpsEnabled:false,nav:'radar',completed:[],available:[],routeIndex:1,targetVisible:false,targetInRange:false,distance:null,gpsCondition:'DEMO'};
+    state={...state,onboarded:true,bootDone:true,mode:'demo',gpsEnabled:false,nav:'radar',completed:[],available:[],routeIndex:1,targetVisible:false,targetInRange:false,distance:null,gpsCondition:'DEMO',demoRouteDistance:null};
     save();
     ensureOpeningMessage();
     render();
@@ -24,8 +25,49 @@
     // Fallback in case a navigation/render transition interrupted the first timer.
     setTimeout(arm,2600);
   }
+
+  function setDemoCircuitPosition(routeDistance){
+    if(routeDistance===null||routeDistance===undefined||!Number.isFinite(Number(routeDistance))) return null;
+    const routePoint=routePointAtDistance(Number(routeDistance));
+    demoTrackDistance=routePoint.distance;
+    demoTrackPosition={lat:routePoint.lat,lng:routePoint.lng,accuracy:5,timestamp:Date.now()};
+    state.demoRouteDistance=routePoint.distance;
+    return routePoint;
+  }
+
+  function restoreDemoCircuitPosition(){
+    if(state.mode!=='demo'||!state.completed.includes('entry')) return null;
+    if(demoTrackPosition&&Number.isFinite(demoTrackPosition.lat)&&Number.isFinite(demoTrackPosition.lng)) return demoTrackPosition;
+
+    const persisted=state.demoRouteDistance;
+    if(persisted!==null&&persisted!==undefined&&Number.isFinite(Number(persisted))){
+      const routePoint=setDemoCircuitPosition(Number(persisted));
+      return routePoint?demoTrackPosition:null;
+    }
+
+    // Older/demo sessions can reach the post-MC01 radar without a persisted
+    // route distance. Seed from the checkpoint the guest is actually at, or
+    // otherwise from the most recently completed route checkpoint.
+    let seedCp=null;
+    const activeCp=current();
+    if(state.targetInRange&&activeCp) seedCp=activeCp;
+    if(!seedCp){
+      for(let i=Math.min(CHECKPOINTS.length-1,Math.max(ROUTE_START_INDEX,state.routeIndex-1));i>=ROUTE_START_INDEX;i--){
+        const candidate=CHECKPOINTS[i];
+        if(candidate&&state.completed.includes(candidate.id)){seedCp=candidate;break;}
+      }
+    }
+    const seedCfg=activeConfig(seedCp);
+    const projected=seedCfg?projectGeoToRoute(seedCfg.lat,seedCfg.lng):null;
+    if(!projected) return null;
+    const routePoint=setDemoCircuitPosition(projected.distance);
+    save();
+    return routePoint?demoTrackPosition:null;
+  }
   function demoRouteSeedDistance(cp){
     if(Number.isFinite(demoTrackDistance)) return normaliseRouteDistance(demoTrackDistance);
+    const restored=restoreDemoCircuitPosition();
+    if(restored&&Number.isFinite(demoTrackDistance)) return normaliseRouteDistance(demoTrackDistance);
     const targetIndex=checkpointIndex(cp?.id);
     for(let i=targetIndex-1;i>=ROUTE_START_INDEX;i--){
       const previous=CHECKPOINTS[i];
@@ -53,9 +95,7 @@
     let travelled=0;
 
     const updatePosition=routeDistance=>{
-      const routePoint=routePointAtDistance(routeDistance);
-      demoTrackDistance=routePoint.distance;
-      demoTrackPosition={lat:routePoint.lat,lng:routePoint.lng,accuracy:5,timestamp:Date.now()};
+      const routePoint=setDemoCircuitPosition(routeDistance);
       const d=distanceMetres(routePoint.lat,routePoint.lng,cfg.lat,cfg.lng);
       state.distance=d;
       state.bearing=bearingDegrees(routePoint.lat,routePoint.lng,cfg.lat,cfg.lng);
@@ -66,9 +106,7 @@
     };
 
     const finishAtTarget=()=>{
-      const routePoint=routePointAtDistance(targetProjection.distance);
-      demoTrackDistance=routePoint.distance;
-      demoTrackPosition={lat:routePoint.lat,lng:routePoint.lng,accuracy:5,timestamp:Date.now()};
+      const routePoint=setDemoCircuitPosition(targetProjection.distance);
       const d=distanceMetres(routePoint.lat,routePoint.lng,cfg.lat,cfg.lng);
       state.targetVisible=true;state.targetInRange=true;state.distance=d;
       state.bearing=bearingDegrees(routePoint.lat,routePoint.lng,cfg.lat,cfg.lng);
