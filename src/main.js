@@ -680,9 +680,11 @@
         <div class="mc01-track-shadow"></div>
         <div class="mc01-track-outline"></div>
         <div class="mc01-track-energy"></div>
-        <span class="mc01-energy-node"></span>
-        <span class="mc01-energy-ripple ripple-a"></span>
-        <span class="mc01-energy-ripple ripple-b"></span>
+        <svg class="mc01-node-map" viewBox="0 0 210 126" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+          <circle class="mc01-energy-ripple ripple-a" cx="104.75" cy="36.5" r="3.5"></circle>
+          <circle class="mc01-energy-ripple ripple-b" cx="104.75" cy="36.5" r="3.5"></circle>
+          <circle class="mc01-energy-node" cx="104.75" cy="36.5" r="3.5"></circle>
+        </svg>
       </div>
       <div class="mc01-readout">
         <span class="mc01-bolt" aria-hidden="true"><img src="./assets/system-power.svg" alt=""></span>
@@ -999,7 +1001,7 @@
   }
   function showCompletion(title,copy){
     const mc=document.getElementById('missionContent'); if(!mc) return;
-    mc.innerHTML=`<div class="completion panel"><div class="check">✓</div><div class="kicker">Mission Complete</div><h2>${title}</h2>${copy?`<p>${copy}</p>`:''}<button class="btn primary wide" id="returnRadar">${state.missionReturnNav==='comms'?'Return to Comms':state.missionReturnNav==='missions'?'Continue':'Return to Radar'}</button></div>`;
+    mc.innerHTML=`<div class="completion panel"><div class="check">✓</div><div class="kicker">Mission Complete</div><h2>${title}</h2>${copy?`<p>${copy}</p>`:''}<button class="btn primary wide" id="returnRadar">Continue</button></div>`;
     document.getElementById('returnRadar').onclick=()=>completeCurrent(); ping(880,.14,.05);haptic([30,35,70]);
   }
   function showRadioCompletion(){

@@ -279,9 +279,11 @@
         <div class="mc01-track-shadow"></div>
         <div class="mc01-track-outline"></div>
         <div class="mc01-track-energy"></div>
-        <span class="mc01-energy-node"></span>
-        <span class="mc01-energy-ripple ripple-a"></span>
-        <span class="mc01-energy-ripple ripple-b"></span>
+        <svg class="mc01-node-map" viewBox="0 0 210 126" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+          <circle class="mc01-energy-ripple ripple-a" cx="104.75" cy="36.5" r="3.5"></circle>
+          <circle class="mc01-energy-ripple ripple-b" cx="104.75" cy="36.5" r="3.5"></circle>
+          <circle class="mc01-energy-node" cx="104.75" cy="36.5" r="3.5"></circle>
+        </svg>
       </div>
       <div class="mc01-readout">
         <span class="mc01-bolt" aria-hidden="true"><img src="./assets/system-power.svg" alt=""></span>

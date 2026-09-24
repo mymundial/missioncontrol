@@ -63,7 +63,7 @@
   }
   function showCompletion(title,copy){
     const mc=document.getElementById('missionContent'); if(!mc) return;
-    mc.innerHTML=`<div class="completion panel"><div class="check">✓</div><div class="kicker">Mission Complete</div><h2>${title}</h2>${copy?`<p>${copy}</p>`:''}<button class="btn primary wide" id="returnRadar">${state.missionReturnNav==='comms'?'Return to Comms':state.missionReturnNav==='missions'?'Continue':'Return to Radar'}</button></div>`;
+    mc.innerHTML=`<div class="completion panel"><div class="check">✓</div><div class="kicker">Mission Complete</div><h2>${title}</h2>${copy?`<p>${copy}</p>`:''}<button class="btn primary wide" id="returnRadar">Continue</button></div>`;
     document.getElementById('returnRadar').onclick=()=>completeCurrent(); ping(880,.14,.05);haptic([30,35,70]);
   }
   function showRadioCompletion(){

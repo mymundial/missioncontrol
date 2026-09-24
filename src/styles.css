@@ -2922,24 +2922,30 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   filter:drop-shadow(0 0 5px rgba(84,219,255,.45));
   animation:mc01CircuitSweep 2.8s linear infinite;
 }
-.mc01-energy-node{
+.mc01-node-map{
   position:absolute;
-  width:12px;height:12px;
-  left:69%;top:50%;
-  border-radius:50%;
-  background:#e9fcff;
-  box-shadow:0 0 6px #d9fbff,0 0 16px #50dcff,0 0 28px rgba(80,220,255,.65);
+  inset:16% 9%;
+  width:82%;
+  height:68%;
+  overflow:visible;
+  pointer-events:none;
+}
+.mc01-energy-node{
+  fill:#e9fcff;
   opacity:.3;
+  filter:drop-shadow(0 0 2px #d9fbff) drop-shadow(0 0 5px #50dcff) drop-shadow(0 0 9px rgba(80,220,255,.65));
+  transform-box:view-box;
+  transform-origin:104.75px 36.5px;
   transition:opacity .25s ease,transform .25s ease;
 }
 .mc01-energy-ripple{
-  position:absolute;
-  left:69%;top:50%;
-  width:12px;height:12px;
-  border:1px solid rgba(103,224,255,.6);
-  border-radius:50%;
-  transform:translate(0,0) scale(.2);
+  fill:none;
+  stroke:rgba(103,224,255,.6);
+  stroke-width:.8;
   opacity:0;
+  transform-box:view-box;
+  transform-origin:104.75px 36.5px;
+  transform:scale(.2);
 }
 .mc01-panel[data-stage="routing"] .mc01-track-energy,
 .mc01-panel[data-stage="transfer"] .mc01-track-energy{
@@ -2984,7 +2990,7 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   color:#8ae8ff;
   box-shadow:inset 0 0 14px rgba(73,200,240,.08);
 }
-.mc01-bolt img{width:21px;height:21px;display:block;object-fit:contain;}
+.mc01-bolt img{width:28px;height:28px;display:block;object-fit:contain;}
 .mc01-readout-copy{display:grid;gap:3px;min-width:0;text-transform:uppercase;}
 .mc01-readout-copy span{
   color:#739fb0;
@@ -3043,14 +3049,14 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .mc01-recovery-state span{color:#8fe5fb;font-size:9px;font-weight:800;letter-spacing:.14em;}
 .mc01-recovery-state strong{color:#edfaff;font-size:11px;letter-spacing:.08em;white-space:nowrap;}
 @keyframes mc01CircuitSweep{from{background-position:100% 0}to{background-position:-160% 0}}
-@keyframes mc01Ripple{0%{opacity:.7;transform:translate(-1px,-1px) scale(.3)}100%{opacity:0;transform:translate(-1px,-1px) scale(4.5)}}
+@keyframes mc01Ripple{0%{opacity:.7;transform:scale(.3)}100%{opacity:0;transform:scale(4.5)}}
 @keyframes mc01Bars{50%{opacity:1;filter:brightness(1.45)}}
 @media(max-width:390px){
   .mc01-panel{padding:11px;gap:9px;}
   .mc01-track-stage{min-height:clamp(160px,26dvh,215px);}
   .mc01-readout{min-height:52px;grid-template-columns:36px minmax(0,1fr) auto;padding:7px 9px;gap:8px;}
   .mc01-bolt{width:33px;height:33px;}
-  .mc01-bolt svg{width:17px;height:17px;}
+  .mc01-bolt img{width:24px;height:24px;}
   .mc01-readout-copy strong{font-size:10px;}
   .mc01-recovery-state{padding:8px 9px;}
 }

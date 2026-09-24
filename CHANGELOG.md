@@ -1,3 +1,10 @@
+## 7.37.2 — MC01 circuit-entry correction
+- corrected the Circuit Link animation marker so it is aligned to the circuit SVG at the Village / National Link Road entry area rather than the previous manual 69% / 50% position.
+- marker/ripple overlay now shares the circuit SVG's 210×126 viewBox, keeping the marker registered to the track artwork across screen sizes.
+- changed the generic mission-completion CTA to `CONTINUE`; its action still returns to the nav view the mission was opened from.
+- enlarged the Power icon in the MC01 Circuit Energy readout while retaining the shared `system-power.svg` asset.
+- retained the approved MC01 master coordinate `52.07317077672548, -1.0116046670979981`.
+
 ## 7.37.1 — MC01 Circuit Entry alignment
 - updated the MC01 master GPS coordinate to `52.07317077672548, -1.0116046670979981`.
 - moved the Circuit Link animation energy marker/ripples to the discussed circuit-entry point near Village.
