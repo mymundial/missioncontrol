@@ -16,12 +16,12 @@
     state.elfAudioOn=playing;
     save();
     showRadioCompletion();
-    if(!playing) toast('ELF FM is tuned. Use Radio in Comms to start the stream.');
+    if(!playing) toast('Signal tuned. Use ELF FM in Comms to start the stream.');
   }
   function bindRadio(){
     const range=document.getElementById('freqRange'), val=document.getElementById('freqVal'), st=document.getElementById('signalState'), btn=document.getElementById('lockSignal'), wave=document.getElementById('radioWave');
     startStatic(.095);
-    startElfTunerPreview().then(started=>{if(!started) st.textContent='Move the tuner to locate ELF FM';});
+    startElfTunerPreview().then(started=>{if(!started) st.textContent='Move the tuner to locate the signal';});
     let wasLocked=false;
     const update=()=>{
       const f=Number(range.value);
@@ -31,11 +31,11 @@
       setStatic(.006+distanceMix*.089);
       setElfTunerPreview(delta);
       if(delta<.051){
-        st.textContent='ELF FM SIGNAL ACQUIRED';st.classList.add('lock');btn.disabled=false;wave.classList.add('locked');
+        st.textContent='Signal acquired';st.classList.add('lock');btn.disabled=false;wave.classList.add('locked');
         if(!wasLocked){ping(920,.06,.02);haptic(20);wasLocked=true;}
       } else {
         wasLocked=false;
-        st.textContent=delta<.15?'Signal almost clear…':delta<.4?'Signal resolving…':delta<.8?'Weak ELF FM signal…':'Searching for signal';
+        st.textContent=delta<.15?'Signal almost clear…':delta<.4?'Signal resolving…':delta<.8?'Weak signal…':'Searching for signal';
         st.classList.remove('lock');btn.disabled=true;wave.classList.remove('locked');
       }
     };

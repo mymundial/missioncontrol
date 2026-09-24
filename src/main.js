@@ -27,7 +27,7 @@
     {id:'northern', mc:'MC-12', location:'Farm Curve', name:'Northern Flight', type:'northern', playable:true, core:true, mission:'Northern Flight', lat:52.07236283289121, lng:-1.0138972673152702, detectionRadius:120, activationRadius:30}
   ];
 
-  const ELF_RADIO_MISSION = {id:'elf-radio', mc:'COMMS', location:'Communications', name:'ELF FM', type:'radio', playable:true, core:false, mission:'Tune In'};
+  const ELF_RADIO_MISSION = {id:'elf-radio', mc:'COMMUNICATIONS', location:'RADIO', name:'ELF FM', type:'radio', playable:true, core:false, mission:'Tune In'};
 
   const ROUTE_START_INDEX = 1;
   // GPS reliability thresholds. Activation is deliberately stricter than
@@ -637,7 +637,7 @@
     return ({
       activation:'Kinetic energy generated on track has created enough power to initiate Santa-1’s recovery.',
       diagnostics:'Capture the engineering data needed for Santa-1.',
-      radio:'Tune the receiver to 87.7 FM and establish a link with ELF FM.',
+      radio:'Tune the receiver to 87.7 and establish a link with ELF FM.',
       commsrelay:'Relay the transmission and restore two-way communications with Santa-1.',
       power:'Put the recovered power to the test and reach maximum velocity.',
       spirit:'Balance the charge between both storage banks to stabilise the Spirit Core.',
@@ -747,7 +747,7 @@
     return `<div class="mission-instrument panel diagnostics-panel"><div class="sensor-grid diagnostics-grid">${sensors.map((x,i)=>`<button class="sensor sensor-${x.key}" data-sensor="${i}" data-diagnostic="${x.key}"><div class="sensor-head"><span class="num">0${i+1}</span><span class="name">${x.name}</span></div><div class="sensor-viz viz-${x.key}" aria-hidden="true">${x.viz}</div><div class="state">Ready to scan</div></button>`).join('')}</div></div><button class="btn primary wide" id="diagComplete" disabled>Confirm Performance Data</button>`;
   }
 
-  function radioBody(){return `<div class="mission-instrument panel"><div class="wave" id="radioWave">${'<i></i>'.repeat(28)}</div><div class="frequency"><span id="freqVal">86.4</span> <small>FM</small></div><div class="range-wrap"><input id="freqRange" class="range" type="range" min="86" max="89" value="86.4" step="0.1"><div class="freq-marks"><span>86.0</span><span>87.0</span><span>87.7</span><span>89.0</span></div></div><div class="signal-state" id="signalState">Searching for signal</div><button class="btn primary wide" id="lockSignal" disabled>Lock Signal</button></div>`}
+  function radioBody(){return `<div class="mission-instrument panel"><div class="wave" id="radioWave">${'<i></i>'.repeat(28)}</div><div class="frequency"><span id="freqVal">86.4</span> <small>FM</small></div><div class="range-wrap"><input id="freqRange" class="range" type="range" min="86" max="89" value="86.4" step="0.1"><div class="freq-marks"><span>86.0</span><span>87.0</span><span>88.0</span><span>89.0</span></div></div><div class="signal-state" id="signalState">Searching for signal</div><button class="btn primary wide" id="lockSignal" disabled>Lock Signal</button></div>`}
   function commsRelayBody(){
     return `<div class="mission-instrument panel comms-relay-panel">
       <div class="signal-state relay-instruction" id="relayState">Tap Relay 01 when the pulse meets the capture ring.</div>
@@ -1544,12 +1544,12 @@
     state.elfAudioOn=playing;
     save();
     showRadioCompletion();
-    if(!playing) toast('ELF FM is tuned. Use Radio in Comms to start the stream.');
+    if(!playing) toast('Signal tuned. Use ELF FM in Comms to start the stream.');
   }
   function bindRadio(){
     const range=document.getElementById('freqRange'), val=document.getElementById('freqVal'), st=document.getElementById('signalState'), btn=document.getElementById('lockSignal'), wave=document.getElementById('radioWave');
     startStatic(.095);
-    startElfTunerPreview().then(started=>{if(!started) st.textContent='Move the tuner to locate ELF FM';});
+    startElfTunerPreview().then(started=>{if(!started) st.textContent='Move the tuner to locate the signal';});
     let wasLocked=false;
     const update=()=>{
       const f=Number(range.value);
@@ -1559,11 +1559,11 @@
       setStatic(.006+distanceMix*.089);
       setElfTunerPreview(delta);
       if(delta<.051){
-        st.textContent='ELF FM SIGNAL ACQUIRED';st.classList.add('lock');btn.disabled=false;wave.classList.add('locked');
+        st.textContent='Signal acquired';st.classList.add('lock');btn.disabled=false;wave.classList.add('locked');
         if(!wasLocked){ping(920,.06,.02);haptic(20);wasLocked=true;}
       } else {
         wasLocked=false;
-        st.textContent=delta<.15?'Signal almost clear…':delta<.4?'Signal resolving…':delta<.8?'Weak ELF FM signal…':'Searching for signal';
+        st.textContent=delta<.15?'Signal almost clear…':delta<.4?'Signal resolving…':delta<.8?'Weak signal…':'Searching for signal';
         st.classList.remove('lock');btn.disabled=true;wave.classList.remove('locked');
       }
     };

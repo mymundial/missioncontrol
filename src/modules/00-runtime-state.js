@@ -27,7 +27,7 @@
     {id:'northern', mc:'MC-12', location:'Farm Curve', name:'Northern Flight', type:'northern', playable:true, core:true, mission:'Northern Flight', lat:52.07236283289121, lng:-1.0138972673152702, detectionRadius:120, activationRadius:30}
   ];
 
-  const ELF_RADIO_MISSION = {id:'elf-radio', mc:'COMMS', location:'Communications', name:'ELF FM', type:'radio', playable:true, core:false, mission:'Tune In'};
+  const ELF_RADIO_MISSION = {id:'elf-radio', mc:'COMMUNICATIONS', location:'RADIO', name:'ELF FM', type:'radio', playable:true, core:false, mission:'Tune In'};
 
   const ROUTE_START_INDEX = 1;
   // GPS reliability thresholds. Activation is deliberately stricter than
