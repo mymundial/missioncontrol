@@ -134,7 +134,7 @@
       buttons.forEach(button=>{button.disabled=true;button.classList.remove('is-next');});
       haptic([30,28,64]);
       finishTimer=setTimeout(()=>{
-        if(state.missionOpen==='spirit') showCompletion('Spirit Core Charged','The recovered energy has been stored and the Spirit Core is fully charged.');
+        if(state.missionOpen==='spirit') showCompletion('Spirit Core Charged','The positive energy signatures have been safely stored and the Spirit Core is now fully charged.');
       },950);
     }
 

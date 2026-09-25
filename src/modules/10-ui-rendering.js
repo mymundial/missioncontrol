@@ -249,7 +249,7 @@
       radio:'Tune the receiver to 87.7 and establish a link with ELF FM.',
       commsrelay:'Establish communications with Santa-1.',
       power:'Test Santa-1’s propulsion system.',
-      spirit:'Store the recovered energy.',
+      spirit:'Store the positive energy.',
       placeholder:'This checkpoint is reserved while the final installation game is developed.',
       artifacts:'Collect the energy signatures.',
       comet:'Align Santa-1’s guidance system.',

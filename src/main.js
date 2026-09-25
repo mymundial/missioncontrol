@@ -824,7 +824,7 @@
       radio:'Tune the receiver to 87.7 and establish a link with ELF FM.',
       commsrelay:'Establish communications with Santa-1.',
       power:'Test Santa-1’s propulsion system.',
-      spirit:'Store the recovered energy.',
+      spirit:'Store the positive energy.',
       placeholder:'This checkpoint is reserved while the final installation game is developed.',
       artifacts:'Collect the energy signatures.',
       comet:'Align Santa-1’s guidance system.',
@@ -2510,7 +2510,7 @@
       buttons.forEach(button=>{button.disabled=true;button.classList.remove('is-next');});
       haptic([30,28,64]);
       finishTimer=setTimeout(()=>{
-        if(state.missionOpen==='spirit') showCompletion('Spirit Core Charged','The recovered energy has been stored and the Spirit Core is fully charged.');
+        if(state.missionOpen==='spirit') showCompletion('Spirit Core Charged','The positive energy signatures have been safely stored and the Spirit Core is now fully charged.');
       },950);
     }
 
