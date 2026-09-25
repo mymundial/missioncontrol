@@ -297,7 +297,7 @@
       beam.classList.add('active');
       progress.textContent='10 / 10';
       ping(920,.12,.045);haptic([28,24,58]);
-      setTimeout(()=>showCompletion('Power Stabilised','The positive energy signatures have been captured and stabilised, ready to be stored in Santa-1’s Spirit Core.'),900);
+      setTimeout(()=>showCompletion('Power Stabilised','The positive energy signatures have been captured and stabilised, ready to be stored in the Spirit Core.'),900);
     }
 
     renderStability();

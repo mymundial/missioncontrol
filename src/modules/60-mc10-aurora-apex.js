@@ -54,7 +54,7 @@
       el.classList.toggle('tracking',mode==='tracking');
       const small=el.querySelector('small');
       if(!small)return;
-      if(mode==='locked') small.textContent='Locked ✓';
+      if(mode==='locked') small.innerHTML='Locked <img class="checkmark-icon checkmark-icon--inline checkmark-icon--tiny" src="./assets/checkmark-icon.svg" alt="" aria-hidden="true">';
       else if(mode==='active') small.textContent=key==='inner'?'Hold to brake':'Tap to capture';
       else small.textContent='Tracking';
     }

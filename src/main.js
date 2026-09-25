@@ -708,7 +708,7 @@
         systemStatusEntry('propulsion'),
         systemStatusEntry('navigation')
       ];
-      return `<section class="onboard with-masthead setup-page mc00-page">${setupHeader}<div class="onboard-card panel mc00-card" data-mc00-mode="${step}"><div class="mc00-copy"><h1>System Diagnostics</h1><p class="support-copy">Santa-1 Sleigh Recovery</p></div><div class="mc00-visual-wrap"><div class="mc00-sleigh-frame"><div class="sleigh-visual sleigh-stage-1 mc00-sleigh-visual" role="img" aria-label="Santa-1 sleigh system diagnostics visual"><div class="sleigh-glow" aria-hidden="true"></div><img class="sleigh-art" src="./assets/sleigh-stage-1.webp" alt="" aria-hidden="true" fetchpriority="high"><div class="mc00-scan-beam" aria-hidden="true"></div></div></div></div>${systemStatusBank(systems,'mc00-system-bank','mc00')}<div class="mc00-progress-row"><div class="mc00-progress" role="progressbar" aria-label="System diagnostics progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="mc00ProgressFill"></span></div><strong id="mc00ProgressValue">0%</strong></div><div class="mc00-complete-popup panel" id="mc00CompleteBlock" hidden><div class="mc00-complete-icon" aria-hidden="true">✓</div><h2>Scan Complete</h2><button class="btn primary wide" id="mc00Continue" data-mc00-continue="${step}">Continue</button></div></div></section>`;
+      return `<section class="onboard with-masthead setup-page mc00-page">${setupHeader}<div class="onboard-card panel mc00-card" data-mc00-mode="${step}"><div class="mc00-copy"><h1>System Diagnostics</h1><p class="support-copy">Santa-1 Sleigh Recovery</p></div><div class="mc00-visual-wrap"><div class="mc00-sleigh-frame"><div class="sleigh-visual sleigh-stage-1 mc00-sleigh-visual" role="img" aria-label="Santa-1 sleigh system diagnostics visual"><div class="sleigh-glow" aria-hidden="true"></div><img class="sleigh-art" src="./assets/sleigh-stage-1.webp" alt="" aria-hidden="true" fetchpriority="high"><div class="mc00-scan-beam" aria-hidden="true"></div></div></div></div>${systemStatusBank(systems,'mc00-system-bank','mc00')}<div class="mc00-progress-row"><div class="mc00-progress" role="progressbar" aria-label="System diagnostics progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="mc00ProgressFill"></span></div><strong id="mc00ProgressValue">0%</strong></div><div class="mc00-complete-popup panel" id="mc00CompleteBlock" hidden><div class="mc00-complete-icon" aria-hidden="true"><img class="checkmark-icon checkmark-icon--large" src="./assets/checkmark-icon.svg" alt=""></div><h2>Scan Complete</h2><button class="btn primary wide" id="mc00Continue" data-mc00-continue="${step}">Continue</button></div></div></section>`;
     }
     if(step==='brief') return `<section class="onboard with-masthead setup-page briefing-page">${setupHeader}<div class="onboard-card panel setup-card"><div class="onboard-icon setup-icon"><span class="setup-icon-glyph"><img src="./assets/mission-briefing-icon.svg" alt=""></span></div><h1>Mission Briefing</h1><p class="support-copy">Santa needs your help.<br>Santa-1 has made an unscheduled pit stop at Silverstone and the recovery is underway.<br>Follow the signals around the circuit and help bring each system back online to get the sleigh race-ready again.</p><div class="setup-actions"><button class="btn primary wide" data-onboard="audio">Continue</button></div></div></section>`;
     if(step==='audio') return `<section class="onboard with-masthead setup-page audio-page">${setupHeader}<div class="onboard-card panel setup-card"><div class="onboard-icon setup-icon"><span class="setup-icon-glyph">${settingAudioIcon()}</span></div><h1>Mission Audio</h1><p class="support-copy">Mission Control uses proximity alerts, system sounds and live transmissions. You can change Mission Audio at any time in Comms.</p><div class="setup-actions stack"><button class="btn primary wide" data-audio="on">Enable Mission Audio</button><button class="btn secondary wide" data-audio="off">Continue Without Audio</button></div></div></section>`;
@@ -826,7 +826,7 @@
       power:'Test Santa-1’s propulsion system.',
       spirit:'Store the recovered energy.',
       placeholder:'This checkpoint is reserved while the final installation game is developed.',
-      artifacts:'Collect the energy signatures.',
+      artifacts:'Stabilise the racing energy.',
       comet:'Align Santa-1’s guidance system.',
       jingle:'Re-engage Santa-1’s flight controls.',
       lando:'Calibrate Santa-1’s flight response.',
@@ -1151,12 +1151,12 @@
   function showCompletion(title,copy){
     const mc=document.getElementById('missionContent'); if(!mc) return;
     const outcome=copy||title||'';
-    mc.innerHTML=`<div class="completion panel"><div class="check">✓</div><h2>Mission Complete</h2>${outcome?`<p>${outcome}</p>`:''}<button class="btn primary wide" id="returnRadar">Continue</button></div>`;
+    mc.innerHTML=`<div class="completion panel"><div class="check" aria-hidden="true"><img class="checkmark-icon checkmark-icon--large" src="./assets/checkmark-icon.svg" alt=""></div><h2>Mission Complete</h2>${outcome?`<p>${outcome}</p>`:''}<button class="btn primary wide" id="returnRadar">Continue</button></div>`;
     document.getElementById('returnRadar').onclick=()=>completeCurrent(); ping(880,.14,.05);haptic([30,35,70]);
   }
   function showRadioCompletion(){
     const mc=document.getElementById('missionContent'); if(!mc) return;
-    mc.innerHTML=`<div class="completion panel"><div class="check">✓</div><div class="kicker">Signal Locked</div><h2>ELF FM Locked</h2><p>Signal acquired at 87.7. ELF FM is now available from Communications.</p><button class="btn primary wide" id="returnComms">Return to Comms</button></div>`;
+    mc.innerHTML=`<div class="completion panel"><div class="check" aria-hidden="true"><img class="checkmark-icon checkmark-icon--large" src="./assets/checkmark-icon.svg" alt=""></div><div class="kicker">Signal Locked</div><h2>ELF FM Locked</h2><p>Signal acquired at 87.7. ELF FM is now available from Communications.</p><button class="btn primary wide" id="returnComms">Return to Comms</button></div>`;
     document.getElementById('returnComms').onclick=()=>{
       state={...state,elfUnlocked:true,missionOpen:null,missionReturnNav:'radar',nav:'comms'};
       save();render();
@@ -1936,7 +1936,7 @@
         done.add(i);
         btn.classList.remove('active');
         btn.classList.add('done');
-        btn.querySelector('.state').textContent='Captured ✓';
+        btn.querySelector('.state').innerHTML='Captured <img class="checkmark-icon checkmark-icon--inline" src="./assets/checkmark-icon.svg" alt="" aria-hidden="true">';
         document.querySelectorAll('[data-sensor]').forEach(other=>other.classList.remove('scan-locked'));
         ping(720+i*40,.06,.025);
         haptic(24);
@@ -2820,7 +2820,7 @@
       beam.classList.add('active');
       progress.textContent='10 / 10';
       ping(920,.12,.045);haptic([28,24,58]);
-      setTimeout(()=>showCompletion('Power Stabilised','The positive energy signatures have been captured and stabilised, ready to be stored in Santa-1’s Spirit Core.'),900);
+      setTimeout(()=>showCompletion('Power Stabilised','The positive energy signatures have been captured and stabilised, ready to be stored in the Spirit Core.'),900);
     }
 
     renderStability();
@@ -3652,7 +3652,7 @@
       el.classList.toggle('tracking',mode==='tracking');
       const small=el.querySelector('small');
       if(!small)return;
-      if(mode==='locked') small.textContent='Locked ✓';
+      if(mode==='locked') small.innerHTML='Locked <img class="checkmark-icon checkmark-icon--inline checkmark-icon--tiny" src="./assets/checkmark-icon.svg" alt="" aria-hidden="true">';
       else if(mode==='active') small.textContent=key==='inner'?'Hold to brake':'Tap to capture';
       else small.textContent='Tracking';
     }

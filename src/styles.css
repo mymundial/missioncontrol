@@ -7926,3 +7926,14 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(var(--emotion-rgb),.98));
   box-shadow:0 0 8px rgba(var(--emotion-rgb),.34), 0 0 14px rgba(var(--emotion-rgb),.12)!important;
 }
+
+
+/* === Shared checkmark icon asset === */
+.checkmark-icon{display:block;width:100%;height:100%;object-fit:contain;color:currentColor;}
+.checkmark-icon--large{width:32px;height:32px;}
+.checkmark-icon--inline{display:inline-block;vertical-align:-0.16em;width:11px;height:11px;flex:0 0 auto;}
+.checkmark-icon--tiny{width:10px;height:10px;vertical-align:-0.14em;}
+.completion .check,.mc00-complete-icon{place-items:center;}
+.completion .check img,.mc00-complete-icon img{display:block;}
+.mission-diagnostics .sensor .state{display:inline-flex;align-items:center;justify-content:center;gap:4px;}
+.mission-diagnostics .sensor .state .checkmark-icon--inline{width:10px;height:10px;}
