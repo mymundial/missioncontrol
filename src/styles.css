@@ -6963,3 +6963,141 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   border-color:rgba(255,105,105,.98);
   box-shadow:0 0 7px rgba(255,105,105,.38),0 0 15px rgba(255,105,105,.14);
 }
+
+
+/* Pass 7.38.27 — MC02 diagnostic visual consistency + Aero/Stability/Traction redesign. */
+.mission-diagnostics .sensor.done{
+  border-color:rgba(73,176,211,.42);
+  box-shadow:inset 0 0 18px rgba(45,154,191,.035);
+}
+.mission-diagnostics .sensor.done .sensor-viz{opacity:.9;}
+
+/* 01 AERO — clean four-stream airflow capture around a restrained vehicle body. */
+.mission-diagnostics .viz-aero .aero-body{
+  fill:rgba(32,103,132,.13);
+  stroke:#72ddff;
+  stroke-width:1.25;
+}
+.mission-diagnostics .viz-aero .aero-centre{
+  fill:none;
+  stroke:rgba(116,223,255,.28);
+  stroke-width:1;
+  stroke-dasharray:3 4;
+}
+.mission-diagnostics .viz-aero .aero-flow{
+  fill:none;
+  stroke:#73ddff;
+  stroke-width:1.35;
+  stroke-linecap:round;
+  stroke-dasharray:9 8;
+  opacity:.38;
+}
+.mission-diagnostics .viz-aero .aero-probe{
+  fill:#d8f9ff;
+  opacity:.2;
+  filter:drop-shadow(0 0 3px rgba(92,224,255,.8));
+}
+.mission-diagnostics .sensor-aero.active .aero-flow-1,
+.mission-diagnostics .sensor-aero.active .aero-flow-4{animation:mc02AeroStream .72s linear infinite;}
+.mission-diagnostics .sensor-aero.active .aero-flow-2{animation:mc02AeroStream .52s linear infinite;}
+.mission-diagnostics .sensor-aero.active .aero-flow-3{animation:mc02AeroStream .52s linear infinite reverse;}
+.mission-diagnostics .sensor-aero.active .aero-probe-1{animation:mc02AeroProbe 1.08s linear infinite;}
+.mission-diagnostics .sensor-aero.active .aero-probe-2{animation:mc02AeroProbe .88s linear infinite .12s;}
+.mission-diagnostics .sensor-aero.active .aero-probe-3{animation:mc02AeroProbe .88s linear infinite .28s;}
+.mission-diagnostics .sensor-aero.active .aero-probe-4{animation:mc02AeroProbe 1.08s linear infinite .4s;}
+.mission-diagnostics .sensor-aero.done .aero-flow{
+  stroke:var(--green);
+  stroke-dasharray:none;
+  opacity:.82;
+  filter:drop-shadow(0 0 2px rgba(87,239,145,.18));
+}
+.mission-diagnostics .sensor-aero.done .aero-body{stroke:#72ddff;fill:rgba(32,103,132,.13);}
+.mission-diagnostics .sensor-aero.done .aero-centre{stroke:rgba(116,223,255,.28);}
+@keyframes mc02AeroStream{to{stroke-dashoffset:-34}}
+@keyframes mc02AeroProbe{0%{transform:translateX(0);opacity:0}16%{opacity:.9}100%{transform:translateX(88px);opacity:0}}
+
+/* 02 STABILITY — cleaner balance instrument: chassis motion resolves onto a central lock. */
+.mission-diagnostics .viz-stability .stability-reference{
+  fill:none;stroke:rgba(101,219,255,.28);stroke-width:1;stroke-dasharray:5 4;
+}
+.mission-diagnostics .viz-stability .stability-arc{
+  fill:none;stroke:rgba(103,218,252,.28);stroke-width:1;stroke-dasharray:4 4;
+}
+.mission-diagnostics .viz-stability .stability-shell{
+  fill:rgba(41,121,151,.11);stroke:#69d8fb;stroke-width:1.2;
+}
+.mission-diagnostics .viz-stability .stability-wheel{
+  fill:#0b2635;stroke:#8be5ff;stroke-width:1;
+}
+.mission-diagnostics .viz-stability .stability-damper{
+  fill:none;stroke:#73ddff;stroke-width:1.4;
+}
+.mission-diagnostics .viz-stability .stability-centre{
+  fill:none;stroke:rgba(105,220,255,.25);stroke-width:1;stroke-dasharray:3 4;
+}
+.mission-diagnostics .viz-stability .stability-lock{
+  fill:none;stroke:#7ae2ff;stroke-width:1.6;stroke-linecap:round;opacity:.38;
+}
+.mission-diagnostics .viz-stability .stability-point{fill:#d7f8ff;opacity:.55;}
+.mission-diagnostics .sensor-stability.active .stability-chassis{animation:mc02BalanceSettle 1.25s ease-in-out infinite;}
+.mission-diagnostics .sensor-stability.active .stability-damper-left{animation:mc02DamperL .54s ease-in-out infinite alternate;}
+.mission-diagnostics .sensor-stability.active .stability-damper-right{animation:mc02DamperR .54s ease-in-out infinite alternate;}
+.mission-diagnostics .sensor-stability.active .stability-point{animation:mc02BalancePoint .72s ease-in-out infinite alternate;}
+.mission-diagnostics .sensor-stability.active .stability-lock{animation:mc02BalanceLock .72s ease-in-out infinite alternate;}
+.mission-diagnostics .sensor-stability.done .stability-lock{
+  stroke:var(--green);opacity:.9;filter:drop-shadow(0 0 3px rgba(87,239,145,.24));
+}
+.mission-diagnostics .sensor-stability.done .stability-point{fill:var(--green);opacity:.9;filter:drop-shadow(0 0 3px rgba(87,239,145,.24));}
+.mission-diagnostics .sensor-stability.done .stability-shell{stroke:#69d8fb;}
+.mission-diagnostics .sensor-stability.done .stability-wheel{stroke:#8be5ff;}
+.mission-diagnostics .sensor-stability.done .stability-damper{stroke:#73ddff;}
+.mission-diagnostics .sensor-stability.done .stability-reference{stroke:rgba(101,219,255,.28);}
+.mission-diagnostics .sensor-stability.done .stability-arc{stroke:rgba(103,218,252,.28);}
+.mission-diagnostics .sensor-stability.done .stability-centre{stroke:rgba(105,220,255,.25);}
+@keyframes mc02BalanceSettle{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
+@keyframes mc02DamperL{to{transform:translateY(2px)}}
+@keyframes mc02DamperR{to{transform:translateY(-2px)}}
+@keyframes mc02BalancePoint{to{opacity:1;filter:drop-shadow(0 0 4px #80e7ff)}}
+@keyframes mc02BalanceLock{to{opacity:.9;stroke-width:2.1}}
+
+/* 03 POWER — capture only the performance trace; output bars stay cyan telemetry. */
+.mission-diagnostics .sensor-power.done .power-trace{
+  stroke:var(--green);stroke-dasharray:none;stroke-dashoffset:0;filter:drop-shadow(0 0 2px rgba(87,239,145,.2));
+}
+.mission-diagnostics .sensor-power.done .power-hotspot{fill:var(--green);opacity:.9;}
+.mission-diagnostics .sensor-power.done .power-output-bars rect{fill:rgba(79,207,246,.34);}
+.mission-diagnostics .sensor-power.done .power-trace-shadow{stroke:rgba(55,194,238,.22);opacity:.35;}
+
+/* 04 CONTROL — paths/lock marker are the captured data; wheel hardware remains cyan. */
+.mission-diagnostics .sensor-control.done .control-wheel circle,
+.mission-diagnostics .sensor-control.done .control-wheel line{stroke:#78dfff;}
+.mission-diagnostics .sensor-control.done .control-path{stroke:var(--green);stroke-dasharray:none;opacity:.78;}
+.mission-diagnostics .sensor-control.done .control-marker{fill:var(--green);opacity:.9;filter:drop-shadow(0 0 3px rgba(87,239,145,.24));}
+.mission-diagnostics .sensor-control.done .control-angle{stroke:rgba(116,223,255,.38);}
+
+/* 05 TRACTION — clearer top-view telemetry; only tyre contact patches confirm green. */
+.mission-diagnostics .viz-traction .traction-road{fill:none;stroke:rgba(98,211,247,.18);stroke-width:1;stroke-dasharray:5 5;}
+.mission-diagnostics .viz-traction .traction-car{fill:rgba(45,113,139,.10);stroke:rgba(119,217,248,.52);stroke-width:1.15;}
+.mission-diagnostics .viz-traction .traction-spine{fill:none;stroke:rgba(110,219,250,.26);stroke-width:1;stroke-dasharray:3 4;}
+.mission-diagnostics .viz-traction .traction-wheel{fill:#0b2635;stroke:#77defc;stroke-width:1;transform-box:fill-box;transform-origin:center;}
+.mission-diagnostics .viz-traction .traction-contact{fill:rgba(65,207,248,.10);stroke:rgba(103,224,255,.52);stroke-width:1;transform-box:fill-box;transform-origin:center;}
+.mission-diagnostics .sensor-traction.active .traction-contact{animation:mc02ContactLoad .52s ease-in-out infinite alternate;}
+.mission-diagnostics .sensor-traction.active .c2{animation-delay:.08s}.mission-diagnostics .sensor-traction.active .c3{animation-delay:.16s}.mission-diagnostics .sensor-traction.active .c4{animation-delay:.24s}
+.mission-diagnostics .sensor-traction.active .traction-wheel{animation:mc02TyreLoad .52s ease-in-out infinite alternate;}
+.mission-diagnostics .sensor-traction.active .w2{animation-delay:.08s}.mission-diagnostics .sensor-traction.active .w3{animation-delay:.16s}.mission-diagnostics .sensor-traction.active .w4{animation-delay:.24s}
+.mission-diagnostics .sensor-traction.done .traction-contact{
+  fill:rgba(87,239,145,.22);stroke:rgba(87,239,145,.9);transform:scale(1.08);filter:drop-shadow(0 0 3px rgba(87,239,145,.2));
+}
+.mission-diagnostics .sensor-traction.done .traction-wheel{stroke:#77defc;}
+.mission-diagnostics .sensor-traction.done .traction-car{stroke:rgba(119,217,248,.52);}
+.mission-diagnostics .sensor-traction.done .traction-spine{stroke:rgba(110,219,250,.26);}
+@keyframes mc02ContactLoad{from{transform:scale(.72);opacity:.38}to{transform:scale(1.16);opacity:1;filter:drop-shadow(0 0 4px rgba(91,221,255,.5))}}
+@keyframes mc02TyreLoad{to{transform:scaleY(.88)}}
+
+/* 06 RESPONSE — captured return response goes green; processing rings/input remain cyan. */
+.mission-diagnostics .sensor-response.done .response-ring{stroke:#70dcfb;opacity:.34;}
+.mission-diagnostics .sensor-response.done .response-in{stroke:#72defd;opacity:.5;}
+.mission-diagnostics .sensor-response.done .response-out{stroke:var(--green);stroke-dasharray:none;opacity:.82;}
+.mission-diagnostics .sensor-response.done .response-core{fill:var(--green);opacity:.88;filter:drop-shadow(0 0 3px rgba(87,239,145,.22));}
+.mission-diagnostics .sensor-response.done .response-pulse-in{fill:#defaff;opacity:.28;}
+.mission-diagnostics .sensor-response.done .response-pulse-out{fill:var(--green);opacity:.82;}

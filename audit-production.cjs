@@ -368,6 +368,22 @@ if(
 } else fail('MC03 synchronized timing cue','Shared packet/node timing or combined miss feedback is incomplete');
 
 
+if(
+  /Complete Scan<\/button>/.test(runtime) &&
+  /The performance scan is complete and the racing data needed to calibrate Santa-1’s recovery systems has been captured\./.test(runtime) &&
+  /class="aero-body"/.test(runtime) && /class="aero-flow aero-flow-4"/.test(runtime) &&
+  /class="stability-reference"/.test(runtime) && /class="stability-arc"/.test(runtime) &&
+  /class="traction-road"/.test(runtime) && /class="traction-contact c4"/.test(runtime) &&
+  /Pass 7\.38\.27 — MC02 diagnostic visual consistency/.test(css) &&
+  /sensor-aero\.done \.aero-flow[\s\S]*?stroke:var\(--green\)/.test(css) &&
+  /sensor-power\.done \.power-output-bars rect\{fill:rgba\(79,207,246,\.34\)/.test(css) &&
+  /sensor-control\.done \.control-wheel circle,[\s\S]*?stroke:#78dfff/.test(css) &&
+  /sensor-traction\.done \.traction-contact[\s\S]*?87,239,145/.test(css) &&
+  /sensor-response\.done \.response-out\{stroke:var\(--green\)/.test(css)
+) {
+  ok('MC02 diagnostic redesign','Aero, Stability and Traction use the redesigned telemetry assets; successful states keep instrument hardware cyan while the captured measurement turns green; CTA and completion outcome copy are updated.');
+} else fail('MC02 diagnostic redesign','MC02 redesigned telemetry assets, selective-green completion states, CTA, or completion copy is incomplete');
+
 // 12) External runtime dependencies / launch notes.
 const urls=[...runtime.matchAll(/https:\/\/[^'"`\s)]+/g)].map(m=>m[0]);
 const uniqueUrls=[...new Set(urls)];

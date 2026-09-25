@@ -312,21 +312,26 @@
   function diagnosticsBody(){
     const sensors=[
       {name:'Aero',key:'aero',viz:`<svg viewBox="0 0 120 70" role="presentation">
-        <path class="aero-car" d="M48 20h24l10 9 3 18-9 7H44l-9-7 3-18 10-9Z"/>
-        <path class="aero-flow aero-flow-1" d="M2 13 C22 9 31 10 44 16 C54 20 67 20 78 16 C91 11 102 11 118 15"/>
-        <path class="aero-flow aero-flow-2" d="M1 31 C22 28 29 24 41 25 C52 26 68 26 81 24 C95 22 104 26 119 30"/>
-        <path class="aero-flow aero-flow-3" d="M1 49 C23 53 31 52 44 47 C55 43 66 43 79 47 C92 52 103 53 119 49"/>
-        <circle class="aero-particle aero-p1" cx="15" cy="13" r="2"/><circle class="aero-particle aero-p2" cx="14" cy="31" r="2"/><circle class="aero-particle aero-p3" cx="14" cy="49" r="2"/>
+        <path class="aero-body" d="M43 25 L50 18 H70 L77 25 L84 32 V42 L76 49 H44 L36 42 V32 Z"/>
+        <path class="aero-centre" d="M60 20V48"/>
+        <path class="aero-flow aero-flow-1" d="M3 12 C25 12 31 15 40 20 C48 24 72 24 80 20 C91 15 99 12 117 12"/>
+        <path class="aero-flow aero-flow-2" d="M2 27 C21 27 30 28 38 31 C45 34 75 34 82 31 C91 28 101 27 118 27"/>
+        <path class="aero-flow aero-flow-3" d="M2 43 C21 43 30 42 38 39 C45 36 75 36 82 39 C91 42 101 43 118 43"/>
+        <path class="aero-flow aero-flow-4" d="M3 58 C25 58 31 55 40 50 C48 46 72 46 80 50 C91 55 99 58 117 58"/>
+        <circle class="aero-probe aero-probe-1" cx="18" cy="12" r="1.8"/><circle class="aero-probe aero-probe-2" cx="15" cy="27" r="1.8"/><circle class="aero-probe aero-probe-3" cx="15" cy="43" r="1.8"/><circle class="aero-probe aero-probe-4" cx="18" cy="58" r="1.8"/>
       </svg>`},
       {name:'Stability',key:'stability',viz:`<svg viewBox="0 0 120 70" role="presentation">
-        <line class="stability-horizon" x1="8" y1="52" x2="112" y2="52"/>
+        <path class="stability-reference" d="M10 51H110"/>
+        <path class="stability-arc" d="M30 29 A34 34 0 0 1 90 29"/>
         <g class="stability-chassis">
-          <path class="stability-shell" d="M37 28h46l8 13-9 7H38l-9-7 8-13Z"/>
-          <circle class="stability-wheel left" cx="42" cy="50" r="5"/><circle class="stability-wheel right" cx="78" cy="50" r="5"/>
-          <line class="stability-spring left" x1="42" y1="36" x2="42" y2="46"/><line class="stability-spring right" x1="78" y1="36" x2="78" y2="46"/>
+          <path class="stability-shell" d="M38 31 L45 24 H75 L82 31 L86 42 H34 Z"/>
+          <rect class="stability-wheel stability-wheel-left" x="35" y="42" width="13" height="7" rx="3.5"/>
+          <rect class="stability-wheel stability-wheel-right" x="72" y="42" width="13" height="7" rx="3.5"/>
+          <path class="stability-damper stability-damper-left" d="M42 33V43"/><path class="stability-damper stability-damper-right" d="M78 33V43"/>
         </g>
-        <line class="stability-centre" x1="60" y1="12" x2="60" y2="58"/>
-        <circle class="stability-lock" cx="60" cy="36" r="25"/><circle class="stability-point" cx="60" cy="36" r="3"/>
+        <path class="stability-centre" d="M60 16V54"/>
+        <path class="stability-lock" d="M51 35H69"/>
+        <circle class="stability-point" cx="60" cy="35" r="3.2"/>
       </svg>`},
       {name:'Power',key:'power',viz:`<svg viewBox="0 0 120 70" role="presentation">
         <path class="power-baseline" d="M5 53H115"/>
@@ -345,10 +350,11 @@
         <path class="control-angle" d="M38 18 A29 29 0 0 1 83 19"/><circle class="control-marker" cx="60" cy="7" r="2.5"/>
       </svg>`},
       {name:'Traction',key:'traction',viz:`<svg viewBox="0 0 120 70" role="presentation">
-        <path class="traction-car" d="M50 13h20l9 11v22l-9 11H50l-9-11V24l9-11Z"/>
-        <rect class="traction-wheel w1" x="31" y="18" width="12" height="14" rx="4"/><rect class="traction-wheel w2" x="77" y="18" width="12" height="14" rx="4"/><rect class="traction-wheel w3" x="31" y="39" width="12" height="14" rx="4"/><rect class="traction-wheel w4" x="77" y="39" width="12" height="14" rx="4"/>
-        <ellipse class="traction-contact c1" cx="37" cy="25" rx="10" ry="5"/><ellipse class="traction-contact c2" cx="83" cy="25" rx="10" ry="5"/><ellipse class="traction-contact c3" cx="37" cy="46" rx="10" ry="5"/><ellipse class="traction-contact c4" cx="83" cy="46" rx="10" ry="5"/>
-        <path class="traction-drive" d="M60 17v36"/>
+        <path class="traction-road" d="M14 58H106"/>
+        <path class="traction-car" d="M50 14 H70 L77 23 V47 L70 56 H50 L43 47 V23 Z"/>
+        <path class="traction-spine" d="M60 18V52"/>
+        <rect class="traction-wheel w1" x="34" y="19" width="9" height="14" rx="3"/><rect class="traction-wheel w2" x="77" y="19" width="9" height="14" rx="3"/><rect class="traction-wheel w3" x="34" y="38" width="9" height="14" rx="3"/><rect class="traction-wheel w4" x="77" y="38" width="9" height="14" rx="3"/>
+        <rect class="traction-contact c1" x="30" y="23" width="7" height="7" rx="3.5"/><rect class="traction-contact c2" x="83" y="23" width="7" height="7" rx="3.5"/><rect class="traction-contact c3" x="30" y="42" width="7" height="7" rx="3.5"/><rect class="traction-contact c4" x="83" y="42" width="7" height="7" rx="3.5"/>
       </svg>`},
       {name:'Response',key:'response',viz:`<svg viewBox="0 0 120 70" role="presentation">
         <circle class="response-ring response-ring-a" cx="60" cy="35" r="23"/><circle class="response-ring response-ring-b" cx="60" cy="35" r="15"/>
@@ -357,7 +363,7 @@
         <circle class="response-pulse response-pulse-in" cx="10" cy="35" r="3"/><circle class="response-pulse response-pulse-out" cx="110" cy="35" r="3"/>
       </svg>`}
     ];
-    return `<div class="mission-instrument panel diagnostics-panel"><div class="sensor-grid diagnostics-grid">${sensors.map((x,i)=>`<button class="sensor sensor-${x.key}" data-sensor="${i}" data-diagnostic="${x.key}"><div class="sensor-head"><span class="num">0${i+1}</span><span class="name">${x.name}</span></div><div class="sensor-viz viz-${x.key}" aria-hidden="true">${x.viz}</div><div class="state">Ready to scan</div></button>`).join('')}</div></div><button class="btn primary wide" id="diagComplete" disabled>Confirm Performance Data</button>`;
+    return `<div class="mission-instrument panel diagnostics-panel"><div class="sensor-grid diagnostics-grid">${sensors.map((x,i)=>`<button class="sensor sensor-${x.key}" data-sensor="${i}" data-diagnostic="${x.key}"><div class="sensor-head"><span class="num">0${i+1}</span><span class="name">${x.name}</span></div><div class="sensor-viz viz-${x.key}" aria-hidden="true">${x.viz}</div><div class="state">Ready to scan</div></button>`).join('')}</div></div><button class="btn primary wide" id="diagComplete" disabled>Complete Scan</button>`;
   }
 
   function radioBody(){return `<div class="mission-instrument panel"><div class="wave" id="radioWave">${'<i></i>'.repeat(28)}</div><div class="frequency"><span id="freqVal">86.4</span> <small>FM</small></div><div class="range-wrap"><input id="freqRange" class="range" type="range" min="86" max="89" value="86.4" step="0.1"><div class="freq-marks"><span>86.0</span><span>87.0</span><span>88.0</span><span>89.0</span></div></div><div class="signal-state" id="signalState">Searching for signal</div><button class="btn primary wide" id="lockSignal" disabled>Lock Signal</button></div>`}

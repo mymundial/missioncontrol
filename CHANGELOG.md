@@ -1,3 +1,12 @@
+# Pass 7.38.27 — MC02 diagnostic animation + completion polish
+
+- Redesigned the weaker Aero, Stability and Traction diagnostic graphics without changing the six-card layout or scan mechanics.
+- Standardised successful diagnostic colour logic: cyan/blue remains the instrument language and only the captured measurement resolves green.
+- Aero now captures the airflow streams; Stability captures the central balance lock; Power captures only the upper performance trace/hotspot; Control captures the path/marker; Traction captures tyre contact patches; Response captures the return signal/core.
+- Changed the final MC02 CTA from `CONFIRM PERFORMANCE DATA` to `COMPLETE SCAN`.
+- Replaced the weak `Data Captured` completion outcome with: `The performance scan is complete and the racing data needed to calibrate Santa-1’s recovery systems has been captured.`
+- MC02 scan durations, interaction locking, checkpoint flow and all other missions are unchanged.
+
 # Pass 7.38.26 — MC03 incoming transmission status
 
 - Kept the existing incoming-transmission card, radar/comms icon, Santa-1 source label and waveform unchanged.
