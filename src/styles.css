@@ -7966,3 +7966,29 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .aurora-stage small .checkmark-icon{background-color:var(--green)!important;}
 .artifact-instruction,
 .artifact-state{display:none!important;}
+
+
+/* === Pass 7.38.50: MC03 connected relay colour-state swap === */
+/* Waiting/current target: blue chassis + green dashed capture ring.
+   Connected relay: green chassis + green number ring + blue dashed capture ring. */
+.relay-node.locked{
+  border-color:rgba(87,239,145,.98)!important;
+  background:radial-gradient(circle at 50% 45%,rgba(87,239,145,.12),rgba(8,39,56,.94) 48%,rgba(3,19,30,.99) 76%)!important;
+  box-shadow:
+    0 0 12px rgba(87,239,145,.24),
+    inset 0 0 24px rgba(87,239,145,.08)!important;
+}
+.relay-node.locked .relay-core{
+  color:#f2fdff!important;
+  border-color:rgba(87,239,145,1)!important;
+  background:radial-gradient(circle at 50% 40%,rgba(25,72,64,.94),rgba(8,39,55,.98) 72%)!important;
+  text-shadow:0 0 6px rgba(220,255,236,.28)!important;
+  box-shadow:
+    0 0 10px rgba(87,239,145,.24),
+    inset 0 1px 0 rgba(235,255,243,.10)!important;
+}
+.relay-node.locked .relay-target{
+  border-style:dashed!important;
+  border-color:rgba(101,218,255,.78)!important;
+  box-shadow:0 0 7px rgba(83,207,247,.16)!important;
+}
