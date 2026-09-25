@@ -7823,3 +7823,39 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
     height:60%!important;
   }
 }
+
+
+/* === Pass 7.38.47: brighten Power Pulse signatures === */
+.starstream-signature.emotion-signature{
+  background:
+    radial-gradient(circle,rgba(255,255,255,.16) 0 10%,rgba(var(--emotion-rgb),.22) 24%,rgba(8,33,52,.58) 49%,rgba(2,14,27,.06) 72%,transparent 76%)!important;
+  box-shadow:
+    0 0 14px rgba(var(--emotion-rgb),.24),
+    0 0 28px rgba(var(--emotion-rgb),.12),
+    inset 0 0 10px rgba(var(--emotion-rgb),.09)!important;
+}
+.starstream-signature.emotion-signature::before{
+  border:2px solid rgba(var(--emotion-rgb),.98)!important;
+  box-shadow:
+    0 0 12px rgba(var(--emotion-rgb),.28),
+    inset 0 0 10px rgba(255,255,255,.07)!important;
+}
+.starstream-signature.emotion-signature::after{
+  border:1px dashed rgba(var(--emotion-rgb),.34)!important;
+  opacity:.95!important;
+}
+.starstream-signature.emotion-signature .power-pulse-energy-icon{
+  filter:
+    drop-shadow(0 0 1px rgba(255,255,255,.78))
+    drop-shadow(0 0 5px rgba(255,255,255,.28))
+    drop-shadow(0 0 9px rgba(var(--emotion-rgb),.34))!important;
+}
+.starstream-signature.emotion-signature .power-pulse-energy-icon path{
+  fill:currentColor!important;
+  opacity:1!important;
+}
+.starstream-signature.emotion-signature .signature-scan{
+  opacity:.62!important;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),rgba(var(--emotion-rgb),.78),rgba(255,255,255,.28),transparent)!important;
+  box-shadow:0 0 6px rgba(var(--emotion-rgb),.24)!important;
+}
