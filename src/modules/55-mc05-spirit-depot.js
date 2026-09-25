@@ -27,9 +27,12 @@
     let completed=false;
     let finishTimer=0;
     const reactionTimers=[];
-    const payoffAudio=new Audio('./assets/spirit-tank-vent.mp3');
+    const payoffAudio=new Audio('./assets/spirit-tank-fully-charged.wav');
     payoffAudio.preload='auto';
     payoffAudio.volume=.72;
+    const finalPayoffAudio=new Audio('./assets/power-pulse-energy-boost.wav');
+    finalPayoffAudio.preload='auto';
+    finalPayoffAudio.volume=.78;
     const bubblesAudio=new Audio('./assets/spirit-depot-bubbles-loop.wav');
     bubblesAudio.preload='auto';
     bubblesAudio.loop=true;
@@ -40,6 +43,17 @@
       try{
         payoffAudio.currentTime=0;
         const play=payoffAudio.play();
+        if(play&&typeof play.catch==='function') play.catch(()=>{});
+      }catch{}
+    }
+
+    function playFinalTankPayoff(){
+      if(!state.audio) return;
+      try{
+        payoffAudio.pause();
+        payoffAudio.currentTime=0;
+        finalPayoffAudio.currentTime=0;
+        const play=finalPayoffAudio.play();
         if(play&&typeof play.catch==='function') play.catch(()=>{});
       }catch{}
     }
@@ -119,7 +133,12 @@
       void tank.offsetWidth;
       tank.classList.add('is-locking');
       setTimeout(()=>tank.classList.remove('is-locking'),900);
-      playTankPayoff();
+      if(hits>=totalTaps){
+        stopBubbles();
+        playFinalTankPayoff();
+      }else{
+        playTankPayoff();
+      }
       haptic([24,18,42]);
     }
 
@@ -196,5 +215,6 @@
       buttons.forEach(button=>button.removeEventListener('click',onCharge));
       stopBubbles();
       try{payoffAudio.pause();payoffAudio.currentTime=0;}catch{}
+      try{finalPayoffAudio.pause();finalPayoffAudio.currentTime=0;}catch{}
     };
   }
