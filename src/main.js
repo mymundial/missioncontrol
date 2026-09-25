@@ -930,7 +930,7 @@
           <line class="relay-hop-line" data-hop="3" x1="75" y1="75" x2="25" y2="125"></line>
           <line class="relay-hop-line" data-hop="4" x1="25" y1="125" x2="75" y2="125"></line>
         </svg>
-        <span class="relay-carrier-packet" id="relayCarrierPacket" aria-hidden="true"></span>
+        ${Array.from({length:5},(_,i)=>`<span class="relay-carrier-packet" data-carrier="${i}" aria-hidden="true"></span>`).join('')}
         <div class="relay-cell relay-endpoint relay-origin"><span class="relay-radio-icon"><i></i><i></i><i></i></span><small>TRANSMITTER</small></div>
         ${[0,1,2,3].map(i=>`<div class="relay-cell relay-capture"><button class="relay-node ${i===0?'active':''}" data-relay="${i}" aria-label="Relay ${i+1}"><span class="relay-target"></span><span class="relay-pulse"></span><span class="relay-core">0${i+1}</span></button><small>RELAY 0${i+1}</small></div>`).join('')}
         <div class="relay-cell relay-endpoint relay-destination"><span class="relay-receiver-icon"></span><small>RECEIVER</small></div>
@@ -2034,7 +2034,7 @@
     try{santa.load();}catch{}
     const routeSvg=document.querySelector('.relay-route');
     const relayNetwork=document.getElementById('relayNetwork');
-    const carrierPacket=document.getElementById('relayCarrierPacket');
+    const carrierPackets=[...document.querySelectorAll('[data-carrier]')];
     let carrierSegments=[];
     let carrierStart=performance.now();
     const routePoints=[document.querySelector('.relay-origin .relay-radio-icon'),...nodes,document.querySelector('.relay-destination .relay-receiver-icon')];
@@ -2063,23 +2063,26 @@
         pulse.style.transform=`translate(-50%,-50%) scale(${scale})`;
         pulse.style.opacity=String(Math.max(.08,1-phase*.72));
       }
-      if(carrierPacket){
-        const segment=carrierSegments[stage];
+      if(carrierPackets.length){
         const carrierCycle=1280;
         const travel=1040;
-        const elapsed=(now-carrierStart)%carrierCycle;
-        if(segment?.a&&segment?.b&&elapsed<=travel){
+        carrierPackets.forEach((packet,i)=>{
+          const isLive=i===stage||hops[i]?.classList.contains('locked');
+          const segment=carrierSegments[i];
+          if(!isLive||!segment?.a||!segment?.b){packet.style.opacity='0';return;}
+          const elapsed=(now-carrierStart+(i*170))%carrierCycle;
+          if(elapsed>travel){packet.style.opacity='0';return;}
           const raw=elapsed/travel;
-          const t=raw*raw*(3-2*raw);
-          const x=segment.a.x+(segment.b.x-segment.a.x)*t;
-          const y=segment.a.y+(segment.b.y-segment.a.y)*t;
+          const eased=raw*raw*(3-2*raw);
+          const x=segment.a.x+(segment.b.x-segment.a.x)*eased;
+          const y=segment.a.y+(segment.b.y-segment.a.y)*eased;
           const angle=Math.atan2(segment.b.y-segment.a.y,segment.b.x-segment.a.x)*180/Math.PI;
           const edgeFade=Math.min(1,raw/.08,(1-raw)/.08);
-          carrierPacket.style.left=`${x}px`;
-          carrierPacket.style.top=`${y}px`;
-          carrierPacket.style.opacity=String(Math.max(0,edgeFade));
-          carrierPacket.style.transform=`translate(-100%,-50%) rotate(${angle}deg)`;
-        }else carrierPacket.style.opacity='0';
+          packet.style.left=`${x}px`;
+          packet.style.top=`${y}px`;
+          packet.style.opacity=String(Math.max(0,edgeFade));
+          packet.style.transform=`translate(-100%,-50%) rotate(${angle}deg)`;
+        });
       }
       raf=requestAnimationFrame(draw);
     }
@@ -2088,7 +2091,7 @@
       nodes.forEach((n,i)=>n.classList.toggle('active',i===stage));
       hops.forEach((h,i)=>h.classList.toggle('active',i===stage&&!h.classList.contains('locked')));
       carrierStart=performance.now();
-      if(carrierPacket)carrierPacket.style.opacity='0';
+      carrierPackets.forEach(packet=>packet.style.opacity='0');
       stateEl.textContent=`Tap Relay 0${stage+1} when the pulse meets the capture ring.`;
     }
     function showIncomingTransmission(){
@@ -2150,13 +2153,13 @@
       locked=true;node.classList.remove('active');node.classList.add('locked');
       hops[stage]?.classList.remove('active');
       hops[stage]?.classList.add('locked');
-      if(carrierPacket)carrierPacket.style.opacity='0';
+      carrierPackets.forEach(packet=>packet.style.opacity='0');
       meterFill.style.width=`${25+(stage*25)}%`;
       if(meterText)meterText.textContent=['ACQUIRED','ROUTED','STRONG','LOCKED'][stage];
       stateEl.textContent=stage===3?'Transmission path locked.':'Relay locked · signal strengthened.';
       playRelayFx(stage===3?relayFxFull:relayFxShort,stage===3?.95:.9);haptic([20,25,38]);
       if(stage===3){
-        hops.forEach(h=>h.classList.add('locked'));if(carrierPacket)carrierPacket.style.opacity='0';
+        hops.forEach(h=>h.classList.add('locked'));
         const dest=document.querySelector('.relay-destination');dest?.classList.add('locked');
         // Prime the Santa media element inside the final user gesture, but at
         // zero volume. This preserves reliable mobile playback while the

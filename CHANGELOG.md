@@ -1,3 +1,13 @@
+# Pass 7.38.22 — MC03 restrained relay-success pass
+
+- Reduced the dotted capture-ring diameter slightly while keeping the outer relay node, numbered centre, timing pulse and hit window unchanged.
+- Removed the unwanted extra concentric relay ring so each relay now reads as one outer edge, one dotted capture target and one numbered inner circle.
+- Kept relay nodes cyan after successful activation; only completed connection lines turn green.
+- Successful connection links now keep their travelling energy packet running instead of going visually dormant when the next relay becomes active.
+- The current live link continues to carry the same travelling packet, so energy visibly persists through the chain as relays are completed.
+- Signal Strength positioning, captions, audio, mission logic and relay timing are unchanged.
+- Updated CSS/JS cache-busting to 7.38.22.
+
 # Pass 7.38.21 — MC03 exact relay restore + new carrier
 
 - Restored the relay hardware to the exact original working dimensions: 76px outer node, 7px inset dotted capture target, 31px numbered inner circle and 46px timing pulse; retained the original 68px / 6px / 28px / 41px mobile geometry.

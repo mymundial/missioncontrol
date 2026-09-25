@@ -372,7 +372,7 @@
           <line class="relay-hop-line" data-hop="3" x1="75" y1="75" x2="25" y2="125"></line>
           <line class="relay-hop-line" data-hop="4" x1="25" y1="125" x2="75" y2="125"></line>
         </svg>
-        <span class="relay-carrier-packet" id="relayCarrierPacket" aria-hidden="true"></span>
+        ${Array.from({length:5},(_,i)=>`<span class="relay-carrier-packet" data-carrier="${i}" aria-hidden="true"></span>`).join('')}
         <div class="relay-cell relay-endpoint relay-origin"><span class="relay-radio-icon"><i></i><i></i><i></i></span><small>TRANSMITTER</small></div>
         ${[0,1,2,3].map(i=>`<div class="relay-cell relay-capture"><button class="relay-node ${i===0?'active':''}" data-relay="${i}" aria-label="Relay ${i+1}"><span class="relay-target"></span><span class="relay-pulse"></span><span class="relay-core">0${i+1}</span></button><small>RELAY 0${i+1}</small></div>`).join('')}
         <div class="relay-cell relay-endpoint relay-destination"><span class="relay-receiver-icon"></span><small>RECEIVER</small></div>

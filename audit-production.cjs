@@ -334,20 +334,25 @@ if(
   /setTimeout\(\(\)=>showIncomingTransmission\(\),2350\)/.test(runtime) &&
   /const hit=phase>=\.53&&phase<=\.80/.test(runtime) &&
   /const scale=\.42\+phase\*1\.28/.test(runtime) &&
-  /relay-carrier-packet/.test(runtime) &&
+  /Array\.from\(\{length:5\}/.test(runtime) &&
+  /data-carrier=/.test(runtime) &&
+  /const carrierPackets=\[\.\.\.document\.querySelectorAll\('\[data-carrier\]'\)\]/.test(runtime) &&
+  /hops\[i\]\?\.classList\.contains\('locked'\)/.test(runtime) &&
+  /packet\.style\.left/.test(runtime) &&
+  /packet\.style\.top/.test(runtime) &&
   !/data-energy=/.test(runtime) &&
-  /carrierPacket\.style\.left/.test(runtime) &&
-  /carrierPacket\.style\.top/.test(runtime) &&
-  /Pass 7\.38\.21 — MC03 exact relay restore \+ new carrier packet/.test(css) &&
-  /\.relay-node,\s*\n\.relay-radio-icon,\s*\n\.relay-receiver-icon\{[\s\S]*?width:76px;[\s\S]*?height:76px;/.test(css) &&
-  /\.relay-node \.relay-target\{[\s\S]*?inset:7px;[\s\S]*?border:1\.5px dashed/.test(css) &&
+  /Pass 7\.38\.22 — MC03 restrained success state \+ persistent relay energy/.test(css) &&
+  /\.relay-node::before\{[\s\S]*?display:none!important/.test(css) &&
+  /\.relay-node \.relay-target\{[\s\S]*?inset:9px/.test(css) &&
   /\.relay-node \.relay-core\{[\s\S]*?width:31px;[\s\S]*?height:31px/.test(css) &&
   /\.relay-node \.relay-pulse\{[\s\S]*?width:46px;[\s\S]*?height:46px/.test(css) &&
   /\.relay-node:not\(\.active\) \.relay-pulse\{display:none!important;\}/.test(css) &&
+  /\.relay-hop-line\.locked\{[\s\S]*?stroke:rgba\(87,239,145,\.88\)/.test(css) &&
+  /\.relay-node\.locked\{[\s\S]*?border-color:rgba\(92,194,228,\.58\)/.test(css) &&
   /\.relay-meter>span\{[\s\S]*?text-align:center/.test(css)
 ) {
-  ok('MC03 exact relay restore and carrier','Original relay geometry is restored with the dotted ring as the capture target, offset pulses are suppressed on inactive nodes, Signal Strength remains centred, and the old SVG dash carrier has been replaced by a positioned travelling packet without changing hit timing.');
-} else fail('MC03 exact relay restore and carrier','MC03 relay geometry, target treatment, carrier replacement, centred meter, audio, or frozen timing is incomplete');
+  ok('MC03 restrained relay-success pass','Capture ring diameter is reduced, the redundant concentric ring is removed, relay nodes remain cyan, completed links turn green, and travelling packets persist on completed links without changing hit timing.');
+} else fail('MC03 restrained relay-success pass','MC03 capture geometry, success colour state, persistent packets, centred meter, audio, or frozen timing is incomplete');
 
 
 // 12) External runtime dependencies / launch notes.
