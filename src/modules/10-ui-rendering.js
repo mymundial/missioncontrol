@@ -321,18 +321,18 @@
         <circle class="aero-probe aero-probe-1" cx="18" cy="12" r="1.8"/><circle class="aero-probe aero-probe-2" cx="15" cy="27" r="1.8"/><circle class="aero-probe aero-probe-3" cx="15" cy="43" r="1.8"/><circle class="aero-probe aero-probe-4" cx="18" cy="58" r="1.8"/>
       </svg>`},
       {name:'Stability',key:'stability',viz:`<svg viewBox="0 0 120 70" role="presentation">
-        <path class="stability-reference" d="M8 51H112"/>
-        <path class="stability-arc" d="M24 26 A36 36 0 0 1 96 26"/>
-        <circle class="stability-console" cx="60" cy="35" r="10"/>
+        <path class="stability-reference" d="M12 51H108"/>
+        <path class="stability-arc" d="M38 28 A22 22 0 0 1 82 28"/>
+        <circle class="stability-console" cx="60" cy="35" r="7.5"/>
         <g class="stability-chassis">
-          <path class="stability-shell" d="M34 31 L43 22 H77 L86 31 L90 43 H30 Z"/>
-          <rect class="stability-wheel stability-wheel-left" x="31" y="43" width="15" height="8" rx="4"/>
-          <rect class="stability-wheel stability-wheel-right" x="74" y="43" width="15" height="8" rx="4"/>
+          <path class="stability-shell" d="M32 31 L41 21 H79 L88 31 L92 43 H28 Z"/>
+          <rect class="stability-wheel stability-wheel-left" x="29" y="43" width="16" height="8" rx="4"/>
+          <rect class="stability-wheel stability-wheel-right" x="75" y="43" width="16" height="8" rx="4"/>
           <path class="stability-damper stability-damper-left" d="M39 31V44"/><path class="stability-damper stability-damper-right" d="M81 31V44"/>
         </g>
-        <path class="stability-centre" d="M60 14V56"/>
-        <path class="stability-lock" d="M47 35H73"/>
-        <circle class="stability-point" cx="60" cy="35" r="3.6"/>
+        <path class="stability-centre" d="M60 20V50"/>
+        <path class="stability-lock" d="M46 35H74"/>
+        <circle class="stability-point" cx="60" cy="35" r="3.4"/>
       </svg>`},
       {name:'Power',key:'power',viz:`<svg viewBox="0 0 120 70" role="presentation">
         <path class="power-baseline" d="M5 62H115"/>
