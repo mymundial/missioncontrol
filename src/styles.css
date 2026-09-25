@@ -118,7 +118,7 @@ button:disabled{cursor:not-allowed;opacity:.38;}
 @keyframes sweep{to{transform:rotate(360deg)}}
 .user-dot{position:absolute;left:50%;top:50%;width:10px;height:10px;border-radius:50%;background:#c8f5ff;transform:translate(-50%,-50%);box-shadow:0 0 0 7px rgba(99,217,255,.09),0 0 18px #70ddff;}
 .target-dot{position:absolute;width:20px;height:20px;border-radius:50%;background:transparent;box-shadow:none;transform:translate(-50%,-50%);transition:left .6s ease,top .6s ease,opacity .25s ease;overflow:visible;}
-.target-dot::before,.track-radar-target::before{content:"";position:absolute;left:50%;top:50%;width:8px;height:8px;border-radius:50%;background:#effcff;transform:translate(-50%,-50%);box-shadow:0 0 5px #fff,0 0 11px #9ceaff,0 0 22px rgba(105,212,239,.88);animation:checkpointBeaconFlash 1.25s linear infinite;}
+.target-dot::before,.track-radar-target::before{content:"";position:absolute;left:50%;top:50%;width:10px;height:10px;border-radius:50%;background:#c8f5ff;transform:translate(-50%,-50%);box-shadow:0 0 0 7px rgba(99,217,255,.09),0 0 18px #70ddff;animation:checkpointBeaconFlash 1.25s linear infinite;}
 .target-dot::after,.track-radar-target::after{content:"";position:absolute;left:50%;top:50%;width:18px;height:18px;border-radius:50%;border:1px solid rgba(142,234,255,.88);background:rgba(105,212,239,.08);transform:translate(-50%,-50%) scale(.48);box-shadow:0 0 8px rgba(142,234,255,.38),inset 0 0 8px rgba(142,234,255,.14);animation:checkpointBeaconRing 1.25s ease-out infinite;}
 .target-dot.hidden{opacity:0;}
 @keyframes checkpointBeaconFlash{0%,7%,18%,25%{opacity:1;transform:translate(-50%,-50%) scale(1.14)}10%,21%,100%{opacity:.34;transform:translate(-50%,-50%) scale(.76)}}
@@ -6304,6 +6304,12 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   height:12px;
   background:#fff;
   border:0;
+  box-shadow:0 0 6px #fff,0 0 14px #9ceaff,0 0 26px rgba(116,225,255,.9);
+}
+.radar.circuit-radar .track-radar-target::before{
+  width:12px;
+  height:12px;
+  background:#fff;
   box-shadow:0 0 6px #fff,0 0 14px #9ceaff,0 0 26px rgba(116,225,255,.9);
 }
 .radar.circuit-radar::before,
