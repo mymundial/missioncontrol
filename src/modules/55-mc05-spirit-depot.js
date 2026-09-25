@@ -30,6 +30,10 @@
     const payoffAudio=new Audio('./assets/spirit-tank-vent.mp3');
     payoffAudio.preload='auto';
     payoffAudio.volume=.72;
+    const bubblesAudio=new Audio('./assets/spirit-depot-bubbles-loop.wav');
+    bubblesAudio.preload='auto';
+    bubblesAudio.loop=true;
+    bubblesAudio.volume=.42;
 
     function playTankPayoff(){
       if(!state.audio) return;
@@ -37,6 +41,21 @@
         payoffAudio.currentTime=0;
         const play=payoffAudio.play();
         if(play&&typeof play.catch==='function') play.catch(()=>{});
+      }catch{}
+    }
+
+    function startBubbles(){
+      if(!state.audio||completed||!bubblesAudio.paused) return;
+      try{
+        const play=bubblesAudio.play();
+        if(play&&typeof play.catch==='function') play.catch(()=>{});
+      }catch{}
+    }
+
+    function stopBubbles(){
+      try{
+        bubblesAudio.pause();
+        bubblesAudio.currentTime=0;
       }catch{}
     }
 
@@ -123,6 +142,7 @@
 
     function completeSpirit(){
       completed=true;
+      stopBubbles();
       rig.classList.add('is-complete');
       stageNumber.textContent='08';
       stageDots.forEach(dot=>{
@@ -151,6 +171,7 @@
       const button=event.currentTarget;
       const side=button.dataset.charge;
       if(side!==expected){flashWrong(button);return;}
+      startBubbles();
       hits++;
       sideHits[side]++;
       updateBank(side);
@@ -173,6 +194,7 @@
       clearTimeout(finishTimer);
       reactionTimers.forEach(clearTimeout);
       buttons.forEach(button=>button.removeEventListener('click',onCharge));
+      stopBubbles();
       try{payoffAudio.pause();payoffAudio.currentTime=0;}catch{}
     };
   }

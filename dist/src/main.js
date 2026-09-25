@@ -824,7 +824,7 @@
       radio:'Tune the receiver to 87.7 and establish a link with ELF FM.',
       commsrelay:'Establish communications with Santa-1.',
       power:'Test Santa-1’s propulsion system.',
-      spirit:'Store the recovered energy.',
+      spirit:'Store the positive energy.',
       placeholder:'This checkpoint is reserved while the final installation game is developed.',
       artifacts:'Collect the energy signatures.',
       comet:'Align Santa-1’s guidance system.',
@@ -2406,6 +2406,10 @@
     const payoffAudio=new Audio('./assets/spirit-tank-vent.mp3');
     payoffAudio.preload='auto';
     payoffAudio.volume=.72;
+    const bubblesAudio=new Audio('./assets/spirit-depot-bubbles-loop.wav');
+    bubblesAudio.preload='auto';
+    bubblesAudio.loop=true;
+    bubblesAudio.volume=.42;
 
     function playTankPayoff(){
       if(!state.audio) return;
@@ -2413,6 +2417,21 @@
         payoffAudio.currentTime=0;
         const play=payoffAudio.play();
         if(play&&typeof play.catch==='function') play.catch(()=>{});
+      }catch{}
+    }
+
+    function startBubbles(){
+      if(!state.audio||completed||!bubblesAudio.paused) return;
+      try{
+        const play=bubblesAudio.play();
+        if(play&&typeof play.catch==='function') play.catch(()=>{});
+      }catch{}
+    }
+
+    function stopBubbles(){
+      try{
+        bubblesAudio.pause();
+        bubblesAudio.currentTime=0;
       }catch{}
     }
 
@@ -2499,6 +2518,7 @@
 
     function completeSpirit(){
       completed=true;
+      stopBubbles();
       rig.classList.add('is-complete');
       stageNumber.textContent='08';
       stageDots.forEach(dot=>{
@@ -2510,7 +2530,7 @@
       buttons.forEach(button=>{button.disabled=true;button.classList.remove('is-next');});
       haptic([30,28,64]);
       finishTimer=setTimeout(()=>{
-        if(state.missionOpen==='spirit') showCompletion('Spirit Core Charged','The recovered energy has been stored and the Spirit Core is fully charged.');
+        if(state.missionOpen==='spirit') showCompletion('Spirit Core Charged','The positive energy signatures have been safely stored and the Spirit Core is now fully charged.');
       },950);
     }
 
@@ -2527,6 +2547,7 @@
       const button=event.currentTarget;
       const side=button.dataset.charge;
       if(side!==expected){flashWrong(button);return;}
+      startBubbles();
       hits++;
       sideHits[side]++;
       updateBank(side);
@@ -2549,6 +2570,7 @@
       clearTimeout(finishTimer);
       reactionTimers.forEach(clearTimeout);
       buttons.forEach(button=>button.removeEventListener('click',onCharge));
+      stopBubbles();
       try{payoffAudio.pause();payoffAudio.currentTime=0;}catch{}
     };
   }
