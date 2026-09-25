@@ -1,3 +1,13 @@
+# Pass 7.38.15 — MC03 Comms Relay interaction redesign
+
+- reversed the over-compressed 7.38.14 relay layout and restored generous vertical breathing room so endpoint and relay labels are no longer squeezed.
+- made the timing mechanic materially clearer: only the active relay exposes the large concentric capture ring and expanding pulse; future relays remain simple subdued nodes until armed.
+- increased the active relay scale and contrast while keeping completed relays compact and locked, creating a stronger current / future / complete hierarchy.
+- expanded the zig-zag route field and strengthened live-route feedback with a moving cyan dash; successful captures now send a short bright lock pulse through the completed route segment.
+- improved endpoint typography so TRANSMITTER / MISSION CONTROL and RECEIVER / SANTA-1 have dedicated two-line hierarchy instead of cramped labels.
+- strengthened the Signal Strength meter with more breathing room, quarter-stage markers and the existing WEAK → ACQUIRING → STABLE → STRONG → LINKED progression.
+- relay timing windows, difficulty, Santa transmission audio, mission completion logic and checkpoint behaviour are unchanged.
+
 # Pass 7.38.14 — MC03 Comms Relay clarity pass
 
 - tightened the MC03 relay network into a cleaner, more instrument-like zig-zag layout while keeping the existing four-relay timing mechanic and difficulty unchanged.

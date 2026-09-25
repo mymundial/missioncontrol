@@ -300,16 +300,17 @@ if(
 
 if(
   /id="relayMeter"/.test(runtime) &&
-  /relay-meter-head/.test(runtime) &&
-  /hops\.forEach\(\(h,i\)=>h\.classList\.toggle\('active',i===stage&&!h\.classList\.contains\('locked'\)\)\)/.test(runtime) &&
+  /relay-meter-pip p1/.test(runtime) &&
   /\['ACQUIRING','STABLE','STRONG','LINKED'\]/.test(runtime) &&
   /classList\.add\('locked','just-locked'\)/.test(runtime) &&
-  /\.relay-node:not\(\.active\) \.relay-pulse\{opacity:0!important;\}/.test(css) &&
-  /\.relay-hop-line\.active\{stroke:rgba\(103,220,255,\.62\)/.test(css) &&
-  /\.relay-destination\.ready\{opacity:\.78;\}/.test(css)
+  /h\.classList\.remove\('just-locked'\)/.test(runtime) &&
+  /\.comms-relay-panel \.relay-node:not\(\.active\) \.relay-pulse\{opacity:0!important;\}/.test(css) &&
+  /grid-template-rows:repeat\(3,112px\)/.test(css) &&
+  /relayLiveRoute73815/.test(css) &&
+  /\.comms-relay-panel \.relay-node\.active\{[\s\S]*?width:78px;height:78px/.test(css)
 ) {
-  ok('MC03 relay hierarchy','Only the armed relay/pulse and live route hop are emphasized; locks progress visibly and Signal Strength advances to LINKED');
-} else fail('MC03 relay hierarchy','Comms Relay visual hierarchy or signal-strength progression does not match the approved cleanup');
+  ok('MC03 relay hierarchy','Active relay owns the concentric capture interaction; future relays recede, route locks pulse progressively and Signal Strength advances to LINKED');
+} else fail('MC03 relay hierarchy','Comms Relay redesign hierarchy, route feedback or signal-strength progression is incomplete');
 
 // 12) External runtime dependencies / launch notes.
 const urls=[...runtime.matchAll(/https:\/\/[^'"`\s)]+/g)].map(m=>m[0]);

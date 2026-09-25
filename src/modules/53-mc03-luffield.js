@@ -25,7 +25,10 @@
     function arm(nextStage){
       stage=nextStage;phase=0;start=performance.now();locked=false;
       nodes.forEach((n,i)=>n.classList.toggle('active',i===stage));
-      hops.forEach((h,i)=>h.classList.toggle('active',i===stage&&!h.classList.contains('locked')));
+      hops.forEach((h,i)=>{
+        h.classList.remove('just-locked');
+        h.classList.toggle('active',i===stage&&!h.classList.contains('locked'));
+      });
       const dest=document.querySelector('.relay-destination');
       dest?.classList.toggle('ready',stage===3);
       stateEl.textContent=`Tap Relay 0${stage+1} when the pulse meets the capture ring.`;
@@ -89,7 +92,8 @@
       locked=true;node.classList.remove('active');node.classList.add('locked','just-locked');
       setTimeout(()=>node.classList.remove('just-locked'),460);
       hops[stage]?.classList.remove('active');
-      hops[stage]?.classList.add('locked');
+      hops[stage]?.classList.add('locked','just-locked');
+      setTimeout(()=>hops[stage]?.classList.remove('just-locked'),520);
       meterFill.style.width=`${[30,55,78,100][stage]}%`;
       meterText.textContent=['ACQUIRING','STABLE','STRONG','LINKED'][stage];
       meter?.classList.toggle('linked',stage===3);

@@ -924,17 +924,17 @@
       <div class="signal-state relay-instruction" id="relayState">Tap Relay 01 when the pulse meets the capture ring.</div>
       <div class="relay-network" id="relayNetwork" aria-label="Signal relay network">
         <svg class="relay-route" viewBox="0 0 100 150" preserveAspectRatio="none" aria-hidden="true">
-          <line class="relay-hop-line" data-hop="0" x1="25" y1="25" x2="75" y2="25"></line>
-          <line class="relay-hop-line" data-hop="1" x1="75" y1="25" x2="25" y2="75"></line>
-          <line class="relay-hop-line" data-hop="2" x1="25" y1="75" x2="75" y2="75"></line>
-          <line class="relay-hop-line" data-hop="3" x1="75" y1="75" x2="25" y2="125"></line>
-          <line class="relay-hop-line" data-hop="4" x1="25" y1="125" x2="75" y2="125"></line>
+          <line class="relay-hop-line" data-hop="0" x1="23" y1="25" x2="77" y2="25"></line>
+          <line class="relay-hop-line" data-hop="1" x1="77" y1="25" x2="23" y2="75"></line>
+          <line class="relay-hop-line" data-hop="2" x1="23" y1="75" x2="77" y2="75"></line>
+          <line class="relay-hop-line" data-hop="3" x1="77" y1="75" x2="23" y2="125"></line>
+          <line class="relay-hop-line" data-hop="4" x1="23" y1="125" x2="77" y2="125"></line>
         </svg>
-        <div class="relay-cell relay-endpoint relay-origin"><span class="relay-radio-icon"><i></i><i></i><i></i></span><small>TRANSMITTER<br>MISSION CONTROL</small></div>
+        <div class="relay-cell relay-endpoint relay-origin"><span class="relay-radio-icon"><i></i><i></i><i></i></span><small><b>TRANSMITTER</b><span>MISSION CONTROL</span></small></div>
         ${[0,1,2,3].map(i=>`<div class="relay-cell relay-capture"><button class="relay-node ${i===0?'active':''}" data-relay="${i}" aria-label="Relay ${i+1}"><span class="relay-target"></span><span class="relay-pulse"></span><span class="relay-core">0${i+1}</span></button><small>RELAY 0${i+1}</small></div>`).join('')}
-        <div class="relay-cell relay-endpoint relay-destination"><span class="relay-receiver-icon"></span><small>RECEIVER<br>SANTA-1</small></div>
+        <div class="relay-cell relay-endpoint relay-destination"><span class="relay-receiver-icon"></span><small><b>RECEIVER</b><span>SANTA-1</span></small></div>
       </div>
-      <div class="relay-meter" id="relayMeter"><div class="relay-meter-head"><span>Signal Strength</span><strong id="relayMeterText">WEAK</strong></div><div class="relay-meter-track"><i id="relayMeterFill"></i></div></div>
+      <div class="relay-meter" id="relayMeter"><div class="relay-meter-head"><span>Signal Strength</span><strong id="relayMeterText">WEAK</strong></div><div class="relay-meter-track"><i id="relayMeterFill"></i><b class="relay-meter-pip p1"></b><b class="relay-meter-pip p2"></b><b class="relay-meter-pip p3"></b><b class="relay-meter-pip p4"></b></div></div>
     </div>`;
   }
   function powerBody(){
@@ -2039,7 +2039,10 @@
     function arm(nextStage){
       stage=nextStage;phase=0;start=performance.now();locked=false;
       nodes.forEach((n,i)=>n.classList.toggle('active',i===stage));
-      hops.forEach((h,i)=>h.classList.toggle('active',i===stage&&!h.classList.contains('locked')));
+      hops.forEach((h,i)=>{
+        h.classList.remove('just-locked');
+        h.classList.toggle('active',i===stage&&!h.classList.contains('locked'));
+      });
       const dest=document.querySelector('.relay-destination');
       dest?.classList.toggle('ready',stage===3);
       stateEl.textContent=`Tap Relay 0${stage+1} when the pulse meets the capture ring.`;
@@ -2103,7 +2106,8 @@
       locked=true;node.classList.remove('active');node.classList.add('locked','just-locked');
       setTimeout(()=>node.classList.remove('just-locked'),460);
       hops[stage]?.classList.remove('active');
-      hops[stage]?.classList.add('locked');
+      hops[stage]?.classList.add('locked','just-locked');
+      setTimeout(()=>hops[stage]?.classList.remove('just-locked'),520);
       meterFill.style.width=`${[30,55,78,100][stage]}%`;
       meterText.textContent=['ACQUIRING','STABLE','STRONG','LINKED'][stage];
       meter?.classList.toggle('linked',stage===3);
