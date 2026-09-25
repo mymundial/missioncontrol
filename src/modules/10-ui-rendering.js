@@ -399,7 +399,8 @@
     return `<div class="mission-instrument panel artifact-panel">
       <div class="artifact-score"><span>POWER STABILITY</span><strong id="artifactProgress">0 / 10</strong></div>
       <div class="artifact-progress-track" aria-hidden="true">${Array.from({length:10},(_,i)=>`<i data-artifact-step="${i}"></i>`).join('')}</div>
-            <div class="artifact-field" id="artifactField" data-intensity="1" aria-label="Power Pulse positive energy field">
+      <div class="artifact-instruction" aria-hidden="true">Collect the energy signatures.</div>
+      <div class="artifact-field" id="artifactField" data-intensity="1" aria-label="Power Pulse positive energy field">
         <canvas class="starstream-canvas" id="starstreamCanvas" aria-hidden="true"></canvas>
         <div class="starstream-nebula" aria-hidden="true"></div>
         <div class="starstream-vignette" aria-hidden="true"></div>
@@ -407,7 +408,8 @@
         <div class="artifact-layer" id="artifactLayer"></div>
         <div class="artifact-burst-layer" id="artifactBurstLayer" aria-hidden="true"></div>
       </div>
-          </div>`;
+      <div class="signal-state artifact-state" id="artifactState" aria-hidden="true">Energy signatures detected</div>
+    </div>`;
   }
   function cometBody(){
     const lanes=[['L','left'],['D','down'],['U','up'],['R','right']];
