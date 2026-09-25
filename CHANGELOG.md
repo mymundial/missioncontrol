@@ -196,3 +196,9 @@ The two-column bank is intentionally row-interleaved so it reads top-down by col
 - Reindeer Raceway completion now identifies PROPULSION.
 - Jingle Beams completion now identifies CONTROL.
 - Lightspeed Lando completion now identifies RESPONSE.
+
+## 7.38.16 — MC03 Comms Relay visual-only recovery
+- Reverted the 7.38.14/7.38.15 MC03 structural redesign so relay positions, click targets, target-ring geometry, pulse geometry and timing behaviour return to the known-working 7.38.13 implementation.
+- No mission mechanics or difficulty were changed.
+- Applied the approved premium look strictly through the visual layer: deeper glassy nodes, cleaner cyan route lighting, brighter active capture glow, restrained locked-state illumination, refined transmitter/receiver treatments and a segmented instrument-style Signal Strength bar.
+- Future relays are visually quieter without changing their hit areas or layout.

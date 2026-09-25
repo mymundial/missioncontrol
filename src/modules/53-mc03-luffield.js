@@ -2,7 +2,6 @@
     const nodes=[...document.querySelectorAll('[data-relay]')];
     const hops=[...document.querySelectorAll('[data-hop]')];
     const stateEl=document.getElementById('relayState');
-    const meter=document.getElementById('relayMeter');
     const meterFill=document.getElementById('relayMeterFill');
     const meterText=document.getElementById('relayMeterText');
     const help=['Acquire the incoming signal.','Route the recovered transmission.','Boost the communications carrier.','Transmit the restored link to Santa-1.'];
@@ -25,12 +24,6 @@
     function arm(nextStage){
       stage=nextStage;phase=0;start=performance.now();locked=false;
       nodes.forEach((n,i)=>n.classList.toggle('active',i===stage));
-      hops.forEach((h,i)=>{
-        h.classList.remove('just-locked');
-        h.classList.toggle('active',i===stage&&!h.classList.contains('locked'));
-      });
-      const dest=document.querySelector('.relay-destination');
-      dest?.classList.toggle('ready',stage===3);
       stateEl.textContent=`Tap Relay 0${stage+1} when the pulse meets the capture ring.`;
     }
     function showIncomingTransmission(){
@@ -89,14 +82,10 @@
         node.classList.add('miss');stateEl.textContent='Signal missed · retry current relay.';haptic([16,28,16]);ping(230,.07,.025);
         setTimeout(()=>node.classList.remove('miss'),280);start=performance.now();return;
       }
-      locked=true;node.classList.remove('active');node.classList.add('locked','just-locked');
-      setTimeout(()=>node.classList.remove('just-locked'),460);
-      hops[stage]?.classList.remove('active');
-      hops[stage]?.classList.add('locked','just-locked');
-      setTimeout(()=>hops[stage]?.classList.remove('just-locked'),520);
-      meterFill.style.width=`${[30,55,78,100][stage]}%`;
-      meterText.textContent=['ACQUIRING','STABLE','STRONG','LINKED'][stage];
-      meter?.classList.toggle('linked',stage===3);
+      locked=true;node.classList.remove('active');node.classList.add('locked');
+      hops[stage]?.classList.add('locked');
+      meterFill.style.width=`${25+(stage*25)}%`;
+      meterText.textContent=['ACQUIRED','ROUTED','STRONG','LOCKED'][stage];
       stateEl.textContent=stage===3?'Transmission path locked.':'Relay locked · signal strengthened.';
       ping(620+stage*105,.09,.035);haptic([20,25,38]);
       if(stage===3){
@@ -116,7 +105,6 @@
       }else setTimeout(()=>arm(stage+1),460);
     });
     cleanupMission=()=>{cancelAnimationFrame(raf);stopSantaTransmission(true);};
-    hops[0]?.classList.add('active');
     raf=requestAnimationFrame(draw);
   }
 

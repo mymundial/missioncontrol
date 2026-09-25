@@ -299,18 +299,18 @@ if(
 } else fail('MC01 web assets','Bloom audio or S mark exceeds the intended web-optimised footprint');
 
 if(
-  /id="relayMeter"/.test(runtime) &&
-  /relay-meter-pip p1/.test(runtime) &&
-  /\['ACQUIRING','STABLE','STRONG','LINKED'\]/.test(runtime) &&
-  /classList\.add\('locked','just-locked'\)/.test(runtime) &&
-  /h\.classList\.remove\('just-locked'\)/.test(runtime) &&
-  /\.comms-relay-panel \.relay-node:not\(\.active\) \.relay-pulse\{opacity:0!important;\}/.test(css) &&
-  /grid-template-rows:repeat\(3,112px\)/.test(css) &&
-  /relayLiveRoute73815/.test(css) &&
-  /\.comms-relay-panel \.relay-node\.active\{[\s\S]*?width:78px;height:78px/.test(css)
+  !/id="relayMeter"/.test(runtime) &&
+  /\['ACQUIRED','ROUTED','STRONG','LOCKED'\]/.test(runtime) &&
+  /const hit=phase>=\.53&&phase<=\.80/.test(runtime) &&
+  /const scale=\.42\+phase\*1\.28/.test(runtime) &&
+  /\.relay-node,\.relay-radio-icon,\.relay-receiver-icon\{width:76px;height:76px;\}/.test(css) &&
+  /\.relay-node \.relay-target\{inset:7px/.test(css) &&
+  /\.relay-node \.relay-pulse\{width:46px;height:46px/.test(css) &&
+  /Pass 7\.38\.16 — MC03 visual polish only/.test(css) &&
+  /\.relay-node\.active\{[\s\S]*?border-color:rgba\(119,226,255,\.94\)/.test(css)
 ) {
-  ok('MC03 relay hierarchy','Active relay owns the concentric capture interaction; future relays recede, route locks pulse progressively and Signal Strength advances to LINKED');
-} else fail('MC03 relay hierarchy','Comms Relay redesign hierarchy, route feedback or signal-strength progression is incomplete');
+  ok('MC03 visual-only polish','Pre-redesign relay geometry and timing remain intact while the visual layer receives the premium cyan/glass polish');
+} else fail('MC03 visual-only polish','Relay geometry/timing changed or the approved visual-only polish is incomplete');
 
 // 12) External runtime dependencies / launch notes.
 const urls=[...runtime.matchAll(/https:\/\/[^'"`\s)]+/g)].map(m=>m[0]);
