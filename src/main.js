@@ -807,7 +807,7 @@
       return `<div class="mission-head mc01-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
     }
     if(cp.type==='artifacts'){
-      return `<div class="mission-head artifact-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><div class="artifact-sponsor"><img src="./assets/care-bears-logo.png?v=7.38.43" alt="Care Bears"></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
+      return `<div class="mission-head artifact-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><div class="artifact-sponsor"><img src="./assets/care-bears-logo.png?v=7.38.44" alt="Care Bears"></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
     }
     if(cp.type==='spirit'){
       return `<div class="mission-head spirit-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
@@ -2664,7 +2664,7 @@
       el.style.left=pos.x+'%';
       el.style.top=pos.y+'%';
       el.style.setProperty('--emotion-rgb',signature.rgb);
-      el.setAttribute('aria-label',`Capture ${signature.name} positive energy signature`);
+      el.setAttribute('aria-label',`Capture ${signature.name.toLowerCase()} power signature`);
       el.innerHTML=`
         <span class="signature-orbit orbit-a" aria-hidden="true"></span>
         <span class="signature-orbit orbit-b" aria-hidden="true"></span>
@@ -2695,28 +2695,28 @@
       ripple.style.left=x+'px';ripple.style.top=y+'px';
       ripple.style.setProperty('--emotion-rgb',rgb);
       burstLayer.appendChild(ripple);
-      later(()=>ripple.remove(),640);
+      later(()=>ripple.remove(),620);
 
       const flare=document.createElement('span');
       flare.className='artifact-flare is-emotion';
       flare.style.left=x+'px';flare.style.top=y+'px';
       flare.style.setProperty('--emotion-rgb',rgb);
       burstLayer.appendChild(flare);
-      later(()=>flare.remove(),420);
+      later(()=>flare.remove(),360);
 
       const streakCount=cleared>=7?10:8;
       for(let i=0;i<streakCount;i++){
         const streak=document.createElement('i');
         streak.className='artifact-streak is-emotion';
-        const angle=(Math.PI*2/streakCount)*i+(Math.random()*.26-.13);
-        const distance=(cleared>=7?88:72)+(Math.random()*24);
+        const angle=(Math.PI*2/streakCount)*i+(Math.random()*.24-.12);
+        const distance=(cleared>=7?94:76)+(Math.random()*18);
         streak.style.left=x+'px';streak.style.top=y+'px';
         streak.style.setProperty('--emotion-rgb',rgb);
         streak.style.setProperty('--dx',`${Math.cos(angle)*distance}px`);
         streak.style.setProperty('--dy',`${Math.sin(angle)*distance}px`);
         streak.style.setProperty('--rot',`${(angle*180/Math.PI).toFixed(1)}deg`);
         burstLayer.appendChild(streak);
-        later(()=>streak.remove(),420);
+        later(()=>streak.remove(),380);
       }
 
       const count=cleared>=7?16:12;
@@ -2725,11 +2725,11 @@
         p.className='artifact-particle is-emotion';
         p.style.left=x+'px';p.style.top=y+'px';
         p.style.setProperty('--emotion-rgb',rgb);
-        p.style.setProperty('--dx',`${(Math.random()-.5)*150}px`);
-        p.style.setProperty('--dy',`${(Math.random()-.5)*150}px`);
+        p.style.setProperty('--dx',`${(Math.random()-.5)*170}px`);
+        p.style.setProperty('--dy',`${(Math.random()-.5)*170}px`);
         p.style.setProperty('--rot',`${Math.round((Math.random()-.5)*260)}deg`);
         burstLayer.appendChild(p);
-        later(()=>p.remove(),600);
+        later(()=>p.remove(),540);
       }
 
       field.classList.remove('is-hit');
