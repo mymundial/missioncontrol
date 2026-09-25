@@ -1,3 +1,13 @@
+# Pass 7.38.14 — MC03 Comms Relay clarity pass
+
+- tightened the MC03 relay network into a cleaner, more instrument-like zig-zag layout while keeping the existing four-relay timing mechanic and difficulty unchanged.
+- made only the current relay fully prominent; future relays now stay subdued until armed, while completed relays retain a restrained green locked state.
+- made the fixed capture ring and expanding pulse read as one concentric timing interaction, removing inactive pulse clutter.
+- made the route progressive: the live hop is highlighted in cyan, completed hops lock in sequence, and the Santa-1 receiver only brightens as the final relay is approached.
+- strengthened successful relay feedback with a short lock burst while preserving the existing haptic and audio confirmation.
+- upgraded Signal Strength into a clearer full-width meter with the progression `WEAK → ACQUIRING → STABLE → STRONG → LINKED`.
+- no mission routing, completion logic, Santa transmission audio, checkpoint logic or radar behaviour changed.
+
 # Pass 7.38.13 — Radar circuit crispness + scan layering
 
 - removed the white outline from post-MC01 installation markers; markers now use a solid circuit-cyan body with only a tight restrained cyan halo.

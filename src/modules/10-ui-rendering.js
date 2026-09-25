@@ -376,7 +376,7 @@
         ${[0,1,2,3].map(i=>`<div class="relay-cell relay-capture"><button class="relay-node ${i===0?'active':''}" data-relay="${i}" aria-label="Relay ${i+1}"><span class="relay-target"></span><span class="relay-pulse"></span><span class="relay-core">0${i+1}</span></button><small>RELAY 0${i+1}</small></div>`).join('')}
         <div class="relay-cell relay-endpoint relay-destination"><span class="relay-receiver-icon"></span><small>RECEIVER<br>SANTA-1</small></div>
       </div>
-      <div class="relay-meter"><span>Signal Strength</span><div><i id="relayMeterFill"></i></div><strong id="relayMeterText">WEAK</strong></div>
+      <div class="relay-meter" id="relayMeter"><div class="relay-meter-head"><span>Signal Strength</span><strong id="relayMeterText">WEAK</strong></div><div class="relay-meter-track"><i id="relayMeterFill"></i></div></div>
     </div>`;
   }
   function powerBody(){

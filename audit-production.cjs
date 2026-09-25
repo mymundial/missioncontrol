@@ -298,6 +298,19 @@ if(
   ok('MC01 web assets',`Bloom audio ${formatBytes(fs.statSync(mc01Audio).size)}; S mark ${formatBytes(fs.statSync(mc01Mark).size)}`);
 } else fail('MC01 web assets','Bloom audio or S mark exceeds the intended web-optimised footprint');
 
+if(
+  /id="relayMeter"/.test(runtime) &&
+  /relay-meter-head/.test(runtime) &&
+  /hops\.forEach\(\(h,i\)=>h\.classList\.toggle\('active',i===stage&&!h\.classList\.contains\('locked'\)\)\)/.test(runtime) &&
+  /\['ACQUIRING','STABLE','STRONG','LINKED'\]/.test(runtime) &&
+  /classList\.add\('locked','just-locked'\)/.test(runtime) &&
+  /\.relay-node:not\(\.active\) \.relay-pulse\{opacity:0!important;\}/.test(css) &&
+  /\.relay-hop-line\.active\{stroke:rgba\(103,220,255,\.62\)/.test(css) &&
+  /\.relay-destination\.ready\{opacity:\.78;\}/.test(css)
+) {
+  ok('MC03 relay hierarchy','Only the armed relay/pulse and live route hop are emphasized; locks progress visibly and Signal Strength advances to LINKED');
+} else fail('MC03 relay hierarchy','Comms Relay visual hierarchy or signal-strength progression does not match the approved cleanup');
+
 // 12) External runtime dependencies / launch notes.
 const urls=[...runtime.matchAll(/https:\/\/[^'"`\s)]+/g)].map(m=>m[0]);
 const uniqueUrls=[...new Set(urls)];
