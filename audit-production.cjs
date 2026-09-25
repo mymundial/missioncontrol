@@ -379,13 +379,18 @@ if(
   /mc02-icon-control/.test(runtime) && /mc02-control-wheel/.test(runtime) && /mc02-control-ring/.test(runtime) &&
   /mc02-icon-traction/.test(runtime) && /mc02-traction-car/.test(runtime) && /mc02-traction-skids/.test(runtime) &&
   /mc02-icon-response/.test(runtime) && /mc02-response-cones/.test(runtime) && /mc02-response-arrow/.test(runtime) &&
-  /Pass 7\.38\.36: MC-02 component animation correction/.test(css) &&
+  /Pass 7\.38\.37: MC-02 animation endpoint \/ centring correction/.test(css) &&
   /sensor-aero\.active \.mc02-aero-fan-group[\s\S]*?mc02AeroFanSpin/.test(css) &&
   /sensor-aero\.done \.mc02-aero-fan-path[\s\S]*?var\(--green\)/.test(css) &&
   /sensor-stability\.active \.mc02-icon-stability[\s\S]*?mc02StabilityTilt/.test(css) &&
   /sensor-stability\.done \.mc02-stability-headlights[\s\S]*?var\(--green\)/.test(css) &&
   /sensor-power\.active \.mc02-power-needle-group[\s\S]*?mc02PowerNeedleSweep/.test(css) &&
   /transform-origin:105px 87px/.test(css) &&
+  /mc02AeroFanSpin 1\.55s linear 1 forwards/.test(css) &&
+  /to\{transform:rotate\(720deg\)\}/.test(css) &&
+  /30%\{transform:rotate\(-228deg\)\}/.test(css) &&
+  /38%\{transform:rotate\(-228deg\)\}/.test(css) &&
+  /from\{background-position:50% -145%\}[\s\S]*?to\{background-position:50% 145%\}/.test(css) &&
   /mc02-control-mid-ring\.svg/.test(css) &&
   /sensor-control\.active \.mc02-icon-control[\s\S]*?mc02ControlRightAndBack/.test(css) &&
   /sensor-control\.done \.mc02-control-ring[\s\S]*?var\(--green\)/.test(css) &&

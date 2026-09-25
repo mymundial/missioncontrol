@@ -7209,7 +7209,7 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .mission-diagnostics .sensor-stability.done .stability-arc{stroke:rgba(103,218,252,.22);}
 .mission-diagnostics .sensor-stability.done .stability-centre{stroke:rgba(105,220,255,.18);}
 
-/* === Pass 7.38.36: MC-02 component animation correction ================== */
+/* === Pass 7.38.37: MC-02 animation endpoint / centring correction ========== */
 .mission-diagnostics .diagnostics-head p.support-copy{
   white-space:nowrap;
   max-width:none;
@@ -7287,11 +7287,11 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .mission-diagnostics .mc02-svg path{fill:#78dfff;}
 
 /* Normalised visual sizes from the approved placement pass. */
-.mission-diagnostics .mc02-icon-aero{width:65px;height:39px;}
+.mission-diagnostics .mc02-icon-aero{width:65px;height:39px;top:calc(50% - 1px)!important;}
 .mission-diagnostics .mc02-icon-stability{width:77px;height:46px;}
-.mission-diagnostics .mc02-icon-power{width:68px;height:41px;}
+.mission-diagnostics .mc02-icon-power{width:68px;height:41px;top:calc(50% - 1px)!important;}
 .mission-diagnostics .mc02-icon-control{width:59px;height:35px;}
-.mission-diagnostics .mc02-icon-traction{width:61px;height:37px;}
+.mission-diagnostics .mc02-icon-traction{width:61px;height:37px;left:calc(50% - 2px)!important;top:calc(50% - 1px)!important;}
 .mission-diagnostics .mc02-icon-response{width:57px;height:34px;}
 
 /* 01 AERO — only the fan group rotates. The garage/frame never transforms. */
@@ -7307,7 +7307,7 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   transform:rotate(0deg);
 }
 .mission-diagnostics .sensor-aero.active .mc02-aero-fan-group{
-  animation:mc02AeroFanSpin .92s linear infinite!important;
+  animation:mc02AeroFanSpin 1.55s linear 1 forwards!important;
 }
 .mission-diagnostics .sensor-aero.active .mc02-aero-fan-path,
 .mission-diagnostics .sensor-aero.done .mc02-aero-fan-path{
@@ -7317,7 +7317,10 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   animation:none!important;
   transform:rotate(0deg)!important;
 }
-@keyframes mc02AeroFanSpin{to{transform:rotate(360deg)}}
+@keyframes mc02AeroFanSpin{
+  from{transform:rotate(0deg)}
+  to{transform:rotate(720deg)}
+}
 
 /* 02 STABILITY — car tilts gently; the actual left/right headlight shapes are
    the only green component during scan and after capture. */
@@ -7359,7 +7362,7 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   transform:rotate(0deg);
 }
 .mission-diagnostics .sensor-power.active .mc02-power-needle-group{
-  animation:mc02PowerNeedleSweep 1.6s cubic-bezier(.25,.72,.2,1) 1 forwards!important;
+  animation:mc02PowerNeedleSweep 1.62s cubic-bezier(.25,.72,.2,1) 1 forwards!important;
 }
 .mission-diagnostics .sensor-power.active .mc02-power-needle-path,
 .mission-diagnostics .sensor-power.done .mc02-power-needle-path{
@@ -7373,7 +7376,11 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   transform:rotate(0deg)!important;
 }
 @keyframes mc02PowerNeedleSweep{
-  0%,12%{transform:rotate(145deg)}
+  /* Begin at the supplied/max reading, sweep backwards OVER the dial to zero,
+     hold briefly, then build back OVER the dial to the supplied/max reading. */
+  0%{transform:rotate(0deg)}
+  30%{transform:rotate(-228deg)}
+  38%{transform:rotate(-228deg)}
   100%{transform:rotate(0deg)}
 }
 
@@ -7473,8 +7480,10 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 }
 .mission-diagnostics .sensor-response.done .mc02-response-shine{display:none!important;}
 @keyframes mc02ResponseFlow{
-  from{background-position:50% 145%}
-  to{background-position:50% -145%}
+  /* Reverse the travelling sheen so it reads from the bottom of the arrow
+     toward the top. */
+  from{background-position:50% -145%}
+  to{background-position:50% 145%}
 }
 
 /* Captured state is selective: blue structure remains blue, and only the

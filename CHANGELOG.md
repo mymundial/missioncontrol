@@ -1,10 +1,15 @@
-# Pass 7.38.36 — MC02 component animation correction
+# Pass 7.38.37 — MC02 animation endpoint and alignment correction
 
-## MC02 only
-- Aero: rebuilt as inline SVG so the garage/frame is fixed; only the fan group rotates. Fan is green during scan and remains green after capture; garage remains cyan.
-- Stability: corrected the selected lamp geometry to the actual left/right headlight shapes. Car still performs the gentle stability tilt; only headlights remain green after capture.
-- Power: rebuilt gauge/needle as inline SVG. Gauge remains completely static; needle pivots around the true gauge hub, starts at the zero end, then sweeps to the original/source needle position. Only the needle remains green after capture.
-- Control: replaced the highlighted outer ring with the second/middle ring. Wheel retains the left-to-right-to-left calibration movement; only the second ring remains green after capture.
-- Traction: car is explicitly static and cyan. Original skid-mark SVG geometry only changes colour via a travelling highlight; no scale/geometry animation. Only skid marks remain green after capture.
-- Response: cones remain cyan. Original arrow/path receives a slower bottom-to-top green/white flow. Only the arrow remains green after capture.
-- Removed superseded split assets no longer referenced by Aero, Power, or Control.
+## Scope
+MC02 only. No mission mechanics, scan timings, copy, card dimensions, colours, or non-MC02 behaviour changed.
+
+## Corrections
+- Aero: garage remains fixed; fan now completes two exact rotations and finishes at its original start angle before capture, removing the end-of-scan jump.
+- Aero: corrected the icon's visual vertical centre inside the established scan zone.
+- Stability: unchanged.
+- Power: gauge remains fixed; needle now starts from its supplied/max position, sweeps back to zero over the face of the speedometer, pauses briefly, then builds back to max over the face. The needle finishes at the original supplied position, preventing an end jump.
+- Power: corrected the icon's visual vertical centre inside the established scan zone.
+- Control: unchanged.
+- Traction: unchanged.
+- Response: reversed the existing flowing highlight so it travels bottom-to-top through the original arrow path.
+- Selective green captured states remain unchanged.

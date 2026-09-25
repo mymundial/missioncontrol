@@ -10,7 +10,7 @@ PASS  Runtime references — All static runtime asset/font/script/style referenc
 PASS  Dead production assets — Every deployed asset and font is referenced
 PASS  Legacy format references — No runtime references to retired PNG/JPEG/WAV/TTF/OTF files
 PASS  Asset file integrity — WebP, WOFF2 and MP3 signatures match their extensions
-PASS  CSS brace balance — 3253 rule blocks balanced
+PASS  CSS brace balance — 3256 rule blocks balanced
 PASS  Vercel configuration — Static build targets dist with npm run build
 PASS  Admin asset base — /admin uses root-relative base for shared runtime assets
 PASS  Service-worker retirement — Retirement shim only: no fetch interception; clears legacy caches and unregisters
