@@ -7943,8 +7943,8 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .checkmark-icon{
   display:block;
   background-color:var(--green);
-  -webkit-mask-image:url('./assets/checkmark-icon.svg');
-  mask-image:url('./assets/checkmark-icon.svg');
+  -webkit-mask-image:url('../assets/checkmark-icon.svg');
+  mask-image:url('../assets/checkmark-icon.svg');
   -webkit-mask-repeat:no-repeat;
   mask-repeat:no-repeat;
   -webkit-mask-position:center;

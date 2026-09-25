@@ -7937,3 +7937,32 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .completion .check img,.mc00-complete-icon img{display:block;}
 .mission-diagnostics .sensor .state{display:inline-flex;align-items:center;justify-content:center;gap:4px;}
 .mission-diagnostics .sensor .state .checkmark-icon--inline{width:10px;height:10px;}
+
+
+/* === Pass 7.38.49: green shared checkmark + Power Pulse copy cleanup === */
+.checkmark-icon{
+  display:block;
+  background-color:var(--green);
+  -webkit-mask-image:url('../assets/checkmark-icon.svg');
+  mask-image:url('../assets/checkmark-icon.svg');
+  -webkit-mask-repeat:no-repeat;
+  mask-repeat:no-repeat;
+  -webkit-mask-position:center;
+  mask-position:center;
+  -webkit-mask-size:contain;
+  mask-size:contain;
+}
+.checkmark-icon--large{width:32px;height:32px;}
+.checkmark-icon--inline{display:inline-block;vertical-align:-0.16em;width:11px;height:11px;flex:0 0 auto;}
+.checkmark-icon--tiny{width:10px;height:10px;vertical-align:-0.14em;}
+.completion .check,
+.mc00-complete-icon{
+  color:var(--green)!important;
+  border-color:var(--green)!important;
+}
+.completion .check .checkmark-icon,
+.mc00-complete-icon .checkmark-icon{background-color:var(--green)!important;}
+.mission-diagnostics .sensor .state .checkmark-icon,
+.aurora-stage small .checkmark-icon{background-color:var(--green)!important;}
+.artifact-instruction,
+.artifact-state{display:none!important;}
