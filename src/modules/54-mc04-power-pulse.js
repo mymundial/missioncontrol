@@ -152,7 +152,7 @@
         if(!powerAudio.paused)fadePowerAudio(0,520,()=>{try{powerAudio.pause();}catch{}});
       }
       cancelAnimationFrame(raf);
-      setTimeout(()=>showCompletion('Raceway Run Complete',''),1100);
+      setTimeout(()=>showCompletion('Raceway Run Complete','The racing energy has been stabilised and is ready to power Santa-1.'),1100);
     }
 
     function frame(now){

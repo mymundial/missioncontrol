@@ -135,7 +135,7 @@
       ];
       return `<section class="onboard with-masthead setup-page mc00-page">${setupHeader}<div class="onboard-card panel mc00-card" data-mc00-mode="${step}"><div class="mc00-copy"><h1>System Diagnostics</h1><p class="support-copy">Santa-1 Sleigh Recovery</p></div><div class="mc00-visual-wrap"><div class="mc00-sleigh-frame"><div class="sleigh-visual sleigh-stage-1 mc00-sleigh-visual" role="img" aria-label="Santa-1 sleigh system diagnostics visual"><div class="sleigh-glow" aria-hidden="true"></div><img class="sleigh-art" src="./assets/sleigh-stage-1.webp" alt="" aria-hidden="true" fetchpriority="high"><div class="mc00-scan-beam" aria-hidden="true"></div></div></div></div>${systemStatusBank(systems,'mc00-system-bank','mc00')}<div class="mc00-progress-row"><div class="mc00-progress" role="progressbar" aria-label="System diagnostics progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="mc00ProgressFill"></span></div><strong id="mc00ProgressValue">0%</strong></div><div class="mc00-complete-popup panel" id="mc00CompleteBlock" hidden><div class="mc00-complete-icon" aria-hidden="true">✓</div><h2>Scan Complete</h2><button class="btn primary wide" id="mc00Continue" data-mc00-continue="${step}">Continue</button></div></div></section>`;
     }
-    if(step==='brief') return `<section class="onboard with-masthead setup-page briefing-page">${setupHeader}<div class="onboard-card panel setup-card"><div class="onboard-icon setup-icon"><span class="setup-icon-glyph"><img src="./assets/mission-briefing-icon.svg" alt=""></span></div><h1>Mission Briefing</h1><p class="support-copy">Santa-1 has lost power. Recovery signals have been detected around the circuit. Complete each mission to recover the energy, data and system calibrations needed to restore the sleigh.</p><div class="setup-actions"><button class="btn primary wide" data-onboard="audio">Continue</button></div></div></section>`;
+    if(step==='brief') return `<section class="onboard with-masthead setup-page briefing-page">${setupHeader}<div class="onboard-card panel setup-card"><div class="onboard-icon setup-icon"><span class="setup-icon-glyph"><img src="./assets/mission-briefing-icon.svg" alt=""></span></div><h1>Mission Briefing</h1><p class="support-copy">Santa needs your help.<br>Santa-1 has made an unscheduled pit stop at Silverstone and the recovery is underway.<br>Follow the signals around the circuit and help bring each system back online to get the sleigh race-ready again.</p><div class="setup-actions"><button class="btn primary wide" data-onboard="audio">Continue</button></div></div></section>`;
     if(step==='audio') return `<section class="onboard with-masthead setup-page audio-page">${setupHeader}<div class="onboard-card panel setup-card"><div class="onboard-icon setup-icon"><span class="setup-icon-glyph">${settingAudioIcon()}</span></div><h1>Mission Audio</h1><p class="support-copy">Mission Control uses proximity alerts, system sounds and live transmissions. You can change Mission Audio at any time in Comms.</p><div class="setup-actions stack"><button class="btn primary wide" data-audio="on">Enable Mission Audio</button><button class="btn secondary wide" data-audio="off">Continue Without Audio</button></div></div></section>`;
     return `<section class="onboard with-masthead setup-page radar-setup-page">${setupHeader}<div class="onboard-card panel setup-card"><div class="onboard-icon setup-icon"><span class="setup-icon-glyph"><img src="./assets/radar-setup-icon.svg" alt=""></span></div><h1>Mission Radar</h1><p class="support-copy">Mission Control uses your location to detect each installation as you move around the circuit.</p><div class="setup-actions stack"><button class="btn primary wide" data-location="request">Enable GPS Location</button><button class="btn secondary wide" data-location="demo">Demo Mode</button></div></div></section>`;
   }
@@ -242,19 +242,19 @@
   function missionInstruction(type){
     return ({
       activation:'You have now entered the live circuit zone.',
-      diagnostics:'Capture the engineering data needed for Santa-1.',
+      diagnostics:'Capture the racing data needed to rebuild Santa-1.',
       radio:'Tune the receiver to 87.7 and establish a link with ELF FM.',
-      commsrelay:'Restore two-way communications with Santa-1.',
-      power:'Put the recovered power to the test and reach maximum velocity.',
-      spirit:'Balance the charge between both storage banks to stabilise the Spirit Core.',
+      commsrelay:'Establish communications with Santa-1.',
+      power:'Test Santa-1’s propulsion system.',
+      spirit:'Store the recovered energy.',
       placeholder:'This checkpoint is reserved while the final installation game is developed.',
-      artifacts:'Capture stable blue energy pulses and reject red interference to stabilise racing power for Santa-1.',
-      comet:'Lock 10 directional signals to restore Santa-1’s guidance path.',
-      jingle:'Charge all 3 propulsion beams.',
-      lando:'React the moment the lights go out to calibrate Santa-1 flight control.',
-      aurora:'Capture each rotating navigation ring on the North Pole axis.',
-      lapland:'Final systems verification.',
-      northern:'Authorise the restored sleigh for its final Northern Flight.'
+      artifacts:'Stabilise the racing energy.',
+      comet:'Align Santa-1’s guidance system.',
+      jingle:'Re-engage Santa-1’s flight controls.',
+      lando:'Calibrate Santa-1’s flight response.',
+      aurora:'Lock onto the North Pole navigation signal.',
+      lapland:'Complete final systems verification.',
+      northern:'Clear Santa-1 for the Northern Flight.'
     })[type]||'';
   }
   function renderMission(id){

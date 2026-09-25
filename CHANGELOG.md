@@ -1,3 +1,47 @@
+# Pass 7.38.42 — Mission narrative copy alignment
+
+- Updated MC00 Mission Briefing to the approved Silverstone-aligned guest call-to-action.
+- Updated MC01–MC12 mission subtitles to the locked narrative wording.
+- Updated Mission Complete outcome copy to the approved system-specific wording.
+- Updated the full Comms feed title/message set from Mission Start through Northern Flight.
+- Existing persisted completion messages now refresh from the current canonical Comms scripts on load, so the new copy appears without clearing local storage.
+- No gameplay, geofence, route, radar, audio or layout behaviour changed.
+- Cache version bumped to 7.38.42.
+
+# Pass 7.38.41 — Checkpoint marker visual match
+
+- Checkpoint marker core now matches the guest/user marker visual language.
+- Standard radar checkpoint core uses the same 10px cyan-white centre and tight glow as the user marker.
+- Circuit radar checkpoint core uses the same 12px white centre and glow as the circuit user marker.
+- Existing checkpoint expanding beacon pulse is retained.
+- Marker positioning, checkpoint geofences, radar route logic and z-order are unchanged; the guest marker remains above the checkpoint marker.
+- Cache version bumped to 7.38.41.
+
+# Pass 7.38.40 — Radar depth / checkpoint beacons
+
+## Scope
+- Radar presentation only.
+- No checkpoint coordinates, geofence logic, route progression, or mission mechanics changed.
+
+## Changes
+- Reworked the inner radar rim into a substantially stronger dark inset falloff so the circuit visually disappears beneath the bezel instead of meeting a hard edge.
+- Reworked both pre-circuit and circuit checkpoint targets into compact double-flash beacon markers using the existing target positions.
+- Checkpoint beacons use a bright core and short expanding ring pulse; no marker geometry or GPS behaviour changed.
+- Added reduced-motion static beacon treatment.
+- Cache version bumped to 7.38.40.
+
+# Pass 7.38.39 — Radar rim / telemetry / checkpoint language
+
+## Scope
+- Radar presentation and radar-page copy only.
+- No geofence, route, mission, animation, or checkpoint mechanics changed.
+
+## Changes
+- Strengthened the existing inner radar-bezel shadow so the circuit edge blends beneath the rim rather than meeting it abruptly.
+- Changed TELEMETRY to MISSION TELEMETRY.
+- Standardised pre-arrival radar messaging to CHECKPOINT AHEAD for every checkpoint; MC01 search state now reads LOCATING CHECKPOINT.
+- Cache version bumped to 7.38.39.
+
 # Pass 7.38.38 — MC02 Aero / Power optical centring
 
 ## Scope

@@ -219,7 +219,7 @@
         playAudio(buzzerAudio,.78,1);
         haptic([30,28,70]);
       },780);
-      finishTimer=setTimeout(()=>showCompletion('Propulsion Online','All three Jingle Beams are charged and Santa-1 propulsion is responding within flight parameters.'),2450);
+      finishTimer=setTimeout(()=>showCompletion('Propulsion Online','Santa-1’s flight controls have been re-engaged and are ready for flight.'),2450);
     }
     function scoreGoal(){
       if(!running) return;

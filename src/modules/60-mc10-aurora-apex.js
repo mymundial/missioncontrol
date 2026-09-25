@@ -106,7 +106,7 @@
       ping(1090,.13,.04);
       feedbackTimers.push(setTimeout(()=>ping(1370,.18,.05),260));
       haptic([32,20,68]);
-      completionTimer=setTimeout(()=>showCompletion('North Pole Signal Locked',''),2800);
+      completionTimer=setTimeout(()=>showCompletion('North Pole Signal Locked','The North Pole navigation signal has been locked and Santa-1 has a route home.'),2800);
     }
 
     function lockRing(key){

@@ -234,11 +234,14 @@ if(
 if(
   /\.radar\.circuit-radar \.user-dot\{[\s\S]*?z-index:6;[\s\S]*?width:12px;[\s\S]*?background:#fff;[\s\S]*?border:0;[\s\S]*?0 0 26px rgba\(116,225,255,\.9\)/.test(css) &&
   /\.track-radar-art\{[\s\S]*?background:#69d4ef;[\s\S]*?filter:none;[\s\S]*?opacity:1;/.test(css) &&
-  /\.track-radar-target\{[\s\S]*?width:20px;[\s\S]*?background:#69d4ef;[\s\S]*?border:0;[\s\S]*?0 0 4px rgba\(105,212,239,\.28\)/.test(css) &&
+  /\.track-radar-target\{[\s\S]*?width:20px;[\s\S]*?background:transparent;[\s\S]*?border:0;[\s\S]*?box-shadow:none;/.test(css) &&
+  /\.target-dot::before,\.track-radar-target::before\{[\s\S]*?width:10px;[\s\S]*?background:#c8f5ff;[\s\S]*?checkpointBeaconFlash/.test(css) &&
+  /\.radar\.circuit-radar \.track-radar-target::before\{[\s\S]*?width:12px;[\s\S]*?background:#fff;[\s\S]*?0 0 26px rgba\(116,225,255,\.9\)/.test(css) &&
+  /\.target-dot::after,\.track-radar-target::after\{[\s\S]*?width:18px;[\s\S]*?checkpointBeaconRing/.test(css) &&
   /\.radar\.circuit-radar \.sweep\{z-index:5;pointer-events:none;\}/.test(css)
 ) {
-  ok('Circuit radar hierarchy','Guest marker stays above the sweep; circuit is full-opacity and unblurred; installation markers are solid cyan with no white outline; sweep scans above circuit and installations');
-} else fail('Circuit radar hierarchy','Circuit/user/installation marker visual hierarchy or sweep layering does not match the approved treatment');
+  ok('Circuit radar hierarchy','Guest marker stays above the sweep; circuit remains full-opacity/unblurred; installation targets use the approved flashing beacon core/ring treatment beneath the sweep');
+} else fail('Circuit radar hierarchy','Circuit/user/installation beacon visual hierarchy or sweep layering does not match the approved treatment');
 
 if(
   /const finalCircuitOverview=state\.completed\.includes\('northern'\)/.test(runtime) &&
@@ -319,7 +322,7 @@ if(
 } else fail('MC03 visual-only polish','Relay geometry/timing changed or the approved visual-only polish is incomplete');
 
 if(
-  /commsrelay:'Restore two-way communications with Santa-1\.'/ .test(runtime) &&
+  /commsrelay:'Establish communications with Santa-1\.'/ .test(runtime) &&
   /<small>TRANSMITTER<\/small>/.test(runtime) &&
   /<small>RELAY 0\$\{i\+1\}<\/small>/.test(runtime) &&
   /<small>RECEIVER<\/small>/.test(runtime) &&
@@ -371,7 +374,7 @@ if(
 if(
   /Complete Scan<\/button>/.test(runtime) &&
   /Tap to scan/.test(runtime) &&
-  /Capture the engineering data needed for Santa-1\./.test(runtime) &&
+  /Capture the racing data needed to rebuild Santa-1\./.test(runtime) &&
   /The racing performance data has been captured and is ready to support Santa-1’s recovery systems\./.test(runtime) &&
   /mc02-aero-svg/.test(runtime) && /mc02-aero-frame-path/.test(runtime) && /mc02-aero-fan-group/.test(runtime) &&
   /mc02-icon-stability/.test(runtime) && /mc02-stability-car/.test(runtime) && /mc02-stability-headlights/.test(runtime) &&

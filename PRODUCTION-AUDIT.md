@@ -10,7 +10,7 @@ PASS  Runtime references — All static runtime asset/font/script/style referenc
 PASS  Dead production assets — Every deployed asset and font is referenced
 PASS  Legacy format references — No runtime references to retired PNG/JPEG/WAV/TTF/OTF files
 PASS  Asset file integrity — WebP, WOFF2 and MP3 signatures match their extensions
-PASS  CSS brace balance — 3256 rule blocks balanced
+PASS  CSS brace balance — 3268 rule blocks balanced
 PASS  Vercel configuration — Static build targets dist with npm run build
 PASS  Admin asset base — /admin uses root-relative base for shared runtime assets
 PASS  Service-worker retirement — Retirement shim only: no fetch interception; clears legacy caches and unregisters
@@ -25,7 +25,7 @@ PASS  Circuit demo route — Post-MC01 Demo Mode persists lap position and trave
 PASS  Circuit radar artwork — Radar renders the original circuit SVG at the refined 1.3x scale
 PASS  Circuit radar bootstrap — Unpositioned circuit art stays hidden; Demo lap distance is persisted and restored after refresh
 PASS  Checkpoint handoff — Completed missions expose the next circuit checkpoint immediately; skipped unlocked activations advance after leaving their radius; Demo counts down route metres
-PASS  Circuit radar hierarchy — Guest marker stays above the sweep; circuit is full-opacity and unblurred; installation markers are solid cyan with no white outline; sweep scans above circuit and installations
+PASS  Circuit radar hierarchy — Guest marker stays above the sweep; circuit remains full-opacity/unblurred; installation targets use the approved flashing beacon core/ring treatment beneath the sweep
 PASS  Final circuit overview — Northern Flight completion shows the full centred circuit with no user/checkpoint navigation markers while the radar sweep remains active
 PASS  MC01 energy bloom — Scan registers 25/50/75/100, holds 100% for 750 ms, shows ENERGY TRANSFER COMPLETE for 3.0 s, then reveals the completion card without returning to the scan
 PASS  Mission completion hierarchy — Activation completion cards use a single MISSION COMPLETE heading with mission-specific outcome copy; MC01 also announces entry into the live circuit zone

@@ -249,7 +249,7 @@
       beam.classList.add('active');
       progress.textContent='10 / 10';
       ping(920,.12,.045);haptic([28,24,58]);
-      setTimeout(()=>showCompletion('Power Stabilised',''),900);
+      setTimeout(()=>showCompletion('Power Stabilised','Santa-1’s propulsion system has been tested and is ready for flight.'),900);
     }
 
     renderStability();

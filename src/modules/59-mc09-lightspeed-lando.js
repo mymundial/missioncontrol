@@ -54,7 +54,7 @@
       haptic([20,20,45]); ping(760,.075,.03);
       if(round===4){
         btn.textContent='COMPLETE'; btn.disabled=true;
-        timers.push(setTimeout(()=>showCompletion('Flight Control Calibrated',''),850));
+        timers.push(setTimeout(()=>showCompletion('Flight Control Calibrated','Santa-1’s flight response has been calibrated for high-speed operation.'),850));
       }else{
         const completedRound=round;
         round++;

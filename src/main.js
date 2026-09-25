@@ -56,19 +56,25 @@
     return i;
   }
 
+  const OPENING_MESSAGE = {
+    sender:'MISSION CONTROL',
+    title:'RECOVERY MISSION ACTIVE',
+    body:'Santa-1 has lost power and is grounded at Silverstone. We’ll use the circuit and its racing technology to bring the sleigh back online.'
+  };
+
   const COMPLETION_MESSAGES = {
-    entry:{sender:'MISSION CONTROL',title:'RECOVERY INITIATED',body:'Circuit energy has been routed into Santa-1. The recovery sequence is now underway.'},
-    velocity:{sender:'ENGINEERING',title:'RACING PERFORMANCE PROFILE CONFIRMED',body:'Velocity Vault has captured the racing performance data needed to tune Santa-1’s recovery systems.'},
-    luffield:{sender:'COMMUNICATIONS',title:'COMMS LINK RESTORED',body:'Comms Relay has restored two-way communications with Santa-1. Mission Control is receiving Santa loud and clear.'},
-    power:{sender:'ENGINEERING',title:'POWER STABILISED',body:'Power Pulse has isolated a clean, stable racing-energy supply for Santa-1. It is ready to be stored in the Spirit Core.'},
-    spirit:{sender:'MISSION CONTROL',title:'SPIRIT CORE CHARGED',body:'Stored racing energy is stable and Santa-1’s primary power system is back online.'},
-    escapade:{sender:'PROPULSION SYSTEM',title:'PROPULSION ONLINE',body:'Reindeer Raceway has confirmed Santa-1’s propulsion system can sustain the high-speed output required for flight.'},
-    comet:{sender:'GUIDANCE SYSTEM',title:'GUIDANCE PATH RESTORED',body:'Santa-1 can now process the high-speed directional changes required for flight.'},
-    jingle:{sender:'CONTROL SYSTEM',title:'CONTROL SYNCHRONISED',body:'Jingle Beams has restored stable beam control and energy routing across Santa-1’s flight systems.'},
-    lando:{sender:'RESPONSE SYSTEM',title:'RESPONSE CALIBRATED',body:'Lightspeed Lando has calibrated Santa-1’s high-speed response timing for flight.'},
-    aurora:{sender:'NAVIGATION',title:'NORTH POLE SIGNAL ACQUIRED',body:'Aurora Apex has restored Santa-1’s navigation link and confirmed the route home.'},
-    lapland:{sender:'MISSION CONTROL',title:'ALL SYSTEMS GO',body:'Santa-1 has passed full-power verification and is cleared for launch.'},
-    northern:{sender:'MISSION CONTROL',title:'RECOVERY MISSION COMPLETE',body:'Santa-1 is airborne and the Northern Flight is underway.'}
+    entry:{sender:'MISSION CONTROL',title:'CIRCUIT POWER ROUTED',body:'We’re connected to the circuit. Energy is now reaching Santa-1 and the recovery can begin.'},
+    velocity:{sender:'ENGINEERING',title:'RACING DATA CAPTURED',body:'We’ve got the data we need. Aero, stability, power, control, traction and response have all been captured for the rebuild.'},
+    luffield:{sender:'COMMUNICATIONS',title:'COMMS ESTABLISHED',body:'We’ve got Santa back on comms. The link is clear and Mission Control can stay in contact from here.'},
+    power:{sender:'ENGINEERING',title:'POWER STABILISED',body:'The racing energy is stable and the interference has been cleared. We can now send it on to be stored.'},
+    spirit:{sender:'MISSION CONTROL',title:'SPIRIT CORE CHARGED',body:'The recovered energy is safely stored and both banks are holding steady. Santa-1 has a reliable power reserve again.'},
+    escapade:{sender:'PROPULSION SYSTEM',title:'PROPULSION ONLINE',body:'Propulsion is holding up at speed. Santa-1 can handle the power needed for flight.'},
+    comet:{sender:'GUIDANCE SYSTEM',title:'GUIDANCE ALIGNED',body:'Guidance is aligned and Santa-1 can now deal with rapid changes in direction while staying on course.'},
+    jingle:{sender:'CONTROL SYSTEM',title:'FLIGHT CONTROLS RE-ENGAGED',body:'The flight controls are responding again. All three beams are working together and Santa-1 is stable.'},
+    lando:{sender:'RESPONSE SYSTEM',title:'RESPONSE CALIBRATED',body:'Response timing is where it needs to be. Santa-1 can now react quickly enough for high-speed flight.'},
+    aurora:{sender:'NAVIGATION',title:'NORTH POLE SIGNAL LOCKED',body:'We’ve got a strong North Pole signal. Navigation has a clear reference and the route home is confirmed.'},
+    lapland:{sender:'MISSION CONTROL',title:'ALL SYSTEMS GO',body:'Final checks are complete. Every recovered system is responding correctly and Santa-1 is ready to launch.'},
+    northern:{sender:'MISSION CONTROL',title:'RECOVERY MISSION COMPLETE',body:'Santa-1 is airborne. Recovery complete. The Northern Flight is underway.'}
   };
 
   const SLEIGH_STAGES = [
@@ -138,8 +144,19 @@
       const oldAvailable=Array.isArray(parsed.available)?parsed.available:[];
       const completed=[...new Set(oldCompleted.map(id=>id==='elf'?'luffield':id))];
       const available=[...new Set(oldAvailable.map(id=>id==='elf'?'luffield':id))];
-      // Strip legacy MC-03 messages from the old ELF FM checkpoint implementation.
-      const messages=(Array.isArray(parsed.messages)?parsed.messages:[]).filter(m=>m?.checkpointId!=='elf'&&!String(m?.key||'').includes(':elf'));
+      // Strip legacy MC-03 messages from the old ELF FM checkpoint implementation,
+      // then refresh persisted feed copy from the current canonical scripts.
+      const messages=(Array.isArray(parsed.messages)?parsed.messages:[])
+        .filter(m=>m?.checkpointId!=='elf'&&!String(m?.key||'').includes(':elf'))
+        .map(m=>{
+          if(m?.key==='opening') return {...m,...OPENING_MESSAGE};
+          const key=String(m?.key||'');
+          if(key.startsWith('complete:')){
+            const script=COMPLETION_MESSAGES[key.slice('complete:'.length)];
+            if(script) return {...m,...script};
+          }
+          return m;
+        });
       let routeIndex=normaliseProgressRouteIndex(parsed.routeIndex??ROUTE_START_INDEX,completed);
       // Restore MC-03 for older sessions that skipped the temporarily removed route slot.
       if((Number(parsed.routeRevision)||1)<2 && routeIndex>3 && !completed.includes('luffield')) routeIndex=3;
@@ -185,7 +202,7 @@
   }
   function ensureOpeningMessage(){
     if(!state.onboarded) return;
-    addMessage('opening','MISSION CONTROL','RECOVERY MISSION ACTIVE','Santa-1 has lost power and is grounded at Silverstone. Proceed to the circuit and complete each recovery mission to restore the sleigh and get Santa back in the air.','MC-00');
+    addMessage('opening',OPENING_MESSAGE.sender,OPENING_MESSAGE.title,OPENING_MESSAGE.body,'MC-00');
   }
   function markAllMessagesRead(){
     if(!state.messages.some(m=>!m.read)){state.messageAlert=false;save();return;}
@@ -693,7 +710,7 @@
       ];
       return `<section class="onboard with-masthead setup-page mc00-page">${setupHeader}<div class="onboard-card panel mc00-card" data-mc00-mode="${step}"><div class="mc00-copy"><h1>System Diagnostics</h1><p class="support-copy">Santa-1 Sleigh Recovery</p></div><div class="mc00-visual-wrap"><div class="mc00-sleigh-frame"><div class="sleigh-visual sleigh-stage-1 mc00-sleigh-visual" role="img" aria-label="Santa-1 sleigh system diagnostics visual"><div class="sleigh-glow" aria-hidden="true"></div><img class="sleigh-art" src="./assets/sleigh-stage-1.webp" alt="" aria-hidden="true" fetchpriority="high"><div class="mc00-scan-beam" aria-hidden="true"></div></div></div></div>${systemStatusBank(systems,'mc00-system-bank','mc00')}<div class="mc00-progress-row"><div class="mc00-progress" role="progressbar" aria-label="System diagnostics progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="mc00ProgressFill"></span></div><strong id="mc00ProgressValue">0%</strong></div><div class="mc00-complete-popup panel" id="mc00CompleteBlock" hidden><div class="mc00-complete-icon" aria-hidden="true">✓</div><h2>Scan Complete</h2><button class="btn primary wide" id="mc00Continue" data-mc00-continue="${step}">Continue</button></div></div></section>`;
     }
-    if(step==='brief') return `<section class="onboard with-masthead setup-page briefing-page">${setupHeader}<div class="onboard-card panel setup-card"><div class="onboard-icon setup-icon"><span class="setup-icon-glyph"><img src="./assets/mission-briefing-icon.svg" alt=""></span></div><h1>Mission Briefing</h1><p class="support-copy">Santa-1 has lost power. Recovery signals have been detected around the circuit. Complete each mission to recover the energy, data and system calibrations needed to restore the sleigh.</p><div class="setup-actions"><button class="btn primary wide" data-onboard="audio">Continue</button></div></div></section>`;
+    if(step==='brief') return `<section class="onboard with-masthead setup-page briefing-page">${setupHeader}<div class="onboard-card panel setup-card"><div class="onboard-icon setup-icon"><span class="setup-icon-glyph"><img src="./assets/mission-briefing-icon.svg" alt=""></span></div><h1>Mission Briefing</h1><p class="support-copy">Santa needs your help.<br>Santa-1 has made an unscheduled pit stop at Silverstone and the recovery is underway.<br>Follow the signals around the circuit and help bring each system back online to get the sleigh race-ready again.</p><div class="setup-actions"><button class="btn primary wide" data-onboard="audio">Continue</button></div></div></section>`;
     if(step==='audio') return `<section class="onboard with-masthead setup-page audio-page">${setupHeader}<div class="onboard-card panel setup-card"><div class="onboard-icon setup-icon"><span class="setup-icon-glyph">${settingAudioIcon()}</span></div><h1>Mission Audio</h1><p class="support-copy">Mission Control uses proximity alerts, system sounds and live transmissions. You can change Mission Audio at any time in Comms.</p><div class="setup-actions stack"><button class="btn primary wide" data-audio="on">Enable Mission Audio</button><button class="btn secondary wide" data-audio="off">Continue Without Audio</button></div></div></section>`;
     return `<section class="onboard with-masthead setup-page radar-setup-page">${setupHeader}<div class="onboard-card panel setup-card"><div class="onboard-icon setup-icon"><span class="setup-icon-glyph"><img src="./assets/radar-setup-icon.svg" alt=""></span></div><h1>Mission Radar</h1><p class="support-copy">Mission Control uses your location to detect each installation as you move around the circuit.</p><div class="setup-actions stack"><button class="btn primary wide" data-location="request">Enable GPS Location</button><button class="btn secondary wide" data-location="demo">Demo Mode</button></div></div></section>`;
   }
@@ -800,19 +817,19 @@
   function missionInstruction(type){
     return ({
       activation:'You have now entered the live circuit zone.',
-      diagnostics:'Capture the engineering data needed for Santa-1.',
+      diagnostics:'Capture the racing data needed to rebuild Santa-1.',
       radio:'Tune the receiver to 87.7 and establish a link with ELF FM.',
-      commsrelay:'Restore two-way communications with Santa-1.',
-      power:'Put the recovered power to the test and reach maximum velocity.',
-      spirit:'Balance the charge between both storage banks to stabilise the Spirit Core.',
+      commsrelay:'Establish communications with Santa-1.',
+      power:'Test Santa-1’s propulsion system.',
+      spirit:'Store the recovered energy.',
       placeholder:'This checkpoint is reserved while the final installation game is developed.',
-      artifacts:'Capture stable blue energy pulses and reject red interference to stabilise racing power for Santa-1.',
-      comet:'Lock 10 directional signals to restore Santa-1’s guidance path.',
-      jingle:'Charge all 3 propulsion beams.',
-      lando:'React the moment the lights go out to calibrate Santa-1 flight control.',
-      aurora:'Capture each rotating navigation ring on the North Pole axis.',
-      lapland:'Final systems verification.',
-      northern:'Authorise the restored sleigh for its final Northern Flight.'
+      artifacts:'Stabilise the racing energy.',
+      comet:'Align Santa-1’s guidance system.',
+      jingle:'Re-engage Santa-1’s flight controls.',
+      lando:'Calibrate Santa-1’s flight response.',
+      aurora:'Lock onto the North Pole navigation signal.',
+      lapland:'Complete final systems verification.',
+      northern:'Clear Santa-1 for the Northern Flight.'
     })[type]||'';
   }
   function renderMission(id){
@@ -1897,7 +1914,7 @@
     if(cp.type==='lando') bindLando();
     if(cp.type==='aurora') bindAurora();
     if(cp.type==='lapland') bindLapland();
-    if(cp.type==='northern') document.getElementById('authoriseFlight').onclick=()=>{showNorthernLaunchSurge();setTimeout(()=>showCompletion('Santa-1 Airborne','Northern Flight completes the recovery mission. Santa-1 is airborne.'),1500);};
+    if(cp.type==='northern') document.getElementById('authoriseFlight').onclick=()=>{showNorthernLaunchSurge();setTimeout(()=>showCompletion('Santa-1 Airborne','The recovery mission is complete. Santa-1 is airborne on the Northern Flight.'),1500);};
   }
   function bindDiagnostics(){
     const done=new Set();
@@ -2074,7 +2091,7 @@
         if(finished)return;finished=true;
         clearTimeout(introStatic);clearTimeout(santaDelay);clearTimeout(fallback);clearTimeout(tailTimer);stopStatic();
         if(radioWasOn&&elfAudioEl){elfAudioEl.volume=Math.min(elfAudioEl.volume,.025);rampElementVolume(elfAudioEl,previousRadioVolume,520);}
-        setTimeout(()=>showCompletion('Comms Link Restored','The transmission was successfully relayed and the communications link to Santa-1 has been restored.'),260);
+        setTimeout(()=>showCompletion('Comms Link Restored','Communications have been established and Mission Control is now connected to Santa-1.'),260);
       };
       const playSanta=()=>{
         stopStatic();
@@ -2295,7 +2312,7 @@
         if(!powerAudio.paused)fadePowerAudio(0,520,()=>{try{powerAudio.pause();}catch{}});
       }
       cancelAnimationFrame(raf);
-      setTimeout(()=>showCompletion('Raceway Run Complete',''),1100);
+      setTimeout(()=>showCompletion('Raceway Run Complete','The racing energy has been stabilised and is ready to power Santa-1.'),1100);
     }
 
     function frame(now){
@@ -2464,7 +2481,7 @@
       buttons.forEach(button=>{button.disabled=true;button.classList.remove('is-next');});
       haptic([30,28,64]);
       finishTimer=setTimeout(()=>{
-        if(state.missionOpen==='spirit') showCompletion('Spirit Core Charged','');
+        if(state.missionOpen==='spirit') showCompletion('Spirit Core Charged','The recovered energy has been stored and the Spirit Core is fully charged.');
       },950);
     }
 
@@ -2752,7 +2769,7 @@
       beam.classList.add('active');
       progress.textContent='10 / 10';
       ping(920,.12,.045);haptic([28,24,58]);
-      setTimeout(()=>showCompletion('Power Stabilised',''),900);
+      setTimeout(()=>showCompletion('Power Stabilised','Santa-1’s propulsion system has been tested and is ready for flight.'),900);
     }
 
     renderStability();
@@ -3018,7 +3035,7 @@
         stopMusic();
         playCompletionSound();
         haptic([30,22,60]);
-        setTimeout(()=>showCompletion('Guidance Path Locked',''),900);
+        setTimeout(()=>showCompletion('Guidance Path Locked','Santa-1’s guidance system has been aligned and the flight path is locked.'),900);
       }
     }
     function frame(){
@@ -3309,7 +3326,7 @@
         playAudio(buzzerAudio,.78,1);
         haptic([30,28,70]);
       },780);
-      finishTimer=setTimeout(()=>showCompletion('Propulsion Online','All three Jingle Beams are charged and Santa-1 propulsion is responding within flight parameters.'),2450);
+      finishTimer=setTimeout(()=>showCompletion('Propulsion Online','Santa-1’s flight controls have been re-engaged and are ready for flight.'),2450);
     }
     function scoreGoal(){
       if(!running) return;
@@ -3500,7 +3517,7 @@
       haptic([20,20,45]); ping(760,.075,.03);
       if(round===4){
         btn.textContent='COMPLETE'; btn.disabled=true;
-        timers.push(setTimeout(()=>showCompletion('Flight Control Calibrated',''),850));
+        timers.push(setTimeout(()=>showCompletion('Flight Control Calibrated','Santa-1’s flight response has been calibrated for high-speed operation.'),850));
       }else{
         const completedRound=round;
         round++;
@@ -3633,7 +3650,7 @@
       ping(1090,.13,.04);
       feedbackTimers.push(setTimeout(()=>ping(1370,.18,.05),260));
       haptic([32,20,68]);
-      completionTimer=setTimeout(()=>showCompletion('North Pole Signal Locked',''),2800);
+      completionTimer=setTimeout(()=>showCompletion('North Pole Signal Locked','The North Pole navigation signal has been locked and Santa-1 has a route home.'),2800);
     }
 
     function lockRing(key){
