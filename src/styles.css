@@ -7532,7 +7532,8 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   .target-dot::after,.track-radar-target::after{opacity:.72;transform:translate(-50%,-50%) scale(1);}
 }
 
-/* === Pass 7-04-09: Care Bears positive-energy signatures === */
+
+/* === Care Bears Power Pulse icon integration === */
 .mission-artifacts .artifact-head{
   padding-bottom:7px!important;
 }
@@ -7578,15 +7579,15 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .starstream-signature.emotion-signature .signature-core{
   color:rgb(var(--emotion-rgb));
 }
-.starstream-signature.emotion-signature .signature-emotion-icon svg{
+.starstream-signature.emotion-signature .signature-emotion-icon img{
   display:block;
-  width:48%;
-  height:48%;
-  overflow:visible;
+  width:54%;
+  height:54%;
+  object-fit:contain;
   filter:
-    drop-shadow(0 0 3px rgba(255,255,255,.88))
-    drop-shadow(0 0 9px rgba(var(--emotion-rgb),.95))
-    drop-shadow(0 0 18px rgba(var(--emotion-rgb),.58));
+    drop-shadow(0 0 2px rgba(255,255,255,.88))
+    drop-shadow(0 0 8px rgba(var(--emotion-rgb),.95))
+    drop-shadow(0 0 15px rgba(var(--emotion-rgb),.52));
 }
 .starstream-signature.emotion-signature .signature-scan{
   background:linear-gradient(90deg,transparent,rgba(var(--emotion-rgb),.82),transparent)!important;
@@ -7602,5 +7603,5 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 }
 @media(max-width:390px){
   .artifact-head .artifact-sponsor{width:116px;max-width:38vw;}
-  .starstream-signature.emotion-signature .signature-emotion-icon svg{width:47%;height:47%;}
+  .starstream-signature.emotion-signature .signature-emotion-icon img{width:52%;height:52%;}
 }

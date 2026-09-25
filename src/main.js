@@ -2534,14 +2534,14 @@
     if(!field||!layer||!burstLayer||!beam||!progress||!stateEl||!canvas) return;
 
     const EMOTIONS=[
-      {id:'love',name:'Love',rgb:'240,82,97',icon:`<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 40 8.7 25.3C2.8 19.6 6.4 9 15 9c4.1 0 7.2 2.2 9 5.2C25.8 11.2 28.9 9 33 9c8.6 0 12.2 10.6 6.3 16.3L24 40Z" fill="currentColor"/></svg>`},
-      {id:'joy',name:'Joy',rgb:'255,212,71',icon:`<svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="8" fill="currentColor"/><g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M24 6v6M24 36v6M6 24h6M36 24h6M11.3 11.3l4.2 4.2M32.5 32.5l4.2 4.2M36.7 11.3l-4.2 4.2M15.5 32.5l-4.2 4.2"/></g></svg>`},
-      {id:'cheer',name:'Cheer',rgb:'244,111,168',icon:`<svg viewBox="0 0 48 48" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"><path d="M10 34c0-8.3 6.3-15 14-15s14 6.7 14 15"/><path d="M15 34c0-5.3 4-9.5 9-9.5s9 4.2 9 9.5"/><path d="M20 34c0-2.4 1.8-4.5 4-4.5s4 2.1 4 4.5"/></svg>`},
-      {id:'kindness',name:'Kindness',rgb:'168,121,216',icon:`<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M20.5 37 9.8 26.7C5.6 22.6 8.1 15 14.2 15c2.8 0 5.1 1.5 6.3 3.7 1.3-2.2 3.5-3.7 6.4-3.7 6 0 8.6 7.6 4.3 11.7L20.5 37Z" fill="currentColor"/><path d="m35.5 7 1.4 4.1L41 12.5l-4.1 1.4-1.4 4.1-1.4-4.1-4.1-1.4 4.1-1.4L35.5 7Z" fill="currentColor"/></svg>`},
-      {id:'friendship',name:'Friendship',rgb:'143,103,197',icon:`<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M18.5 35 9.6 26.4C6 22.9 8.2 16.5 13.3 16.5c2.4 0 4.2 1.2 5.2 3 1.1-1.8 2.9-3 5.3-3 1.3 0 2.4.4 3.4 1" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M29.5 35 20.6 26.4c-3.6-3.5-1.4-9.9 3.7-9.9 2.4 0 4.2 1.2 5.2 3 1.1-1.8 2.9-3 5.3-3 5.1 0 7.3 6.4 3.7 9.9L29.5 35Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/></svg>`},
-      {id:'hope',name:'Hope',rgb:'85,201,207',icon:`<svg viewBox="0 0 48 48" aria-hidden="true"><path d="m31 10 2.5 6 6.5.5-5 4.3 1.5 6.2-5.5-3.4-5.5 3.4 1.5-6.2-5-4.3 6.5-.5L31 10Z" fill="currentColor"/><path d="M8 34c6-1 10.5-3.1 14-6.5M11 39c6-1.8 10.5-4.6 14-8.3" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>`},
-      {id:'generosity',name:'Generosity',rgb:'117,201,107',icon:`<svg viewBox="0 0 48 48" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"><rect x="9" y="19" width="30" height="21" rx="2"/><path d="M24 19v21M7 19h34v-6H7v6Z"/><path d="M24 13c-5.5 0-9-1.7-9-4.5C15 6.6 16.6 5 18.6 5 22.2 5 24 10.2 24 13Zm0 0c5.5 0 9-1.7 9-4.5C33 6.6 31.4 5 29.4 5 25.8 5 24 10.2 24 13Z"/></svg>`},
-      {id:'wonder',name:'Wonder',rgb:'90,173,225',icon:`<svg viewBox="0 0 48 48" aria-hidden="true"><path d="m24 5 4.3 12.7L41 22l-12.7 4.3L24 39l-4.3-12.7L7 22l12.7-4.3L24 5Z" fill="currentColor"/><path d="m38 8 1.3 3.7L43 13l-3.7 1.3L38 18l-1.3-3.7L33 13l3.7-1.3L38 8Z" fill="currentColor" opacity=".78"/></svg>`}
+      {id:'clover',name:'Clover',rgb:'117,201,107',icon:'./assets/power-pulse-icons/clover-green.png'},
+      {id:'rainbow',name:'Rainbow',rgb:'244,111,168',icon:'./assets/power-pulse-icons/rainbow-pink.png'},
+      {id:'flower',name:'Flower',rgb:'168,121,216',icon:'./assets/power-pulse-icons/flower-purple.png'},
+      {id:'star',name:'Star',rgb:'255,212,71',icon:'./assets/power-pulse-icons/star-yellow.png'},
+      {id:'moon',name:'Moon',rgb:'90,173,225',icon:'./assets/power-pulse-icons/moon-blue.png'},
+      {id:'heart',name:'Heart',rgb:'240,82,97',icon:'./assets/power-pulse-icons/heart-red.png'},
+      {id:'sun',name:'Sun',rgb:'255,165,55',icon:'./assets/power-pulse-icons/sun-orange.png'},
+      {id:'snowflake',name:'Snowflake',rgb:'238,243,250',icon:'./assets/power-pulse-icons/snowflake-white.png'}
     ];
 
     let cleared=0;
@@ -2665,7 +2665,7 @@
       el.style.top=pos.y+'%';
       el.style.setProperty('--emotion-rgb',emotion.rgb);
       el.setAttribute('aria-label',`Capture ${emotion.name} energy signature`);
-      el.innerHTML=`<span class="signature-orbit orbit-a" aria-hidden="true"></span><span class="signature-orbit orbit-b" aria-hidden="true"></span><span class="signature-core signature-emotion-icon" aria-hidden="true">${emotion.icon}</span><i class="signature-scan" aria-hidden="true"></i>`;
+      el.innerHTML=`<span class="signature-orbit orbit-a" aria-hidden="true"></span><span class="signature-orbit orbit-b" aria-hidden="true"></span><span class="signature-core signature-emotion-icon" aria-hidden="true"><img src="${emotion.icon}" alt=""></span><i class="signature-scan" aria-hidden="true"></i>`;
       layer.appendChild(el);
       const item={el,emotion,locked:false};
       active=item;
@@ -2728,7 +2728,7 @@
       cleared=Math.min(10,cleared+1);
       renderStability();
       ping(630+cleared*20,.045,.018);haptic(18);
-      stateEl.textContent=cleared===10?'Power stabilised':`${item.emotion.name} energy captured · ${10-cleared} remaining`;
+      stateEl.textContent=cleared===10?'Power stabilised':`${item.emotion.name} signature captured · ${10-cleared} remaining`;
       if(cleared>=10){finish();return;}
       later(createSignature,cleared>=7?90:cleared>=3?125:170);
     }
