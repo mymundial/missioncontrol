@@ -2315,7 +2315,7 @@
         if(!powerAudio.paused)fadePowerAudio(0,520,()=>{try{powerAudio.pause();}catch{}});
       }
       cancelAnimationFrame(raf);
-      setTimeout(()=>showCompletion('Raceway Run Complete','The racing energy has been stabilised and is ready to power Santa-1.'),1100);
+      setTimeout(()=>showCompletion('Raceway Run Complete','Santa-1’s propulsion system has been tested and is ready for flight.'),1100);
     }
 
     function frame(now){
@@ -2743,7 +2743,7 @@
       beam.classList.add('active');
       progress.textContent='10 / 10';
       ping(920,.12,.045);haptic([28,24,58]);
-      setTimeout(()=>showCompletion('Power Stabilised','Santa-1’s propulsion system has been tested and is ready for flight.'),900);
+      setTimeout(()=>showCompletion('Power Stabilised','The racing energy has been stabilised and is ready to power Santa-1.'),900);
     }
 
     renderStability();
