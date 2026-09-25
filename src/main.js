@@ -807,7 +807,7 @@
       return `<div class="mission-head mc01-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
     }
     if(cp.type==='artifacts'){
-      return `<div class="mission-head artifact-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><div class="artifact-sponsor"><img src="./assets/care-bears-logo.png" alt="Care Bears"></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
+      return `<div class="mission-head artifact-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><div class="artifact-sponsor"><img src="./assets/care-bears-logo.png?v=7.38.43" alt="Care Bears"></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
     }
     if(cp.type==='spirit'){
       return `<div class="mission-head spirit-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
@@ -2533,15 +2533,15 @@
     const steps=[...document.querySelectorAll('[data-artifact-step]')];
     if(!field||!layer||!burstLayer||!beam||!progress||!stateEl||!canvas) return;
 
-    const EMOTIONS=[
-      {id:'clover',name:'Clover',rgb:'117,201,107',icon:'./assets/power-pulse-icons/clover-green.png'},
-      {id:'rainbow',name:'Rainbow',rgb:'244,111,168',icon:'./assets/power-pulse-icons/rainbow-pink.png'},
-      {id:'flower',name:'Flower',rgb:'168,121,216',icon:'./assets/power-pulse-icons/flower-purple.png'},
-      {id:'star',name:'Star',rgb:'255,212,71',icon:'./assets/power-pulse-icons/star-yellow.png'},
-      {id:'moon',name:'Moon',rgb:'90,173,225',icon:'./assets/power-pulse-icons/moon-blue.png'},
-      {id:'heart',name:'Heart',rgb:'240,82,97',icon:'./assets/power-pulse-icons/heart-red.png'},
-      {id:'sun',name:'Sun',rgb:'255,165,55',icon:'./assets/power-pulse-icons/sun-orange.png'},
-      {id:'snowflake',name:'Snowflake',rgb:'238,243,250',icon:'./assets/power-pulse-icons/snowflake-white.png'}
+    const ENERGY_SIGNATURES=[
+      {id:'clover',name:'Clover',rgb:'117,201,107',icon:'./assets/power-pulse-icons/clover-green.png?v=7.38.43'},
+      {id:'rainbow',name:'Rainbow',rgb:'244,111,168',icon:'./assets/power-pulse-icons/rainbow-pink.png?v=7.38.43'},
+      {id:'flower',name:'Flower',rgb:'168,121,216',icon:'./assets/power-pulse-icons/flower-purple.png?v=7.38.43'},
+      {id:'star',name:'Star',rgb:'255,212,71',icon:'./assets/power-pulse-icons/star-yellow.png?v=7.38.43'},
+      {id:'moon',name:'Moon',rgb:'90,173,225',icon:'./assets/power-pulse-icons/moon-blue.png?v=7.38.43'},
+      {id:'heart',name:'Heart',rgb:'240,82,97',icon:'./assets/power-pulse-icons/heart-red.png?v=7.38.43'},
+      {id:'sun',name:'Sun',rgb:'255,165,55',icon:'./assets/power-pulse-icons/sun-orange.png?v=7.38.43'},
+      {id:'snowflake',name:'Snowflake',rgb:'238,243,250',icon:'./assets/power-pulse-icons/snowflake-white.png?v=7.38.43'}
     ];
 
     let cleared=0;
@@ -2550,17 +2550,17 @@
     let finished=false;
     let raf=0;
     let resizeObserver=null;
-    let emotionBag=[];
+    let signatureBag=[];
 
     function clearTimers(){timers.forEach(clearTimeout);timers=[];}
     function later(fn,delay){const t=setTimeout(()=>{timers=timers.filter(id=>id!==t);fn();},delay);timers.push(t);return t;}
     function randomPos(){return {x:14+Math.random()*72,y:14+Math.random()*70};}
     function intensity(){return cleared<3?1:cleared<7?2:3;}
-    function refillEmotionBag(){
-      emotionBag=[...EMOTIONS];
-      for(let i=emotionBag.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[emotionBag[i],emotionBag[j]]=[emotionBag[j],emotionBag[i]];}
+    function refillSignatureBag(){
+      signatureBag=[...ENERGY_SIGNATURES];
+      for(let i=signatureBag.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[signatureBag[i],signatureBag[j]]=[signatureBag[j],signatureBag[i]];}
     }
-    function nextEmotion(){if(!emotionBag.length)refillEmotionBag();return emotionBag.pop();}
+    function nextSignature(){if(!signatureBag.length)refillSignatureBag();return signatureBag.pop();}
 
     function setIntensity(){
       const level=intensity();
@@ -2591,7 +2591,7 @@
         star.blue=Math.random();
         star.weight=.55+Math.random()*1.35;
       }
-      for(let i=0;i<STAR_COUNT;i++){const s={};seed(s,false);stars.push(s);}
+      for(let i=0;i<STAR_COUNT;i++){const star={};seed(star,false);stars.push(star);}
 
       function resize(){
         const rect=field.getBoundingClientRect();
@@ -2619,32 +2619,32 @@
         const focal=Math.min(width,height)*.58;
         const cx=width*.49,cy=height*.50;
 
-        for(const s of stars){
-          const previousZ=s.z;
-          s.z-=speed*dt;
-          if(s.z<.055){seed(s,true);continue;}
+        for(const star of stars){
+          const previousZ=star.z;
+          star.z-=speed*dt;
+          if(star.z<.055){seed(star,true);continue;}
 
-          const sx=cx+(s.x/s.z)*focal;
-          const sy=cy+(s.y/s.z)*focal;
+          const sx=cx+(star.x/star.z)*focal;
+          const sy=cy+(star.y/star.z)*focal;
           const prevZ=previousZ+speed*dt*(level===3?3.1:2.45);
-          const px=cx+(s.x/prevZ)*focal;
-          const py=cy+(s.y/prevZ)*focal;
-          if(sx<-80||sx>width+80||sy<-80||sy>height+80){seed(s,true);continue;}
+          const px=cx+(star.x/prevZ)*focal;
+          const py=cy+(star.y/prevZ)*focal;
+          if(sx<-80||sx>width+80||sy<-80||sy>height+80){seed(star,true);continue;}
 
-          const proximity=Math.max(0,Math.min(1,1-s.z));
+          const proximity=Math.max(0,Math.min(1,1-star.z));
           const alpha=Math.min(.95,.16+proximity*.92);
-          const blue=190+Math.round(s.blue*55);
+          const blue=190+Math.round(star.blue*55);
           ctx.beginPath();
           ctx.moveTo(px,py);
           ctx.lineTo(sx,sy);
-          ctx.lineWidth=Math.max(.55,s.weight*(.55+proximity*1.25));
+          ctx.lineWidth=Math.max(.55,star.weight*(.55+proximity*1.25));
           ctx.lineCap='round';
-          ctx.strokeStyle=`rgba(${s.blue>.76?190:105},${blue},255,${alpha})`;
+          ctx.strokeStyle=`rgba(${star.blue>.76?190:105},${blue},255,${alpha})`;
           ctx.stroke();
 
           if(proximity>.66){
             ctx.beginPath();
-            ctx.arc(sx,sy,Math.max(.45,s.weight*.62),0,Math.PI*2);
+            ctx.arc(sx,sy,Math.max(.45,star.weight*.62),0,Math.PI*2);
             ctx.fillStyle=`rgba(224,249,255,${Math.min(.9,alpha)})`;
             ctx.fill();
           }
@@ -2656,18 +2656,18 @@
 
     function createSignature(){
       if(finished||active) return;
-      const emotion=nextEmotion();
+      const signature=nextSignature();
       const pos=randomPos();
       const el=document.createElement('button');
       el.type='button';
-      el.className=`starstream-signature emotion-signature emotion-${emotion.id} is-entering`;
+      el.className=`starstream-signature emotion-signature energy-${signature.id} is-entering`;
       el.style.left=pos.x+'%';
       el.style.top=pos.y+'%';
-      el.style.setProperty('--emotion-rgb',emotion.rgb);
-      el.setAttribute('aria-label',`Capture ${emotion.name} energy signature`);
-      el.innerHTML=`<span class="signature-orbit orbit-a" aria-hidden="true"></span><span class="signature-orbit orbit-b" aria-hidden="true"></span><span class="signature-core signature-emotion-icon" aria-hidden="true"><img src="${emotion.icon}" alt=""></span><i class="signature-scan" aria-hidden="true"></i>`;
+      el.style.setProperty('--emotion-rgb',signature.rgb);
+      el.setAttribute('aria-label',`Capture ${signature.name} positive energy signature`);
+      el.innerHTML=`<img class="power-pulse-energy-icon" src="${signature.icon}" alt="" draggable="false">`;
       layer.appendChild(el);
-      const item={el,emotion,locked:false};
+      const item={el,signature,locked:false};
       active=item;
       later(()=>{if(active===item)el.classList.remove('is-entering');},220);
 
@@ -2675,7 +2675,7 @@
         ev.preventDefault();
         ev.stopPropagation();
         if(finished||!active||active!==item||item.locked) return;
-        captureEmotion(item);
+        captureSignature(item);
       };
       if(window.PointerEvent) el.addEventListener('pointerdown',tap,{passive:false});
       el.addEventListener('click',tap,{passive:false});
@@ -2720,15 +2720,15 @@
       later(()=>item.el.remove(),delay);
     }
 
-    function captureEmotion(item){
+    function captureSignature(item){
       if(finished||active!==item||item.locked) return;
       const c=signatureCentre(item);
-      spawnBurst(c.x,c.y,item.emotion.rgb);
+      spawnBurst(c.x,c.y,item.signature.rgb);
       removeSignature(item,'popped',230);
       cleared=Math.min(10,cleared+1);
       renderStability();
       ping(630+cleared*20,.045,.018);haptic(18);
-      stateEl.textContent=cleared===10?'Power stabilised':`${item.emotion.name} signature captured · ${10-cleared} remaining`;
+      stateEl.textContent=cleared===10?'Power stabilised':`${item.signature.name} energy captured · ${10-cleared} remaining`;
       if(cleared>=10){finish();return;}
       later(createSignature,cleared>=7?90:cleared>=3?125:170);
     }

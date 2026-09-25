@@ -7533,10 +7533,8 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 }
 
 
-/* === Care Bears Power Pulse icon integration === */
-.mission-artifacts .artifact-head{
-  padding-bottom:7px!important;
-}
+/* === Pass 7.38.43: Care Bears Power Pulse standalone PNG energy signatures === */
+.mission-artifacts .artifact-head{padding-bottom:7px!important;}
 .artifact-head .artifact-sponsor{
   width:128px;
   max-width:36vw;
@@ -7549,49 +7547,36 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   display:block;
   width:100%;
   height:auto;
-  filter:drop-shadow(0 0 8px rgba(93,214,250,.08));
 }
 .artifact-head h1{margin-top:0;}
 
 .starstream-signature.emotion-signature{
-  color:rgb(var(--emotion-rgb));
-  background:
-    radial-gradient(circle,rgba(255,255,255,.26) 0 10%,rgba(var(--emotion-rgb),.28) 18%,rgba(var(--emotion-rgb),.18) 34%,rgba(5,29,48,.68) 52%,rgba(2,14,27,.08) 69%,transparent 73%);
-  box-shadow:
-    0 0 20px rgba(var(--emotion-rgb),.44),
-    0 0 44px rgba(var(--emotion-rgb),.22),
-    inset 0 0 18px rgba(var(--emotion-rgb),.18);
+  --signature-size:104px;
+  overflow:visible!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:50%!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  filter:none;
 }
-.starstream-signature.emotion-signature::before{
-  border-color:rgba(var(--emotion-rgb),.9);
-  box-shadow:0 0 12px rgba(var(--emotion-rgb),.42),inset 0 0 12px rgba(var(--emotion-rgb),.15);
-}
-.starstream-signature.emotion-signature::after{
-  border-color:rgba(var(--emotion-rgb),.48);
-}
-.starstream-signature.emotion-signature .signature-orbit{
-  border-color:rgba(var(--emotion-rgb),.34)!important;
-}
-.starstream-signature.emotion-signature .signature-orbit.orbit-a{
-  border-left-color:rgba(255,255,255,.92)!important;
-  border-right-color:rgba(255,255,255,.92)!important;
-}
-.starstream-signature.emotion-signature .signature-core{
-  color:rgb(var(--emotion-rgb));
-}
-.starstream-signature.emotion-signature .signature-emotion-icon img{
+.starstream-signature.emotion-signature::before,
+.starstream-signature.emotion-signature::after{display:none!important;content:none!important;}
+.starstream-signature.emotion-signature .power-pulse-energy-icon{
+  position:absolute;
+  inset:-8px;
   display:block;
-  width:54%;
-  height:54%;
+  width:calc(100% + 16px);
+  height:calc(100% + 16px);
+  max-width:none;
   object-fit:contain;
-  filter:
-    drop-shadow(0 0 2px rgba(255,255,255,.88))
-    drop-shadow(0 0 8px rgba(var(--emotion-rgb),.95))
-    drop-shadow(0 0 15px rgba(var(--emotion-rgb),.52));
-}
-.starstream-signature.emotion-signature .signature-scan{
-  background:linear-gradient(90deg,transparent,rgba(var(--emotion-rgb),.82),transparent)!important;
-  box-shadow:0 0 9px rgba(var(--emotion-rgb),.56)!important;
+  object-position:center;
+  pointer-events:none;
+  user-select:none;
+  -webkit-user-drag:none;
+  transform:none!important;
+  filter:none!important;
+  opacity:1!important;
 }
 .artifact-ripple.is-emotion{
   border-color:rgba(var(--emotion-rgb),.96);
@@ -7603,45 +7588,5 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 }
 @media(max-width:390px){
   .artifact-head .artifact-sponsor{width:116px;max-width:38vw;}
-  .starstream-signature.emotion-signature .signature-emotion-icon img{width:52%;height:52%;}
-}
-
-/* === Power Pulse production PNG assets: render cleanly, no legacy target treatment === */
-.starstream-signature.emotion-signature{
-  background:none!important;
-  box-shadow:none!important;
-  overflow:visible!important;
-}
-.starstream-signature.emotion-signature::before,
-.starstream-signature.emotion-signature::after,
-.starstream-signature.emotion-signature .signature-orbit,
-.starstream-signature.emotion-signature .signature-scan{
-  display:none!important;
-}
-.starstream-signature.emotion-signature .signature-core,
-.starstream-signature.emotion-signature .signature-emotion-icon{
-  inset:-7px!important;
-  width:auto!important;
-  height:auto!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  overflow:visible!important;
-}
-.starstream-signature.emotion-signature .signature-core img,
-.starstream-signature.emotion-signature .signature-emotion-icon img{
-  width:100%!important;
-  height:100%!important;
-  max-width:none!important;
-  object-fit:contain!important;
-  object-position:50% 50%!important;
-  opacity:1!important;
-  transform:none!important;
-  filter:none!important;
-}
-@media(max-width:390px){
-  .starstream-signature.emotion-signature .signature-core,
-  .starstream-signature.emotion-signature .signature-emotion-icon{inset:-6px!important;}
-  .starstream-signature.emotion-signature .signature-core img,
-  .starstream-signature.emotion-signature .signature-emotion-icon img{width:100%!important;height:100%!important;}
+  .starstream-signature.emotion-signature{--signature-size:92px;}
 }
