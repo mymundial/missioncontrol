@@ -87,8 +87,7 @@
     function showIncomingTransmission(){
       finishing=true;cancelAnimationFrame(raf);
       const mc=document.getElementById('missionContent');if(!mc)return;
-      mc.innerHTML=`<div class="mission-instrument panel incoming-transmission"><div class="transmission-icon"><span></span><i></i><i></i><i></i></div><div class="kicker">Incoming Transmission</div><h2>SANTA-1</h2><div class="transmission-wave">${'<b></b>'.repeat(24)}</div><div class="signal-state lock" id="incomingState">Opening channel…</div></div>`;
-      const incomingState=document.getElementById('incomingState');
+      mc.innerHTML=`<div class="mission-instrument panel incoming-transmission"><div class="transmission-icon"><span></span><i></i><i></i><i></i></div><div class="kicker">Incoming Transmission</div><h2>SANTA-1</h2><div class="transmission-wave">${'<b></b>'.repeat(24)}</div><div class="signal-state lock" id="incomingState">Signal locked</div></div>`;
       const radioWasOn=Boolean(state.elfAudioOn&&elfAudioEl&&!elfAudioEl.paused);
       const previousRadioVolume=radioWasOn?elfAudioEl.volume:1;
       let stopDuck=()=>{};
@@ -105,14 +104,12 @@
       };
       const playSanta=()=>{
         stopStatic();
-        if(incomingState) incomingState.textContent='Signal locked · receiving';
         if(!state.audio){setTimeout(finish,1050);return;}
         try{
           santa.currentTime=0;santa.volume=1;
           const play=santa.play();
           if(play&&typeof play.catch==='function') play.catch(()=>finish());
           santa.onended=()=>{
-            if(incomingState) incomingState.textContent='Transmission received';
             startStatic(.028);
             tailTimer=setTimeout(()=>{stopStatic();finish();},220);
           };
@@ -122,7 +119,7 @@
       };
       // Give the carrier/static its own beat, then leave a clean gap before
       // Santa begins so the opening Ho Ho Ho is never masked by the noise.
-      introStatic=setTimeout(()=>{stopStatic();if(incomingState)incomingState.textContent='Channel open';},430);
+      introStatic=setTimeout(()=>{stopStatic();},430);
       santaDelay=setTimeout(playSanta,900);
       santaTransmissionCleanup=()=>{
         clearTimeout(introStatic);clearTimeout(santaDelay);clearTimeout(fallback);clearTimeout(tailTimer);stopDuck();

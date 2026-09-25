@@ -1,3 +1,9 @@
+# Pass 7.38.26 — MC03 incoming transmission status
+
+- Kept the existing incoming-transmission card, radar/comms icon, Santa-1 source label and waveform unchanged.
+- Simplified the visible transmission status to `SIGNAL LOCKED` for the entire incoming-transmission sequence.
+- Removed the intermediate visible status changes (`Opening channel…`, `Channel open`, `Signal locked · receiving`, `Transmission received`) while leaving all audio timing and handoff behaviour unchanged.
+
 # Pass 7.38.25 — MC03 synchronized timing cue + miss bump
 
 - Restored the subtle relay-node scale-down bump on a mistimed click while retaining the red dotted capture-ring miss indicator.
