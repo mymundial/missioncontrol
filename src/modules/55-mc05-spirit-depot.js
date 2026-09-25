@@ -1,7 +1,6 @@
   function bindSpirit(){
     const rig=document.getElementById('spiritRig');
     const stageNumber=document.getElementById('spiritStageNumber');
-    const stageName=document.getElementById('spiritStageName');
     const stageDots=[...document.querySelectorAll('[data-spirit-stage-dot]')];
     const buttons=[...document.querySelectorAll('[data-charge]')];
     const tankMap={
@@ -16,9 +15,8 @@
       A:document.querySelector('.spirit-bank-left'),
       B:document.querySelector('.spirit-bank-right')
     };
-    if(!rig||!stageNumber||!stageName||stageDots.length!==5||buttons.length!==2||tankMap.A.length!==4||tankMap.B.length!==4) return;
+    if(!rig||!stageNumber||stageDots.length!==5||buttons.length!==2||tankMap.A.length!==4||tankMap.B.length!==4) return;
 
-    const stages=['IGNITION','CHARGE','PRESSURE','SURGE','STABLE'];
     const tapsPerTank=4;
     const tanksPerBank=4;
     const tapsPerBank=tapsPerTank*tanksPerBank;
@@ -54,11 +52,11 @@
       const local=Math.max(0,Math.min(1,(hits-stageStart)/(stageEnd-stageStart)));
       rig.dataset.stage=String(stage);
       stageNumber.textContent=String(stage+1).padStart(2,'0');
-      stageName.textContent=stages[stage];
       stageDots.forEach((dot,i)=>{
         const progress=i<stage?1:i===stage?local:0;
         dot.classList.toggle('complete',i<stage||(completed&&i===4));
         dot.classList.toggle('active',!completed&&i===stage);
+        dot.classList.toggle('on',i<stage||(completed&&i===4));
         dot.style.setProperty('--stage-progress',String(progress));
       });
     }
@@ -68,6 +66,8 @@
       const bankProgress=Math.max(0,Math.min(1,sideTotal/tapsPerBank));
       const meter=meterMap[side];
       if(meter) meter.style.setProperty('--meter-level',String(bankProgress));
+      const bank=bankMap[side];
+      bank?.classList.toggle('is-next',!completed&&expected===side);
       const tanks=tankMap[side];
       tanks.forEach((tank,displayIndex)=>{
         const fillOrder=(tanks.length-1)-displayIndex;
@@ -108,16 +108,21 @@
     }
 
     function updateExpected(){
-      buttons.forEach(button=>button.classList.toggle('is-next',!completed&&button.dataset.charge===expected));
+      buttons.forEach(button=>{
+        const isNext=!completed&&button.dataset.charge===expected;
+        button.classList.toggle('is-next',isNext);
+        button.disabled=completed?true:false;
+      });
+      updateBank('A');
+      updateBank('B');
     }
 
     function completeSpirit(){
       completed=true;
       rig.classList.add('is-complete');
       stageNumber.textContent='05';
-      stageName.textContent='STABLE';
       stageDots.forEach(dot=>{
-        dot.classList.add('complete');dot.classList.remove('active');dot.style.setProperty('--stage-progress','1');
+        dot.classList.add('complete','on');dot.classList.remove('active');dot.style.setProperty('--stage-progress','1');
       });
       updateExpected();
       buttons.forEach(button=>{button.disabled=true;button.classList.remove('is-next');});
@@ -143,7 +148,7 @@
       updateBank(side);
       pulseCharge(side,button);
       tankJustFilled(side);
-      expected=expected==='A'?'B':'A';
+      if(expected==='A' && sideHits.A>=tapsPerBank) expected='B';
       updateStage();
       updateExpected();
       haptic(10);

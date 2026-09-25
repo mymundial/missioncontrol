@@ -7968,27 +7968,76 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .artifact-state{display:none!important;}
 
 
-/* === Pass 7.38.50: MC03 connected relay colour-state swap === */
-/* Waiting/current target: blue chassis + green dashed capture ring.
-   Connected relay: green chassis + green number ring + blue dashed capture ring. */
-.relay-node.locked{
-  border-color:rgba(87,239,145,.98)!important;
-  background:radial-gradient(circle at 50% 45%,rgba(87,239,145,.12),rgba(8,39,56,.94) 48%,rgba(3,19,30,.99) 76%)!important;
-  box-shadow:
-    0 0 12px rgba(87,239,145,.24),
-    inset 0 0 24px rgba(87,239,145,.08)!important;
+/* === Pass 7.38.50: Spirit Depot Care Bears layout + left-then-right fill === */
+.mission-spirit .spirit-head{padding-bottom:7px!important;}
+.spirit-head .spirit-sponsor{
+  width:128px;
+  max-width:36vw;
+  margin:3px auto 0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
-.relay-node.locked .relay-core{
-  color:#f2fdff!important;
-  border-color:rgba(87,239,145,1)!important;
-  background:radial-gradient(circle at 50% 40%,rgba(25,72,64,.94),rgba(8,39,55,.98) 72%)!important;
-  text-shadow:0 0 6px rgba(220,255,236,.28)!important;
-  box-shadow:
-    0 0 10px rgba(87,239,145,.24),
-    inset 0 1px 0 rgba(235,255,243,.10)!important;
+.spirit-head .spirit-sponsor img{display:block;width:100%;height:auto;}
+.spirit-head h1{margin-top:0;}
+
+.spirit-panel{padding:16px 14px 15px;overflow:hidden;}
+.spirit-score{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  color:#8fb7c7;
+  font-size:9px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  margin-bottom:0;
 }
-.relay-node.locked .relay-target{
-  border-style:dashed!important;
-  border-color:rgba(101,218,255,.78)!important;
-  box-shadow:0 0 7px rgba(83,207,247,.16)!important;
+.spirit-score strong{color:var(--cyan);font-family:var(--display);font-size:17px;letter-spacing:.04em;}
+.spirit-score strong b{font-size:inherit;color:inherit;}
+.spirit-stage-progress{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:4px;
+  margin:8px 0 12px;
+}
+.spirit-stage-progress i{
+  --stage-progress:0;
+  position:relative;
+  height:5px;
+  overflow:hidden;
+  border:1px solid #24536a;
+  border-radius:3px;
+  background:#071d2a;
+  transition:.18s;
+}
+.spirit-stage-progress i::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  transform:scaleX(var(--stage-progress));
+  transform-origin:left;
+  background:linear-gradient(90deg,#2eb5e5,#7ce8ff);
+  box-shadow:0 0 9px rgba(77,215,255,.34);
+  transition:transform .1s ease-out;
+}
+.spirit-stage-progress i.on,
+.spirit-stage-progress i.complete{border-color:#62ef9d;}
+.spirit-stage-progress i.on::after,
+.spirit-stage-progress i.complete::after{background:#62ef9d;box-shadow:0 0 9px rgba(98,239,157,.34);}
+.spirit-stage-row{display:none!important;}
+
+.spirit-apparatus{margin-top:2px;}
+.spirit-charge-controls{margin:14px 8px 2px;}
+.spirit-bank.is-next .spirit-tank-stack{
+  filter:drop-shadow(0 0 12px rgba(255,177,62,.08));
+}
+.spirit-bank.is-next .spirit-tank-cell:not(.is-full){
+  border-color:rgba(255,177,62,.42);
+  box-shadow:0 0 0 1px rgba(255,177,62,.10), inset 0 0 12px rgba(255,177,62,.04);
+}
+@media(max-width:390px){
+  .spirit-head .spirit-sponsor{width:116px;max-width:38vw;}
+  .spirit-score strong{font-size:16px;}
+  .spirit-stage-progress{margin:8px 0 10px;gap:4px;}
+  .spirit-charge-controls{margin:12px 5px 0;}
 }
