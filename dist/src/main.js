@@ -2666,10 +2666,8 @@
       el.style.setProperty('--emotion-rgb',signature.rgb);
       el.setAttribute('aria-label',`Capture ${signature.name.toLowerCase()} power signature`);
       el.innerHTML=`
-        <span class="signature-orbit orbit-a" aria-hidden="true"></span>
-        <span class="signature-orbit orbit-b" aria-hidden="true"></span>
         <span class="signature-core power-pulse-energy-core" aria-hidden="true">
-          <svg class="power-pulse-energy-icon" viewBox="0 0 210 126" focusable="false" aria-hidden="true">
+          <svg class="power-pulse-energy-icon" viewBox="66 0 66 126" focusable="false" aria-hidden="true">
             <path d="M83.34,125.93,98.42,75.57h-32L127.44,0,112.37,50.35h32ZM79,69.55H106.5L97.88,98.34l33.88-42H104.29l8.62-28.78Z"></path>
           </svg>
         </span>
@@ -2690,46 +2688,39 @@
     }
 
     function spawnBurst(x,y,rgb){
-      const ripple=document.createElement('span');
-      ripple.className='artifact-ripple is-emotion';
-      ripple.style.left=x+'px';ripple.style.top=y+'px';
-      ripple.style.setProperty('--emotion-rgb',rgb);
-      burstLayer.appendChild(ripple);
-      later(()=>ripple.remove(),620);
-
       const flare=document.createElement('span');
       flare.className='artifact-flare is-emotion';
       flare.style.left=x+'px';flare.style.top=y+'px';
       flare.style.setProperty('--emotion-rgb',rgb);
       burstLayer.appendChild(flare);
-      later(()=>flare.remove(),360);
+      later(()=>flare.remove(),340);
 
-      const streakCount=cleared>=7?10:8;
+      const streakCount=cleared>=7?12:9;
       for(let i=0;i<streakCount;i++){
         const streak=document.createElement('i');
         streak.className='artifact-streak is-emotion';
-        const angle=(Math.PI*2/streakCount)*i+(Math.random()*.24-.12);
-        const distance=(cleared>=7?94:76)+(Math.random()*18);
+        const angle=(Math.PI*2/streakCount)*i+(Math.random()*.18-.09);
+        const distance=(cleared>=7?86:68)+(Math.random()*16);
         streak.style.left=x+'px';streak.style.top=y+'px';
         streak.style.setProperty('--emotion-rgb',rgb);
         streak.style.setProperty('--dx',`${Math.cos(angle)*distance}px`);
         streak.style.setProperty('--dy',`${Math.sin(angle)*distance}px`);
         streak.style.setProperty('--rot',`${(angle*180/Math.PI).toFixed(1)}deg`);
         burstLayer.appendChild(streak);
-        later(()=>streak.remove(),380);
+        later(()=>streak.remove(),340);
       }
 
-      const count=cleared>=7?16:12;
+      const count=cleared>=7?14:10;
       for(let i=0;i<count;i++){
         const p=document.createElement('i');
         p.className='artifact-particle is-emotion';
         p.style.left=x+'px';p.style.top=y+'px';
         p.style.setProperty('--emotion-rgb',rgb);
-        p.style.setProperty('--dx',`${(Math.random()-.5)*170}px`);
-        p.style.setProperty('--dy',`${(Math.random()-.5)*170}px`);
+        p.style.setProperty('--dx',`${(Math.random()-.5)*120}px`);
+        p.style.setProperty('--dy',`${(Math.random()-.5)*120}px`);
         p.style.setProperty('--rot',`${Math.round((Math.random()-.5)*260)}deg`);
         burstLayer.appendChild(p);
-        later(()=>p.remove(),540);
+        later(()=>p.remove(),420);
       }
 
       field.classList.remove('is-hit');

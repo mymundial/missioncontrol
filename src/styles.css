@@ -7714,3 +7714,79 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 @media(max-width:390px){
   .starstream-signature.emotion-signature{--signature-size:82px;}
 }
+
+
+/* === Pass 7.38.45: BHP alignment + cleaner capture burst === */
+.starstream-signature.emotion-signature{
+  --signature-size:90px;
+  background:
+    radial-gradient(circle,rgba(255,255,255,.08) 0 8%,rgba(var(--emotion-rgb),.13) 22%,rgba(5,29,48,.52) 48%,rgba(2,14,27,.05) 70%,transparent 74%)!important;
+  box-shadow:
+    0 0 10px rgba(var(--emotion-rgb),.14),
+    0 0 18px rgba(var(--emotion-rgb),.07),
+    inset 0 0 8px rgba(var(--emotion-rgb),.06)!important;
+}
+.starstream-signature.emotion-signature::before{
+  inset:6px!important;
+  border:2px solid rgba(var(--emotion-rgb),.86)!important;
+  box-shadow:0 0 8px rgba(var(--emotion-rgb),.16)!important;
+}
+.starstream-signature.emotion-signature::after{
+  inset:0!important;
+  border:1px dashed rgba(var(--emotion-rgb),.24)!important;
+}
+.starstream-signature.emotion-signature .signature-orbit{
+  display:none!important;
+}
+.starstream-signature.emotion-signature .signature-core{
+  inset:0!important;
+}
+.starstream-signature.emotion-signature .power-pulse-energy-icon{
+  width:58%!important;
+  height:58%!important;
+  overflow:visible;
+  filter:drop-shadow(0 0 1px rgba(255,255,255,.42)) drop-shadow(0 0 4px rgba(var(--emotion-rgb),.16))!important;
+}
+.starstream-signature.emotion-signature .signature-scan{
+  inset:50% 10px auto!important;
+  opacity:.4;
+  box-shadow:0 0 4px rgba(var(--emotion-rgb),.16)!important;
+}
+.artifact-ripple.is-emotion{display:none!important;}
+.artifact-flare{
+  width:44px;
+  height:44px;
+  margin:-22px 0 0 -22px;
+}
+.artifact-flare.is-emotion{
+  background:radial-gradient(circle, rgba(255,255,255,.92) 0 18%, rgba(var(--emotion-rgb),.42) 32%, rgba(var(--emotion-rgb),.12) 52%, transparent 72%);
+  animation:artifactFlareClean .28s ease-out forwards;
+}
+.artifact-streak{
+  width:16px;
+  height:2px;
+  margin:-1px 0 0 -8px;
+}
+.artifact-streak.is-emotion{
+  box-shadow:0 0 8px rgba(var(--emotion-rgb),.24);
+  animation:artifactStreakClean .34s ease-out forwards;
+}
+.artifact-particle.is-emotion{
+  width:3px;
+  height:8px;
+  border-radius:2px;
+  box-shadow:0 0 6px rgba(var(--emotion-rgb),.24)!important;
+}
+@keyframes artifactFlareClean{
+  0%{transform:scale(.45);opacity:0}
+  30%{transform:scale(1);opacity:1}
+  100%{transform:scale(1.35);opacity:0}
+}
+@keyframes artifactStreakClean{
+  0%{transform:translate(0,0) rotate(var(--rot)) scaleX(.55);opacity:1}
+  100%{transform:translate(var(--dx),var(--dy)) rotate(var(--rot)) scaleX(1);opacity:0}
+}
+@media(max-width:390px){
+  .starstream-signature.emotion-signature{--signature-size:84px;}
+  .starstream-signature.emotion-signature .power-pulse-energy-icon{width:56%!important;height:56%!important;}
+}
