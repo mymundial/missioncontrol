@@ -382,7 +382,7 @@
       {side:'right',index:0,key:'yellow',rgb:'255,224,84',color:'#ffe054',name:'Yellow energy'},
       {side:'right',index:1,key:'pink',rgb:'255,110,186',color:'#ff6eba',name:'Pink energy'},
       {side:'right',index:2,key:'white',rgb:'247,250,255',color:'#f7faff',name:'White energy'},
-      {side:'right',index:3,key:'orange',rgb:'255,176,64',color:'#ffb040',name:'Orange energy'}
+      {side:'right',index:3,key:'orange',rgb:'255,122,28',color:'#ff7a1c',name:'Orange energy'}
     ];
     const progressDefs=['blue','orange','red','white','green','pink','purple','yellow'].map(key=>tankDefs.find(t=>t.key===key));
     const bhpIcon=`<svg class="spirit-bhp-icon" viewBox="66 0 66 126" focusable="false" aria-hidden="true"><path d="M83.34,125.93,98.42,75.57h-32L127.44,0,112.37,50.35h32ZM79,69.55H106.5L97.88,98.34l33.88-42H104.29l8.62-28.78Z"></path></svg>`;

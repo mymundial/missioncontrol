@@ -8270,3 +8270,41 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 }
 .spirit-panel.is-complete .spirit-tank-cell.is-full{box-shadow:0 8px 15px rgba(0,0,0,.2),0 0 0 1px rgba(var(--tank-rgb),.58),0 0 34px rgba(var(--tank-rgb),.5),inset 0 0 16px rgba(0,0,0,.4);}
 @keyframes spiritPlateFlash{0%{transform:translate(-50%,-50%) scale(1)}30%{transform:translate(-50%,-50%) scale(1.08);box-shadow:0 0 22px rgba(var(--tank-rgb),.62)}100%{transform:translate(-50%,-50%) scale(1)}}
+
+
+/* === Pass 7.38.53: brighter orange + captured-signature progress colours === */
+.artifact-progress-track i{
+  --artifact-rgb:98,239,157;
+  position:relative;
+  overflow:hidden;
+}
+.artifact-progress-track i.on{
+  border-color:rgba(var(--artifact-rgb),.95)!important;
+  background:rgb(var(--artifact-rgb))!important;
+  box-shadow:0 0 10px rgba(var(--artifact-rgb),.42), inset 0 0 0 1px rgba(255,255,255,.14)!important;
+}
+.artifact-panel.is-complete .artifact-progress-track i.on,
+.artifact-panel.is-complete .artifact-progress-track i.complete{
+  border-color:rgba(var(--artifact-rgb),.95)!important;
+  background:rgb(var(--artifact-rgb))!important;
+  box-shadow:0 0 10px rgba(var(--artifact-rgb),.42), inset 0 0 0 1px rgba(255,255,255,.14)!important;
+}
+/* stronger orange distinction */
+.starstream-signature.energy-orange,
+.energy-artifact.energy-orange{
+  --emotion-rgb:255,122,28!important;
+}
+.starstream-signature.energy-orange .power-pulse-energy-core,
+.energy-artifact.energy-orange .power-pulse-energy-core{
+  border-color:rgba(255,122,28,.95)!important;
+  box-shadow:0 0 10px rgba(255,122,28,.68), inset 0 0 9px rgba(255,255,255,.16)!important;
+}
+.starstream-signature.energy-orange .power-pulse-energy-icon,
+.energy-artifact.energy-orange .power-pulse-energy-icon{
+  fill:#ff7a1c!important;
+  filter:drop-shadow(0 0 8px rgba(255,122,28,.72))!important;
+}
+.spirit-tank-orange{
+  --tank-rgb:255,122,28!important;
+  --tank-color:#ff7a1c!important;
+}
