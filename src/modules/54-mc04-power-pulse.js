@@ -76,7 +76,7 @@
       }else{
         pausePowerAudio();
         runState.textContent=speed>1?'COASTING':'READY';
-        stateEl.textContent=speed>1?'Hold again to keep accelerating':'Press and hold to accelerate';
+        stateEl.textContent=speed>1?'Hold again to keep accelerating':'Hold to accelerate';
       }
     }
 

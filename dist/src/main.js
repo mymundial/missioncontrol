@@ -917,6 +917,27 @@
       <div class="relay-meter"><span>Signal Strength</span><div><i id="relayMeterFill"></i></div></div>
     </div>`;
   }
+  const REINDEER_RACEWAY_ASSETS=[
+    './assets/power-sky.webp',
+    './assets/power-grass.webp',
+    './assets/power-road.webp',
+    './assets/power-car.webp'
+  ];
+  let reindeerRacewayPreloadStarted=false;
+  function preloadReindeerRacewayAssets(){
+    if(reindeerRacewayPreloadStarted||typeof Image==='undefined') return;
+    reindeerRacewayPreloadStarted=true;
+    const load=()=>REINDEER_RACEWAY_ASSETS.forEach(src=>{
+      const img=new Image();
+      img.decoding='async';
+      img.src=src;
+      if(typeof img.decode==='function') img.decode().catch(()=>{});
+    });
+    if(typeof requestIdleCallback==='function') requestIdleCallback(load,{timeout:2200});
+    else setTimeout(load,700);
+  }
+  preloadReindeerRacewayAssets();
+
   function powerBody(){
     const revSegments=Array.from({length:12},()=>'<i></i>').join('');
     return `<div class="mission-instrument panel power-run-panel">
@@ -937,7 +958,7 @@
           <div class="power-horizon-seam" aria-hidden="true"></div>
           <div class="power-speed-lines" aria-hidden="true">${Array.from({length:12},()=>'<i></i>').join('')}</div>
           <div class="power-car" id="powerCar">
-            <img class="power-car-sprite" src="./assets/power-car.webp" alt="Blue retro pixel racing car seen from behind">
+            <img class="power-car-sprite" src="./assets/power-car.webp" alt="Blue retro pixel racing car seen from behind" decoding="async">
             <span class="power-exhaust power-exhaust-left"></span><span class="power-exhaust power-exhaust-right"></span>
           </div>
           <div class="power-burst" id="powerBurst" aria-hidden="true"><i></i><i></i><i></i></div>
@@ -945,7 +966,7 @@
         <div class="power-max-hold"><span>Sustain Max Speed</span><div><i id="powerMaxFill"></i></div><strong id="powerMaxState">STANDBY</strong></div>
       </div>
       <div class="visually-hidden" id="powerState" aria-live="polite">Ready</div>
-      <button class="btn primary wide power-accelerator" id="powerAccelerator">Press &amp; Hold to Accelerate</button>
+      <button class="btn primary wide power-accelerator" id="powerAccelerator">Hold to Accelerate</button>
     </div>`;
   }
   function spiritBody(){
@@ -2254,7 +2275,7 @@
       }else{
         pausePowerAudio();
         runState.textContent=speed>1?'COASTING':'READY';
-        stateEl.textContent=speed>1?'Hold again to keep accelerating':'Press and hold to accelerate';
+        stateEl.textContent=speed>1?'Hold again to keep accelerating':'Hold to accelerate';
       }
     }
 
