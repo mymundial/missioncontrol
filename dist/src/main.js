@@ -2534,14 +2534,14 @@
     if(!field||!layer||!burstLayer||!beam||!progress||!stateEl||!canvas) return;
 
     const ENERGY_SIGNATURES=[
-      {id:'green',name:'Green',rgb:'117,201,107'},
-      {id:'pink',name:'Pink',rgb:'244,111,168'},
-      {id:'purple',name:'Purple',rgb:'168,121,216'},
-      {id:'yellow',name:'Yellow',rgb:'255,212,71'},
-      {id:'blue',name:'Blue',rgb:'90,173,225'},
-      {id:'red',name:'Red',rgb:'240,82,97'},
-      {id:'orange',name:'Orange',rgb:'255,165,55'},
-      {id:'white',name:'White',rgb:'238,243,250'}
+      {id:'green',name:'Green',rgb:'92,245,96'},
+      {id:'pink',name:'Pink',rgb:'255,110,186'},
+      {id:'purple',name:'Purple',rgb:'198,92,255'},
+      {id:'yellow',name:'Yellow',rgb:'255,224,84'},
+      {id:'blue',name:'Blue',rgb:'76,219,255'},
+      {id:'red',name:'Red',rgb:'255,92,116'},
+      {id:'orange',name:'Orange',rgb:'255,176,64'},
+      {id:'white',name:'White',rgb:'247,250,255'}
     ];
 
     let cleared=0;
