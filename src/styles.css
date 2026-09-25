@@ -6919,3 +6919,18 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 @media(max-width:360px){
   .relay-node .relay-target{inset:8px;}
 }
+
+
+/* Pass 7.38.23 — MC03 green target ring + fuller completion outcome */
+.relay-node .relay-target{
+  border-color:rgba(103,239,158,.58);
+  box-shadow:0 0 4px rgba(103,239,158,.08);
+}
+.relay-node.active .relay-target{
+  border-color:rgba(111,245,166,.96);
+  box-shadow:0 0 10px rgba(103,239,158,.18);
+}
+.relay-node.locked .relay-target{
+  border-color:rgba(111,245,166,.72);
+  box-shadow:0 0 6px rgba(103,239,158,.10);
+}

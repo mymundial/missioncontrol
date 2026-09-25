@@ -1,3 +1,9 @@
+# Pass 7.38.23 — MC03 target-ring colour + completion copy
+
+- Updated MC03 relay target rings to green so the dotted capture ring reads more clearly as the timing target while keeping relay bodies cyan.
+- Preserved the 7.38.22 relay geometry, completed green links, persistent travelling energy packets on successful links, centred Signal Strength module, and approved audio behaviour.
+- Updated the MC03 completion outcome copy to: `The transmission was successfully relayed and the communications link to Santa-1 has been restored.`
+
 # Pass 7.38.22 — MC03 restrained relay-success pass
 
 - Reduced the dotted capture-ring diameter slightly while keeping the outer relay node, numbered centre, timing pulse and hit window unchanged.

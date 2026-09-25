@@ -96,7 +96,7 @@
         if(finished)return;finished=true;
         clearTimeout(introStatic);clearTimeout(santaDelay);clearTimeout(fallback);clearTimeout(tailTimer);stopStatic();
         if(radioWasOn&&elfAudioEl){elfAudioEl.volume=Math.min(elfAudioEl.volume,.025);rampElementVolume(elfAudioEl,previousRadioVolume,520);}
-        setTimeout(()=>showCompletion('Comms Link Restored',''),260);
+        setTimeout(()=>showCompletion('Comms Link Restored','The transmission was successfully relayed and the communications link to Santa-1 has been restored.'),260);
       };
       const playSanta=()=>{
         stopStatic();
