@@ -64,7 +64,7 @@
     const activationDistance=distanceToActivation(cp,state.distance);
     const distanceValue=!cp?'GROTTO':state.targetVisible&&Number.isFinite(activationDistance)?`${Math.round(activationDistance)} M`:'SEARCHING';
     const condition=state.mode==='demo'?'DEMO':state.gpsEnabled===false?'OFF':state.gpsCondition;
-    return `<section class="telemetry-block"><div class="telemetry-heading">TELEMETRY</div><div class="status-strip panel">
+    return `<section class="telemetry-block"><div class="telemetry-heading">MISSION TELEMETRY</div><div class="status-strip panel">
       <div class="status-cell"><div class="status-label">GPS Accuracy</div><div class="status-value gps-${condition.toLowerCase()}">${condition}</div></div>
       <div class="status-cell"><div class="status-label">Sleigh Rebuild</div><div class="status-value">${recovery()}%</div></div>
       <div class="status-cell"><div class="status-label">Next Checkpoint</div><div class="status-value">${distanceValue}</div></div>
@@ -80,13 +80,11 @@
     }
     if(!cp) return `<div class="mission-card message-card panel complete-message compact-message" id="radarMessage"><div><div class="kicker">Mission Control</div><h3>Mission Complete</h3></div></div>`;
     if(cp.type==='activation'){
-      if(state.targetVisible) return `<div class="mission-card message-card panel compact-message" id="radarMessage"><div><div class="kicker">Mission Control</div><h3>Circuit Link Ahead</h3></div></div>`;
-      return `<div class="mission-card message-card panel compact-message" id="radarMessage"><div><div class="kicker">Mission Control</div><h3>Locating Circuit Link</h3></div></div>`;
+      if(state.targetVisible) return `<div class="mission-card message-card panel compact-message" id="radarMessage"><div><div class="kicker">Mission Control</div><h3>Checkpoint Ahead</h3></div></div>`;
+      return `<div class="mission-card message-card panel compact-message" id="radarMessage"><div><div class="kicker">Mission Control</div><h3>Locating Checkpoint</h3></div></div>`;
     }
     if(state.targetVisible){
-      const activationDistance=Math.round(distanceToActivation(cp,state.distance)||0);
-      const title=activationDistance<40?'Closing On Target':'Signal Detected';
-      return `<div class="mission-card message-card panel compact-message" id="radarMessage"><div><div class="kicker">Mission Control</div><h3>${title}</h3></div></div>`;
+      return `<div class="mission-card message-card panel compact-message" id="radarMessage"><div><div class="kicker">Mission Control</div><h3>Checkpoint Ahead</h3></div></div>`;
     }
     return `<div class="mission-card message-card panel compact-message" id="radarMessage"><div><div class="kicker">Mission Control</div><h3>Radar Searching</h3></div></div>`;
   }

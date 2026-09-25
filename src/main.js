@@ -622,7 +622,7 @@
     const activationDistance=distanceToActivation(cp,state.distance);
     const distanceValue=!cp?'GROTTO':state.targetVisible&&Number.isFinite(activationDistance)?`${Math.round(activationDistance)} M`:'SEARCHING';
     const condition=state.mode==='demo'?'DEMO':state.gpsEnabled===false?'OFF':state.gpsCondition;
-    return `<section class="telemetry-block"><div class="telemetry-heading">TELEMETRY</div><div class="status-strip panel">
+    return `<section class="telemetry-block"><div class="telemetry-heading">MISSION TELEMETRY</div><div class="status-strip panel">
       <div class="status-cell"><div class="status-label">GPS Accuracy</div><div class="status-value gps-${condition.toLowerCase()}">${condition}</div></div>
       <div class="status-cell"><div class="status-label">Sleigh Rebuild</div><div class="status-value">${recovery()}%</div></div>
       <div class="status-cell"><div class="status-label">Next Checkpoint</div><div class="status-value">${distanceValue}</div></div>
@@ -638,13 +638,11 @@
     }
     if(!cp) return `<div class="mission-card message-card panel complete-message compact-message" id="radarMessage"><div><div class="kicker">Mission Control</div><h3>Mission Complete</h3></div></div>`;
     if(cp.type==='activation'){
-      if(state.targetVisible) return `<div class="mission-card message-card panel compact-message" id="radarMessage"><div><div class="kicker">Mission Control</div><h3>Circuit Link Ahead</h3></div></div>`;
-      return `<div class="mission-card message-card panel compact-message" id="radarMessage"><div><div class="kicker">Mission Control</div><h3>Locating Circuit Link</h3></div></div>`;
+      if(state.targetVisible) return `<div class="mission-card message-card panel compact-message" id="radarMessage"><div><div class="kicker">Mission Control</div><h3>Checkpoint Ahead</h3></div></div>`;
+      return `<div class="mission-card message-card panel compact-message" id="radarMessage"><div><div class="kicker">Mission Control</div><h3>Locating Checkpoint</h3></div></div>`;
     }
     if(state.targetVisible){
-      const activationDistance=Math.round(distanceToActivation(cp,state.distance)||0);
-      const title=activationDistance<40?'Closing On Target':'Signal Detected';
-      return `<div class="mission-card message-card panel compact-message" id="radarMessage"><div><div class="kicker">Mission Control</div><h3>${title}</h3></div></div>`;
+      return `<div class="mission-card message-card panel compact-message" id="radarMessage"><div><div class="kicker">Mission Control</div><h3>Checkpoint Ahead</h3></div></div>`;
     }
     return `<div class="mission-card message-card panel compact-message" id="radarMessage"><div><div class="kicker">Mission Control</div><h3>Radar Searching</h3></div></div>`;
   }
@@ -869,58 +867,12 @@
 
   function diagnosticsBody(){
     const sensors=[
-      {name:'Aero',key:'aero',viz:`<svg viewBox="0 0 120 70" role="presentation">
-        <path class="aero-body" d="M43 25 L50 18 H70 L77 25 L84 32 V42 L76 49 H44 L36 42 V32 Z"/>
-        <path class="aero-centre" d="M60 20V48"/>
-        <path class="aero-flow aero-flow-1" d="M3 12 C25 12 31 15 40 20 C48 24 72 24 80 20 C91 15 99 12 117 12"/>
-        <path class="aero-flow aero-flow-2" d="M2 27 C21 27 30 28 38 31 C45 34 75 34 82 31 C91 28 101 27 118 27"/>
-        <path class="aero-flow aero-flow-3" d="M2 43 C21 43 30 42 38 39 C45 36 75 36 82 39 C91 42 101 43 118 43"/>
-        <path class="aero-flow aero-flow-4" d="M3 58 C25 58 31 55 40 50 C48 46 72 46 80 50 C91 55 99 58 117 58"/>
-        <circle class="aero-probe aero-probe-1" cx="18" cy="12" r="1.8"/><circle class="aero-probe aero-probe-2" cx="15" cy="27" r="1.8"/><circle class="aero-probe aero-probe-3" cx="15" cy="43" r="1.8"/><circle class="aero-probe aero-probe-4" cx="18" cy="58" r="1.8"/>
-      </svg>`},
-      {name:'Stability',key:'stability',viz:`<svg viewBox="0 0 120 70" role="presentation">
-        <path class="stability-reference" d="M12 51H108"/>
-        <path class="stability-arc" d="M38 28 A22 22 0 0 1 82 28"/>
-        <circle class="stability-console" cx="60" cy="35" r="7.5"/>
-        <g class="stability-chassis">
-          <path class="stability-shell" d="M32 31 L41 21 H79 L88 31 L92 43 H28 Z"/>
-          <rect class="stability-wheel stability-wheel-left" x="29" y="43" width="16" height="8" rx="4"/>
-          <rect class="stability-wheel stability-wheel-right" x="75" y="43" width="16" height="8" rx="4"/>
-          <path class="stability-damper stability-damper-left" d="M39 31V44"/><path class="stability-damper stability-damper-right" d="M81 31V44"/>
-        </g>
-        <path class="stability-centre" d="M60 20V50"/>
-        <path class="stability-lock" d="M46 35H74"/>
-        <circle class="stability-point" cx="60" cy="35" r="3.4"/>
-      </svg>`},
-      {name:'Power',key:'power',viz:`<svg viewBox="0 0 120 70" role="presentation">
-        <path class="power-baseline" d="M5 62H115"/>
-        <path class="power-trace-shadow" d="M6 50 L20 48 L30 43 L38 47 L47 30 L55 41 L65 18 L74 34 L83 12 L92 27 L102 9 L115 16"/>
-        <path class="power-trace" d="M6 50 L20 48 L30 43 L38 47 L47 30 L55 41 L65 18 L74 34 L83 12 L92 27 L102 9 L115 16"/>
-        <circle class="power-hotspot" cx="102" cy="9" r="4"/>
-        <g class="power-output-bars"><rect x="8" y="57" width="12" height="5"/><rect x="24" y="54" width="12" height="8"/><rect x="40" y="51" width="12" height="11"/><rect x="56" y="47" width="12" height="15"/><rect x="72" y="43" width="12" height="19"/><rect x="88" y="38" width="12" height="24"/></g>
-      </svg>`},
-      {name:'Control',key:'control',viz:`<svg viewBox="0 0 120 70" role="presentation">
-        <path class="control-path control-path-left" d="M7 35 C20 16 37 12 51 24"/>
-        <path class="control-path control-path-right" d="M113 35 C100 54 83 58 69 46"/>
-        <g class="control-wheel">
-          <circle cx="60" cy="35" r="22"/><circle cx="60" cy="35" r="5"/>
-          <line x1="60" y1="13" x2="60" y2="30"/><line x1="40" y1="43" x2="55" y2="37"/><line x1="80" y1="43" x2="65" y2="37"/>
-        </g>
-        <path class="control-angle" d="M38 18 A29 29 0 0 1 83 19"/><circle class="control-marker" cx="60" cy="7" r="2.5"/>
-      </svg>`},
-      {name:'Traction',key:'traction',viz:`<svg viewBox="0 0 120 70" role="presentation">
-        <path class="traction-road" d="M12 57H108"/>
-        <path class="traction-car" d="M48 12 H72 L81 22 V48 L72 58 H48 L39 48 V22 Z"/>
-        <path class="traction-spine" d="M60 17V53"/>
-        <rect class="traction-wheel w1" x="30" y="18" width="12" height="16" rx="4"/><rect class="traction-wheel w2" x="78" y="18" width="12" height="16" rx="4"/><rect class="traction-wheel w3" x="30" y="37" width="12" height="16" rx="4"/><rect class="traction-wheel w4" x="78" y="37" width="12" height="16" rx="4"/>
-        <rect class="traction-contact c1" x="26" y="22" width="5" height="9" rx="2.5"/><rect class="traction-contact c2" x="89" y="22" width="5" height="9" rx="2.5"/><rect class="traction-contact c3" x="26" y="41" width="5" height="9" rx="2.5"/><rect class="traction-contact c4" x="89" y="41" width="5" height="9" rx="2.5"/>
-      </svg>`},
-      {name:'Response',key:'response',viz:`<svg viewBox="0 0 120 70" role="presentation">
-        <circle class="response-ring response-ring-a" cx="60" cy="35" r="23"/><circle class="response-ring response-ring-b" cx="60" cy="35" r="15"/>
-        <circle class="response-core" cx="60" cy="35" r="5"/>
-        <path class="response-in" d="M6 35H48"/><path class="response-out" d="M72 35H114"/>
-        <circle class="response-pulse response-pulse-in" cx="10" cy="35" r="3"/><circle class="response-pulse response-pulse-out" cx="110" cy="35" r="3"/>
-      </svg>`}
+      {name:'Aero',key:'aero',viz:`<div class="mc02-icon mc02-icon-aero"><svg class="mc02-svg mc02-aero-svg" viewBox="0 0 210 126" aria-hidden="true"><path class="mc02-aero-frame-path" d="M27.16,11.07V120.66h6V17.08h6V120.64h6V17.08H164.74V120.64h6V17.08h6V120.66h6V11.07ZM49.7,34H160.2V28H49.7Z"/><g class="mc02-aero-fan-group"><path class="mc02-aero-fan-path" d="M105,41.51a39.27,39.27,0,1,0,39.27,39.26A39.3,39.3,0,0,0,105,41.51Zm0,72.88a33.62,33.62,0,1,1,33.62-33.62A33.66,33.66,0,0,1,105,114.39Zm14.35-27.73c-1.41.32-4.52.71-6.84-1.35a8.56,8.56,0,0,0,1-2.37c4.32-1.43,10.41-4.22,11.17-12,.86-8.82-8-15.09-14.52-16.73-3.49-.87-6.91.35-8.5,3.05-1.5,2.55-1,5.67,1.27,8.12,1,1.06,2.87,3.56,2.26,6.6H105a8.88,8.88,0,0,0-2.38.33c-3.4-3-8.85-6.9-16-3.68-8.07,3.67-9.09,14.46-7.23,21,1,3.45,3.76,5.8,6.89,5.83h.06c2.94,0,5.36-2,6.34-5.16.42-1.38,1.64-4.26,4.58-5.25a9.18,9.18,0,0,0,1.56,2c-.92,4.45-1.55,11.12,4.79,15.65A12.39,12.39,0,0,0,111,105c5.55,0,11.2-3.17,14.41-6.5,2.5-2.58,3.15-6.15,1.61-8.88S122.62,85.9,119.35,86.66Zm-23-7.24c-4.87,1.25-7.82,5.32-9,9.19-.08.27-.4,1.16-.94,1.16h0c-.41,0-1.15-.47-1.51-1.74-1.1-3.81-1-11.91,4.13-14.25,3.39-1.54,6.13-.29,8.85,1.91A8.6,8.6,0,0,0,96.33,79.42Zm10.19-19.27c.2-.35,1-.76,2.26-.44,3.85,1,10.82,5.09,10.27,10.7-.36,3.71-2.81,5.45-6.07,6.71a8.86,8.86,0,0,0-2.47-3.18c1.35-4.85-.7-9.43-3.46-12.39C106.85,61.34,106.24,60.62,106.52,60.15Zm-5.37,20.62A3.85,3.85,0,1,1,105,84.62,3.85,3.85,0,0,1,101.15,80.77Zm20.2,13.81c-2.76,2.85-9.82,6.82-14.41,3.54-3-2.16-3.31-5.16-2.77-8.6.27,0,.55,0,.83,0a8.71,8.71,0,0,0,3.16-.6c3.52,3.6,8.52,4.1,12.46,3.2.28-.07,1.21-.24,1.48.24S122.27,93.63,121.35,94.58Z"/></g></svg></div>`},
+      {name:'Stability',key:'stability',viz:`<div class="mc02-icon mc02-icon-stability"><span class="mc02-layer mc02-stability-car"></span><span class="mc02-layer mc02-stability-headlights"></span></div>`},
+      {name:'Power',key:'power',viz:`<div class="mc02-icon mc02-icon-power"><svg class="mc02-svg mc02-power-svg" viewBox="0 0 210 126" aria-hidden="true"><path class="mc02-power-gauge-path" d="M105,15.05A72.14,72.14,0,0,0,32.93,87.11a73,73,0,0,0,.77,10.57l.44,3,21.67-3.09-.84-6L39.28,93.82c-.22-2.22-.34-4.47-.34-6.71a65.69,65.69,0,0,1,13.47-39.9L64.67,57.39l3.85-4.63L56.26,42.58a65.89,65.89,0,0,1,45.86-21.44v16h6v-16a65.93,65.93,0,0,1,45.6,21.43L139.11,54.7,141.05,57a47.1,47.1,0,0,1,10.41,36.91l-.64,3.16,25,3.59.44-3a73.21,73.21,0,0,0,.77-10.58A72.15,72.15,0,0,0,105,15.05Z"/><g class="mc02-power-needle-group"><path class="mc02-power-needle-path" d="M171.32,117.08l-64-35.21.06,0-.12,0A5.77,5.77,0,0,0,99.39,89a5.89,5.89,0,0,0,3.16,3.34L170.41,119a1.08,1.08,0,0,0,.91-2Z"/></g></svg></div>`},
+      {name:'Control',key:'control',viz:`<div class="mc02-icon mc02-icon-control"><span class="mc02-layer mc02-control-wheel"></span><span class="mc02-layer mc02-control-ring"></span></div>`},
+      {name:'Traction',key:'traction',viz:`<div class="mc02-icon mc02-icon-traction"><span class="mc02-layer mc02-traction-car"></span><span class="mc02-layer mc02-traction-skids"></span><span class="mc02-layer mc02-traction-shine"></span></div>`},
+      {name:'Response',key:'response',viz:`<div class="mc02-icon mc02-icon-response"><span class="mc02-layer mc02-response-cones"></span><span class="mc02-layer mc02-response-arrow"></span><span class="mc02-layer mc02-response-shine"></span></div>`}
     ];
     return `<div class="mission-instrument panel diagnostics-panel"><div class="sensor-grid diagnostics-grid">${sensors.map((x,i)=>`<button class="sensor sensor-${x.key}" data-sensor="${i}" data-diagnostic="${x.key}"><div class="sensor-head"><span class="num">0${i+1}</span><span class="name">${x.name}</span></div><div class="sensor-viz viz-${x.key}" aria-hidden="true">${x.viz}</div><div class="state">Tap to scan</div></button>`).join('')}</div></div><button class="btn primary wide" id="diagComplete" disabled>Complete Scan</button>`;
   }
@@ -1972,7 +1924,7 @@
         if(done.size===6)document.getElementById('diagComplete').disabled=false;
       },durations[i]||1800);
     });
-    document.getElementById('diagComplete').onclick=()=>showCompletion('Performance Scan Complete','The engineering data was successfully captured and is now ready to support Santa-1’s recovery systems.');
+    document.getElementById('diagComplete').onclick=()=>showCompletion('Performance Scan Complete','The racing performance data has been captured and is ready to support Santa-1’s recovery systems.');
   }
 
   async function completeElfTuning(){
