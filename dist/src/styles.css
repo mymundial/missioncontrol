@@ -7790,3 +7790,36 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   .starstream-signature.emotion-signature{--signature-size:84px;}
   .starstream-signature.emotion-signature .power-pulse-energy-icon{width:56%!important;height:56%!important;}
 }
+
+
+/* === Pass 7.38.46: centre and scale BHP glyph === */
+.starstream-signature.emotion-signature .power-pulse-energy-core{
+  position:absolute!important;
+  inset:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  pointer-events:none!important;
+}
+.starstream-signature.emotion-signature .power-pulse-energy-icon{
+  position:static!important;
+  inset:auto!important;
+  left:auto!important;
+  top:auto!important;
+  right:auto!important;
+  bottom:auto!important;
+  width:62%!important;
+  height:62%!important;
+  max-width:none!important;
+  max-height:none!important;
+  margin:0!important;
+  transform:none!important;
+  transform-origin:center!important;
+  overflow:visible!important;
+}
+@media(max-width:390px){
+  .starstream-signature.emotion-signature .power-pulse-energy-icon{
+    width:60%!important;
+    height:60%!important;
+  }
+}
