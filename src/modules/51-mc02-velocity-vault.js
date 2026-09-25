@@ -15,7 +15,7 @@
         done.add(i);
         btn.classList.remove('active');
         btn.classList.add('done');
-        btn.querySelector('.state').innerHTML='Captured <img class="checkmark-icon checkmark-icon--inline" src="./assets/checkmark-icon.svg" alt="" aria-hidden="true">';
+        btn.querySelector('.state').innerHTML='Captured <span class="checkmark-icon checkmark-icon--inline" aria-hidden="true"></span>';
         document.querySelectorAll('[data-sensor]').forEach(other=>other.classList.remove('scan-locked'));
         ping(720+i*40,.06,.025);
         haptic(24);

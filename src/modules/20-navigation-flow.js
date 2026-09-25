@@ -64,12 +64,12 @@
   function showCompletion(title,copy){
     const mc=document.getElementById('missionContent'); if(!mc) return;
     const outcome=copy||title||'';
-    mc.innerHTML=`<div class="completion panel"><div class="check" aria-hidden="true"><img class="checkmark-icon checkmark-icon--large" src="./assets/checkmark-icon.svg" alt=""></div><h2>Mission Complete</h2>${outcome?`<p>${outcome}</p>`:''}<button class="btn primary wide" id="returnRadar">Continue</button></div>`;
+    mc.innerHTML=`<div class="completion panel"><div class="check" aria-hidden="true"><span class="checkmark-icon checkmark-icon--large"></span></div><h2>Mission Complete</h2>${outcome?`<p>${outcome}</p>`:''}<button class="btn primary wide" id="returnRadar">Continue</button></div>`;
     document.getElementById('returnRadar').onclick=()=>completeCurrent(); ping(880,.14,.05);haptic([30,35,70]);
   }
   function showRadioCompletion(){
     const mc=document.getElementById('missionContent'); if(!mc) return;
-    mc.innerHTML=`<div class="completion panel"><div class="check" aria-hidden="true"><img class="checkmark-icon checkmark-icon--large" src="./assets/checkmark-icon.svg" alt=""></div><div class="kicker">Signal Locked</div><h2>ELF FM Locked</h2><p>Signal acquired at 87.7. ELF FM is now available from Communications.</p><button class="btn primary wide" id="returnComms">Return to Comms</button></div>`;
+    mc.innerHTML=`<div class="completion panel"><div class="check" aria-hidden="true"><span class="checkmark-icon checkmark-icon--large"></span></div><div class="kicker">Signal Locked</div><h2>ELF FM Locked</h2><p>Signal acquired at 87.7. ELF FM is now available from Communications.</p><button class="btn primary wide" id="returnComms">Return to Comms</button></div>`;
     document.getElementById('returnComms').onclick=()=>{
       state={...state,elfUnlocked:true,missionOpen:null,missionReturnNav:'radar',nav:'comms'};
       save();render();

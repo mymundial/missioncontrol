@@ -211,7 +211,7 @@
     function expireSignature(item){
       if(finished||!liveItems.has(item)||item.locked) return;
       removeSignature(item,'passed',180);
-      stateEl.textContent=cleared>=10?'Power stabilised':'Signature lost · keep collecting';
+      if(stateEl) stateEl.textContent=cleared>=10?'Power stabilised':'';
     }
 
     function captureSignature(item){
@@ -222,7 +222,7 @@
       cleared=Math.min(10,cleared+1);
       renderStability();
       ping(630+cleared*20,.045,.018);haptic(18);
-      stateEl.textContent=cleared===10?'Power stabilised':`Signature captured · ${10-cleared} remaining`;
+      if(stateEl) stateEl.textContent=cleared===10?'Power stabilised':'';
       if(cleared>=10){finish();return;}
       later(()=>{
         const cfg=stageConfig();
@@ -302,7 +302,7 @@
 
     renderStability();
     startStarstream();
-    stateEl.textContent='Energy signatures detected';
+    if(stateEl) stateEl.textContent='';
     createSignature();
     scheduleSpawn();
 
