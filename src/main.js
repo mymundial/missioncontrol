@@ -2038,6 +2038,7 @@
     function arm(nextStage){
       stage=nextStage;phase=0;start=performance.now();locked=false;
       nodes.forEach((n,i)=>n.classList.toggle('active',i===stage));
+      hops.forEach((h,i)=>h.classList.toggle('active',i===stage&&!h.classList.contains('locked')));
       stateEl.textContent=`Tap Relay 0${stage+1} when the pulse meets the capture ring.`;
     }
     function showIncomingTransmission(){
@@ -2097,6 +2098,7 @@
         setTimeout(()=>node.classList.remove('miss'),280);start=performance.now();return;
       }
       locked=true;node.classList.remove('active');node.classList.add('locked');
+      hops[stage]?.classList.remove('active');
       hops[stage]?.classList.add('locked');
       meterFill.style.width=`${25+(stage*25)}%`;
       meterText.textContent=['ACQUIRED','ROUTED','STRONG','LOCKED'][stage];
@@ -2119,6 +2121,7 @@
       }else setTimeout(()=>arm(stage+1),460);
     });
     cleanupMission=()=>{cancelAnimationFrame(raf);stopSantaTransmission(true);};
+    hops[0]?.classList.add('active');
     raf=requestAnimationFrame(draw);
   }
 

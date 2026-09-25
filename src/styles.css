@@ -6475,3 +6475,44 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   color:#b5deea;
   text-shadow:0 0 7px rgba(104,218,248,.12);
 }
+
+
+/* Pass 7.38.17 — MC03 route-state polish only. No relay geometry or hit timing changes. */
+.relay-hop-line{
+  stroke:rgba(102,205,238,.22);
+  stroke-width:1;
+  stroke-dasharray:2.4 3.6;
+  stroke-linecap:round;
+  filter:none;
+  opacity:.72;
+  transition:stroke .22s ease,filter .22s ease,opacity .22s ease,stroke-dasharray .22s ease;
+}
+.relay-hop-line.active{
+  stroke:#73dcf8;
+  stroke-dasharray:none;
+  opacity:.96;
+  filter:drop-shadow(0 0 2px rgba(99,218,252,.42));
+}
+.relay-hop-line.locked{
+  stroke:rgba(87,239,145,.82);
+  stroke-dasharray:none;
+  opacity:.9;
+  filter:drop-shadow(0 0 2px rgba(87,239,145,.26));
+}
+.relay-node,
+.relay-radio-icon,
+.relay-receiver-icon{
+  background-color:#041722;
+}
+.relay-node{
+  background-image:radial-gradient(circle at 50% 45%,rgba(87,202,239,.15),rgba(8,39,56,.96) 48%,#03131e 76%);
+}
+.relay-node.active{
+  background-image:radial-gradient(circle at 50% 44%,rgba(96,221,255,.23),rgba(8,43,61,.98) 49%,#03141f 76%);
+}
+.relay-node.locked{
+  background-image:radial-gradient(circle at 50% 44%,rgba(87,239,145,.16),rgba(7,40,44,.98) 55%,#03141d 78%);
+}
+.relay-radio-icon,.relay-receiver-icon{
+  background-image:radial-gradient(circle at 50% 50%,rgba(75,205,246,.12),rgba(5,29,43,.98) 66%);
+}

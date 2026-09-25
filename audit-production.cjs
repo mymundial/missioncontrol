@@ -307,9 +307,15 @@ if(
   /\.relay-node \.relay-target\{inset:7px/.test(css) &&
   /\.relay-node \.relay-pulse\{width:46px;height:46px/.test(css) &&
   /Pass 7\.38\.16 — MC03 visual polish only/.test(css) &&
-  /\.relay-node\.active\{[\s\S]*?border-color:rgba\(119,226,255,\.94\)/.test(css)
+  /\.relay-node\.active\{[\s\S]*?border-color:rgba\(119,226,255,\.94\)/.test(css) &&
+  /Pass 7\.38\.17 — MC03 route-state polish only/.test(css) &&
+  /\.relay-hop-line\.active\{[\s\S]*?stroke-dasharray:none/.test(css) &&
+  /\.relay-hop-line\.locked\{[\s\S]*?stroke-dasharray:none/.test(css) &&
+  /stroke-dasharray:2\.4 3\.6/.test(css) &&
+  /hops\.forEach\(\(h,i\)=>h\.classList\.toggle\('active',i===stage/.test(runtime) &&
+  /hops\[0\]\?\.classList\.add\('active'\)/.test(runtime)
 ) {
-  ok('MC03 visual-only polish','Pre-redesign relay geometry and timing remain intact while the visual layer receives the premium cyan/glass polish');
+  ok('MC03 visual-only polish','Pre-redesign relay geometry/timing remain intact; route states are dashed future, solid active and solid completed, with node surfaces masking the centre-aligned links.');
 } else fail('MC03 visual-only polish','Relay geometry/timing changed or the approved visual-only polish is incomplete');
 
 // 12) External runtime dependencies / launch notes.

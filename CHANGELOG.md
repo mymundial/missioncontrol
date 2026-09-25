@@ -202,3 +202,8 @@ The two-column bank is intentionally row-interleaved so it reads top-down by col
 - No mission mechanics or difficulty were changed.
 - Applied the approved premium look strictly through the visual layer: deeper glassy nodes, cleaner cyan route lighting, brighter active capture glow, restrained locked-state illumination, refined transmitter/receiver treatments and a segmented instrument-style Signal Strength bar.
 - Future relays are visually quieter without changing their hit areas or layout.
+
+## 7.38.17 — MC03 route-state polish
+- Kept the known-working MC03 relay positions, target rings, pulse geometry, hit windows and timing unchanged.
+- Reworked only the relay-route visual states: future links are faint dashed guides, the current live link is solid cyan, and completed links are stable solid green.
+- Route segments remain centre-to-centre in the existing SVG geometry, while relay/endpoint surfaces are now fully opaque beneath their glass treatment so links no longer show through the nodes.
