@@ -1,3 +1,14 @@
+# Pass 7.38.20 — MC03 relay correction pass
+
+- Corrected MC03 so the dotted capture ring is once again the explicit aiming target; instruction copy now says the pulse must meet the capture ring.
+- Restored the relay nodes to the intended former construction: full-size outer node, centred dotted capture ring and centred numbered core, matching the approved visual language without changing hit timing or geometry.
+- Removed the stray offset pulse circles from inactive and completed relays; only the currently armed relay now shows the expanding timing pulse.
+- Kept all node captions on one line: TRANSMITTER, RELAY 01–04 and RECEIVER.
+- Kept the subtitle as `Restore two-way communications with Santa-1.`
+- Re-centred the `SIGNAL STRENGTH` title directly above the full-width bar.
+- Simplified the live route carrier into a single brighter travelling packet between currently active connected nodes.
+- Retained the MC03 audio pass: short walkie-talkie sting on successful Relays 01–03, full sting after Relay 04, and radio-tone miss feedback on mistimed clicks.
+
 # Pass 7.38.19 — MC03 restore + relay audio
 
 - Restored the earlier MC03 relay layout and readable node presentation while keeping interaction geometry and timing frozen.

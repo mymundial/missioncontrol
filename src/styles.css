@@ -6634,3 +6634,140 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   .relay-node .relay-core{width:25px;height:25px;}
 }
 \n\n/* Pass 7.38.19 — MC03 restore + focused visual/audio polish. Interaction geometry/timing unchanged. */\n.relay-cell>small,.relay-endpoint small{\n  max-width:none;\n  white-space:nowrap;\n  line-height:1;\n}\n.relay-node{\n  overflow:hidden;\n  border:1.5px solid rgba(92,194,228,.52);\n  background:radial-gradient(circle at 50% 45%,rgba(87,202,239,.15),rgba(8,39,56,.96) 48%,#03131e 76%);\n  box-shadow:inset 0 0 0 1px rgba(157,231,252,.025),inset 0 0 24px rgba(50,166,207,.09),0 0 0 1px rgba(3,14,23,.65);\n}\n.relay-node::before{\n  inset:3px;\n  border:1px solid rgba(139,225,250,.06);\n  background:none;\n  box-shadow:none;\n}\n.relay-node .relay-target{display:none!important;}\n.relay-node .relay-core{\n  width:31px;\n  height:31px;\n  border-color:rgba(138,226,251,.52);\n  background:radial-gradient(circle at 50% 40%,#123f54,#082737 70%);\n  box-shadow:inset 0 1px 0 rgba(220,249,255,.07),0 0 8px rgba(72,199,238,.08);\n}\n.relay-node .relay-pulse{\n  width:58px;\n  height:58px;\n  border:1.6px solid #9aebff;\n  box-shadow:0 0 5px rgba(175,241,255,.86),0 0 14px rgba(74,204,241,.26);\n}\n.relay-node.active{\n  border-color:rgba(119,226,255,.96);\n  background:radial-gradient(circle at 50% 44%,rgba(96,221,255,.23),rgba(8,43,61,.98) 49%,#03141f 76%);\n  box-shadow:0 0 8px rgba(101,220,255,.2),0 0 24px rgba(55,191,232,.14),inset 0 0 27px rgba(62,196,237,.12);\n}\n.relay-node.locked{\n  border-color:rgba(102,239,158,.82);\n  background:radial-gradient(circle at 50% 42%,rgba(87,239,145,.16),rgba(7,40,44,.98) 55%,#03141d 78%);\n  box-shadow:0 0 8px rgba(87,239,145,.13),inset 0 0 18px rgba(87,239,145,.08);\n}\n.relay-node.locked::before{border-color:rgba(127,255,177,.06);background:none;box-shadow:none;}\n.relay-hop-energy{\n  stroke:#e8fbff;\n  stroke-width:2;\n  stroke-linecap:round;\n  stroke-dasharray:8 92;\n  vector-effect:non-scaling-stroke;\n  opacity:0;\n  pointer-events:none;\n  filter:drop-shadow(0 0 2px #9cecff) drop-shadow(0 0 5px rgba(92,218,252,.7));\n}\n.relay-hop-energy.active{opacity:1;animation:relayCarrierPulse .92s linear infinite;}\n@keyframes relayCarrierPulse{from{stroke-dashoffset:8;}to{stroke-dashoffset:-92;}}\n.relay-meter{display:block;margin:10px 0 14px;}\n.relay-meter>span{display:block;margin:0 0 8px;text-align:center;}\n.relay-meter>div{width:100%;height:8px;}\n@media(max-width:380px){\n  .relay-node::before{inset:3px;}\n  .relay-node .relay-core{width:28px;height:28px;}\n  .relay-node .relay-pulse{width:52px;height:52px;}\n}\n
+
+/* Pass 7.38.20 — MC03 relay correction pass. Restore original node construction, centre the Signal Strength module, and simplify the live carrier packet without changing geometry or timing. */
+.comms-relay-panel .relay-instruction{
+  text-align:center;
+}
+.relay-meter{
+  display:grid;
+  grid-template-columns:1fr;
+  justify-items:center;
+  margin:10px 0 14px;
+}
+.relay-meter>span{
+  display:block;
+  width:100%;
+  margin:0 0 8px;
+  text-align:center;
+}
+.relay-meter>div{
+  width:100%;
+  max-width:100%;
+  height:8px;
+}
+.relay-cell>small,.relay-endpoint small{
+  max-width:none;
+  width:auto;
+  white-space:nowrap;
+  line-height:1;
+}
+.relay-node,
+.relay-radio-icon,
+.relay-receiver-icon{
+  width:76px;
+  height:76px;
+}
+.relay-node{
+  overflow:hidden;
+  border:1.5px solid rgba(109,216,247,.72);
+  background:radial-gradient(circle at 50% 45%,rgba(86,202,239,.18),rgba(7,38,55,.96) 52%,#03131d 77%);
+  box-shadow:inset 0 0 0 1px rgba(173,237,255,.035),inset 0 0 22px rgba(57,182,223,.09),0 0 0 1px rgba(4,18,28,.62);
+  filter:none;
+}
+.relay-node::before{
+  inset:3px;
+  border:1px solid rgba(160,232,252,.07);
+  background:none;
+  box-shadow:none;
+}
+.relay-node .relay-target{
+  display:block !important;
+  inset:13px;
+  left:13px;
+  top:13px;
+  right:13px;
+  bottom:13px;
+  transform:none;
+  border:2px dashed rgba(206,245,255,.82);
+  border-radius:50%;
+  box-shadow:none;
+  opacity:.95;
+}
+.relay-node .relay-core{
+  width:33px;
+  height:33px;
+  border-color:rgba(150,232,255,.78);
+  background:radial-gradient(circle at 50% 36%,#164a60,#092a3a 72%);
+  box-shadow:0 0 8px rgba(88,210,246,.12),inset 0 1px 0 rgba(234,252,255,.12);
+  color:#eefaff;
+  text-shadow:0 0 6px rgba(180,239,255,.25);
+}
+.relay-node .relay-pulse{
+  display:none;
+  width:60px;
+  height:60px;
+  border:1.5px solid rgba(158,235,255,.96);
+  box-shadow:0 0 6px rgba(160,236,255,.42),0 0 15px rgba(70,197,236,.16);
+}
+.relay-node.active{
+  border-color:rgba(138,233,255,.98);
+  box-shadow:0 0 9px rgba(96,220,255,.18),0 0 18px rgba(59,192,232,.12),inset 0 0 24px rgba(69,202,242,.11);
+}
+.relay-node.active .relay-target{
+  border-color:rgba(225,250,255,.92);
+}
+.relay-node.active .relay-core{
+  border-color:rgba(168,237,255,.92);
+}
+.relay-node.active .relay-pulse{
+  display:block;
+}
+.relay-node:not(.active):not(.locked) .relay-pulse,
+.relay-node.locked .relay-pulse{
+  display:none !important;
+}
+.relay-node.locked{
+  border-color:rgba(98,238,156,.78);
+  box-shadow:0 0 8px rgba(87,239,145,.12),inset 0 0 20px rgba(87,239,145,.07);
+}
+.relay-node.locked .relay-target{
+  border-style:dashed;
+  border-color:rgba(140,245,185,.62);
+}
+.relay-hop-line{
+  stroke:rgba(100,205,239,.24);
+  stroke-width:1;
+  stroke-dasharray:2.6 4;
+  stroke-linecap:round;
+  opacity:.72;
+}
+.relay-hop-line.active{
+  stroke:#74ddf9;
+  stroke-dasharray:none;
+  opacity:.98;
+  filter:drop-shadow(0 0 2px rgba(108,224,255,.34));
+}
+.relay-hop-energy{
+  stroke:#e7fbff;
+  stroke-width:4;
+  stroke-linecap:round;
+  stroke-dasharray:0.01 99.99;
+  vector-effect:non-scaling-stroke;
+  opacity:0;
+  pointer-events:none;
+  filter:drop-shadow(0 0 2px rgba(166,240,255,.95)) drop-shadow(0 0 7px rgba(86,212,248,.36));
+}
+.relay-hop-energy.active{
+  opacity:1;
+  animation:relayCarrierPulse 1s linear infinite;
+}
+@keyframes relayCarrierPulse{
+  from{stroke-dashoffset:0;}
+  to{stroke-dashoffset:-100;}
+}
+@media(max-width:380px){
+  .relay-node .relay-target{inset:11px;left:11px;top:11px;right:11px;bottom:11px;}
+  .relay-node .relay-core{width:30px;height:30px;}
+  .relay-node .relay-pulse{width:54px;height:54px;}
+}

@@ -363,7 +363,7 @@
   function radioBody(){return `<div class="mission-instrument panel"><div class="wave" id="radioWave">${'<i></i>'.repeat(28)}</div><div class="frequency"><span id="freqVal">86.4</span> <small>FM</small></div><div class="range-wrap"><input id="freqRange" class="range" type="range" min="86" max="89" value="86.4" step="0.1"><div class="freq-marks"><span>86.0</span><span>87.0</span><span>88.0</span><span>89.0</span></div></div><div class="signal-state" id="signalState">Searching for signal</div><button class="btn primary wide" id="lockSignal" disabled>Lock Signal</button></div>`}
   function commsRelayBody(){
     return `<div class="mission-instrument panel comms-relay-panel">
-      <div class="signal-state relay-instruction" id="relayState">Tap Relay 01 as the pulse reaches the node.</div>
+      <div class="signal-state relay-instruction" id="relayState">Tap Relay 01 when the pulse meets the capture ring.</div>
       <div class="relay-network" id="relayNetwork" aria-label="Signal relay network">
         <svg class="relay-route" viewBox="0 0 100 150" preserveAspectRatio="none" aria-hidden="true">
           <line class="relay-hop-line" data-hop="0" x1="25" y1="25" x2="75" y2="25"></line>

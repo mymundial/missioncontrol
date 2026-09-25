@@ -49,7 +49,7 @@
       nodes.forEach((n,i)=>n.classList.toggle('active',i===stage));
       hops.forEach((h,i)=>h.classList.toggle('active',i===stage&&!h.classList.contains('locked')));
       energies.forEach((e,i)=>e.classList.toggle('active',i===stage));
-      stateEl.textContent=`Tap Relay 0${stage+1} as the pulse reaches the node.`;
+      stateEl.textContent=`Tap Relay 0${stage+1} when the pulse meets the capture ring.`;
     }
     function showIncomingTransmission(){
       finishing=true;cancelAnimationFrame(raf);
