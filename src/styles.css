@@ -7590,3 +7590,124 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   .artifact-head .artifact-sponsor{width:116px;max-width:38vw;}
   .starstream-signature.emotion-signature{--signature-size:92px;}
 }
+
+
+/* === Pass 7.38.44: Care Bears Power Pulse BHP colour signatures === */
+.starstream-signature.emotion-signature{
+  --signature-size:88px;
+  overflow:visible!important;
+  color:rgb(var(--emotion-rgb));
+  background:
+    radial-gradient(circle,rgba(255,255,255,.12) 0 10%,rgba(var(--emotion-rgb),.18) 24%,rgba(5,29,48,.58) 50%,rgba(2,14,27,.05) 70%,transparent 74%)!important;
+  box-shadow:
+    0 0 14px rgba(var(--emotion-rgb),.18),
+    0 0 28px rgba(var(--emotion-rgb),.10),
+    inset 0 0 12px rgba(var(--emotion-rgb),.08)!important;
+  filter:none!important;
+}
+.starstream-signature.emotion-signature::before,
+.starstream-signature.emotion-signature::after{
+  display:block!important;
+  content:""!important;
+}
+.starstream-signature.emotion-signature::before{
+  inset:7px;
+  border:1px solid rgba(var(--emotion-rgb),.88)!important;
+  box-shadow:0 0 8px rgba(var(--emotion-rgb),.22), inset 0 0 10px rgba(255,255,255,.04)!important;
+}
+.starstream-signature.emotion-signature::after{
+  inset:1px;
+  border:1px dashed rgba(var(--emotion-rgb),.34)!important;
+}
+.starstream-signature.emotion-signature .signature-orbit{
+  border-color:rgba(var(--emotion-rgb),.22)!important;
+}
+.starstream-signature.emotion-signature .signature-orbit.orbit-a{
+  border-left-color:rgba(255,255,255,.78)!important;
+  border-right-color:rgba(255,255,255,.78)!important;
+}
+.starstream-signature.emotion-signature .signature-orbit.orbit-b{
+  opacity:.44;
+}
+.starstream-signature.emotion-signature .signature-scan{
+  background:linear-gradient(90deg,transparent,rgba(var(--emotion-rgb),.68),transparent)!important;
+  box-shadow:0 0 6px rgba(var(--emotion-rgb),.20)!important;
+}
+.starstream-signature.emotion-signature .signature-core{
+  inset:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+.starstream-signature.emotion-signature .power-pulse-energy-icon{
+  width:42%!important;
+  height:42%!important;
+  display:block;
+  overflow:visible;
+  filter:drop-shadow(0 0 2px rgba(255,255,255,.52)) drop-shadow(0 0 6px rgba(var(--emotion-rgb),.26));
+}
+.starstream-signature.emotion-signature .power-pulse-energy-icon path{
+  fill:currentColor;
+}
+
+.artifact-ripple.is-emotion{
+  width:24px;
+  height:24px;
+  margin:-12px 0 0 -12px;
+  border-color:rgba(var(--emotion-rgb),.82);
+  box-shadow:0 0 14px rgba(var(--emotion-rgb),.32), inset 0 0 10px rgba(255,255,255,.06);
+  animation:artifactShockwave .52s cubic-bezier(.16,.6,.18,1) forwards;
+}
+.artifact-flare{
+  position:absolute;
+  z-index:5;
+  width:56px;
+  height:56px;
+  margin:-28px 0 0 -28px;
+  border-radius:50%;
+  pointer-events:none;
+}
+.artifact-flare.is-emotion{
+  background:radial-gradient(circle, rgba(255,255,255,.86) 0 16%, rgba(var(--emotion-rgb),.55) 26%, rgba(var(--emotion-rgb),.18) 48%, transparent 72%);
+  animation:artifactFlare .34s ease-out forwards;
+}
+.artifact-streak{
+  position:absolute;
+  z-index:5;
+  width:18px;
+  height:3px;
+  margin:-1.5px 0 0 -9px;
+  border-radius:999px;
+  pointer-events:none;
+  transform:translate(0,0) rotate(var(--rot));
+}
+.artifact-streak.is-emotion{
+  background:linear-gradient(90deg, rgba(255,255,255,.95), rgba(var(--emotion-rgb),.8), transparent 92%);
+  box-shadow:0 0 10px rgba(var(--emotion-rgb),.34);
+  animation:artifactStreak .4s ease-out forwards;
+}
+.artifact-particle.is-emotion{
+  width:5px;
+  height:12px;
+  border-radius:3px;
+  background:linear-gradient(180deg,rgba(255,255,255,.96), rgba(var(--emotion-rgb),.92));
+  box-shadow:0 0 8px rgba(var(--emotion-rgb),.34);
+}
+
+@keyframes artifactShockwave{
+  0%{transform:scale(.35);opacity:.95}
+  70%{opacity:.48}
+  100%{transform:scale(5.4);opacity:0}
+}
+@keyframes artifactFlare{
+  0%{transform:scale(.35);opacity:0}
+  30%{transform:scale(1);opacity:1}
+  100%{transform:scale(1.65);opacity:0}
+}
+@keyframes artifactStreak{
+  0%{transform:translate(0,0) rotate(var(--rot)) scaleX(.4);opacity:1}
+  100%{transform:translate(var(--dx),var(--dy)) rotate(var(--rot)) scaleX(1.15);opacity:0}
+}
+@media(max-width:390px){
+  .starstream-signature.emotion-signature{--signature-size:82px;}
+}

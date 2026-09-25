@@ -2534,14 +2534,14 @@
     if(!field||!layer||!burstLayer||!beam||!progress||!stateEl||!canvas) return;
 
     const ENERGY_SIGNATURES=[
-      {id:'clover',name:'Clover',rgb:'117,201,107',icon:'./assets/power-pulse-icons/clover-green.png?v=7.38.43'},
-      {id:'rainbow',name:'Rainbow',rgb:'244,111,168',icon:'./assets/power-pulse-icons/rainbow-pink.png?v=7.38.43'},
-      {id:'flower',name:'Flower',rgb:'168,121,216',icon:'./assets/power-pulse-icons/flower-purple.png?v=7.38.43'},
-      {id:'star',name:'Star',rgb:'255,212,71',icon:'./assets/power-pulse-icons/star-yellow.png?v=7.38.43'},
-      {id:'moon',name:'Moon',rgb:'90,173,225',icon:'./assets/power-pulse-icons/moon-blue.png?v=7.38.43'},
-      {id:'heart',name:'Heart',rgb:'240,82,97',icon:'./assets/power-pulse-icons/heart-red.png?v=7.38.43'},
-      {id:'sun',name:'Sun',rgb:'255,165,55',icon:'./assets/power-pulse-icons/sun-orange.png?v=7.38.43'},
-      {id:'snowflake',name:'Snowflake',rgb:'238,243,250',icon:'./assets/power-pulse-icons/snowflake-white.png?v=7.38.43'}
+      {id:'green',name:'Green',rgb:'117,201,107'},
+      {id:'pink',name:'Pink',rgb:'244,111,168'},
+      {id:'purple',name:'Purple',rgb:'168,121,216'},
+      {id:'yellow',name:'Yellow',rgb:'255,212,71'},
+      {id:'blue',name:'Blue',rgb:'90,173,225'},
+      {id:'red',name:'Red',rgb:'240,82,97'},
+      {id:'orange',name:'Orange',rgb:'255,165,55'},
+      {id:'white',name:'White',rgb:'238,243,250'}
     ];
 
     let cleared=0;
@@ -2665,7 +2665,15 @@
       el.style.top=pos.y+'%';
       el.style.setProperty('--emotion-rgb',signature.rgb);
       el.setAttribute('aria-label',`Capture ${signature.name} positive energy signature`);
-      el.innerHTML=`<img class="power-pulse-energy-icon" src="${signature.icon}" alt="" draggable="false">`;
+      el.innerHTML=`
+        <span class="signature-orbit orbit-a" aria-hidden="true"></span>
+        <span class="signature-orbit orbit-b" aria-hidden="true"></span>
+        <span class="signature-core power-pulse-energy-core" aria-hidden="true">
+          <svg class="power-pulse-energy-icon" viewBox="0 0 210 126" focusable="false" aria-hidden="true">
+            <path d="M83.34,125.93,98.42,75.57h-32L127.44,0,112.37,50.35h32ZM79,69.55H106.5L97.88,98.34l33.88-42H104.29l8.62-28.78Z"></path>
+          </svg>
+        </span>
+        <span class="signature-scan" aria-hidden="true"></span>`;
       layer.appendChild(el);
       const item={el,signature,locked:false};
       active=item;
@@ -2687,9 +2695,31 @@
       ripple.style.left=x+'px';ripple.style.top=y+'px';
       ripple.style.setProperty('--emotion-rgb',rgb);
       burstLayer.appendChild(ripple);
-      later(()=>ripple.remove(),600);
+      later(()=>ripple.remove(),640);
 
-      const count=cleared>=7?14:10;
+      const flare=document.createElement('span');
+      flare.className='artifact-flare is-emotion';
+      flare.style.left=x+'px';flare.style.top=y+'px';
+      flare.style.setProperty('--emotion-rgb',rgb);
+      burstLayer.appendChild(flare);
+      later(()=>flare.remove(),420);
+
+      const streakCount=cleared>=7?10:8;
+      for(let i=0;i<streakCount;i++){
+        const streak=document.createElement('i');
+        streak.className='artifact-streak is-emotion';
+        const angle=(Math.PI*2/streakCount)*i+(Math.random()*.26-.13);
+        const distance=(cleared>=7?88:72)+(Math.random()*24);
+        streak.style.left=x+'px';streak.style.top=y+'px';
+        streak.style.setProperty('--emotion-rgb',rgb);
+        streak.style.setProperty('--dx',`${Math.cos(angle)*distance}px`);
+        streak.style.setProperty('--dy',`${Math.sin(angle)*distance}px`);
+        streak.style.setProperty('--rot',`${(angle*180/Math.PI).toFixed(1)}deg`);
+        burstLayer.appendChild(streak);
+        later(()=>streak.remove(),420);
+      }
+
+      const count=cleared>=7?16:12;
       for(let i=0;i<count;i++){
         const p=document.createElement('i');
         p.className='artifact-particle is-emotion';
@@ -2728,7 +2758,7 @@
       cleared=Math.min(10,cleared+1);
       renderStability();
       ping(630+cleared*20,.045,.018);haptic(18);
-      stateEl.textContent=cleared===10?'Power stabilised':`${item.signature.name} energy captured · ${10-cleared} remaining`;
+      stateEl.textContent=cleared===10?'Power stabilised':`Positive energy captured · ${10-cleared} remaining`;
       if(cleared>=10){finish();return;}
       later(createSignature,cleared>=7?90:cleared>=3?125:170);
     }
