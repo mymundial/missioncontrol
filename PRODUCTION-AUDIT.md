@@ -10,7 +10,7 @@ PASS  Runtime references — All static runtime asset/font/script/style referenc
 PASS  Dead production assets — Every deployed asset and font is referenced
 PASS  Legacy format references — No runtime references to retired PNG/JPEG/WAV/TTF/OTF files
 PASS  Asset file integrity — WebP, WOFF2 and MP3 signatures match their extensions
-PASS  CSS brace balance — 3024 rule blocks balanced
+PASS  CSS brace balance — 3023 rule blocks balanced
 PASS  Vercel configuration — Static build targets dist with npm run build
 PASS  Admin asset base — /admin uses root-relative base for shared runtime assets
 PASS  Service-worker retirement — Retirement shim only: no fetch interception; clears legacy caches and unregisters
@@ -32,7 +32,7 @@ PASS  Mission completion hierarchy — Activation completion cards use a single 
 PASS  MC01 scan language — Circuit Link terminology stays consistent through detection, connection, routing, transfer and recovery
 PASS  MC01 web assets — Bloom audio 53.9 KB; S mark 4.4 KB
 PASS  MC03 visual-only polish — Pre-redesign relay geometry/timing remain intact; route states are dashed future, solid active and solid completed, with node surfaces masking the centre-aligned links.
-PASS  MC03 correction pass — Dotted capture ring restored as the aiming target, inactive offset pulse circles removed, signal title centred, carrier packet simplified, and audio behaviour retained without changing relay timing.
+PASS  MC03 exact relay restore and carrier — Original relay geometry is restored with the dotted ring as the capture target, offset pulses are suppressed on inactive nodes, Signal Strength remains centred, and the old SVG dash carrier has been replaced by a positioned travelling packet without changing hit timing.
 WARN  Deployment footprint — 8.31 MB exceeds the 7 MB audit target
 WARN  ELF FM stream — Current build still identifies the Radio Mast URL as a test stream; replace before final public launch if a production stream is supplied
 WARN  Web app manifest — No install icon is defined. This does not affect normal browser use, only add-to-home-screen presentation.

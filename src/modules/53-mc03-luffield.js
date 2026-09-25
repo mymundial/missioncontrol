@@ -1,7 +1,6 @@
   function bindCommsRelay(){
     const nodes=[...document.querySelectorAll('[data-relay]')];
     const hops=[...document.querySelectorAll('[data-hop]')];
-    const energies=[...document.querySelectorAll('[data-energy]')];
     const stateEl=document.getElementById('relayState');
     const meterFill=document.getElementById('relayMeterFill');
     const meterText=document.getElementById('relayMeterText');
@@ -19,15 +18,22 @@
     const santa=getSantaCommsAudio();
     try{santa.load();}catch{}
     const routeSvg=document.querySelector('.relay-route');
+    const relayNetwork=document.getElementById('relayNetwork');
+    const carrierPacket=document.getElementById('relayCarrierPacket');
+    let carrierSegments=[];
+    let carrierStart=performance.now();
     const routePoints=[document.querySelector('.relay-origin .relay-radio-icon'),...nodes,document.querySelector('.relay-destination .relay-receiver-icon')];
     function alignRelayRoute(){
-      if(!routeSvg)return;
+      if(!routeSvg||!relayNetwork)return;
       const sr=routeSvg.getBoundingClientRect();
-      if(!sr.width||!sr.height)return;
-      const toPoint=(el)=>{const r=el?.getBoundingClientRect();return r?{x:((r.left+r.width/2-sr.left)/sr.width)*100,y:((r.top+r.height/2-sr.top)/sr.height)*150}:null;};
-      const pts=routePoints.map(toPoint);
-      hops.forEach((line,i)=>{const a=pts[i],b=pts[i+1];if(!a||!b)return;line.setAttribute('x1',a.x.toFixed(3));line.setAttribute('y1',a.y.toFixed(3));line.setAttribute('x2',b.x.toFixed(3));line.setAttribute('y2',b.y.toFixed(3));});
-      energies.forEach((line,i)=>{const a=pts[i],b=pts[i+1];if(!a||!b)return;line.setAttribute('x1',a.x.toFixed(3));line.setAttribute('y1',a.y.toFixed(3));line.setAttribute('x2',b.x.toFixed(3));line.setAttribute('y2',b.y.toFixed(3));});
+      const nr=relayNetwork.getBoundingClientRect();
+      if(!sr.width||!sr.height||!nr.width||!nr.height)return;
+      const toSvgPoint=(el)=>{const r=el?.getBoundingClientRect();return r?{x:((r.left+r.width/2-sr.left)/sr.width)*100,y:((r.top+r.height/2-sr.top)/sr.height)*150}:null;};
+      const toPixelPoint=(el)=>{const r=el?.getBoundingClientRect();return r?{x:r.left+r.width/2-nr.left,y:r.top+r.height/2-nr.top}:null;};
+      const svgPts=routePoints.map(toSvgPoint);
+      const pixelPts=routePoints.map(toPixelPoint);
+      hops.forEach((line,i)=>{const a=svgPts[i],b=svgPts[i+1];if(!a||!b)return;line.setAttribute('x1',a.x.toFixed(3));line.setAttribute('y1',a.y.toFixed(3));line.setAttribute('x2',b.x.toFixed(3));line.setAttribute('y2',b.y.toFixed(3));});
+      carrierSegments=Array.from({length:Math.max(0,pixelPts.length-1)},(_,i)=>({a:pixelPts[i],b:pixelPts[i+1]}));
     }
     const onRelayResize=()=>alignRelayRoute();
     window.addEventListener('resize',onRelayResize);
@@ -42,13 +48,32 @@
         pulse.style.transform=`translate(-50%,-50%) scale(${scale})`;
         pulse.style.opacity=String(Math.max(.08,1-phase*.72));
       }
+      if(carrierPacket){
+        const segment=carrierSegments[stage];
+        const carrierCycle=1280;
+        const travel=1040;
+        const elapsed=(now-carrierStart)%carrierCycle;
+        if(segment?.a&&segment?.b&&elapsed<=travel){
+          const raw=elapsed/travel;
+          const t=raw*raw*(3-2*raw);
+          const x=segment.a.x+(segment.b.x-segment.a.x)*t;
+          const y=segment.a.y+(segment.b.y-segment.a.y)*t;
+          const angle=Math.atan2(segment.b.y-segment.a.y,segment.b.x-segment.a.x)*180/Math.PI;
+          const edgeFade=Math.min(1,raw/.08,(1-raw)/.08);
+          carrierPacket.style.left=`${x}px`;
+          carrierPacket.style.top=`${y}px`;
+          carrierPacket.style.opacity=String(Math.max(0,edgeFade));
+          carrierPacket.style.transform=`translate(-100%,-50%) rotate(${angle}deg)`;
+        }else carrierPacket.style.opacity='0';
+      }
       raf=requestAnimationFrame(draw);
     }
     function arm(nextStage){
       stage=nextStage;phase=0;start=performance.now();locked=false;
       nodes.forEach((n,i)=>n.classList.toggle('active',i===stage));
       hops.forEach((h,i)=>h.classList.toggle('active',i===stage&&!h.classList.contains('locked')));
-      energies.forEach((e,i)=>e.classList.toggle('active',i===stage));
+      carrierStart=performance.now();
+      if(carrierPacket)carrierPacket.style.opacity='0';
       stateEl.textContent=`Tap Relay 0${stage+1} when the pulse meets the capture ring.`;
     }
     function showIncomingTransmission(){
@@ -110,13 +135,13 @@
       locked=true;node.classList.remove('active');node.classList.add('locked');
       hops[stage]?.classList.remove('active');
       hops[stage]?.classList.add('locked');
-      energies[stage]?.classList.remove('active');
+      if(carrierPacket)carrierPacket.style.opacity='0';
       meterFill.style.width=`${25+(stage*25)}%`;
       if(meterText)meterText.textContent=['ACQUIRED','ROUTED','STRONG','LOCKED'][stage];
       stateEl.textContent=stage===3?'Transmission path locked.':'Relay locked · signal strengthened.';
       playRelayFx(stage===3?relayFxFull:relayFxShort,stage===3?.95:.9);haptic([20,25,38]);
       if(stage===3){
-        hops.forEach(h=>h.classList.add('locked'));energies.forEach(e=>e.classList.remove('active'));
+        hops.forEach(h=>h.classList.add('locked'));if(carrierPacket)carrierPacket.style.opacity='0';
         const dest=document.querySelector('.relay-destination');dest?.classList.add('locked');
         // Prime the Santa media element inside the final user gesture, but at
         // zero volume. This preserves reliable mobile playback while the
@@ -133,7 +158,7 @@
     });
     cleanupMission=()=>{cancelAnimationFrame(raf);window.removeEventListener('resize',onRelayResize);stopRelayFx();stopSantaTransmission(true);};
     hops[0]?.classList.add('active');
-    energies[0]?.classList.add('active');
+    carrierStart=performance.now();
     requestAnimationFrame(alignRelayRoute);
     raf=requestAnimationFrame(draw);
   }

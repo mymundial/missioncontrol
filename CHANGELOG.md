@@ -1,3 +1,13 @@
+# Pass 7.38.21 — MC03 exact relay restore + new carrier
+
+- Restored the relay hardware to the exact original working dimensions: 76px outer node, 7px inset dotted capture target, 31px numbered inner circle and 46px timing pulse; retained the original 68px / 6px / 28px / 41px mobile geometry.
+- Re-established the dotted circular ring as the explicit timing/click target. The numbered centre is label content; the outer circle is the node boundary.
+- Removed offset-circle behaviour: only the currently active relay renders the centred timing pulse; inactive and completed relays render no pulse ring.
+- Replaced the old SVG `stroke-dashoffset` connector animation with a separate travelling signal packet that moves centre-to-centre with a short fading tail and is masked beneath the nodes.
+- Kept Signal Strength centred above the full-width bar, preserved one-line node captions and retained all MC03 success/miss audio.
+- Relay hit window, timing cycles, checkpoint logic and mission completion behaviour are unchanged.
+- Updated CSS/JS cache-busting to 7.38.21.
+
 # Pass 7.38.20 — MC03 relay correction pass
 
 - Corrected MC03 so the dotted capture ring is once again the explicit aiming target; instruction copy now says the pulse must meet the capture ring.

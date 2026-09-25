@@ -334,15 +334,21 @@ if(
   /setTimeout\(\(\)=>showIncomingTransmission\(\),2350\)/.test(runtime) &&
   /const hit=phase>=\.53&&phase<=\.80/.test(runtime) &&
   /const scale=\.42\+phase\*1\.28/.test(runtime) &&
-  /Pass 7\.38\.19 — MC03 restore/.test(css) &&
-  /\.relay-node \.relay-target\{display:none!important;\}/.test(css) &&
-  /\.relay-node \.relay-pulse\{[\s\S]*?width:58px;[\s\S]*?height:58px/.test(css) &&
-  /\.relay-meter>span\{[\s\S]*?text-align:center/.test(css) &&
-  /stroke-dasharray:8 92/.test(css) &&
-  /animation:relayCarrierPulse \.92s linear infinite/.test(css)
+  /relay-carrier-packet/.test(runtime) &&
+  !/data-energy=/.test(runtime) &&
+  /carrierPacket\.style\.left/.test(runtime) &&
+  /carrierPacket\.style\.top/.test(runtime) &&
+  /Pass 7\.38\.21 — MC03 exact relay restore \+ new carrier packet/.test(css) &&
+  /\.relay-node,\s*\n\.relay-radio-icon,\s*\n\.relay-receiver-icon\{[\s\S]*?width:76px;[\s\S]*?height:76px;/.test(css) &&
+  /\.relay-node \.relay-target\{[\s\S]*?inset:7px;[\s\S]*?border:1\.5px dashed/.test(css) &&
+  /\.relay-node \.relay-core\{[\s\S]*?width:31px;[\s\S]*?height:31px/.test(css) &&
+  /\.relay-node \.relay-pulse\{[\s\S]*?width:46px;[\s\S]*?height:46px/.test(css) &&
+  /\.relay-node:not\(\.active\) \.relay-pulse\{display:none!important;\}/.test(css) &&
+  /\.relay-meter>span\{[\s\S]*?text-align:center/.test(css)
 ) {
-  ok('MC03 restored relay presentation and audio','Earlier relay layout is restored, captions align on one line, offset capture circles are hidden, signal title is centred, carrier pulse is refined, and success/miss audio is wired without changing hit timing.');
-} else fail('MC03 restored relay presentation and audio','MC03 7.38.19 restore/audio treatment is incomplete or the frozen hit timing changed');
+  ok('MC03 exact relay restore and carrier','Original relay geometry is restored with the dotted ring as the capture target, offset pulses are suppressed on inactive nodes, Signal Strength remains centred, and the old SVG dash carrier has been replaced by a positioned travelling packet without changing hit timing.');
+} else fail('MC03 exact relay restore and carrier','MC03 relay geometry, target treatment, carrier replacement, centred meter, audio, or frozen timing is incomplete');
+
 
 // 12) External runtime dependencies / launch notes.
 const urls=[...runtime.matchAll(/https:\/\/[^'"`\s)]+/g)].map(m=>m[0]);
