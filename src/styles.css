@@ -101,7 +101,8 @@ button:disabled{cursor:not-allowed;opacity:.38;}
   
   border-radius:50%;
   border:1px solid rgba(122,226,255,.22);
-  box-shadow:inset 0 0 14px 5px rgba(2,10,16,.70),inset 0 0 34px rgba(3,13,19,.42),0 0 18px rgba(75,187,226,.05);
+  background:radial-gradient(circle,transparent 0 70%,rgba(0,4,8,.10) 76%,rgba(0,3,7,.42) 84%,rgba(0,2,5,.82) 94%,rgba(0,1,3,.98) 100%);
+  box-shadow:inset 0 0 18px 12px rgba(0,0,0,.98),inset 0 0 54px 20px rgba(0,0,0,.76),inset 0 0 86px 30px rgba(0,0,0,.42),0 0 18px rgba(75,187,226,.05);
   pointer-events:none;
   z-index:2;
 }
@@ -116,9 +117,12 @@ button:disabled{cursor:not-allowed;opacity:.38;}
 .sweep{position:absolute;inset:4%;border-radius:50%;background:conic-gradient(from 0deg,transparent 0 300deg,rgba(70,205,248,.03) 314deg,rgba(70,205,248,.20) 357deg,rgba(70,205,248,.38) 359deg,transparent 360deg);animation:sweep 4.8s linear infinite;mix-blend-mode:screen;}
 @keyframes sweep{to{transform:rotate(360deg)}}
 .user-dot{position:absolute;left:50%;top:50%;width:10px;height:10px;border-radius:50%;background:#c8f5ff;transform:translate(-50%,-50%);box-shadow:0 0 0 7px rgba(99,217,255,.09),0 0 18px #70ddff;}
-.target-dot{position:absolute;width:12px;height:12px;border-radius:50%;background:#fff;box-shadow:0 0 7px #fff,0 0 15px #9ceaff,0 0 30px rgba(116,225,255,.8);transform:translate(-50%,-50%);transition:left .6s ease,top .6s ease,opacity .25s ease;animation:targetPulse 1.4s ease-in-out infinite;}
+.target-dot{position:absolute;width:20px;height:20px;border-radius:50%;background:transparent;box-shadow:none;transform:translate(-50%,-50%);transition:left .6s ease,top .6s ease,opacity .25s ease;overflow:visible;}
+.target-dot::before,.track-radar-target::before{content:"";position:absolute;left:50%;top:50%;width:8px;height:8px;border-radius:50%;background:#effcff;transform:translate(-50%,-50%);box-shadow:0 0 5px #fff,0 0 11px #9ceaff,0 0 22px rgba(105,212,239,.88);animation:checkpointBeaconFlash 1.25s linear infinite;}
+.target-dot::after,.track-radar-target::after{content:"";position:absolute;left:50%;top:50%;width:18px;height:18px;border-radius:50%;border:1px solid rgba(142,234,255,.88);background:rgba(105,212,239,.08);transform:translate(-50%,-50%) scale(.48);box-shadow:0 0 8px rgba(142,234,255,.38),inset 0 0 8px rgba(142,234,255,.14);animation:checkpointBeaconRing 1.25s ease-out infinite;}
 .target-dot.hidden{opacity:0;}
-@keyframes targetPulse{50%{box-shadow:0 0 8px #fff,0 0 24px #9ceaff,0 0 48px rgba(116,225,255,.75);transform:translate(-50%,-50%) scale(1.2)}}
+@keyframes checkpointBeaconFlash{0%,7%,18%,25%{opacity:1;transform:translate(-50%,-50%) scale(1.14)}10%,21%,100%{opacity:.34;transform:translate(-50%,-50%) scale(.76)}}
+@keyframes checkpointBeaconRing{0%,7%{opacity:.9;transform:translate(-50%,-50%) scale(.44)}34%{opacity:0;transform:translate(-50%,-50%) scale(1.34)}35%,100%{opacity:0;transform:translate(-50%,-50%) scale(.44)}}
 .radar-status{text-align:center;margin:0 0 10px;min-height:35px;}
 .radar-status strong{display:block;color:var(--cyan);font-size:11px;letter-spacing:.16em;text-transform:uppercase;}
 .radar-status span{font-size:10px;color:#789fb0;}
@@ -6285,11 +6289,12 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   width:20px;
   height:20px;
   border-radius:50%;
-  background:#69d4ef;
+  background:transparent;
   border:0;
-  box-shadow:0 0 4px rgba(105,212,239,.28);
+  box-shadow:none;
   transform:translate(-50%,-50%);
   transition:left .12s linear,top .12s linear,opacity .2s ease;
+  overflow:visible;
 }
 .track-radar-target.hidden{opacity:0;}
 .radar.circuit-radar .sweep{z-index:5;pointer-events:none;}
@@ -7511,4 +7516,12 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
     max-height:39px!important;
   }
   .mission-diagnostics .mc02-icon{scale:.86;}
+}
+
+
+/* === Pass 7.38.40: radar depth + checkpoint beacon treatment ============ */
+@media(prefers-reduced-motion:reduce){
+  .target-dot::before,.target-dot::after,.track-radar-target::before,.track-radar-target::after{animation:none!important;}
+  .target-dot::before,.track-radar-target::before{opacity:1;transform:translate(-50%,-50%) scale(1);}
+  .target-dot::after,.track-radar-target::after{opacity:.72;transform:translate(-50%,-50%) scale(1);}
 }
