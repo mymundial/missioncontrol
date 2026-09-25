@@ -7209,7 +7209,7 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .mission-diagnostics .sensor-stability.done .stability-arc{stroke:rgba(103,218,252,.22);}
 .mission-diagnostics .sensor-stability.done .stability-centre{stroke:rgba(105,220,255,.18);}
 
-/* === Pass 7.38.32: MC-02 static Silverstone icon suite ====================== */
+/* === Pass 7.38.33: MC-02 static icon fit/alignment cleanup ================= */
 .mission-diagnostics .diagnostics-head p.support-copy{
   white-space:nowrap;
   max-width:none;
@@ -7226,30 +7226,36 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   animation:none!important;
   transition:none!important;
 }
+
+/* One clean, fixed visual zone per tile.
+   This keeps every icon centred between the heading and the TAP TO SCAN label,
+   without changing tile size, copy, or CTA layout. */
 .mission-diagnostics .sensor-viz{
-  position:relative!important;
+  position:absolute!important;
+  left:50%!important;
+  top:58px!important;
   display:block!important;
-  width:112px!important;
-  max-width:112px!important;
-  height:56px!important;
-  max-height:56px!important;
-  margin:2px auto 0!important;
+  width:108px!important;
+  max-width:108px!important;
+  height:52px!important;
+  max-height:52px!important;
+  margin:0!important;
   padding:0!important;
   overflow:visible!important;
-  opacity:.82!important;
+  opacity:.88!important;
   filter:none!important;
-  transform:none!important;
   background:none!important;
+  transform:translateX(-50%)!important;
 }
 .mission-diagnostics .sensor.active .sensor-viz,
 .mission-diagnostics .sensor.done .sensor-viz{
   opacity:.94!important;
   filter:none!important;
-  transform:none!important;
 }
 
-/* One centred icon box across all six diagnostics. Individual width/height
-   compensates for whitespace inside the original Silverstone SVG viewBoxes. */
+/* One centred icon system across all six diagnostics.
+   Individual width/height values compensate for each SVG's internal whitespace
+   so the perceived size remains consistent across the set. */
 .mission-diagnostics .mc02-static-icon{
   position:absolute!important;
   left:50%!important;
@@ -7261,62 +7267,62 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   border-radius:0!important;
   background:#78dfff!important;
   box-shadow:none!important;
-  opacity:.9!important;
+  opacity:.92!important;
   transform:translate(-50%,-50%)!important;
   transform-origin:50% 50%!important;
   -webkit-mask-repeat:no-repeat!important;
   mask-repeat:no-repeat!important;
-  -webkit-mask-position:center!important;
-  mask-position:center!important;
+  -webkit-mask-position:center center!important;
+  mask-position:center center!important;
   -webkit-mask-size:contain!important;
   mask-size:contain!important;
 }
 
 /* 01 AERO — full Pit Perfect garage/fan artwork, no crop. */
 .mission-diagnostics .mc02-static-aero{
-  width:96px!important;
-  height:57px!important;
+  width:80px!important;
+  height:48px!important;
   -webkit-mask-image:url("../assets/mc02-aero-pit-perfect.svg")!important;
   mask-image:url("../assets/mc02-aero-pit-perfect.svg")!important;
 }
 /* 02 STABILITY — Stunt Driving. */
 .mission-diagnostics .mc02-static-stability{
-  width:91px!important;
-  height:55px!important;
+  width:72px!important;
+  height:43px!important;
   -webkit-mask-image:url("../assets/mc02-stunt-driving.svg")!important;
   mask-image:url("../assets/mc02-stunt-driving.svg")!important;
 }
 /* 03 POWER — Propulsion speedometer. */
 .mission-diagnostics .mc02-static-power{
-  width:101px!important;
-  height:60px!important;
+  width:80px!important;
+  height:47px!important;
   -webkit-mask-image:url("../assets/system-propulsion.svg")!important;
   mask-image:url("../assets/system-propulsion.svg")!important;
 }
 /* 04 CONTROL — Guidance steering wheel. */
 .mission-diagnostics .mc02-static-control{
-  width:87px!important;
-  height:52px!important;
+  width:70px!important;
+  height:42px!important;
   -webkit-mask-image:url("../assets/system-guidance.svg")!important;
   mask-image:url("../assets/system-guidance.svg")!important;
 }
 /* 05 TRACTION — Control skidding car. */
 .mission-diagnostics .mc02-static-traction{
-  width:90px!important;
-  height:54px!important;
+  width:74px!important;
+  height:44px!important;
   -webkit-mask-image:url("../assets/system-control.svg")!important;
   mask-image:url("../assets/system-control.svg")!important;
 }
 /* 06 RESPONSE — Response cone diagram. */
 .mission-diagnostics .mc02-static-response{
-  width:83px!important;
-  height:50px!important;
+  width:72px!important;
+  height:43px!important;
   -webkit-mask-image:url("../assets/system-response.svg")!important;
   mask-image:url("../assets/system-response.svg")!important;
 }
 
 /* Keep the icon itself cyan for now. Completion is communicated by the card
-   border/state text while the static asset system is being approved. */
+   border/state text while the icon suite is being approved. */
 .mission-diagnostics .sensor.done .mc02-static-icon{
   background:#78dfff!important;
   opacity:.94!important;
@@ -7325,20 +7331,22 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 
 @media(max-height:740px){
   .mission-diagnostics .sensor-viz{
-    width:104px!important;
-    max-width:104px!important;
-    height:50px!important;
-    max-height:50px!important;
+    top:52px!important;
+    width:100px!important;
+    max-width:100px!important;
+    height:48px!important;
+    max-height:48px!important;
   }
   .mission-diagnostics .mc02-static-icon{transform:translate(-50%,-50%) scale(.92)!important;}
 }
 @media(max-height:660px){
   .mission-diagnostics .sensor-viz{
-    width:96px!important;
-    max-width:96px!important;
-    height:46px!important;
-    max-height:46px!important;
+    top:48px!important;
+    width:94px!important;
+    max-width:94px!important;
+    height:44px!important;
+    max-height:44px!important;
   }
-  .mission-diagnostics .mc02-static-icon{transform:translate(-50%,-50%) scale(.84)!important;}
+  .mission-diagnostics .mc02-static-icon{transform:translate(-50%,-50%) scale(.86)!important;}
 }
 
