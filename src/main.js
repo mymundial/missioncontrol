@@ -804,7 +804,7 @@
       activation:'You have now entered the live circuit zone.',
       diagnostics:'Capture the engineering data needed for Santa-1.',
       radio:'Tune the receiver to 87.7 and establish a link with ELF FM.',
-      commsrelay:'Relay the transmission and restore two-way communications with Santa-1.',
+      commsrelay:'Restore two-way communications with Santa-1.',
       power:'Put the recovered power to the test and reach maximum velocity.',
       spirit:'Balance the charge between both storage banks to stabilise the Spirit Core.',
       placeholder:'This checkpoint is reserved while the final installation game is developed.',
@@ -929,12 +929,17 @@
           <line class="relay-hop-line" data-hop="2" x1="25" y1="75" x2="75" y2="75"></line>
           <line class="relay-hop-line" data-hop="3" x1="75" y1="75" x2="25" y2="125"></line>
           <line class="relay-hop-line" data-hop="4" x1="25" y1="125" x2="75" y2="125"></line>
+          <line class="relay-hop-energy" data-energy="0" x1="25" y1="25" x2="75" y2="25"></line>
+          <line class="relay-hop-energy" data-energy="1" x1="75" y1="25" x2="25" y2="75"></line>
+          <line class="relay-hop-energy" data-energy="2" x1="25" y1="75" x2="75" y2="75"></line>
+          <line class="relay-hop-energy" data-energy="3" x1="75" y1="75" x2="25" y2="125"></line>
+          <line class="relay-hop-energy" data-energy="4" x1="25" y1="125" x2="75" y2="125"></line>
         </svg>
         <div class="relay-cell relay-endpoint relay-origin"><span class="relay-radio-icon"><i></i><i></i><i></i></span><small>TRANSMITTER<br>MISSION CONTROL</small></div>
-        ${[0,1,2,3].map(i=>`<div class="relay-cell relay-capture"><button class="relay-node ${i===0?'active':''}" data-relay="${i}" aria-label="Relay ${i+1}"><span class="relay-target"></span><span class="relay-pulse"></span><span class="relay-core">0${i+1}</span></button><small>RELAY 0${i+1}</small></div>`).join('')}
+        ${[0,1,2,3].map(i=>`<div class="relay-cell relay-capture"><button class="relay-node ${i===0?'active':''}" data-relay="${i}" aria-label="Relay ${i+1}"><span class="relay-target"></span><span class="relay-pulse"></span><span class="relay-core">0${i+1}</span></button><small class="relay-node-spacer" aria-hidden="true">&nbsp;</small></div>`).join('')}
         <div class="relay-cell relay-endpoint relay-destination"><span class="relay-receiver-icon"></span><small>RECEIVER<br>SANTA-1</small></div>
       </div>
-      <div class="relay-meter"><span>Signal Strength</span><div><i id="relayMeterFill"></i></div><strong id="relayMeterText">WEAK</strong></div>
+      <div class="relay-meter"><span>Signal Strength</span><div><i id="relayMeterFill"></i></div></div>
     </div>`;
   }
   function powerBody(){
@@ -2015,6 +2020,7 @@
   function bindCommsRelay(){
     const nodes=[...document.querySelectorAll('[data-relay]')];
     const hops=[...document.querySelectorAll('[data-hop]')];
+    const energies=[...document.querySelectorAll('[data-energy]')];
     const stateEl=document.getElementById('relayState');
     const meterFill=document.getElementById('relayMeterFill');
     const meterText=document.getElementById('relayMeterText');
@@ -2023,6 +2029,20 @@
     let stage=0,phase=0,start=performance.now(),raf=0,locked=false,finishing=false;
     const santa=getSantaCommsAudio();
     try{santa.load();}catch{}
+    const routeSvg=document.querySelector('.relay-route');
+    const routePoints=[document.querySelector('.relay-origin .relay-radio-icon'),...nodes,document.querySelector('.relay-destination .relay-receiver-icon')];
+    function alignRelayRoute(){
+      if(!routeSvg)return;
+      const sr=routeSvg.getBoundingClientRect();
+      if(!sr.width||!sr.height)return;
+      const toPoint=(el)=>{const r=el?.getBoundingClientRect();return r?{x:((r.left+r.width/2-sr.left)/sr.width)*100,y:((r.top+r.height/2-sr.top)/sr.height)*150}:null;};
+      const pts=routePoints.map(toPoint);
+      hops.forEach((line,i)=>{const a=pts[i],b=pts[i+1];if(!a||!b)return;line.setAttribute('x1',a.x.toFixed(3));line.setAttribute('y1',a.y.toFixed(3));line.setAttribute('x2',b.x.toFixed(3));line.setAttribute('y2',b.y.toFixed(3));});
+      energies.forEach((line,i)=>{const a=pts[i],b=pts[i+1];if(!a||!b)return;line.setAttribute('x1',a.x.toFixed(3));line.setAttribute('y1',a.y.toFixed(3));line.setAttribute('x2',b.x.toFixed(3));line.setAttribute('y2',b.y.toFixed(3));});
+    }
+    const onRelayResize=()=>alignRelayRoute();
+    window.addEventListener('resize',onRelayResize);
+    requestAnimationFrame(alignRelayRoute);
     function draw(now){
       if(finishing)return;
       const cycle=cycles[stage]||1300;
@@ -2039,6 +2059,7 @@
       stage=nextStage;phase=0;start=performance.now();locked=false;
       nodes.forEach((n,i)=>n.classList.toggle('active',i===stage));
       hops.forEach((h,i)=>h.classList.toggle('active',i===stage&&!h.classList.contains('locked')));
+      energies.forEach((e,i)=>e.classList.toggle('active',i===stage));
       stateEl.textContent=`Tap Relay 0${stage+1} when the pulse meets the capture ring.`;
     }
     function showIncomingTransmission(){
@@ -2100,12 +2121,13 @@
       locked=true;node.classList.remove('active');node.classList.add('locked');
       hops[stage]?.classList.remove('active');
       hops[stage]?.classList.add('locked');
+      energies[stage]?.classList.remove('active');
       meterFill.style.width=`${25+(stage*25)}%`;
-      meterText.textContent=['ACQUIRED','ROUTED','STRONG','LOCKED'][stage];
+      if(meterText)meterText.textContent=['ACQUIRED','ROUTED','STRONG','LOCKED'][stage];
       stateEl.textContent=stage===3?'Transmission path locked.':'Relay locked · signal strengthened.';
       ping(620+stage*105,.09,.035);haptic([20,25,38]);
       if(stage===3){
-        hops.forEach(h=>h.classList.add('locked'));
+        hops.forEach(h=>h.classList.add('locked'));energies.forEach(e=>e.classList.remove('active'));
         const dest=document.querySelector('.relay-destination');dest?.classList.add('locked');
         // Prime the Santa media element inside the final user gesture, but at
         // zero volume. This preserves reliable mobile playback while the
@@ -2120,8 +2142,10 @@
         setTimeout(()=>showIncomingTransmission(),560);
       }else setTimeout(()=>arm(stage+1),460);
     });
-    cleanupMission=()=>{cancelAnimationFrame(raf);stopSantaTransmission(true);};
+    cleanupMission=()=>{cancelAnimationFrame(raf);window.removeEventListener('resize',onRelayResize);stopSantaTransmission(true);};
     hops[0]?.classList.add('active');
+    energies[0]?.classList.add('active');
+    requestAnimationFrame(alignRelayRoute);
     raf=requestAnimationFrame(draw);
   }
 

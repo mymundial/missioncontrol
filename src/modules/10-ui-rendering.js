@@ -246,7 +246,7 @@
       activation:'You have now entered the live circuit zone.',
       diagnostics:'Capture the engineering data needed for Santa-1.',
       radio:'Tune the receiver to 87.7 and establish a link with ELF FM.',
-      commsrelay:'Relay the transmission and restore two-way communications with Santa-1.',
+      commsrelay:'Restore two-way communications with Santa-1.',
       power:'Put the recovered power to the test and reach maximum velocity.',
       spirit:'Balance the charge between both storage banks to stabilise the Spirit Core.',
       placeholder:'This checkpoint is reserved while the final installation game is developed.',
@@ -371,12 +371,17 @@
           <line class="relay-hop-line" data-hop="2" x1="25" y1="75" x2="75" y2="75"></line>
           <line class="relay-hop-line" data-hop="3" x1="75" y1="75" x2="25" y2="125"></line>
           <line class="relay-hop-line" data-hop="4" x1="25" y1="125" x2="75" y2="125"></line>
+          <line class="relay-hop-energy" data-energy="0" x1="25" y1="25" x2="75" y2="25"></line>
+          <line class="relay-hop-energy" data-energy="1" x1="75" y1="25" x2="25" y2="75"></line>
+          <line class="relay-hop-energy" data-energy="2" x1="25" y1="75" x2="75" y2="75"></line>
+          <line class="relay-hop-energy" data-energy="3" x1="75" y1="75" x2="25" y2="125"></line>
+          <line class="relay-hop-energy" data-energy="4" x1="25" y1="125" x2="75" y2="125"></line>
         </svg>
         <div class="relay-cell relay-endpoint relay-origin"><span class="relay-radio-icon"><i></i><i></i><i></i></span><small>TRANSMITTER<br>MISSION CONTROL</small></div>
-        ${[0,1,2,3].map(i=>`<div class="relay-cell relay-capture"><button class="relay-node ${i===0?'active':''}" data-relay="${i}" aria-label="Relay ${i+1}"><span class="relay-target"></span><span class="relay-pulse"></span><span class="relay-core">0${i+1}</span></button><small>RELAY 0${i+1}</small></div>`).join('')}
+        ${[0,1,2,3].map(i=>`<div class="relay-cell relay-capture"><button class="relay-node ${i===0?'active':''}" data-relay="${i}" aria-label="Relay ${i+1}"><span class="relay-target"></span><span class="relay-pulse"></span><span class="relay-core">0${i+1}</span></button><small class="relay-node-spacer" aria-hidden="true">&nbsp;</small></div>`).join('')}
         <div class="relay-cell relay-endpoint relay-destination"><span class="relay-receiver-icon"></span><small>RECEIVER<br>SANTA-1</small></div>
       </div>
-      <div class="relay-meter"><span>Signal Strength</span><div><i id="relayMeterFill"></i></div><strong id="relayMeterText">WEAK</strong></div>
+      <div class="relay-meter"><span>Signal Strength</span><div><i id="relayMeterFill"></i></div></div>
     </div>`;
   }
   function powerBody(){

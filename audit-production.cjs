@@ -318,6 +318,23 @@ if(
   ok('MC03 visual-only polish','Pre-redesign relay geometry/timing remain intact; route states are dashed future, solid active and solid completed, with node surfaces masking the centre-aligned links.');
 } else fail('MC03 visual-only polish','Relay geometry/timing changed or the approved visual-only polish is incomplete');
 
+if(
+  /commsrelay:'Restore two-way communications with Santa-1\.'/ .test(runtime) &&
+  /class="relay-node-spacer"/.test(runtime) &&
+  !/id="relayMeterText"/.test(runtime) &&
+  /class="relay-meter"><span>Signal Strength<\/span><div><i id="relayMeterFill"><\/i><\/div><\/div>/.test(runtime) &&
+  /class="relay-hop-energy" data-energy="0"/.test(runtime) &&
+  /const energies=\[\.\.\.document\.querySelectorAll\('\[data-energy\]'\)\]/.test(runtime) &&
+  /function alignRelayRoute\(\)/.test(runtime) &&
+  /energies\[0\]\?\.classList\.add\('active'\)/.test(runtime) &&
+  /Pass 7\.38\.18 — MC03 objective copy/.test(css) &&
+  /\.relay-node::before\{[\s\S]*?inset:14px/.test(css) &&
+  /\.relay-hop-energy\.active\{[\s\S]*?animation:relayCarrierPulse/.test(css) &&
+  /\.relay-meter>div\{[\s\S]*?width:100%/.test(css)
+) {
+  ok('MC03 objective and carrier UI','Objective-only subtitle, centred capture hardware, live route carrier pulse, hidden relay captions and full-width Signal Strength bar are present.');
+} else fail('MC03 objective and carrier UI','MC03 7.38.18 objective/capture/carrier/signal-strength treatment is incomplete');
+
 // 12) External runtime dependencies / launch notes.
 const urls=[...runtime.matchAll(/https:\/\/[^'"`\s)]+/g)].map(m=>m[0]);
 const uniqueUrls=[...new Set(urls)];

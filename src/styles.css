@@ -6516,3 +6516,120 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .relay-radio-icon,.relay-receiver-icon{
   background-image:radial-gradient(circle at 50% 50%,rgba(75,205,246,.12),rgba(5,29,43,.98) 66%);
 }
+
+
+/* Pass 7.38.18 — MC03 objective copy + centred capture hardware + live carrier pulse. Mechanics unchanged. */
+.relay-capture{
+  position:relative;
+}
+.relay-node{
+  /* Keep the existing 76px interaction geometry, but make the visible hardware
+     smaller so the fixed capture ring reads as a true concentric target. */
+  background:transparent;
+  border-color:transparent;
+  box-shadow:none;
+  overflow:visible;
+}
+.relay-node::before{
+  inset:14px;
+  border:1px solid rgba(118,222,251,.42);
+  background:radial-gradient(circle at 50% 42%,rgba(93,215,249,.18),rgba(8,40,57,.98) 54%,#03141f 78%);
+  box-shadow:inset 0 0 18px rgba(59,188,229,.11),0 0 10px rgba(72,199,238,.08);
+  z-index:1;
+}
+.relay-node .relay-target{
+  inset:7px;
+  left:7px;
+  top:7px;
+  right:7px;
+  bottom:7px;
+  transform:none;
+  border:1px solid rgba(132,222,249,.48);
+  border-radius:50%;
+  box-shadow:0 0 5px rgba(99,215,251,.08);
+  z-index:2;
+}
+.relay-node .relay-pulse{
+  z-index:3;
+}
+.relay-node .relay-core{
+  z-index:4;
+  width:27px;
+  height:27px;
+  border-color:rgba(151,232,255,.62);
+  background:radial-gradient(circle at 50% 38%,#164c63,#092b3b 72%);
+  box-shadow:0 0 7px rgba(101,220,255,.16),inset 0 1px 0 rgba(235,252,255,.09);
+}
+.relay-node.active{
+  border-color:transparent;
+  background:transparent;
+  box-shadow:none;
+}
+.relay-node.active::before{
+  border-color:rgba(143,234,255,.88);
+  background:radial-gradient(circle at 50% 40%,rgba(112,229,255,.3),rgba(9,48,66,.98) 54%,#031620 78%);
+  box-shadow:0 0 11px rgba(105,222,255,.22),0 0 24px rgba(62,196,237,.11),inset 0 0 19px rgba(70,204,243,.13);
+}
+.relay-node.active .relay-target{
+  border-color:rgba(176,239,255,.9);
+  box-shadow:0 0 6px rgba(137,231,255,.18);
+}
+.relay-node.locked{
+  border-color:transparent;
+  background:transparent;
+  box-shadow:none;
+}
+.relay-node.locked::before{
+  border-color:rgba(95,236,153,.74);
+  background:radial-gradient(circle at 50% 42%,rgba(87,239,145,.18),rgba(8,47,45,.98) 56%,#03151d 80%);
+  box-shadow:0 0 9px rgba(87,239,145,.13),inset 0 0 18px rgba(87,239,145,.09);
+}
+.relay-node.locked .relay-target{
+  border-style:solid;
+  border-color:rgba(99,238,157,.52);
+}
+.relay-capture>.relay-node-spacer{visibility:hidden!important;pointer-events:none!important;}
+
+.relay-hop-energy{
+  stroke:#b9f3ff;
+  stroke-width:1.65;
+  stroke-linecap:round;
+  stroke-dasharray:3.5 96.5;
+  vector-effect:non-scaling-stroke;
+  opacity:0;
+  pointer-events:none;
+  filter:drop-shadow(0 0 2.5px rgba(130,232,255,.75));
+}
+.relay-hop-energy.active{
+  opacity:1;
+  animation:relayCarrierPulse 1.05s linear infinite;
+}
+@keyframes relayCarrierPulse{
+  from{stroke-dashoffset:0;}
+  to{stroke-dashoffset:-100;}
+}
+
+.relay-meter{
+  display:block;
+  margin:10px 0 14px;
+  color:#8db8c6;
+  font-size:7px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  font-weight:900;
+}
+.relay-meter>span{
+  display:block;
+  margin:0 0 7px;
+}
+.relay-meter>div{
+  width:100%;
+  height:8px;
+}
+.relay-meter strong{display:none!important;}
+
+@media(max-width:380px){
+  .relay-node::before{inset:12px;}
+  .relay-node .relay-target{inset:6px;left:6px;top:6px;right:6px;bottom:6px;}
+  .relay-node .relay-core{width:25px;height:25px;}
+}

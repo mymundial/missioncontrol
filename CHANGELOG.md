@@ -1,3 +1,12 @@
+# Pass 7.38.18 — MC03 objective + relay clarity
+
+- Updated MC03 subtitle to “Restore two-way communications with Santa-1.”
+- Kept relay hit areas, positions, pulse scale and timing windows unchanged.
+- Restyled relay hardware inside the existing hit area so the fixed capture ring is visibly centred around each node.
+- Added a travelling carrier pulse to the currently active route segment.
+- Removed Relay 01–04 captions beneath relay nodes while retaining transmitter/receiver endpoint labels.
+- Moved SIGNAL STRENGTH above a full-width progress bar and removed WEAK/ACQUIRED/ROUTED/STRONG/LOCKED text from the visible UI.
+
 # Pass 7.38.15 — MC03 Comms Relay interaction redesign
 
 - reversed the over-compressed 7.38.14 relay layout and restored generous vertical breathing room so endpoint and relay labels are no longer squeezed.
