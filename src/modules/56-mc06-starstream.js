@@ -29,6 +29,16 @@
     let signatureBag=[];
     let liveItems=new Set();
     let capturedSignatures=[];
+    const captureAudioPool=Array.from({length:3},()=>{
+      const audio=new Audio('./assets/power-pulse-energy-pop.wav');
+      audio.preload='auto';
+      audio.volume=.42;
+      return audio;
+    });
+    const boostAudio=new Audio('./assets/power-pulse-energy-boost.wav');
+    boostAudio.preload='auto';
+    boostAudio.volume=.78;
+    let captureAudioIndex=0;
 
     function clearTimers(){timers.forEach(clearTimeout);timers=[];}
     function later(fn,delay){const t=setTimeout(()=>{timers=timers.filter(id=>id!==t);fn();},delay);timers.push(t);return t;}
@@ -67,6 +77,23 @@
       field.dataset.intensity=String(level);
       panel?.classList.toggle('is-live',cleared>0);
       panel?.classList.toggle('is-intense',cleared>=7);
+    }
+
+    function playCaptureAudio(isFinal=false){
+      if(!state.audio) return;
+      try{
+        if(isFinal){
+          boostAudio.currentTime=0;
+          const play=boostAudio.play();
+          if(play&&typeof play.catch==='function') play.catch(()=>{});
+          return;
+        }
+        const audio=captureAudioPool[captureAudioIndex%captureAudioPool.length];
+        captureAudioIndex++;
+        audio.currentTime=0;
+        const play=audio.play();
+        if(play&&typeof play.catch==='function') play.catch(()=>{});
+      }catch{}
     }
 
     function renderStability(){
@@ -228,7 +255,8 @@
       cleared=Math.min(10,cleared+1);
       capturedSignatures[cleared-1]=item.signature.rgb;
       renderStability();
-      ping(630+cleared*20,.045,.018);haptic(18);
+      playCaptureAudio(cleared===10);
+      haptic(18);
       if(stateEl) stateEl.textContent=cleared===10?'Power stabilised':'';
       if(cleared>=10){finish();return;}
       later(()=>{
@@ -303,7 +331,7 @@
       field.classList.add('stabilised');
       beam.classList.add('active');
       progress.textContent='10 / 10';
-      ping(920,.12,.045);haptic([28,24,58]);
+      haptic([28,24,58]);
       setTimeout(()=>showCompletion('Power Stabilised','The positive energy signatures have been captured and stabilised, ready to be stored in the Spirit Core.'),900);
     }
 
@@ -320,5 +348,7 @@
       resizeObserver?.disconnect?.();
       for(const item of liveItems){item.el.remove();}
       liveItems.clear();
+      captureAudioPool.forEach(audio=>{try{audio.pause();audio.currentTime=0;}catch{}});
+      try{boostAudio.pause();boostAudio.currentTime=0;}catch{}
     };
   }
