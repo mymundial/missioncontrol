@@ -959,13 +959,16 @@
       {side:'right',index:2,key:'white',rgb:'247,250,255',color:'#f7faff',name:'White energy'},
       {side:'right',index:3,key:'orange',rgb:'255,176,64',color:'#ffb040',name:'Orange energy'}
     ];
+    const progressDefs=['blue','orange','red','white','green','pink','purple','yellow'].map(key=>tankDefs.find(t=>t.key===key));
     const bhpIcon=`<svg class="spirit-bhp-icon" viewBox="66 0 66 126" focusable="false" aria-hidden="true"><path d="M83.34,125.93,98.42,75.57h-32L127.44,0,112.37,50.35h32ZM79,69.55H106.5L97.88,98.34l33.88-42H104.29l8.62-28.78Z"></path></svg>`;
     const tankCells=side=>tankDefs.filter(tank=>tank.side===side).map(tank=>`<div class="spirit-tank-cell spirit-tank-${tank.key}" data-spirit-tank="${tank.side}-${tank.index}" data-spirit-color="${tank.key}" style="--tank-rgb:${tank.rgb};--tank-color:${tank.color};" aria-label="${tank.name} storage tank">
-      <span class="spirit-tank-energy"></span><span class="spirit-tank-shimmer"></span>
+      <span class="spirit-tank-energy"></span>
+      <span class="spirit-tank-shimmer"></span>
+      <span class="spirit-tank-grid" aria-hidden="true"></span>
       <span class="spirit-tank-plate" aria-hidden="true"><span class="spirit-tank-plate-face">${bhpIcon}</span></span>
       <span class="spirit-tank-vent" aria-hidden="true"><i></i><i></i><i></i></span>
     </div>`).join('');
-    const stageDots=tankDefs.map((tank,i)=>`<i data-spirit-stage-dot="${i}" data-spirit-progress-color="${tank.key}" style="--tank-rgb:${tank.rgb};--tank-color:${tank.color};"></i>`).join('');
+    const stageDots=progressDefs.map((tank,i)=>`<i data-spirit-stage-dot="${i}" data-spirit-progress-color="${tank.key}" style="--tank-rgb:${tank.rgb};--tank-color:${tank.color};"></i>`).join('');
     return `<div class="mission-instrument panel spirit-panel" id="spiritRig" data-stage="0">
       <div class="spirit-score"><span>CORE CHARGE</span><strong><b id="spiritStageNumber">00</b> / 08</strong></div>
       <div class="spirit-stage-progress" id="spiritStageProgress" aria-hidden="true">${stageDots}</div>
@@ -2440,7 +2443,8 @@
       bank?.classList.toggle('is-next',!completed&&expected===side);
       const tanks=tankMap[side];
       tanks.forEach((tank,displayIndex)=>{
-        const local=Math.max(0,Math.min(1,(sideTotal-(displayIndex*tapsPerTank))/tapsPerTank));
+        const fillOrder=(tanks.length-1)-displayIndex;
+        const local=Math.max(0,Math.min(1,(sideTotal-(fillOrder*tapsPerTank))/tapsPerTank));
         tank.style.setProperty('--tank-fill',String(local));
         tank.classList.toggle('is-active',local>0&&local<1);
         tank.classList.toggle('is-full',local>=1);
@@ -2451,7 +2455,7 @@
       const bank=bankMap[side];
       const meter=meterMap[side];
       const tanks=tankMap[side];
-      const active=tanks.find(tank=>tank.classList.contains('is-active')) || [...tanks].filter(tank=>tank.classList.contains('is-full')).pop();
+      const active=tanks.find(tank=>tank.classList.contains('is-active')) || [...tanks].reverse().find(tank=>tank.classList.contains('is-full'));
       [bank,meter,button,active].forEach(el=>{
         if(!el) return;
         el.classList.remove('is-pumping');
@@ -2464,7 +2468,8 @@
 
     function tankJustFilled(side){
       if(sideHits[side]===0||sideHits[side]%tapsPerTank!==0) return;
-      const displayIndex=(sideHits[side]/tapsPerTank)-1;
+      const completedFromBottom=(sideHits[side]/tapsPerTank)-1;
+      const displayIndex=(tanksPerBank-1)-completedFromBottom;
       const tank=tankMap[side][displayIndex];
       if(!tank) return;
       tank.classList.remove('is-locking');
@@ -2473,6 +2478,13 @@
       setTimeout(()=>tank.classList.remove('is-locking'),900);
       playTankPayoff();
       haptic([24,18,42]);
+    }
+
+    function nextExpected(fromSide){
+      const other=fromSide==='A'?'B':'A';
+      if(sideHits[other] < tapsPerBank) return other;
+      if(sideHits[fromSide] < tapsPerBank) return fromSide;
+      return other;
     }
 
     function updateExpected(){
@@ -2520,7 +2532,7 @@
       updateBank(side);
       pulseCharge(side,button);
       tankJustFilled(side);
-      if(expected==='A' && sideHits.A>=tapsPerBank) expected='B';
+      expected=nextExpected(side);
       updateStage();
       updateExpected();
       haptic(10);
