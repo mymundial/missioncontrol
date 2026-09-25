@@ -354,6 +354,19 @@ if(
   ok('MC03 restrained relay-success pass','Capture ring diameter is reduced, the redundant concentric ring is removed, relay nodes remain cyan, completed links turn green, and travelling packets persist on completed links without changing hit timing.');
 } else fail('MC03 restrained relay-success pass','MC03 capture geometry, success colour state, persistent packets, centred meter, audio, or frozen timing is incomplete');
 
+if(
+  /let capturePhase=\.66/.test(runtime) &&
+  /capturePhase=Math\.max\(\.1,Math\.min\(\.95,\(\(targetDiameter\/pulseDiameter\)-\.42\)\/1\.28\)\)/.test(runtime) &&
+  /const raw=Math\.max\(0,Math\.min\(1,phase\/capturePhase\)\)/.test(runtime) &&
+  /phase>capturePhase/.test(runtime) &&
+  !/carrierStart/.test(runtime) &&
+  /Pass 7\.38\.25 — MC03 synchronized timing cue \+ restored miss bump/.test(css) &&
+  /\.relay-node\.miss\{[\s\S]*?transform:scale\(\.94\)/.test(css) &&
+  /\.relay-node\.miss \.relay-target\{[\s\S]*?255,105,105/.test(css)
+) {
+  ok('MC03 synchronized timing cue','Travelling packets and the active node pulse share one measured cycle phase; packet arrival coincides with the dotted capture ring and the miss bump/red target feedback is restored.');
+} else fail('MC03 synchronized timing cue','Shared packet/node timing or combined miss feedback is incomplete');
+
 
 // 12) External runtime dependencies / launch notes.
 const urls=[...runtime.matchAll(/https:\/\/[^'"`\s)]+/g)].map(m=>m[0]);

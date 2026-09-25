@@ -6953,3 +6953,13 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   border-color:rgba(255,105,105,.98);
   box-shadow:0 0 7px rgba(255,105,105,.38),0 0 15px rgba(255,105,105,.14);
 }
+
+
+/* Pass 7.38.25 — MC03 synchronized timing cue + restored miss bump */
+.relay-node.miss{
+  transform:scale(.94);
+}
+.relay-node.miss .relay-target{
+  border-color:rgba(255,105,105,.98);
+  box-shadow:0 0 7px rgba(255,105,105,.38),0 0 15px rgba(255,105,105,.14);
+}

@@ -1,3 +1,12 @@
+# Pass 7.38.25 — MC03 synchronized timing cue + miss bump
+
+- Restored the subtle relay-node scale-down bump on a mistimed click while retaining the red dotted capture-ring miss indicator.
+- Synchronized the active travelling energy packet and expanding node pulse to one shared mission cycle.
+- The travelling packet now reaches the exact centre of the destination relay at the same phase that the expanding node pulse reaches the dotted capture ring.
+- Completed links continue carrying their travelling packets, synchronized to the same timing beat, while their connection lines remain green.
+- A miss restarts the shared cycle so the route packet and node pulse remain synchronized on every retry.
+- Relay geometry, hit window, audio, target-ring colour, Signal Strength layout and completion outcome copy are unchanged.
+
 # Pass 7.38.24 — MC03 miss feedback
 
 - On a mistimed relay click, only the dotted capture ring now flashes red for the existing ~280 ms miss state, then returns to green.

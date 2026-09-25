@@ -21,7 +21,7 @@
     const relayNetwork=document.getElementById('relayNetwork');
     const carrierPackets=[...document.querySelectorAll('[data-carrier]')];
     let carrierSegments=[];
-    let carrierStart=performance.now();
+    let capturePhase=.66;
     const routePoints=[document.querySelector('.relay-origin .relay-radio-icon'),...nodes,document.querySelector('.relay-destination .relay-receiver-icon')];
     function alignRelayRoute(){
       if(!routeSvg||!relayNetwork)return;
@@ -34,6 +34,15 @@
       const pixelPts=routePoints.map(toPixelPoint);
       hops.forEach((line,i)=>{const a=svgPts[i],b=svgPts[i+1];if(!a||!b)return;line.setAttribute('x1',a.x.toFixed(3));line.setAttribute('y1',a.y.toFixed(3));line.setAttribute('x2',b.x.toFixed(3));line.setAttribute('y2',b.y.toFixed(3));});
       carrierSegments=Array.from({length:Math.max(0,pixelPts.length-1)},(_,i)=>({a:pixelPts[i],b:pixelPts[i+1]}));
+      const activePulse=nodes[stage]?.querySelector('.relay-pulse');
+      const activeTarget=nodes[stage]?.querySelector('.relay-target');
+      if(activePulse&&activeTarget){
+        const pulseDiameter=activePulse.offsetWidth;
+        const targetDiameter=activeTarget.offsetWidth;
+        if(pulseDiameter&&targetDiameter){
+          capturePhase=Math.max(.1,Math.min(.95,((targetDiameter/pulseDiameter)-.42)/1.28));
+        }
+      }
     }
     const onRelayResize=()=>alignRelayRoute();
     window.addEventListener('resize',onRelayResize);
@@ -49,20 +58,16 @@
         pulse.style.opacity=String(Math.max(.08,1-phase*.72));
       }
       if(carrierPackets.length){
-        const carrierCycle=1280;
-        const travel=1040;
         carrierPackets.forEach((packet,i)=>{
           const isLive=i===stage||hops[i]?.classList.contains('locked');
           const segment=carrierSegments[i];
-          if(!isLive||!segment?.a||!segment?.b){packet.style.opacity='0';return;}
-          const elapsed=(now-carrierStart+(i*170))%carrierCycle;
-          if(elapsed>travel){packet.style.opacity='0';return;}
-          const raw=elapsed/travel;
+          if(!isLive||!segment?.a||!segment?.b||phase>capturePhase){packet.style.opacity='0';return;}
+          const raw=Math.max(0,Math.min(1,phase/capturePhase));
           const eased=raw*raw*(3-2*raw);
           const x=segment.a.x+(segment.b.x-segment.a.x)*eased;
           const y=segment.a.y+(segment.b.y-segment.a.y)*eased;
           const angle=Math.atan2(segment.b.y-segment.a.y,segment.b.x-segment.a.x)*180/Math.PI;
-          const edgeFade=Math.min(1,raw/.08,(1-raw)/.08);
+          const edgeFade=Math.min(1,raw/.07,(1-raw)/.045);
           packet.style.left=`${x}px`;
           packet.style.top=`${y}px`;
           packet.style.opacity=String(Math.max(0,edgeFade));
@@ -75,8 +80,8 @@
       stage=nextStage;phase=0;start=performance.now();locked=false;
       nodes.forEach((n,i)=>n.classList.toggle('active',i===stage));
       hops.forEach((h,i)=>h.classList.toggle('active',i===stage&&!h.classList.contains('locked')));
-      carrierStart=performance.now();
       carrierPackets.forEach(packet=>packet.style.opacity='0');
+      requestAnimationFrame(alignRelayRoute);
       stateEl.textContent=`Tap Relay 0${stage+1} when the pulse meets the capture ring.`;
     }
     function showIncomingTransmission(){
@@ -161,7 +166,6 @@
     });
     cleanupMission=()=>{cancelAnimationFrame(raf);window.removeEventListener('resize',onRelayResize);stopRelayFx();stopSantaTransmission(true);};
     hops[0]?.classList.add('active');
-    carrierStart=performance.now();
     requestAnimationFrame(alignRelayRoute);
     raf=requestAnimationFrame(draw);
   }
