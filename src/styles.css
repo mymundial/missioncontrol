@@ -7209,26 +7209,19 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .mission-diagnostics .sensor-stability.done .stability-arc{stroke:rgba(103,218,252,.22);}
 .mission-diagnostics .sensor-stability.done .stability-centre{stroke:rgba(105,220,255,.18);}
 
-/* === Pass 7.38.34: MC-02 icon placement / visual-bounds fit ============== */
+/* === Pass 7.38.35: MC-02 split-SVG diagnostic animation suite ============ */
 .mission-diagnostics .diagnostics-head p.support-copy{
   white-space:nowrap;
   max-width:none;
 }
 
-/* No legacy motion or pseudo artwork inside the six MC-02 scan visuals. */
+/* Keep the verified 7.38.34 icon band: heading ends around 25px and the
+   TAP TO SCAN state begins around 81px inside each 98px tile. */
 .mission-diagnostics .sensor-viz::before,
 .mission-diagnostics .sensor-viz::after{
   content:none!important;
   display:none!important;
 }
-.mission-diagnostics .sensor-viz,
-.mission-diagnostics .sensor-viz *{
-  animation:none!important;
-  transition:none!important;
-}
-
-/* The 98px scan tile has a heading ending at ~25px and state text beginning
-   at ~81px. Keep the icon in the bounded band between them. */
 .mission-diagnostics .sensor-viz{
   position:absolute!important;
   left:50%!important;
@@ -7241,21 +7234,20 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   margin:0!important;
   padding:0!important;
   overflow:visible!important;
-  opacity:.88!important;
+  opacity:.9!important;
   filter:none!important;
   background:none!important;
   transform:translateX(-50%)!important;
 }
 .mission-diagnostics .sensor.active .sensor-viz,
 .mission-diagnostics .sensor.done .sensor-viz{
-  opacity:.94!important;
+  opacity:1!important;
   filter:none!important;
 }
 
-/* All six source SVGs use a 210x126 viewBox but their actual artwork occupies
-   different internal bounds. These sizes normalise the VISIBLE artwork to
-   approximately the same 34px height rather than normalising the viewBox. */
-.mission-diagnostics .mc02-static-icon{
+/* Every icon is built from real source-SVG component masks. No extra drawn
+   telemetry is added: only original icon parts are animated/highlighted. */
+.mission-diagnostics .mc02-icon{
   position:absolute!important;
   left:50%!important;
   top:50%!important;
@@ -7263,12 +7255,25 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   margin:0!important;
   padding:0!important;
   border:0!important;
-  border-radius:0!important;
-  background:#78dfff!important;
+  background:none!important;
   box-shadow:none!important;
-  opacity:.92!important;
-  transform:translate(-50%,-50%)!important;
-  transform-origin:50% 50%!important;
+  transform:translate(-50%,-50%);
+  transform-origin:50% 50%;
+}
+.mission-diagnostics .mc02-layer{
+  position:absolute!important;
+  inset:0!important;
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:#78dfff;
+  box-shadow:none!important;
+  opacity:.92;
+  transform-origin:50% 50%;
   -webkit-mask-repeat:no-repeat!important;
   mask-repeat:no-repeat!important;
   -webkit-mask-position:center center!important;
@@ -7277,47 +7282,158 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   mask-size:contain!important;
 }
 
-.mission-diagnostics .mc02-static-aero{
-  width:65px!important;
-  height:39px!important;
-  -webkit-mask-image:url("../assets/mc02-aero-pit-perfect.svg")!important;
-  mask-image:url("../assets/mc02-aero-pit-perfect.svg")!important;
+/* Normalised visible sizes retained from the verified placement pass. */
+.mission-diagnostics .mc02-icon-aero{width:65px;height:39px;}
+.mission-diagnostics .mc02-icon-stability{width:77px;height:46px;}
+.mission-diagnostics .mc02-icon-power{width:68px;height:41px;}
+.mission-diagnostics .mc02-icon-control{width:59px;height:35px;}
+.mission-diagnostics .mc02-icon-traction{width:61px;height:37px;}
+.mission-diagnostics .mc02-icon-response{width:57px;height:34px;}
+
+/* 01 AERO — garage stays cyan; the original fan assembly spins clockwise and
+   illuminates green for the scan period. */
+.mission-diagnostics .mc02-aero-frame{
+  -webkit-mask-image:url("../assets/mc02-aero-frame.svg")!important;
+  mask-image:url("../assets/mc02-aero-frame.svg")!important;
 }
-.mission-diagnostics .mc02-static-stability{
-  width:62px!important;
-  height:37px!important;
-  -webkit-mask-image:url("../assets/mc02-stunt-driving.svg")!important;
-  mask-image:url("../assets/mc02-stunt-driving.svg")!important;
+.mission-diagnostics .mc02-aero-fan{
+  -webkit-mask-image:url("../assets/mc02-aero-fan-part.svg")!important;
+  mask-image:url("../assets/mc02-aero-fan-part.svg")!important;
+  transform-origin:50% 64.1%;
 }
-.mission-diagnostics .mc02-static-power{
-  width:68px!important;
-  height:41px!important;
-  -webkit-mask-image:url("../assets/system-propulsion.svg")!important;
-  mask-image:url("../assets/system-propulsion.svg")!important;
+.mission-diagnostics .sensor-aero.active .mc02-aero-fan{
+  background:var(--green);
+  animation:mc02AeroFanSpin .92s linear infinite!important;
 }
-.mission-diagnostics .mc02-static-control{
-  width:59px!important;
-  height:35px!important;
+@keyframes mc02AeroFanSpin{to{transform:rotate(360deg)}}
+
+/* 02 STABILITY — attached front-on car gently rolls left/right. Only the two
+   original headlight shapes illuminate green during the scan. */
+.mission-diagnostics .mc02-stability-car{
+  -webkit-mask-image:url("../assets/mc02-stability-front-car.svg")!important;
+  mask-image:url("../assets/mc02-stability-front-car.svg")!important;
+}
+.mission-diagnostics .mc02-stability-headlights{
+  -webkit-mask-image:url("../assets/mc02-stability-headlights.svg")!important;
+  mask-image:url("../assets/mc02-stability-headlights.svg")!important;
+}
+.mission-diagnostics .sensor-stability.active .mc02-icon-stability{
+  animation:mc02StabilityTilt 1.9s ease-in-out 1!important;
+}
+.mission-diagnostics .sensor-stability.active .mc02-stability-headlights{
+  background:var(--green);
+}
+@keyframes mc02StabilityTilt{
+  0%,100%{transform:translate(-50%,-50%) rotate(0deg)}
+  27%{transform:translate(-50%,-50%) rotate(-5deg)}
+  68%{transform:translate(-50%,-50%) rotate(5deg)}
+}
+
+/* 03 POWER — gauge stays cyan; the original needle starts at the zero end of
+   the dial and sweeps to its source-art final position from the true hub. */
+.mission-diagnostics .mc02-power-gauge{
+  -webkit-mask-image:url("../assets/mc02-power-gauge.svg")!important;
+  mask-image:url("../assets/mc02-power-gauge.svg")!important;
+}
+.mission-diagnostics .mc02-power-needle{
+  -webkit-mask-image:url("../assets/mc02-power-needle.svg")!important;
+  mask-image:url("../assets/mc02-power-needle.svg")!important;
+  transform-origin:50% 69%;
+}
+.mission-diagnostics .sensor-power.active .mc02-power-needle{
+  background:var(--green);
+  animation:mc02PowerNeedleSweep 1.7s cubic-bezier(.22,.78,.25,1) 1 forwards!important;
+}
+@keyframes mc02PowerNeedleSweep{
+  from{transform:rotate(124deg)}
+  to{transform:rotate(0deg)}
+}
+
+/* 04 CONTROL — source wheel already represents the left position. Rotate to
+   the equivalent right position and return to the original. Only its original
+   outer ring illuminates green during the scan. */
+.mission-diagnostics .mc02-control-wheel{
   -webkit-mask-image:url("../assets/system-guidance.svg")!important;
   mask-image:url("../assets/system-guidance.svg")!important;
 }
-.mission-diagnostics .mc02-static-traction{
-  width:61px!important;
-  height:37px!important;
-  -webkit-mask-image:url("../assets/system-control.svg")!important;
-  mask-image:url("../assets/system-control.svg")!important;
+.mission-diagnostics .mc02-control-ring{
+  -webkit-mask-image:url("../assets/mc02-control-outer-ring.svg")!important;
+  mask-image:url("../assets/mc02-control-outer-ring.svg")!important;
 }
-.mission-diagnostics .mc02-static-response{
-  width:57px!important;
-  height:34px!important;
-  -webkit-mask-image:url("../assets/system-response.svg")!important;
-  mask-image:url("../assets/system-response.svg")!important;
+.mission-diagnostics .sensor-control.active .mc02-icon-control{
+  animation:mc02ControlRightAndBack 2s ease-in-out 1!important;
+}
+.mission-diagnostics .sensor-control.active .mc02-control-ring{
+  background:var(--green);
+}
+@keyframes mc02ControlRightAndBack{
+  0%,100%{transform:translate(-50%,-50%) rotate(0deg)}
+  50%{transform:translate(-50%,-50%) rotate(54deg)}
 }
 
-.mission-diagnostics .sensor.done .mc02-static-icon{
-  background:#78dfff!important;
-  opacity:.94!important;
-  filter:none!important;
+/* 05 TRACTION — only the original skid-mark paths change colour and carry the
+   travelling highlight. No additional line geometry is introduced. */
+.mission-diagnostics .mc02-traction-car{
+  -webkit-mask-image:url("../assets/mc02-traction-car.svg")!important;
+  mask-image:url("../assets/mc02-traction-car.svg")!important;
+}
+.mission-diagnostics .mc02-traction-skids,
+.mission-diagnostics .mc02-traction-shine{
+  -webkit-mask-image:url("../assets/mc02-traction-skids.svg")!important;
+  mask-image:url("../assets/mc02-traction-skids.svg")!important;
+}
+.mission-diagnostics .mc02-traction-shine{opacity:0;}
+.mission-diagnostics .sensor-traction.active .mc02-traction-skids{
+  background:var(--green);
+}
+.mission-diagnostics .sensor-traction.active .mc02-traction-shine{
+  opacity:1;
+  background:linear-gradient(90deg,transparent 0%,rgba(190,255,224,.1) 28%,#f2fff8 48%,#b8ffe0 56%,transparent 78%);
+  background-size:260% 100%;
+  animation:mc02TrackShine .72s linear infinite!important;
+}
+
+/* 06 RESPONSE — cones stay cyan; only the original arrow/path carries the
+   same green-white travelling scan highlight. */
+.mission-diagnostics .mc02-response-cones{
+  -webkit-mask-image:url("../assets/mc02-response-cones.svg")!important;
+  mask-image:url("../assets/mc02-response-cones.svg")!important;
+}
+.mission-diagnostics .mc02-response-arrow,
+.mission-diagnostics .mc02-response-shine{
+  -webkit-mask-image:url("../assets/mc02-response-arrow.svg")!important;
+  mask-image:url("../assets/mc02-response-arrow.svg")!important;
+}
+.mission-diagnostics .mc02-response-shine{opacity:0;}
+.mission-diagnostics .sensor-response.active .mc02-response-arrow{
+  background:var(--green);
+}
+.mission-diagnostics .sensor-response.active .mc02-response-shine{
+  opacity:1;
+  background:linear-gradient(90deg,transparent 0%,rgba(190,255,224,.1) 28%,#f2fff8 48%,#b8ffe0 56%,transparent 78%);
+  background-size:260% 100%;
+  animation:mc02TrackShine .72s linear infinite!important;
+}
+@keyframes mc02TrackShine{
+  from{background-position:130% 50%}
+  to{background-position:-130% 50%}
+}
+
+/* Captured state is deliberately simple and consistent: the complete original
+   icon becomes green and all scan-only shine layers stop. */
+.mission-diagnostics .sensor.done .mc02-layer:not(.mc02-traction-shine):not(.mc02-response-shine){
+  background:var(--green)!important;
+  opacity:.96!important;
+  animation:none!important;
+  transform:none!important;
+}
+.mission-diagnostics .sensor.done .mc02-traction-shine,
+.mission-diagnostics .sensor.done .mc02-response-shine{
+  display:none!important;
+  animation:none!important;
+}
+.mission-diagnostics .sensor.done .mc02-icon{
+  animation:none!important;
 }
 
 @media(max-height:740px){
@@ -7328,7 +7444,7 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
     height:42px!important;
     max-height:42px!important;
   }
-  .mission-diagnostics .mc02-static-icon{transform:translate(-50%,-50%) scale(.92)!important;}
+  .mission-diagnostics .mc02-icon{scale:.92;}
 }
 @media(max-height:660px){
   .mission-diagnostics .sensor-viz{
@@ -7338,6 +7454,5 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
     height:39px!important;
     max-height:39px!important;
   }
-  .mission-diagnostics .mc02-static-icon{transform:translate(-50%,-50%) scale(.86)!important;}
+  .mission-diagnostics .mc02-icon{scale:.86;}
 }
-

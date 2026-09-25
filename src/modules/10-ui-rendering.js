@@ -311,12 +311,12 @@
 
   function diagnosticsBody(){
     const sensors=[
-      {name:'Aero',key:'aero',viz:`<div class="mc02-static-icon mc02-static-aero"></div>`},
-      {name:'Stability',key:'stability',viz:`<div class="mc02-static-icon mc02-static-stability"></div>`},
-      {name:'Power',key:'power',viz:`<div class="mc02-static-icon mc02-static-power"></div>`},
-      {name:'Control',key:'control',viz:`<div class="mc02-static-icon mc02-static-control"></div>`},
-      {name:'Traction',key:'traction',viz:`<div class="mc02-static-icon mc02-static-traction"></div>`},
-      {name:'Response',key:'response',viz:`<div class="mc02-static-icon mc02-static-response"></div>`}
+      {name:'Aero',key:'aero',viz:`<div class="mc02-icon mc02-icon-aero"><span class="mc02-layer mc02-aero-frame"></span><span class="mc02-layer mc02-aero-fan"></span></div>`},
+      {name:'Stability',key:'stability',viz:`<div class="mc02-icon mc02-icon-stability"><span class="mc02-layer mc02-stability-car"></span><span class="mc02-layer mc02-stability-headlights"></span></div>`},
+      {name:'Power',key:'power',viz:`<div class="mc02-icon mc02-icon-power"><span class="mc02-layer mc02-power-gauge"></span><span class="mc02-layer mc02-power-needle"></span></div>`},
+      {name:'Control',key:'control',viz:`<div class="mc02-icon mc02-icon-control"><span class="mc02-layer mc02-control-wheel"></span><span class="mc02-layer mc02-control-ring"></span></div>`},
+      {name:'Traction',key:'traction',viz:`<div class="mc02-icon mc02-icon-traction"><span class="mc02-layer mc02-traction-car"></span><span class="mc02-layer mc02-traction-skids"></span><span class="mc02-layer mc02-traction-shine"></span></div>`},
+      {name:'Response',key:'response',viz:`<div class="mc02-icon mc02-icon-response"><span class="mc02-layer mc02-response-cones"></span><span class="mc02-layer mc02-response-arrow"></span><span class="mc02-layer mc02-response-shine"></span></div>`}
     ];
     return `<div class="mission-instrument panel diagnostics-panel"><div class="sensor-grid diagnostics-grid">${sensors.map((x,i)=>`<button class="sensor sensor-${x.key}" data-sensor="${i}" data-diagnostic="${x.key}"><div class="sensor-head"><span class="num">0${i+1}</span><span class="name">${x.name}</span></div><div class="sensor-viz viz-${x.key}" aria-hidden="true">${x.viz}</div><div class="state">Tap to scan</div></button>`).join('')}</div></div><button class="btn primary wide" id="diagComplete" disabled>Complete Scan</button>`;
   }
