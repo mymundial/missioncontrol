@@ -2544,6 +2544,56 @@
       {id:'white',name:'White',rgb:'247,250,255'}
     ];
 
+
+    const ENERGY_HIT_SOURCES=[
+      './assets/power-pulse-energy-hit-1.mp3',
+      './assets/power-pulse-energy-hit-2.mp3',
+      './assets/power-pulse-energy-hit-3.mp3'
+    ];
+    const energyHitPools=ENERGY_HIT_SOURCES.map(src=>Array.from({length:3},()=>{
+      const audio=new Audio(src);
+      audio.preload='auto';
+      audio.volume=.78;
+      return audio;
+    }));
+    const energyBoostAudio=new Audio('./assets/power-pulse-energy-boost.wav');
+    energyBoostAudio.preload='auto';
+    energyBoostAudio.volume=.92;
+
+    function stopEnergyHits(){
+      energyHitPools.flat().forEach(audio=>{
+        try{audio.pause();audio.currentTime=0;}catch{}
+      });
+    }
+    function playEnergyHit(){
+      if(!state.audio) return;
+      const roll=Math.random()*100;
+      const sourceIndex=roll<45?0:roll<80?2:1;
+      const pool=energyHitPools[sourceIndex];
+      const audio=pool.find(a=>a.paused||a.ended)||pool[0];
+      try{
+        if(!audio.paused){audio.pause();audio.currentTime=0;}
+        audio.volume=.78;
+        const play=audio.play();
+        if(play&&typeof play.catch==='function')play.catch(()=>{});
+      }catch{}
+    }
+    function playEnergyBoost(){
+      if(!state.audio) return;
+      stopEnergyHits();
+      try{
+        energyBoostAudio.pause();
+        energyBoostAudio.currentTime=0;
+        energyBoostAudio.volume=.92;
+        const play=energyBoostAudio.play();
+        if(play&&typeof play.catch==='function')play.catch(()=>{});
+      }catch{}
+    }
+    function stopPowerPulseAudio(){
+      stopEnergyHits();
+      try{energyBoostAudio.pause();energyBoostAudio.currentTime=0;}catch{}
+    }
+
     let cleared=0;
     let finished=false;
     let raf=0;
@@ -2744,9 +2794,15 @@
       removeSignature(item,'popped',210);
       cleared=Math.min(10,cleared+1);
       renderStability();
-      ping(630+cleared*20,.045,.018);haptic(18);
-      if(stateEl) stateEl.textContent=cleared===10?'Power stabilised':'';
-      if(cleared>=10){finish();return;}
+      if(cleared>=10){
+        playEnergyBoost();
+        if(stateEl) stateEl.textContent='Power stabilised';
+        finish();
+        return;
+      }
+      playEnergyHit();
+      haptic(18);
+      if(stateEl) stateEl.textContent='';
       later(()=>{
         const cfg=stageConfig();
         if(!finished&&liveItems.size<cfg.maxConcurrent) createSignature();
@@ -2819,7 +2875,7 @@
       field.classList.add('stabilised');
       beam.classList.add('active');
       progress.textContent='10 / 10';
-      ping(920,.12,.045);haptic([28,24,58]);
+      haptic([28,24,58]);
       setTimeout(()=>showCompletion('Power Stabilised','The positive energy signatures have been captured and stabilised, ready to be stored in the Spirit Core.'),900);
     }
 
@@ -2836,6 +2892,7 @@
       resizeObserver?.disconnect?.();
       for(const item of liveItems){item.el.remove();}
       liveItems.clear();
+      stopPowerPulseAudio();
     };
   }
 
