@@ -1,3 +1,12 @@
+# Pass 7.38.28 — MC02 diagnostic refinement
+
+- Changed all MC02 diagnostic card prompts from `READY TO SCAN` to `TAP TO SCAN`.
+- Refined the Stability asset so the larger central console/lock readout is clearer and resolves green while the chassis hardware remains cyan.
+- Corrected Power so the graph trace captures green, the telemetry bars remain cyan, and the baseline sits below the bars to remove the rogue line.
+- Refined Traction so the asset reads larger and only the tyres turn green on successful capture; the contact markers remain cyan.
+- Refined Response so the central target resolves green while the horizontal through-line stays cyan.
+- Updated the MC02 mission completion outcome copy to: `The engineering data was successfully captured and is now ready to support Santa-1’s recovery systems.`
+
 # Pass 7.38.27 — MC02 diagnostic animation + completion polish
 
 - Redesigned the weaker Aero, Stability and Traction diagnostic graphics without changing the six-card layout or scan mechanics.

@@ -321,20 +321,21 @@
         <circle class="aero-probe aero-probe-1" cx="18" cy="12" r="1.8"/><circle class="aero-probe aero-probe-2" cx="15" cy="27" r="1.8"/><circle class="aero-probe aero-probe-3" cx="15" cy="43" r="1.8"/><circle class="aero-probe aero-probe-4" cx="18" cy="58" r="1.8"/>
       </svg>`},
       {name:'Stability',key:'stability',viz:`<svg viewBox="0 0 120 70" role="presentation">
-        <path class="stability-reference" d="M10 51H110"/>
-        <path class="stability-arc" d="M30 29 A34 34 0 0 1 90 29"/>
+        <path class="stability-reference" d="M8 51H112"/>
+        <path class="stability-arc" d="M24 26 A36 36 0 0 1 96 26"/>
+        <circle class="stability-console" cx="60" cy="35" r="10"/>
         <g class="stability-chassis">
-          <path class="stability-shell" d="M38 31 L45 24 H75 L82 31 L86 42 H34 Z"/>
-          <rect class="stability-wheel stability-wheel-left" x="35" y="42" width="13" height="7" rx="3.5"/>
-          <rect class="stability-wheel stability-wheel-right" x="72" y="42" width="13" height="7" rx="3.5"/>
-          <path class="stability-damper stability-damper-left" d="M42 33V43"/><path class="stability-damper stability-damper-right" d="M78 33V43"/>
+          <path class="stability-shell" d="M34 31 L43 22 H77 L86 31 L90 43 H30 Z"/>
+          <rect class="stability-wheel stability-wheel-left" x="31" y="43" width="15" height="8" rx="4"/>
+          <rect class="stability-wheel stability-wheel-right" x="74" y="43" width="15" height="8" rx="4"/>
+          <path class="stability-damper stability-damper-left" d="M39 31V44"/><path class="stability-damper stability-damper-right" d="M81 31V44"/>
         </g>
-        <path class="stability-centre" d="M60 16V54"/>
-        <path class="stability-lock" d="M51 35H69"/>
-        <circle class="stability-point" cx="60" cy="35" r="3.2"/>
+        <path class="stability-centre" d="M60 14V56"/>
+        <path class="stability-lock" d="M47 35H73"/>
+        <circle class="stability-point" cx="60" cy="35" r="3.6"/>
       </svg>`},
       {name:'Power',key:'power',viz:`<svg viewBox="0 0 120 70" role="presentation">
-        <path class="power-baseline" d="M5 53H115"/>
+        <path class="power-baseline" d="M5 62H115"/>
         <path class="power-trace-shadow" d="M6 50 L20 48 L30 43 L38 47 L47 30 L55 41 L65 18 L74 34 L83 12 L92 27 L102 9 L115 16"/>
         <path class="power-trace" d="M6 50 L20 48 L30 43 L38 47 L47 30 L55 41 L65 18 L74 34 L83 12 L92 27 L102 9 L115 16"/>
         <circle class="power-hotspot" cx="102" cy="9" r="4"/>
@@ -350,11 +351,11 @@
         <path class="control-angle" d="M38 18 A29 29 0 0 1 83 19"/><circle class="control-marker" cx="60" cy="7" r="2.5"/>
       </svg>`},
       {name:'Traction',key:'traction',viz:`<svg viewBox="0 0 120 70" role="presentation">
-        <path class="traction-road" d="M14 58H106"/>
-        <path class="traction-car" d="M50 14 H70 L77 23 V47 L70 56 H50 L43 47 V23 Z"/>
-        <path class="traction-spine" d="M60 18V52"/>
-        <rect class="traction-wheel w1" x="34" y="19" width="9" height="14" rx="3"/><rect class="traction-wheel w2" x="77" y="19" width="9" height="14" rx="3"/><rect class="traction-wheel w3" x="34" y="38" width="9" height="14" rx="3"/><rect class="traction-wheel w4" x="77" y="38" width="9" height="14" rx="3"/>
-        <rect class="traction-contact c1" x="30" y="23" width="7" height="7" rx="3.5"/><rect class="traction-contact c2" x="83" y="23" width="7" height="7" rx="3.5"/><rect class="traction-contact c3" x="30" y="42" width="7" height="7" rx="3.5"/><rect class="traction-contact c4" x="83" y="42" width="7" height="7" rx="3.5"/>
+        <path class="traction-road" d="M12 57H108"/>
+        <path class="traction-car" d="M48 12 H72 L81 22 V48 L72 58 H48 L39 48 V22 Z"/>
+        <path class="traction-spine" d="M60 17V53"/>
+        <rect class="traction-wheel w1" x="30" y="18" width="12" height="16" rx="4"/><rect class="traction-wheel w2" x="78" y="18" width="12" height="16" rx="4"/><rect class="traction-wheel w3" x="30" y="37" width="12" height="16" rx="4"/><rect class="traction-wheel w4" x="78" y="37" width="12" height="16" rx="4"/>
+        <rect class="traction-contact c1" x="26" y="22" width="5" height="9" rx="2.5"/><rect class="traction-contact c2" x="89" y="22" width="5" height="9" rx="2.5"/><rect class="traction-contact c3" x="26" y="41" width="5" height="9" rx="2.5"/><rect class="traction-contact c4" x="89" y="41" width="5" height="9" rx="2.5"/>
       </svg>`},
       {name:'Response',key:'response',viz:`<svg viewBox="0 0 120 70" role="presentation">
         <circle class="response-ring response-ring-a" cx="60" cy="35" r="23"/><circle class="response-ring response-ring-b" cx="60" cy="35" r="15"/>
@@ -363,7 +364,7 @@
         <circle class="response-pulse response-pulse-in" cx="10" cy="35" r="3"/><circle class="response-pulse response-pulse-out" cx="110" cy="35" r="3"/>
       </svg>`}
     ];
-    return `<div class="mission-instrument panel diagnostics-panel"><div class="sensor-grid diagnostics-grid">${sensors.map((x,i)=>`<button class="sensor sensor-${x.key}" data-sensor="${i}" data-diagnostic="${x.key}"><div class="sensor-head"><span class="num">0${i+1}</span><span class="name">${x.name}</span></div><div class="sensor-viz viz-${x.key}" aria-hidden="true">${x.viz}</div><div class="state">Ready to scan</div></button>`).join('')}</div></div><button class="btn primary wide" id="diagComplete" disabled>Complete Scan</button>`;
+    return `<div class="mission-instrument panel diagnostics-panel"><div class="sensor-grid diagnostics-grid">${sensors.map((x,i)=>`<button class="sensor sensor-${x.key}" data-sensor="${i}" data-diagnostic="${x.key}"><div class="sensor-head"><span class="num">0${i+1}</span><span class="name">${x.name}</span></div><div class="sensor-viz viz-${x.key}" aria-hidden="true">${x.viz}</div><div class="state">Tap to scan</div></button>`).join('')}</div></div><button class="btn primary wide" id="diagComplete" disabled>Complete Scan</button>`;
   }
 
   function radioBody(){return `<div class="mission-instrument panel"><div class="wave" id="radioWave">${'<i></i>'.repeat(28)}</div><div class="frequency"><span id="freqVal">86.4</span> <small>FM</small></div><div class="range-wrap"><input id="freqRange" class="range" type="range" min="86" max="89" value="86.4" step="0.1"><div class="freq-marks"><span>86.0</span><span>87.0</span><span>88.0</span><span>89.0</span></div></div><div class="signal-state" id="signalState">Searching for signal</div><button class="btn primary wide" id="lockSignal" disabled>Lock Signal</button></div>`}

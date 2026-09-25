@@ -7101,3 +7101,37 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .mission-diagnostics .sensor-response.done .response-core{fill:var(--green);opacity:.88;filter:drop-shadow(0 0 3px rgba(87,239,145,.22));}
 .mission-diagnostics .sensor-response.done .response-pulse-in{fill:#defaff;opacity:.28;}
 .mission-diagnostics .sensor-response.done .response-pulse-out{fill:var(--green);opacity:.82;}
+
+
+/* === Pass 7-38-28: MC-02 diagnostic consistency refinement ================= */
+.mission-diagnostics .viz-stability .stability-console{
+  fill:none;
+  stroke:rgba(103,218,252,.30);
+  stroke-width:1.1;
+}
+.mission-diagnostics .sensor-stability.active .stability-console{animation:mc02StabilityConsole .78s ease-in-out infinite alternate;}
+.mission-diagnostics .sensor-stability.done .stability-console{stroke:var(--green);opacity:.9;filter:drop-shadow(0 0 3px rgba(87,239,145,.22));}
+@keyframes mc02StabilityConsole{from{opacity:.4;transform:scale(.94)}to{opacity:.95;transform:scale(1.04)}}
+
+/* Keep POWER bars cyan and move the baseline below the bars for clarity. */
+.mission-diagnostics .viz-power .power-baseline{stroke:rgba(95,209,244,.18);}
+.mission-diagnostics .sensor-power.done .power-output-bars rect{fill:rgba(79,207,246,.42);}
+.mission-diagnostics .sensor-power.done .power-hotspot{fill:var(--green);opacity:.92;}
+
+/* Make TRACTION read larger and only turn the tyres green on capture. */
+.mission-diagnostics .viz-traction .traction-road{stroke:rgba(98,211,247,.18);stroke-width:1;stroke-dasharray:6 5;}
+.mission-diagnostics .viz-traction .traction-wheel{stroke-width:1.1;}
+.mission-diagnostics .viz-traction .traction-contact{fill:rgba(65,207,248,.08);stroke:rgba(103,224,255,.38);}
+.mission-diagnostics .sensor-traction.active .traction-contact{animation:mc02ContactLoad .52s ease-in-out infinite alternate;}
+.mission-diagnostics .sensor-traction.done .traction-contact{fill:rgba(65,207,248,.08);stroke:rgba(103,224,255,.38);transform:none;filter:none;}
+.mission-diagnostics .sensor-traction.done .traction-wheel{stroke:var(--green);fill:rgba(87,239,145,.12);filter:drop-shadow(0 0 3px rgba(87,239,145,.18));}
+.mission-diagnostics .sensor-traction.done .traction-car{stroke:rgba(119,217,248,.52);}
+.mission-diagnostics .sensor-traction.done .traction-spine{stroke:rgba(110,219,250,.26);}
+
+/* RESPONSE: the target turns green while the through-line remains cyan. */
+.mission-diagnostics .sensor-response.done .response-ring{stroke:var(--green);opacity:.82;filter:drop-shadow(0 0 3px rgba(87,239,145,.18));}
+.mission-diagnostics .sensor-response.done .response-core{fill:var(--green);opacity:.88;filter:drop-shadow(0 0 3px rgba(87,239,145,.22));}
+.mission-diagnostics .sensor-response.done .response-in,
+.mission-diagnostics .sensor-response.done .response-out{stroke:#72defd;opacity:.54;stroke-dasharray:none;}
+.mission-diagnostics .sensor-response.done .response-pulse-in,
+.mission-diagnostics .sensor-response.done .response-pulse-out{fill:#defaff;opacity:.28;}
