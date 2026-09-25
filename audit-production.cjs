@@ -371,22 +371,22 @@ if(
 if(
   /Complete Scan<\/button>/.test(runtime) &&
   /Tap to scan/.test(runtime) &&
-  /Capture racing performance data to calibrate Santa-1’s recovery systems\./.test(runtime) &&
+  /Capture the engineering data needed for Santa-1\./.test(runtime) &&
   /The racing performance data has been captured and is ready to support Santa-1’s recovery systems\./.test(runtime) &&
-  /mc02-icon-aero/.test(runtime) && /mc02-icon-stability/.test(runtime) && /mc02-icon-power/.test(runtime) &&
-  /mc02-icon-control/.test(runtime) && /mc02-icon-traction/.test(runtime) && /mc02-icon-response/.test(runtime) &&
-  /Pass 7\-38\-30: MC-02 Silverstone icon diagnostic suite/.test(css) &&
-  /sensor-aero\.done \.mc02-airflow[\s\S]*?var\(--green\)/.test(css) &&
-  /sensor-stability\.done \.mc02-icon-stability\{background:var\(--green\)/.test(css) &&
-  /sensor-power\.done \.mc02-power-trace\{stroke:var\(--green\)/.test(css) &&
-  /sensor-control\.done \.mc02-icon-control\{background:#78dfff/.test(css) &&
-  /sensor-control\.done \.mc02-control-arc\{border-top-color:var\(--green\)/.test(css) &&
-  /sensor-traction\.done \.mc02-tyre\{background:var\(--green\)/.test(css) &&
-  /sensor-response\.done \.mc02-response-line\{background:#72defd/.test(css) &&
-  /sensor-response\.done \.mc02-response-target\{border-color:var\(--green\)/.test(css)
+  /mc02-static-aero/.test(runtime) && /mc02-static-stability/.test(runtime) && /mc02-static-power/.test(runtime) &&
+  /mc02-static-control/.test(runtime) && /mc02-static-traction/.test(runtime) && /mc02-static-response/.test(runtime) &&
+  !/mc02-airflow/.test(runtime) && !/mc02-power-trace/.test(runtime) && !/mc02-control-marker/.test(runtime) &&
+  !/mc02-tyre/.test(runtime) && !/mc02-response-packet/.test(runtime) &&
+  /Pass 7\.38\.32: MC-02 static Silverstone icon suite/.test(css) &&
+  /\.sensor-viz,\n\.mission-diagnostics \.sensor-viz \*\{[\s\S]*?animation:none!important/.test(css) &&
+  /mc02-static-aero[\s\S]*?mc02-aero-pit-perfect\.svg/.test(css) &&
+  /mc02-static-power[\s\S]*?system-propulsion\.svg/.test(css) &&
+  /mc02-static-control[\s\S]*?system-guidance\.svg/.test(css) &&
+  /mc02-static-traction[\s\S]*?system-control\.svg/.test(css) &&
+  /mc02-static-response[\s\S]*?system-response\.svg/.test(css)
 ) {
-  ok('MC02 icon diagnostic suite','Velocity Vault now uses one icon-led Silverstone visual system with selective captured-data green states, tap-to-scan instruction, and updated objective/completion copy.');
-} else fail('MC02 icon diagnostic suite','MC02 icon assets, selective-green capture states, instruction copy, or completion copy is incomplete');
+  ok('MC02 static icon suite','Velocity Vault uses the restored one-line objective and six static, centred Silverstone diagnostic icons with the approved icon mapping.');
+} else fail('MC02 static icon suite','MC02 objective copy, static icon mapping, or animation removal is incomplete');
 
 // 12) External runtime dependencies / launch notes.
 const urls=[...runtime.matchAll(/https:\/\/[^'"`\s)]+/g)].map(m=>m[0]);

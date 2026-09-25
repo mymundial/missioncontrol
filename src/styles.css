@@ -7209,314 +7209,136 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .mission-diagnostics .sensor-stability.done .stability-arc{stroke:rgba(103,218,252,.22);}
 .mission-diagnostics .sensor-stability.done .stability-centre{stroke:rgba(105,220,255,.18);}
 
-/* === Pass 7-38-30: MC-02 Silverstone icon diagnostic suite ================= */
-.mission-diagnostics .sensor-viz{
-  width:96px!important;
-  max-width:96px!important;
-  height:46px!important;
-  max-height:46px!important;
-  overflow:visible!important;
+/* === Pass 7.38.32: MC-02 static Silverstone icon suite ====================== */
+.mission-diagnostics .diagnostics-head p.support-copy{
+  white-space:nowrap;
+  max-width:none;
 }
-.mission-diagnostics .mc02-stage{
+
+/* Remove legacy diagnostic pseudo artwork and motion. */
+.mission-diagnostics .sensor-viz::before,
+.mission-diagnostics .sensor-viz::after{
+  content:none!important;
+  display:none!important;
+}
+.mission-diagnostics .sensor-viz,
+.mission-diagnostics .sensor-viz *{
+  animation:none!important;
+  transition:none!important;
+}
+.mission-diagnostics .sensor-viz{
   position:relative!important;
   display:block!important;
-  width:96px!important;
-  height:46px!important;
-  max-width:none!important;
-  max-height:none!important;
-  margin:0!important;
-  padding:0!important;
-  border:0!important;
-  border-radius:0!important;
-  background:none!important;
-  box-shadow:none!important;
-  overflow:visible!important;
-}
-.mission-diagnostics .mc02-icon{
-  position:absolute;
-  display:block;
-  background:#78dfff;
-  border:0!important;
-  border-radius:0!important;
-  box-shadow:none!important;
-  opacity:.86;
-  transform-origin:50% 50%;
-  transition:background .22s ease,opacity .22s ease,filter .22s ease,transform .22s ease;
-  -webkit-mask-repeat:no-repeat;
-  mask-repeat:no-repeat;
-  -webkit-mask-position:center;
-  mask-position:center;
-  -webkit-mask-size:contain;
-  mask-size:contain;
-}
-
-/* 01 AERO — isolated Pit Perfect fan with airflow as the captured measurement. */
-.mission-diagnostics .mc02-icon-aero{
-  left:31px;top:4px;width:34px!important;height:38px!important;
-  -webkit-mask-image:url("../assets/mc02-aero-fan.svg");
-  mask-image:url("../assets/mc02-aero-fan.svg");
-}
-.mission-diagnostics .mc02-airflow{
-  position:absolute!important;
-  left:4px!important;
-  width:88px!important;
-  height:1px!important;
-  border:0!important;
-  border-radius:999px!important;
-  background:linear-gradient(90deg,transparent 0 5%,rgba(115,221,255,.40) 14%,#73ddff 48%,rgba(115,221,255,.42) 84%,transparent 96%)!important;
-  box-shadow:none!important;
-  opacity:.5;
-  transform-origin:center;
-}
-.mission-diagnostics .mc02-airflow.f1{top:9px!important;transform:rotate(-4deg)}
-.mission-diagnostics .mc02-airflow.f2{top:19px!important;transform:rotate(-1.5deg)}
-.mission-diagnostics .mc02-airflow.f3{top:29px!important;transform:rotate(1.5deg)}
-.mission-diagnostics .mc02-airflow.f4{top:39px!important;transform:rotate(4deg)}
-.mission-diagnostics .sensor-aero.active .mc02-icon-aero{animation:mc02FanSpin .82s linear infinite;opacity:1;}
-.mission-diagnostics .sensor-aero.active .mc02-airflow{animation:mc02Airflow 650ms linear infinite;opacity:.9;}
-.mission-diagnostics .sensor-aero.active .mc02-airflow.f2{animation-duration:510ms}.mission-diagnostics .sensor-aero.active .mc02-airflow.f3{animation-duration:570ms}.mission-diagnostics .sensor-aero.active .mc02-airflow.f4{animation-duration:720ms}
-.mission-diagnostics .sensor-aero.done .mc02-airflow{background:linear-gradient(90deg,transparent 0 5%,rgba(87,239,145,.5) 14%,var(--green) 48%,rgba(87,239,145,.52) 84%,transparent 96%)!important;opacity:.9;filter:drop-shadow(0 0 2px rgba(87,239,145,.24));}
-.mission-diagnostics .sensor-aero.done .mc02-icon-aero{background:#78dfff;opacity:.88;}
-@keyframes mc02FanSpin{to{transform:rotate(360deg)}}
-@keyframes mc02Airflow{0%{clip-path:inset(0 100% 0 0)}65%,100%{clip-path:inset(0 0 0 0)}}
-
-/* 02 STABILITY — Silverstone Stunt Driving silhouette settles level, then captures green. */
-.mission-diagnostics .mc02-icon-stability{
-  left:11px;top:2px;width:74px!important;height:43px!important;
-  -webkit-mask-image:url("../assets/mc02-stunt-driving.svg");
-  mask-image:url("../assets/mc02-stunt-driving.svg");
-}
-.mission-diagnostics .mc02-stability-datum{
-  position:absolute!important;left:4px!important;right:4px!important;top:35px!important;width:auto!important;height:1px!important;
-  border:0!important;border-radius:0!important;background:rgba(112,221,255,.22)!important;box-shadow:none!important;
-}
-.mission-diagnostics .sensor-stability.active .mc02-icon-stability{animation:mc02StuntSettle 1.25s ease-in-out infinite;opacity:1;}
-.mission-diagnostics .sensor-stability.done .mc02-icon-stability{background:var(--green);opacity:.92;filter:drop-shadow(0 0 3px rgba(87,239,145,.2));transform:rotate(0deg)!important;}
-.mission-diagnostics .sensor-stability.done .mc02-stability-datum{background:rgba(112,221,255,.22)!important;}
-@keyframes mc02StuntSettle{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
-
-/* 03 POWER — No Speed Limits icon remains cyan; output trace is the captured data. */
-.mission-diagnostics .mc02-icon-power{
-  left:24px;top:1px;width:48px!important;height:44px!important;opacity:.76;
-  -webkit-mask-image:url("../assets/mc02-no-speed-limits.svg");
-  mask-image:url("../assets/mc02-no-speed-limits.svg");
-}
-.mission-diagnostics .mc02-power-data{
-  position:absolute!important;inset:0!important;width:96px!important;height:46px!important;max-width:none!important;max-height:none!important;overflow:visible!important;pointer-events:none;
-}
-.mission-diagnostics .mc02-power-trace-shadow{fill:none;stroke:rgba(58,187,226,.18);stroke-width:5;opacity:.42;}
-.mission-diagnostics .mc02-power-trace{fill:none;stroke:#79e4ff;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:150;stroke-dashoffset:150;}
-.mission-diagnostics .mc02-power-hotspot{fill:#e2fbff;opacity:.22;}
-.mission-diagnostics .sensor-power.active .mc02-power-trace{animation:mc02IconPowerTrace .76s ease-out infinite;filter:drop-shadow(0 0 3px rgba(105,227,255,.72));}
-.mission-diagnostics .sensor-power.active .mc02-power-hotspot{animation:mc02IconHotspot .44s ease-in-out infinite alternate;}
-.mission-diagnostics .sensor-power.done .mc02-icon-power{background:#78dfff;opacity:.76;}
-.mission-diagnostics .sensor-power.done .mc02-power-trace{stroke:var(--green);stroke-dasharray:none;stroke-dashoffset:0;filter:drop-shadow(0 0 2px rgba(87,239,145,.2));}
-.mission-diagnostics .sensor-power.done .mc02-power-hotspot{fill:var(--green);opacity:.88;}
-@keyframes mc02IconPowerTrace{0%{stroke-dashoffset:150;opacity:.2}70%,100%{stroke-dashoffset:0;opacity:1}}
-@keyframes mc02IconHotspot{to{r:5;opacity:1}}
-
-/* 04 CONTROL — existing Silverstone steering-wheel icon with captured response arc. */
-.mission-diagnostics .mc02-icon-control{
-  left:26px;top:2px;width:44px!important;height:42px!important;
-  -webkit-mask-image:url("../assets/system-control.svg");
-  mask-image:url("../assets/system-control.svg");
-}
-.mission-diagnostics .mc02-control-arc{
-  position:absolute!important;left:18px!important;top:1px!important;width:60px!important;height:28px!important;
-  border:1px solid transparent!important;border-top-color:rgba(116,223,255,.36)!important;border-radius:50% 50% 0 0!important;background:none!important;box-shadow:none!important;
-}
-.mission-diagnostics .mc02-control-marker{
-  position:absolute!important;left:46px!important;top:1px!important;width:4px!important;height:4px!important;border:0!important;border-radius:50%!important;background:#d9f9ff!important;box-shadow:0 0 4px rgba(125,229,255,.3)!important;
-}
-.mission-diagnostics .sensor-control.active .mc02-icon-control{animation:mc02WheelRock 1.1s ease-in-out infinite;opacity:1;}
-.mission-diagnostics .sensor-control.active .mc02-control-marker{animation:mc02ControlSweep 1.1s ease-in-out infinite;}
-.mission-diagnostics .sensor-control.done .mc02-icon-control{background:#78dfff;}
-.mission-diagnostics .sensor-control.done .mc02-control-arc{border-top-color:var(--green)!important;filter:drop-shadow(0 0 2px rgba(87,239,145,.18));}
-.mission-diagnostics .sensor-control.done .mc02-control-marker{background:var(--green)!important;box-shadow:0 0 4px rgba(87,239,145,.24)!important;}
-@keyframes mc02WheelRock{0%,100%{transform:rotate(-13deg)}50%{transform:rotate(13deg)}}
-@keyframes mc02ControlSweep{0%,100%{transform:translateX(-18px)}50%{transform:translateX(18px)}}
-
-/* 05 TRACTION — Caterham-style drift silhouette with tyre-only capture. */
-.mission-diagnostics .mc02-icon-traction{
-  left:14px;top:1px;width:68px!important;height:44px!important;
-  -webkit-mask-image:url("../assets/mc02-traction-drift.svg");
-  mask-image:url("../assets/mc02-traction-drift.svg");
-}
-.mission-diagnostics .viz-traction .mc02-tyre{
-  position:absolute!important;width:7px!important;height:11px!important;border:0!important;border-radius:3px!important;background:#76ddfb!important;box-shadow:none!important;opacity:.78;transform-origin:center!important;
-}
-.mission-diagnostics .mc02-tyre.t1{left:34px!important;top:10px!important;transform:rotate(-4deg)}
-.mission-diagnostics .mc02-tyre.t2{left:55px!important;top:10px!important;transform:rotate(4deg)}
-.mission-diagnostics .mc02-tyre.t3{left:34px!important;top:27px!important;transform:rotate(4deg)}
-.mission-diagnostics .mc02-tyre.t4{left:55px!important;top:27px!important;transform:rotate(-4deg)}
-.mission-diagnostics .sensor-traction.active .mc02-icon-traction{animation:mc02DriftYaw .82s ease-in-out infinite;opacity:1;}
-.mission-diagnostics .sensor-traction.active .mc02-tyre{animation:mc02TyreLoad .5s ease-in-out infinite alternate;}
-.mission-diagnostics .sensor-traction.done .mc02-icon-traction{background:#78dfff;opacity:.86;transform:none!important;}
-.mission-diagnostics .sensor-traction.done .mc02-tyre{background:var(--green)!important;opacity:.96;box-shadow:0 0 4px rgba(87,239,145,.24)!important;animation:none!important;}
-@keyframes mc02DriftYaw{0%,100%{transform:rotate(-3deg) translateX(-1px)}50%{transform:rotate(3deg) translateX(1px)}}
-
-/* 06 RESPONSE — existing Silverstone cone diagram; target captures green, through-line stays cyan. */
-.mission-diagnostics .mc02-icon-response{
-  left:20px;top:0;width:56px!important;height:46px!important;opacity:.62;
-  -webkit-mask-image:url("../assets/system-response.svg");
-  mask-image:url("../assets/system-response.svg");
-}
-.mission-diagnostics .mc02-response-line{
-  position:absolute!important;left:8px!important;right:8px!important;top:23px!important;width:auto!important;height:1px!important;border:0!important;border-radius:0!important;background:#72defd!important;box-shadow:none!important;opacity:.62;
-}
-.mission-diagnostics .mc02-response-target{
-  position:absolute!important;right:11px!important;top:12px!important;width:22px!important;height:22px!important;border:1px solid rgba(112,220,251,.58)!important;border-radius:50%!important;background:rgba(2,18,28,.78)!important;box-shadow:none!important;
-}
-.mission-diagnostics .mc02-response-target i{
-  position:absolute!important;left:50%!important;top:50%!important;width:5px!important;height:5px!important;margin:-2.5px 0 0 -2.5px!important;border:0!important;border-radius:50%!important;background:#cef7ff!important;box-shadow:0 0 4px rgba(103,225,255,.36)!important;
-}
-.mission-diagnostics .mc02-response-packet{
-  position:absolute!important;left:9px!important;top:20px!important;width:6px!important;height:6px!important;border:0!important;border-radius:50%!important;background:#defaff!important;box-shadow:0 0 5px rgba(103,225,255,.72)!important;opacity:0;
-}
-.mission-diagnostics .sensor-response.active .mc02-response-packet{animation:mc02ResponsePacket .82s ease-in-out infinite;}
-.mission-diagnostics .sensor-response.active .mc02-response-target{animation:mc02TargetPulse .82s ease-out infinite;}
-.mission-diagnostics .sensor-response.done .mc02-icon-response{background:#78dfff;opacity:.62;}
-.mission-diagnostics .sensor-response.done .mc02-response-line{background:#72defd!important;opacity:.68;}
-.mission-diagnostics .sensor-response.done .mc02-response-target{border-color:var(--green)!important;box-shadow:0 0 5px rgba(87,239,145,.2)!important;animation:none!important;}
-.mission-diagnostics .sensor-response.done .mc02-response-target i{background:var(--green)!important;box-shadow:0 0 5px rgba(87,239,145,.26)!important;}
-.mission-diagnostics .sensor-response.done .mc02-response-packet{display:none!important;}
-@keyframes mc02ResponsePacket{0%{transform:translateX(0);opacity:0}12%{opacity:1}78%{transform:translateX(70px);opacity:1}100%{transform:translateX(70px);opacity:0}}
-@keyframes mc02TargetPulse{0%,100%{transform:scale(.94);opacity:.62}55%{transform:scale(1.08);opacity:1}}
-
-@media(max-height:740px){
-  .mission-diagnostics .sensor-viz{width:90px!important;max-width:90px!important;height:42px!important;max-height:42px!important;}
-  .mission-diagnostics .mc02-stage{width:90px!important;height:42px!important;transform:scale(.94);transform-origin:50% 0;}
-}
-@media(max-height:660px){
-  .mission-diagnostics .sensor-viz{width:84px!important;max-width:84px!important;height:38px!important;max-height:38px!important;}
-  .mission-diagnostics .mc02-stage{width:90px!important;height:42px!important;transform:scale(.86);transform-origin:50% 0;}
-}
-
-/* === Pass 7.38.31: MC-02 icon correction / static diagnostic pass ========= */
-.mission-diagnostics .sensor-viz{
   width:112px!important;
   max-width:112px!important;
   height:56px!important;
   max-height:56px!important;
-  margin:4px auto 1px!important;
+  margin:2px auto 0!important;
+  padding:0!important;
   overflow:visible!important;
-  opacity:.72!important;
+  opacity:.82!important;
   filter:none!important;
+  transform:none!important;
+  background:none!important;
 }
-.mission-diagnostics .sensor.active .sensor-viz{opacity:.9!important;filter:none!important;}
-.mission-diagnostics .sensor.done .sensor-viz{opacity:1!important;}
-.mission-diagnostics .mc02-stage{
-  width:112px!important;
-  height:56px!important;
-}
-.mission-diagnostics .mc02-icon,
-.mission-diagnostics .mc02-airflow,
-.mission-diagnostics .mc02-control-arc,
-.mission-diagnostics .mc02-control-marker,
-.mission-diagnostics .mc02-tyre,
-.mission-diagnostics .mc02-response-target,
-.mission-diagnostics .mc02-response-packet,
-.mission-diagnostics .mc02-power-trace,
-.mission-diagnostics .mc02-power-hotspot{
-  animation:none!important;
+.mission-diagnostics .sensor.active .sensor-viz,
+.mission-diagnostics .sensor.done .sensor-viz{
+  opacity:.94!important;
+  filter:none!important;
+  transform:none!important;
 }
 
-/* 01 AERO — use the full Pit Perfect / garage icon, not the cropped fan. */
-.mission-diagnostics .mc02-icon-aero{
-  left:16px!important;
-  top:2px!important;
-  width:80px!important;
-  height:50px!important;
+/* One centred icon box across all six diagnostics. Individual width/height
+   compensates for whitespace inside the original Silverstone SVG viewBoxes. */
+.mission-diagnostics .mc02-static-icon{
+  position:absolute!important;
+  left:50%!important;
+  top:50%!important;
+  display:block!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:#78dfff!important;
+  box-shadow:none!important;
+  opacity:.9!important;
+  transform:translate(-50%,-50%)!important;
+  transform-origin:50% 50%!important;
+  -webkit-mask-repeat:no-repeat!important;
+  mask-repeat:no-repeat!important;
+  -webkit-mask-position:center!important;
+  mask-position:center!important;
+  -webkit-mask-size:contain!important;
+  mask-size:contain!important;
+}
+
+/* 01 AERO — full Pit Perfect garage/fan artwork, no crop. */
+.mission-diagnostics .mc02-static-aero{
+  width:96px!important;
+  height:57px!important;
   -webkit-mask-image:url("../assets/mc02-aero-pit-perfect.svg")!important;
   mask-image:url("../assets/mc02-aero-pit-perfect.svg")!important;
 }
-.mission-diagnostics .mc02-airflow{left:8px!important;width:96px!important;height:2px!important;opacity:.46!important;}
-.mission-diagnostics .mc02-airflow.f1{top:15px!important;transform:rotate(-2.5deg)!important}
-.mission-diagnostics .mc02-airflow.f2{top:23px!important;transform:rotate(-.5deg)!important}
-.mission-diagnostics .mc02-airflow.f3{top:31px!important;transform:rotate(.75deg)!important}
-.mission-diagnostics .mc02-airflow.f4{top:39px!important;transform:rotate(2.5deg)!important}
-.mission-diagnostics .sensor-aero.active .mc02-icon-aero,
-.mission-diagnostics .sensor-aero.active .mc02-airflow{opacity:.92!important;filter:none!important;}
-.mission-diagnostics .sensor-aero.done .mc02-icon-aero{background:#78dfff!important;opacity:.88!important;}
-
-/* 02 STABILITY — larger stunt-driving icon, static, with the main silhouette capturing green. */
-.mission-diagnostics .mc02-icon-stability{
-  left:15px!important;
-  top:3px!important;
-  width:82px!important;
-  height:48px!important;
+/* 02 STABILITY — Stunt Driving. */
+.mission-diagnostics .mc02-static-stability{
+  width:91px!important;
+  height:55px!important;
+  -webkit-mask-image:url("../assets/mc02-stunt-driving.svg")!important;
+  mask-image:url("../assets/mc02-stunt-driving.svg")!important;
 }
-.mission-diagnostics .mc02-stability-datum{display:none!important;}
-.mission-diagnostics .sensor-stability.active .mc02-icon-stability{opacity:.96!important;filter:none!important;transform:none!important;}
-.mission-diagnostics .sensor-stability.done .mc02-icon-stability{background:var(--green)!important;opacity:.94!important;filter:drop-shadow(0 0 3px rgba(87,239,145,.18))!important;}
-
-/* 03 POWER — use the propulsion speedometer icon; keep the graph trace as the green capture layer. */
-.mission-diagnostics .mc02-icon-power{
-  left:14px!important;
-  top:2px!important;
-  width:84px!important;
-  height:50px!important;
-  opacity:.64!important;
+/* 03 POWER — Propulsion speedometer. */
+.mission-diagnostics .mc02-static-power{
+  width:101px!important;
+  height:60px!important;
   -webkit-mask-image:url("../assets/system-propulsion.svg")!important;
   mask-image:url("../assets/system-propulsion.svg")!important;
 }
-.mission-diagnostics .mc02-power-data{width:112px!important;height:56px!important;}
-.mission-diagnostics .mc02-power-trace-shadow{stroke:rgba(58,187,226,.14)!important;stroke-width:4.2!important;opacity:.34!important;}
-.mission-diagnostics .mc02-power-trace{stroke:#79e4ff!important;stroke-width:2!important;stroke-dasharray:none!important;stroke-dashoffset:0!important;opacity:.9!important;filter:none!important;}
-.mission-diagnostics .mc02-power-hotspot{fill:#e2fbff!important;opacity:.55!important;}
-.mission-diagnostics .sensor-power.active .mc02-icon-power,
-.mission-diagnostics .sensor-power.active .mc02-power-trace,
-.mission-diagnostics .sensor-power.active .mc02-power-hotspot{filter:none!important;opacity:.92!important;}
-.mission-diagnostics .sensor-power.done .mc02-icon-power{background:#78dfff!important;opacity:.68!important;}
-
-/* 04 CONTROL — guidance steering-wheel icon with capture arc. */
-.mission-diagnostics .mc02-icon-control{
-  left:24px!important;
-  top:2px!important;
-  width:64px!important;
-  height:50px!important;
+/* 04 CONTROL — Guidance steering wheel. */
+.mission-diagnostics .mc02-static-control{
+  width:87px!important;
+  height:52px!important;
   -webkit-mask-image:url("../assets/system-guidance.svg")!important;
   mask-image:url("../assets/system-guidance.svg")!important;
 }
-.mission-diagnostics .mc02-control-arc{left:25px!important;top:7px!important;width:56px!important;height:24px!important;border-top-color:rgba(116,223,255,.34)!important;}
-.mission-diagnostics .mc02-control-marker{left:51px!important;top:7px!important;}
-.mission-diagnostics .sensor-control.active .mc02-icon-control,
-.mission-diagnostics .sensor-control.active .mc02-control-marker{opacity:.95!important;transform:none!important;}
-.mission-diagnostics .sensor-control.done .mc02-icon-control{background:#78dfff!important;opacity:.86!important;}
-
-/* 05 TRACTION — use the skidding-car icon; tyres are the only green capture indicators. */
-.mission-diagnostics .mc02-icon-traction{
-  left:17px!important;
-  top:2px!important;
-  width:78px!important;
-  height:50px!important;
+/* 05 TRACTION — Control skidding car. */
+.mission-diagnostics .mc02-static-traction{
+  width:90px!important;
+  height:54px!important;
   -webkit-mask-image:url("../assets/system-control.svg")!important;
   mask-image:url("../assets/system-control.svg")!important;
 }
-.mission-diagnostics .viz-traction .mc02-tyre{width:8px!important;height:12px!important;opacity:.84!important;}
-.mission-diagnostics .mc02-tyre.t1{left:35px!important;top:14px!important;transform:none!important}
-.mission-diagnostics .mc02-tyre.t2{left:59px!important;top:14px!important;transform:none!important}
-.mission-diagnostics .mc02-tyre.t3{left:35px!important;top:30px!important;transform:none!important}
-.mission-diagnostics .mc02-tyre.t4{left:59px!important;top:30px!important;transform:none!important}
-.mission-diagnostics .sensor-traction.active .mc02-icon-traction,
-.mission-diagnostics .sensor-traction.active .mc02-tyre{opacity:.94!important;filter:none!important;transform:none!important;}
-.mission-diagnostics .sensor-traction.done .mc02-icon-traction{background:#78dfff!important;opacity:.82!important;}
+/* 06 RESPONSE — Response cone diagram. */
+.mission-diagnostics .mc02-static-response{
+  width:83px!important;
+  height:50px!important;
+  -webkit-mask-image:url("../assets/system-response.svg")!important;
+  mask-image:url("../assets/system-response.svg")!important;
+}
 
-/* 06 RESPONSE — keep the cone diagram, target goes green, through-line stays cyan. */
-.mission-diagnostics .mc02-icon-response{left:20px!important;top:2px!important;width:72px!important;height:50px!important;opacity:.64!important;}
-.mission-diagnostics .mc02-response-line{left:11px!important;right:11px!important;top:27px!important;height:2px!important;opacity:.68!important;}
-.mission-diagnostics .mc02-response-target{right:11px!important;top:15px!important;width:24px!important;height:24px!important;box-shadow:none!important;}
-.mission-diagnostics .mc02-response-target i{width:6px!important;height:6px!important;margin:-3px 0 0 -3px!important;}
-.mission-diagnostics .sensor-response.active .mc02-response-target,
-.mission-diagnostics .sensor-response.active .mc02-response-packet{opacity:1!important;filter:none!important;}
-.mission-diagnostics .sensor-response.done .mc02-icon-response{background:#78dfff!important;opacity:.64!important;}
-.mission-diagnostics .sensor-response.done .mc02-response-line{background:#72defd!important;opacity:.72!important;}
+/* Keep the icon itself cyan for now. Completion is communicated by the card
+   border/state text while the static asset system is being approved. */
+.mission-diagnostics .sensor.done .mc02-static-icon{
+  background:#78dfff!important;
+  opacity:.94!important;
+  filter:none!important;
+}
 
 @media(max-height:740px){
-  .mission-diagnostics .sensor-viz{width:104px!important;max-width:104px!important;height:52px!important;max-height:52px!important;}
-  .mission-diagnostics .mc02-stage{width:104px!important;height:52px!important;transform:none!important;}
+  .mission-diagnostics .sensor-viz{
+    width:104px!important;
+    max-width:104px!important;
+    height:50px!important;
+    max-height:50px!important;
+  }
+  .mission-diagnostics .mc02-static-icon{transform:translate(-50%,-50%) scale(.92)!important;}
 }
 @media(max-height:660px){
-  .mission-diagnostics .sensor-viz{width:96px!important;max-width:96px!important;height:48px!important;max-height:48px!important;}
-  .mission-diagnostics .mc02-stage{width:96px!important;height:48px!important;transform:none!important;}
+  .mission-diagnostics .sensor-viz{
+    width:96px!important;
+    max-width:96px!important;
+    height:46px!important;
+    max-height:46px!important;
+  }
+  .mission-diagnostics .mc02-static-icon{transform:translate(-50%,-50%) scale(.84)!important;}
 }
+

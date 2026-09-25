@@ -244,7 +244,7 @@
   function missionInstruction(type){
     return ({
       activation:'You have now entered the live circuit zone.',
-      diagnostics:'Capture racing performance data to calibrate Santa-1’s recovery systems.',
+      diagnostics:'Capture the engineering data needed for Santa-1.',
       radio:'Tune the receiver to 87.7 and establish a link with ELF FM.',
       commsrelay:'Restore two-way communications with Santa-1.',
       power:'Put the recovered power to the test and reach maximum velocity.',
@@ -311,37 +311,12 @@
 
   function diagnosticsBody(){
     const sensors=[
-      {name:'Aero',key:'aero',viz:`<div class="mc02-stage mc02-stage-aero">
-        <span class="mc02-icon mc02-icon-aero"></span>
-        <span class="mc02-airflow f1"></span><span class="mc02-airflow f2"></span><span class="mc02-airflow f3"></span><span class="mc02-airflow f4"></span>
-      </div>`},
-      {name:'Stability',key:'stability',viz:`<div class="mc02-stage mc02-stage-stability">
-        <span class="mc02-stability-datum"></span>
-        <span class="mc02-icon mc02-icon-stability"></span>
-      </div>`},
-      {name:'Power',key:'power',viz:`<div class="mc02-stage mc02-stage-power">
-        <span class="mc02-icon mc02-icon-power"></span>
-        <svg class="mc02-power-data" viewBox="0 0 120 70" role="presentation">
-          <path class="mc02-power-trace-shadow" d="M6 55 L22 53 L35 47 L48 49 L61 34 L74 40 L88 21 L102 25 L114 13"/>
-          <path class="mc02-power-trace" d="M6 55 L22 53 L35 47 L48 49 L61 34 L74 40 L88 21 L102 25 L114 13"/>
-          <circle class="mc02-power-hotspot" cx="114" cy="13" r="3.5"/>
-        </svg>
-      </div>`},
-      {name:'Control',key:'control',viz:`<div class="mc02-stage mc02-stage-control">
-        <span class="mc02-control-arc"></span>
-        <span class="mc02-icon mc02-icon-control"></span>
-        <span class="mc02-control-marker"></span>
-      </div>`},
-      {name:'Traction',key:'traction',viz:`<div class="mc02-stage mc02-stage-traction">
-        <span class="mc02-icon mc02-icon-traction"></span>
-        <span class="mc02-tyre t1"></span><span class="mc02-tyre t2"></span><span class="mc02-tyre t3"></span><span class="mc02-tyre t4"></span>
-      </div>`},
-      {name:'Response',key:'response',viz:`<div class="mc02-stage mc02-stage-response">
-        <span class="mc02-icon mc02-icon-response"></span>
-        <span class="mc02-response-line"></span>
-        <span class="mc02-response-target"><i></i></span>
-        <span class="mc02-response-packet"></span>
-      </div>`}
+      {name:'Aero',key:'aero',viz:`<div class="mc02-static-icon mc02-static-aero"></div>`},
+      {name:'Stability',key:'stability',viz:`<div class="mc02-static-icon mc02-static-stability"></div>`},
+      {name:'Power',key:'power',viz:`<div class="mc02-static-icon mc02-static-power"></div>`},
+      {name:'Control',key:'control',viz:`<div class="mc02-static-icon mc02-static-control"></div>`},
+      {name:'Traction',key:'traction',viz:`<div class="mc02-static-icon mc02-static-traction"></div>`},
+      {name:'Response',key:'response',viz:`<div class="mc02-static-icon mc02-static-response"></div>`}
     ];
     return `<div class="mission-instrument panel diagnostics-panel"><div class="sensor-grid diagnostics-grid">${sensors.map((x,i)=>`<button class="sensor sensor-${x.key}" data-sensor="${i}" data-diagnostic="${x.key}"><div class="sensor-head"><span class="num">0${i+1}</span><span class="name">${x.name}</span></div><div class="sensor-viz viz-${x.key}" aria-hidden="true">${x.viz}</div><div class="state">Tap to scan</div></button>`).join('')}</div></div><button class="btn primary wide" id="diagComplete" disabled>Complete Scan</button>`;
   }

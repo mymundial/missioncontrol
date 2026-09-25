@@ -1,2 +1,5 @@
 assets/system-launch.svg
 assets/mission-audio-icon.webp
+assets/mc02-aero-fan.svg
+assets/mc02-no-speed-limits.svg
+assets/mc02-traction-drift.svg
