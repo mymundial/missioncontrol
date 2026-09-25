@@ -371,20 +371,22 @@ if(
 if(
   /Complete Scan<\/button>/.test(runtime) &&
   /Tap to scan/.test(runtime) &&
-  /The engineering data was successfully captured and is now ready to support Santa-1’s recovery systems\./.test(runtime) &&
-  /class="aero-body"/.test(runtime) && /class="aero-flow aero-flow-4"/.test(runtime) &&
-  /class="stability-reference"/.test(runtime) && /class="stability-console"/.test(runtime) &&
-  /class="traction-road"/.test(runtime) && /class="traction-contact c4"/.test(runtime) &&
-  /Pass 7\-38\-28: MC-02 diagnostic consistency refinement/.test(css) &&
-  /sensor-aero\.done \.aero-flow[\s\S]*?stroke:var\(--green\)/.test(css) &&
-  /sensor-power\.done \.power-output-bars rect\{fill:rgba\(79,207,246,\.42\)/.test(css) &&
-  /sensor-control\.done \.control-wheel circle,[\s\S]*?stroke:#78dfff/.test(css) &&
-  /sensor-traction\.done \.traction-wheel\{stroke:var\(--green\)/.test(css) &&
-  /sensor-response\.done \.response-ring\{stroke:var\(--green\)/.test(css) &&
-  /sensor-response\.done \.response-in,[\s\S]*?stroke:#72defd/.test(css)
+  /Capture racing performance data to calibrate Santa-1’s recovery systems\./.test(runtime) &&
+  /The racing performance data has been captured and is ready to support Santa-1’s recovery systems\./.test(runtime) &&
+  /mc02-icon-aero/.test(runtime) && /mc02-icon-stability/.test(runtime) && /mc02-icon-power/.test(runtime) &&
+  /mc02-icon-control/.test(runtime) && /mc02-icon-traction/.test(runtime) && /mc02-icon-response/.test(runtime) &&
+  /Pass 7\-38\-30: MC-02 Silverstone icon diagnostic suite/.test(css) &&
+  /sensor-aero\.done \.mc02-airflow[\s\S]*?var\(--green\)/.test(css) &&
+  /sensor-stability\.done \.mc02-icon-stability\{background:var\(--green\)/.test(css) &&
+  /sensor-power\.done \.mc02-power-trace\{stroke:var\(--green\)/.test(css) &&
+  /sensor-control\.done \.mc02-icon-control\{background:#78dfff/.test(css) &&
+  /sensor-control\.done \.mc02-control-arc\{border-top-color:var\(--green\)/.test(css) &&
+  /sensor-traction\.done \.mc02-tyre\{background:var\(--green\)/.test(css) &&
+  /sensor-response\.done \.mc02-response-line\{background:#72defd/.test(css) &&
+  /sensor-response\.done \.mc02-response-target\{border-color:var\(--green\)/.test(css)
 ) {
-  ok('MC02 diagnostic redesign','MC02 now uses tap-to-scan copy, selective green capture states, a larger Stability console, tyre-only Traction capture, cyan Power bars, and stronger completion copy.');
-} else fail('MC02 diagnostic redesign','MC02 refined diagnostic visuals, selective-green states, CTA, or completion copy is incomplete');
+  ok('MC02 icon diagnostic suite','Velocity Vault now uses one icon-led Silverstone visual system with selective captured-data green states, tap-to-scan instruction, and updated objective/completion copy.');
+} else fail('MC02 icon diagnostic suite','MC02 icon assets, selective-green capture states, instruction copy, or completion copy is incomplete');
 
 // 12) External runtime dependencies / launch notes.
 const urls=[...runtime.matchAll(/https:\/\/[^'"`\s)]+/g)].map(m=>m[0]);

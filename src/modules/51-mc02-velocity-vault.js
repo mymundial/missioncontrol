@@ -23,6 +23,6 @@
         if(done.size===6)document.getElementById('diagComplete').disabled=false;
       },durations[i]||1800);
     });
-    document.getElementById('diagComplete').onclick=()=>showCompletion('Performance Scan Complete','The engineering data was successfully captured and is now ready to support Santa-1’s recovery systems.');
+    document.getElementById('diagComplete').onclick=()=>showCompletion('Performance Scan Complete','The racing performance data has been captured and is ready to support Santa-1’s recovery systems.');
   }
 

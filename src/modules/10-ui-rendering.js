@@ -244,7 +244,7 @@
   function missionInstruction(type){
     return ({
       activation:'You have now entered the live circuit zone.',
-      diagnostics:'Capture the engineering data needed for Santa-1.',
+      diagnostics:'Capture racing performance data to calibrate Santa-1’s recovery systems.',
       radio:'Tune the receiver to 87.7 and establish a link with ELF FM.',
       commsrelay:'Restore two-way communications with Santa-1.',
       power:'Put the recovered power to the test and reach maximum velocity.',
@@ -311,58 +311,37 @@
 
   function diagnosticsBody(){
     const sensors=[
-      {name:'Aero',key:'aero',viz:`<svg viewBox="0 0 120 70" role="presentation">
-        <path class="aero-body" d="M43 25 L50 18 H70 L77 25 L84 32 V42 L76 49 H44 L36 42 V32 Z"/>
-        <path class="aero-centre" d="M60 20V48"/>
-        <path class="aero-flow aero-flow-1" d="M3 12 C25 12 31 15 40 20 C48 24 72 24 80 20 C91 15 99 12 117 12"/>
-        <path class="aero-flow aero-flow-2" d="M2 27 C21 27 30 28 38 31 C45 34 75 34 82 31 C91 28 101 27 118 27"/>
-        <path class="aero-flow aero-flow-3" d="M2 43 C21 43 30 42 38 39 C45 36 75 36 82 39 C91 42 101 43 118 43"/>
-        <path class="aero-flow aero-flow-4" d="M3 58 C25 58 31 55 40 50 C48 46 72 46 80 50 C91 55 99 58 117 58"/>
-        <circle class="aero-probe aero-probe-1" cx="18" cy="12" r="1.8"/><circle class="aero-probe aero-probe-2" cx="15" cy="27" r="1.8"/><circle class="aero-probe aero-probe-3" cx="15" cy="43" r="1.8"/><circle class="aero-probe aero-probe-4" cx="18" cy="58" r="1.8"/>
-      </svg>`},
-      {name:'Stability',key:'stability',viz:`<svg viewBox="0 0 120 70" role="presentation">
-        <path class="stability-reference" d="M12 51H108"/>
-        <path class="stability-arc" d="M38 28 A22 22 0 0 1 82 28"/>
-        <circle class="stability-console" cx="60" cy="35" r="7.5"/>
-        <g class="stability-chassis">
-          <path class="stability-shell" d="M32 31 L41 21 H79 L88 31 L92 43 H28 Z"/>
-          <rect class="stability-wheel stability-wheel-left" x="29" y="43" width="16" height="8" rx="4"/>
-          <rect class="stability-wheel stability-wheel-right" x="75" y="43" width="16" height="8" rx="4"/>
-          <path class="stability-damper stability-damper-left" d="M39 31V44"/><path class="stability-damper stability-damper-right" d="M81 31V44"/>
-        </g>
-        <path class="stability-centre" d="M60 20V50"/>
-        <path class="stability-lock" d="M46 35H74"/>
-        <circle class="stability-point" cx="60" cy="35" r="3.4"/>
-      </svg>`},
-      {name:'Power',key:'power',viz:`<svg viewBox="0 0 120 70" role="presentation">
-        <path class="power-baseline" d="M5 62H115"/>
-        <path class="power-trace-shadow" d="M6 50 L20 48 L30 43 L38 47 L47 30 L55 41 L65 18 L74 34 L83 12 L92 27 L102 9 L115 16"/>
-        <path class="power-trace" d="M6 50 L20 48 L30 43 L38 47 L47 30 L55 41 L65 18 L74 34 L83 12 L92 27 L102 9 L115 16"/>
-        <circle class="power-hotspot" cx="102" cy="9" r="4"/>
-        <g class="power-output-bars"><rect x="8" y="57" width="12" height="5"/><rect x="24" y="54" width="12" height="8"/><rect x="40" y="51" width="12" height="11"/><rect x="56" y="47" width="12" height="15"/><rect x="72" y="43" width="12" height="19"/><rect x="88" y="38" width="12" height="24"/></g>
-      </svg>`},
-      {name:'Control',key:'control',viz:`<svg viewBox="0 0 120 70" role="presentation">
-        <path class="control-path control-path-left" d="M7 35 C20 16 37 12 51 24"/>
-        <path class="control-path control-path-right" d="M113 35 C100 54 83 58 69 46"/>
-        <g class="control-wheel">
-          <circle cx="60" cy="35" r="22"/><circle cx="60" cy="35" r="5"/>
-          <line x1="60" y1="13" x2="60" y2="30"/><line x1="40" y1="43" x2="55" y2="37"/><line x1="80" y1="43" x2="65" y2="37"/>
-        </g>
-        <path class="control-angle" d="M38 18 A29 29 0 0 1 83 19"/><circle class="control-marker" cx="60" cy="7" r="2.5"/>
-      </svg>`},
-      {name:'Traction',key:'traction',viz:`<svg viewBox="0 0 120 70" role="presentation">
-        <path class="traction-road" d="M12 57H108"/>
-        <path class="traction-car" d="M48 12 H72 L81 22 V48 L72 58 H48 L39 48 V22 Z"/>
-        <path class="traction-spine" d="M60 17V53"/>
-        <rect class="traction-wheel w1" x="30" y="18" width="12" height="16" rx="4"/><rect class="traction-wheel w2" x="78" y="18" width="12" height="16" rx="4"/><rect class="traction-wheel w3" x="30" y="37" width="12" height="16" rx="4"/><rect class="traction-wheel w4" x="78" y="37" width="12" height="16" rx="4"/>
-        <rect class="traction-contact c1" x="26" y="22" width="5" height="9" rx="2.5"/><rect class="traction-contact c2" x="89" y="22" width="5" height="9" rx="2.5"/><rect class="traction-contact c3" x="26" y="41" width="5" height="9" rx="2.5"/><rect class="traction-contact c4" x="89" y="41" width="5" height="9" rx="2.5"/>
-      </svg>`},
-      {name:'Response',key:'response',viz:`<svg viewBox="0 0 120 70" role="presentation">
-        <circle class="response-ring response-ring-a" cx="60" cy="35" r="23"/><circle class="response-ring response-ring-b" cx="60" cy="35" r="15"/>
-        <circle class="response-core" cx="60" cy="35" r="5"/>
-        <path class="response-in" d="M6 35H48"/><path class="response-out" d="M72 35H114"/>
-        <circle class="response-pulse response-pulse-in" cx="10" cy="35" r="3"/><circle class="response-pulse response-pulse-out" cx="110" cy="35" r="3"/>
-      </svg>`}
+      {name:'Aero',key:'aero',viz:`<div class="mc02-stage mc02-stage-aero">
+        <span class="mc02-icon mc02-icon-aero"></span>
+        <span class="mc02-airflow f1"></span><span class="mc02-airflow f2"></span><span class="mc02-airflow f3"></span><span class="mc02-airflow f4"></span>
+      </div>`},
+      {name:'Stability',key:'stability',viz:`<div class="mc02-stage mc02-stage-stability">
+        <span class="mc02-stability-datum"></span>
+        <span class="mc02-icon mc02-icon-stability"></span>
+      </div>`},
+      {name:'Power',key:'power',viz:`<div class="mc02-stage mc02-stage-power">
+        <span class="mc02-icon mc02-icon-power"></span>
+        <svg class="mc02-power-data" viewBox="0 0 120 70" role="presentation">
+          <path class="mc02-power-trace-shadow" d="M6 55 L22 53 L35 47 L48 49 L61 34 L74 40 L88 21 L102 25 L114 13"/>
+          <path class="mc02-power-trace" d="M6 55 L22 53 L35 47 L48 49 L61 34 L74 40 L88 21 L102 25 L114 13"/>
+          <circle class="mc02-power-hotspot" cx="114" cy="13" r="3.5"/>
+        </svg>
+      </div>`},
+      {name:'Control',key:'control',viz:`<div class="mc02-stage mc02-stage-control">
+        <span class="mc02-control-arc"></span>
+        <span class="mc02-icon mc02-icon-control"></span>
+        <span class="mc02-control-marker"></span>
+      </div>`},
+      {name:'Traction',key:'traction',viz:`<div class="mc02-stage mc02-stage-traction">
+        <span class="mc02-icon mc02-icon-traction"></span>
+        <span class="mc02-tyre t1"></span><span class="mc02-tyre t2"></span><span class="mc02-tyre t3"></span><span class="mc02-tyre t4"></span>
+      </div>`},
+      {name:'Response',key:'response',viz:`<div class="mc02-stage mc02-stage-response">
+        <span class="mc02-icon mc02-icon-response"></span>
+        <span class="mc02-response-line"></span>
+        <span class="mc02-response-target"><i></i></span>
+        <span class="mc02-response-packet"></span>
+      </div>`}
     ];
     return `<div class="mission-instrument panel diagnostics-panel"><div class="sensor-grid diagnostics-grid">${sensors.map((x,i)=>`<button class="sensor sensor-${x.key}" data-sensor="${i}" data-diagnostic="${x.key}"><div class="sensor-head"><span class="num">0${i+1}</span><span class="name">${x.name}</span></div><div class="sensor-viz viz-${x.key}" aria-hidden="true">${x.viz}</div><div class="state">Tap to scan</div></button>`).join('')}</div></div><button class="btn primary wide" id="diagComplete" disabled>Complete Scan</button>`;
   }
