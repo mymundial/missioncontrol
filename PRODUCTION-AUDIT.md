@@ -1,7 +1,3 @@
-
-> silverstone-mission-control-games-pass7-36-04@7.38.18 audit
-> node audit-production.cjs
-
 Silverstone Mission Control — production audit
 ================================================
 PASS  Production build — npm build equivalent completed successfully
@@ -14,7 +10,7 @@ PASS  Runtime references — All static runtime asset/font/script/style referenc
 PASS  Dead production assets — Every deployed asset and font is referenced
 PASS  Legacy format references — No runtime references to retired PNG/JPEG/WAV/TTF/OTF files
 PASS  Asset file integrity — WebP, WOFF2 and MP3 signatures match their extensions
-PASS  CSS brace balance — 2974 rule blocks balanced
+PASS  CSS brace balance — 2995 rule blocks balanced
 PASS  Vercel configuration — Static build targets dist with npm run build
 PASS  Admin asset base — /admin uses root-relative base for shared runtime assets
 PASS  Service-worker retirement — Retirement shim only: no fetch interception; clears legacy caches and unregisters
@@ -36,8 +32,8 @@ PASS  Mission completion hierarchy — Activation completion cards use a single 
 PASS  MC01 scan language — Circuit Link terminology stays consistent through detection, connection, routing, transfer and recovery
 PASS  MC01 web assets — Bloom audio 53.9 KB; S mark 4.4 KB
 PASS  MC03 visual-only polish — Pre-redesign relay geometry/timing remain intact; route states are dashed future, solid active and solid completed, with node surfaces masking the centre-aligned links.
-PASS  MC03 objective and carrier UI — Objective-only subtitle, centred capture hardware, live route carrier pulse, hidden relay captions and full-width Signal Strength bar are present.
-WARN  Deployment footprint — 8.25 MB exceeds the 7 MB audit target
+PASS  MC03 restored relay presentation and audio — Earlier relay layout is restored, captions align on one line, offset capture circles are hidden, signal title is centred, carrier pulse is refined, and success/miss audio is wired without changing hit timing.
+WARN  Deployment footprint — 8.30 MB exceeds the 7 MB audit target
 WARN  ELF FM stream — Current build still identifies the Radio Mast URL as a test stream; replace before final public launch if a production stream is supplied
 WARN  Web app manifest — No install icon is defined. This does not affect normal browser use, only add-to-home-screen presentation.
 NOTE  External runtime URL(s): https://streams.radiomast.io/ref-128k-mp3-stereo

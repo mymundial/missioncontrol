@@ -320,20 +320,29 @@ if(
 
 if(
   /commsrelay:'Restore two-way communications with Santa-1\.'/ .test(runtime) &&
-  /class="relay-node-spacer"/.test(runtime) &&
-  !/id="relayMeterText"/.test(runtime) &&
+  /<small>TRANSMITTER<\/small>/.test(runtime) &&
+  /<small>RELAY 0\$\{i\+1\}<\/small>/.test(runtime) &&
+  /<small>RECEIVER<\/small>/.test(runtime) &&
+  !/MISSION CONTROL<\/small>/.test(runtime) &&
+  !/RECEIVER<br>SANTA-1/.test(runtime) &&
   /class="relay-meter"><span>Signal Strength<\/span><div><i id="relayMeterFill"><\/i><\/div><\/div>/.test(runtime) &&
-  /class="relay-hop-energy" data-energy="0"/.test(runtime) &&
-  /const energies=\[\.\.\.document\.querySelectorAll\('\[data-energy\]'\)\]/.test(runtime) &&
-  /function alignRelayRoute\(\)/.test(runtime) &&
-  /energies\[0\]\?\.classList\.add\('active'\)/.test(runtime) &&
-  /Pass 7\.38\.18 — MC03 objective copy/.test(css) &&
-  /\.relay-node::before\{[\s\S]*?inset:14px/.test(css) &&
-  /\.relay-hop-energy\.active\{[\s\S]*?animation:relayCarrierPulse/.test(css) &&
-  /\.relay-meter>div\{[\s\S]*?width:100%/.test(css)
+  /new Audio\('\.\/assets\/mc03-relay-success-short\.mp3'\)/.test(runtime) &&
+  /new Audio\('\.\/assets\/mc03-relay-success-full\.mp3'\)/.test(runtime) &&
+  /new Audio\('\.\/assets\/mc03-relay-miss\.mp3'\)/.test(runtime) &&
+  /playRelayFx\(stage===3\?relayFxFull:relayFxShort/.test(runtime) &&
+  /playRelayFx\(relayFxMiss/.test(runtime) &&
+  /setTimeout\(\(\)=>showIncomingTransmission\(\),2350\)/.test(runtime) &&
+  /const hit=phase>=\.53&&phase<=\.80/.test(runtime) &&
+  /const scale=\.42\+phase\*1\.28/.test(runtime) &&
+  /Pass 7\.38\.19 — MC03 restore/.test(css) &&
+  /\.relay-node \.relay-target\{display:none!important;\}/.test(css) &&
+  /\.relay-node \.relay-pulse\{[\s\S]*?width:58px;[\s\S]*?height:58px/.test(css) &&
+  /\.relay-meter>span\{[\s\S]*?text-align:center/.test(css) &&
+  /stroke-dasharray:8 92/.test(css) &&
+  /animation:relayCarrierPulse \.92s linear infinite/.test(css)
 ) {
-  ok('MC03 objective and carrier UI','Objective-only subtitle, centred capture hardware, live route carrier pulse, hidden relay captions and full-width Signal Strength bar are present.');
-} else fail('MC03 objective and carrier UI','MC03 7.38.18 objective/capture/carrier/signal-strength treatment is incomplete');
+  ok('MC03 restored relay presentation and audio','Earlier relay layout is restored, captions align on one line, offset capture circles are hidden, signal title is centred, carrier pulse is refined, and success/miss audio is wired without changing hit timing.');
+} else fail('MC03 restored relay presentation and audio','MC03 7.38.19 restore/audio treatment is incomplete or the frozen hit timing changed');
 
 // 12) External runtime dependencies / launch notes.
 const urls=[...runtime.matchAll(/https:\/\/[^'"`\s)]+/g)].map(m=>m[0]);

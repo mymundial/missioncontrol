@@ -5,8 +5,16 @@
     const stateEl=document.getElementById('relayState');
     const meterFill=document.getElementById('relayMeterFill');
     const meterText=document.getElementById('relayMeterText');
-    const help=['Acquire the incoming signal.','Route the recovered transmission.','Boost the communications carrier.','Transmit the restored link to Santa-1.'];
-    const cycles=[1900,1650,1450,1300];
+        const cycles=[1900,1650,1450,1300];
+    const relayFxShort=new Audio('./assets/mc03-relay-success-short.mp3');
+    const relayFxFull=new Audio('./assets/mc03-relay-success-full.mp3');
+    const relayFxMiss=new Audio('./assets/mc03-relay-miss.mp3');
+    [relayFxShort,relayFxFull,relayFxMiss].forEach(a=>{a.preload='auto';try{a.load();}catch{}});
+    function playRelayFx(a,volume=.9){
+      if(!state.audio||!a)return;
+      try{a.pause();a.currentTime=0;a.volume=volume;const p=a.play();if(p&&typeof p.catch==='function')p.catch(()=>{});}catch{}
+    }
+    function stopRelayFx(){[relayFxShort,relayFxFull,relayFxMiss].forEach(a=>{try{a.pause();a.currentTime=0;}catch{}});}
     let stage=0,phase=0,start=performance.now(),raf=0,locked=false,finishing=false;
     const santa=getSantaCommsAudio();
     try{santa.load();}catch{}
@@ -41,7 +49,7 @@
       nodes.forEach((n,i)=>n.classList.toggle('active',i===stage));
       hops.forEach((h,i)=>h.classList.toggle('active',i===stage&&!h.classList.contains('locked')));
       energies.forEach((e,i)=>e.classList.toggle('active',i===stage));
-      stateEl.textContent=`Tap Relay 0${stage+1} when the pulse meets the capture ring.`;
+      stateEl.textContent=`Tap Relay 0${stage+1} as the pulse reaches the node.`;
     }
     function showIncomingTransmission(){
       finishing=true;cancelAnimationFrame(raf);
@@ -96,7 +104,7 @@
       // The moving pulse intersects the fixed capture ring around 67% of the cycle.
       const hit=phase>=.53&&phase<=.80;
       if(!hit){
-        node.classList.add('miss');stateEl.textContent='Signal missed · retry current relay.';haptic([16,28,16]);ping(230,.07,.025);
+        node.classList.add('miss');stateEl.textContent='Signal missed · retry current relay.';haptic([16,28,16]);playRelayFx(relayFxMiss,.82);
         setTimeout(()=>node.classList.remove('miss'),280);start=performance.now();return;
       }
       locked=true;node.classList.remove('active');node.classList.add('locked');
@@ -106,7 +114,7 @@
       meterFill.style.width=`${25+(stage*25)}%`;
       if(meterText)meterText.textContent=['ACQUIRED','ROUTED','STRONG','LOCKED'][stage];
       stateEl.textContent=stage===3?'Transmission path locked.':'Relay locked · signal strengthened.';
-      ping(620+stage*105,.09,.035);haptic([20,25,38]);
+      playRelayFx(stage===3?relayFxFull:relayFxShort,stage===3?.95:.9);haptic([20,25,38]);
       if(stage===3){
         hops.forEach(h=>h.classList.add('locked'));energies.forEach(e=>e.classList.remove('active'));
         const dest=document.querySelector('.relay-destination');dest?.classList.add('locked');
@@ -120,10 +128,10 @@
             if(prime&&typeof prime.then==='function') prime.then(()=>{try{santa.pause();santa.currentTime=0;santa.volume=1;}catch{}}).catch(()=>{});
           }catch{}
         }
-        setTimeout(()=>showIncomingTransmission(),560);
+        setTimeout(()=>showIncomingTransmission(),2350);
       }else setTimeout(()=>arm(stage+1),460);
     });
-    cleanupMission=()=>{cancelAnimationFrame(raf);window.removeEventListener('resize',onRelayResize);stopSantaTransmission(true);};
+    cleanupMission=()=>{cancelAnimationFrame(raf);window.removeEventListener('resize',onRelayResize);stopRelayFx();stopSantaTransmission(true);};
     hops[0]?.classList.add('active');
     energies[0]?.classList.add('active');
     requestAnimationFrame(alignRelayRoute);

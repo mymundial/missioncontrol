@@ -921,7 +921,7 @@
   function radioBody(){return `<div class="mission-instrument panel"><div class="wave" id="radioWave">${'<i></i>'.repeat(28)}</div><div class="frequency"><span id="freqVal">86.4</span> <small>FM</small></div><div class="range-wrap"><input id="freqRange" class="range" type="range" min="86" max="89" value="86.4" step="0.1"><div class="freq-marks"><span>86.0</span><span>87.0</span><span>88.0</span><span>89.0</span></div></div><div class="signal-state" id="signalState">Searching for signal</div><button class="btn primary wide" id="lockSignal" disabled>Lock Signal</button></div>`}
   function commsRelayBody(){
     return `<div class="mission-instrument panel comms-relay-panel">
-      <div class="signal-state relay-instruction" id="relayState">Tap Relay 01 when the pulse meets the capture ring.</div>
+      <div class="signal-state relay-instruction" id="relayState">Tap Relay 01 as the pulse reaches the node.</div>
       <div class="relay-network" id="relayNetwork" aria-label="Signal relay network">
         <svg class="relay-route" viewBox="0 0 100 150" preserveAspectRatio="none" aria-hidden="true">
           <line class="relay-hop-line" data-hop="0" x1="25" y1="25" x2="75" y2="25"></line>
@@ -929,15 +929,15 @@
           <line class="relay-hop-line" data-hop="2" x1="25" y1="75" x2="75" y2="75"></line>
           <line class="relay-hop-line" data-hop="3" x1="75" y1="75" x2="25" y2="125"></line>
           <line class="relay-hop-line" data-hop="4" x1="25" y1="125" x2="75" y2="125"></line>
-          <line class="relay-hop-energy" data-energy="0" x1="25" y1="25" x2="75" y2="25"></line>
-          <line class="relay-hop-energy" data-energy="1" x1="75" y1="25" x2="25" y2="75"></line>
-          <line class="relay-hop-energy" data-energy="2" x1="25" y1="75" x2="75" y2="75"></line>
-          <line class="relay-hop-energy" data-energy="3" x1="75" y1="75" x2="25" y2="125"></line>
-          <line class="relay-hop-energy" data-energy="4" x1="25" y1="125" x2="75" y2="125"></line>
+          <line class="relay-hop-energy" data-energy="0" pathLength="100" x1="25" y1="25" x2="75" y2="25"></line>
+          <line class="relay-hop-energy" data-energy="1" pathLength="100" x1="75" y1="25" x2="25" y2="75"></line>
+          <line class="relay-hop-energy" data-energy="2" pathLength="100" x1="25" y1="75" x2="75" y2="75"></line>
+          <line class="relay-hop-energy" data-energy="3" pathLength="100" x1="75" y1="75" x2="25" y2="125"></line>
+          <line class="relay-hop-energy" data-energy="4" pathLength="100" x1="25" y1="125" x2="75" y2="125"></line>
         </svg>
-        <div class="relay-cell relay-endpoint relay-origin"><span class="relay-radio-icon"><i></i><i></i><i></i></span><small>TRANSMITTER<br>MISSION CONTROL</small></div>
-        ${[0,1,2,3].map(i=>`<div class="relay-cell relay-capture"><button class="relay-node ${i===0?'active':''}" data-relay="${i}" aria-label="Relay ${i+1}"><span class="relay-target"></span><span class="relay-pulse"></span><span class="relay-core">0${i+1}</span></button><small class="relay-node-spacer" aria-hidden="true">&nbsp;</small></div>`).join('')}
-        <div class="relay-cell relay-endpoint relay-destination"><span class="relay-receiver-icon"></span><small>RECEIVER<br>SANTA-1</small></div>
+        <div class="relay-cell relay-endpoint relay-origin"><span class="relay-radio-icon"><i></i><i></i><i></i></span><small>TRANSMITTER</small></div>
+        ${[0,1,2,3].map(i=>`<div class="relay-cell relay-capture"><button class="relay-node ${i===0?'active':''}" data-relay="${i}" aria-label="Relay ${i+1}"><span class="relay-target"></span><span class="relay-pulse"></span><span class="relay-core">0${i+1}</span></button><small>RELAY 0${i+1}</small></div>`).join('')}
+        <div class="relay-cell relay-endpoint relay-destination"><span class="relay-receiver-icon"></span><small>RECEIVER</small></div>
       </div>
       <div class="relay-meter"><span>Signal Strength</span><div><i id="relayMeterFill"></i></div></div>
     </div>`;
@@ -2024,8 +2024,16 @@
     const stateEl=document.getElementById('relayState');
     const meterFill=document.getElementById('relayMeterFill');
     const meterText=document.getElementById('relayMeterText');
-    const help=['Acquire the incoming signal.','Route the recovered transmission.','Boost the communications carrier.','Transmit the restored link to Santa-1.'];
-    const cycles=[1900,1650,1450,1300];
+        const cycles=[1900,1650,1450,1300];
+    const relayFxShort=new Audio('./assets/mc03-relay-success-short.mp3');
+    const relayFxFull=new Audio('./assets/mc03-relay-success-full.mp3');
+    const relayFxMiss=new Audio('./assets/mc03-relay-miss.mp3');
+    [relayFxShort,relayFxFull,relayFxMiss].forEach(a=>{a.preload='auto';try{a.load();}catch{}});
+    function playRelayFx(a,volume=.9){
+      if(!state.audio||!a)return;
+      try{a.pause();a.currentTime=0;a.volume=volume;const p=a.play();if(p&&typeof p.catch==='function')p.catch(()=>{});}catch{}
+    }
+    function stopRelayFx(){[relayFxShort,relayFxFull,relayFxMiss].forEach(a=>{try{a.pause();a.currentTime=0;}catch{}});}
     let stage=0,phase=0,start=performance.now(),raf=0,locked=false,finishing=false;
     const santa=getSantaCommsAudio();
     try{santa.load();}catch{}
@@ -2060,7 +2068,7 @@
       nodes.forEach((n,i)=>n.classList.toggle('active',i===stage));
       hops.forEach((h,i)=>h.classList.toggle('active',i===stage&&!h.classList.contains('locked')));
       energies.forEach((e,i)=>e.classList.toggle('active',i===stage));
-      stateEl.textContent=`Tap Relay 0${stage+1} when the pulse meets the capture ring.`;
+      stateEl.textContent=`Tap Relay 0${stage+1} as the pulse reaches the node.`;
     }
     function showIncomingTransmission(){
       finishing=true;cancelAnimationFrame(raf);
@@ -2115,7 +2123,7 @@
       // The moving pulse intersects the fixed capture ring around 67% of the cycle.
       const hit=phase>=.53&&phase<=.80;
       if(!hit){
-        node.classList.add('miss');stateEl.textContent='Signal missed · retry current relay.';haptic([16,28,16]);ping(230,.07,.025);
+        node.classList.add('miss');stateEl.textContent='Signal missed · retry current relay.';haptic([16,28,16]);playRelayFx(relayFxMiss,.82);
         setTimeout(()=>node.classList.remove('miss'),280);start=performance.now();return;
       }
       locked=true;node.classList.remove('active');node.classList.add('locked');
@@ -2125,7 +2133,7 @@
       meterFill.style.width=`${25+(stage*25)}%`;
       if(meterText)meterText.textContent=['ACQUIRED','ROUTED','STRONG','LOCKED'][stage];
       stateEl.textContent=stage===3?'Transmission path locked.':'Relay locked · signal strengthened.';
-      ping(620+stage*105,.09,.035);haptic([20,25,38]);
+      playRelayFx(stage===3?relayFxFull:relayFxShort,stage===3?.95:.9);haptic([20,25,38]);
       if(stage===3){
         hops.forEach(h=>h.classList.add('locked'));energies.forEach(e=>e.classList.remove('active'));
         const dest=document.querySelector('.relay-destination');dest?.classList.add('locked');
@@ -2139,10 +2147,10 @@
             if(prime&&typeof prime.then==='function') prime.then(()=>{try{santa.pause();santa.currentTime=0;santa.volume=1;}catch{}}).catch(()=>{});
           }catch{}
         }
-        setTimeout(()=>showIncomingTransmission(),560);
+        setTimeout(()=>showIncomingTransmission(),2350);
       }else setTimeout(()=>arm(stage+1),460);
     });
-    cleanupMission=()=>{cancelAnimationFrame(raf);window.removeEventListener('resize',onRelayResize);stopSantaTransmission(true);};
+    cleanupMission=()=>{cancelAnimationFrame(raf);window.removeEventListener('resize',onRelayResize);stopRelayFx();stopSantaTransmission(true);};
     hops[0]?.classList.add('active');
     energies[0]?.classList.add('active');
     requestAnimationFrame(alignRelayRoute);

@@ -1,3 +1,14 @@
+# Pass 7.38.19 — MC03 restore + relay audio
+
+- Restored the earlier MC03 relay layout and readable node presentation while keeping interaction geometry and timing frozen.
+- Removed the visible offset capture circles; the expanding pulse now visually meets the relay node rim within the existing success window.
+- Restored one-line node captions: TRANSMITTER, RELAY 01–04 and RECEIVER; removed MISSION CONTROL and SANTA-1 from endpoint captions so all six labels align consistently.
+- Retained the objective subtitle: “Restore two-way communications with Santa-1.”
+- Kept the full-width Signal Strength bar and centred its title above the bar.
+- Refined the live connection carrier into a brighter single travelling energy packet.
+- Added web-optimised MC03 feedback audio: first 1s walkie-talkie sting for successful Relays 01–03, full walkie-talkie sting after Relay 04, and radio-tone feedback for a mistimed click.
+- Delayed the incoming-transmission handoff until the final walkie-talkie sting has completed.
+
 # Pass 7.38.18 — MC03 objective + relay clarity
 
 - Updated MC03 subtitle to “Restore two-way communications with Santa-1.”
