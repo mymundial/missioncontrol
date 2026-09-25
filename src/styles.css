@@ -6934,3 +6934,22 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   border-color:rgba(111,245,166,.72);
   box-shadow:0 0 6px rgba(103,239,158,.10);
 }
+
+
+/* Pass 7.38.24 — MC03 miss feedback: capture ring only */
+.relay-node.miss{
+  border-color:rgba(109,216,247,.72);
+  background:radial-gradient(circle at 50% 45%,rgba(86,202,239,.18),rgba(7,38,55,.96) 52%,#03131d 77%);
+  box-shadow:inset 0 0 24px rgba(50,166,207,.09);
+  transform:none;
+}
+.relay-node.miss .relay-core{
+  color:#eefaff;
+  border-color:rgba(150,232,255,.78);
+  background:radial-gradient(circle at 50% 36%,#164a60,#092a3a 72%);
+  box-shadow:0 0 8px rgba(88,210,246,.12),inset 0 1px 0 rgba(234,252,255,.12);
+}
+.relay-node.miss .relay-target{
+  border-color:rgba(255,105,105,.98);
+  box-shadow:0 0 7px rgba(255,105,105,.38),0 0 15px rgba(255,105,105,.14);
+}

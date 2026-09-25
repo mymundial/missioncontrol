@@ -1,3 +1,9 @@
+# Pass 7.38.24 — MC03 miss feedback
+
+- On a mistimed relay click, only the dotted capture ring now flashes red for the existing ~280 ms miss state, then returns to green.
+- Relay body and numbered centre remain cyan during a miss so the red feedback is isolated to the actual timing target.
+- No MC03 timing, geometry, audio, completed-link carrier behaviour, Signal Strength layout, or completion copy changed.
+
 # Pass 7.38.23 — MC03 target-ring colour + completion copy
 
 - Updated MC03 relay target rings to green so the dotted capture ring reads more clearly as the timing target while keeping relay bodies cyan.
