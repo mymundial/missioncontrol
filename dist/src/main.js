@@ -974,7 +974,7 @@
     return `<div class="mission-instrument panel artifact-panel">
       <div class="artifact-score"><span>POWER STABILITY</span><strong id="artifactProgress">0 / 10</strong></div>
       <div class="artifact-progress-track" aria-hidden="true">${Array.from({length:10},(_,i)=>`<i data-artifact-step="${i}"></i>`).join('')}</div>
-      <div class="artifact-instruction">Capture positive energy signatures.</div>
+      <div class="artifact-instruction">Collect the energy signatures.</div>
       <div class="artifact-field" id="artifactField" data-intensity="1" aria-label="Power Pulse positive energy field">
         <canvas class="starstream-canvas" id="starstreamCanvas" aria-hidden="true"></canvas>
         <div class="starstream-nebula" aria-hidden="true"></div>
@@ -983,7 +983,7 @@
         <div class="artifact-layer" id="artifactLayer"></div>
         <div class="artifact-burst-layer" id="artifactBurstLayer" aria-hidden="true"></div>
       </div>
-      <div class="signal-state artifact-state" id="artifactState">Positive energy signatures detected</div>
+      <div class="signal-state artifact-state" id="artifactState">Energy signatures detected</div>
     </div>`;
   }
   function cometBody(){
@@ -2545,22 +2545,44 @@
     ];
 
     let cleared=0;
-    let active=null;
-    let timers=[];
     let finished=false;
     let raf=0;
     let resizeObserver=null;
+    let timers=[];
     let signatureBag=[];
+    let liveItems=new Set();
 
     function clearTimers(){timers.forEach(clearTimeout);timers=[];}
     function later(fn,delay){const t=setTimeout(()=>{timers=timers.filter(id=>id!==t);fn();},delay);timers.push(t);return t;}
-    function randomPos(){return {x:14+Math.random()*72,y:14+Math.random()*70};}
+    function rand(min,max){return min+Math.random()*(max-min);}
     function intensity(){return cleared<3?1:cleared<7?2:3;}
+    function stageConfig(){
+      if(cleared<3) return {maxConcurrent:1,spawnMin:520,spawnMax:700,lifetimeMin:900,lifetimeMax:1100,armDelay:120};
+      if(cleared<7) return {maxConcurrent:2,spawnMin:340,spawnMax:520,lifetimeMin:650,lifetimeMax:830,armDelay:105};
+      return {maxConcurrent:3,spawnMin:230,spawnMax:380,lifetimeMin:460,lifetimeMax:620,armDelay:95};
+    }
     function refillSignatureBag(){
       signatureBag=[...ENERGY_SIGNATURES];
       for(let i=signatureBag.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[signatureBag[i],signatureBag[j]]=[signatureBag[j],signatureBag[i]];}
     }
     function nextSignature(){if(!signatureBag.length)refillSignatureBag();return signatureBag.pop();}
+    function randomPos(){
+      let best={x:18+Math.random()*64,y:18+Math.random()*62,score:-1};
+      for(let attempt=0;attempt<18;attempt++){
+        const candidate={x:18+Math.random()*64,y:18+Math.random()*62};
+        let nearest=999;
+        for(const item of liveItems){
+          const dx=candidate.x-item.x;
+          const dy=candidate.y-item.y;
+          const d=Math.sqrt(dx*dx+dy*dy);
+          nearest=Math.min(nearest,d);
+        }
+        if(!liveItems.size) return candidate;
+        if(nearest>best.score) best={...candidate,score:nearest};
+        if(nearest>=24) return candidate;
+      }
+      return {x:best.x,y:best.y};
+    }
 
     function setIntensity(){
       const level=intensity();
@@ -2654,37 +2676,17 @@
       raf=requestAnimationFrame(frame);
     }
 
-    function createSignature(){
-      if(finished||active) return;
-      const signature=nextSignature();
-      const pos=randomPos();
-      const el=document.createElement('button');
-      el.type='button';
-      el.className=`starstream-signature emotion-signature energy-${signature.id} is-entering`;
-      el.style.left=pos.x+'%';
-      el.style.top=pos.y+'%';
-      el.style.setProperty('--emotion-rgb',signature.rgb);
-      el.setAttribute('aria-label',`Capture ${signature.name.toLowerCase()} power signature`);
-      el.innerHTML=`
-        <span class="signature-core power-pulse-energy-core" aria-hidden="true">
-          <svg class="power-pulse-energy-icon" viewBox="66 0 66 126" focusable="false" aria-hidden="true">
-            <path d="M83.34,125.93,98.42,75.57h-32L127.44,0,112.37,50.35h32ZM79,69.55H106.5L97.88,98.34l33.88-42H104.29l8.62-28.78Z"></path>
-          </svg>
-        </span>
-        <span class="signature-scan" aria-hidden="true"></span>`;
-      layer.appendChild(el);
-      const item={el,signature,locked:false};
-      active=item;
-      later(()=>{if(active===item)el.classList.remove('is-entering');},220);
+    function removeSignature(item,className='popped',delay=220){
+      if(!item||item.locked) return;
+      item.locked=true;
+      liveItems.delete(item);
+      item.el.classList.add(className);
+      later(()=>item.el.remove(),delay);
+    }
 
-      const tap=ev=>{
-        ev.preventDefault();
-        ev.stopPropagation();
-        if(finished||!active||active!==item||item.locked) return;
-        captureSignature(item);
-      };
-      if(window.PointerEvent) el.addEventListener('pointerdown',tap,{passive:false});
-      el.addEventListener('click',tap,{passive:false});
+    function signatureCentre(item){
+      const fr=field.getBoundingClientRect(),r=item.el.getBoundingClientRect();
+      return {x:r.left-fr.left+r.width/2,y:r.top-fr.top+r.height/2};
     }
 
     function spawnBurst(x,y,rgb){
@@ -2726,38 +2728,92 @@
       field.classList.remove('is-hit');
       void field.offsetWidth;
       field.classList.add('is-hit');
-      later(()=>field.classList.remove('is-hit'),260);
+      later(()=>field.classList.remove('is-hit'),240);
     }
 
-    function signatureCentre(item){
-      const fr=field.getBoundingClientRect(),r=item.el.getBoundingClientRect();
-      return {x:r.left-fr.left+r.width/2,y:r.top-fr.top+r.height/2};
-    }
-
-    function removeSignature(item,className='popped',delay=220){
-      if(active===item) active=null;
-      item.locked=true;
-      item.el.classList.add(className);
-      later(()=>item.el.remove(),delay);
+    function expireSignature(item){
+      if(finished||!liveItems.has(item)||item.locked) return;
+      removeSignature(item,'passed',180);
+      stateEl.textContent=cleared>=10?'Power stabilised':'Signature lost · keep collecting';
     }
 
     function captureSignature(item){
-      if(finished||active!==item||item.locked) return;
+      if(finished||!liveItems.has(item)||item.locked||!item.armed) return;
       const c=signatureCentre(item);
       spawnBurst(c.x,c.y,item.signature.rgb);
-      removeSignature(item,'popped',230);
+      removeSignature(item,'popped',210);
       cleared=Math.min(10,cleared+1);
       renderStability();
       ping(630+cleared*20,.045,.018);haptic(18);
-      stateEl.textContent=cleared===10?'Power stabilised':`Positive energy captured · ${10-cleared} remaining`;
+      stateEl.textContent=cleared===10?'Power stabilised':`Signature captured · ${10-cleared} remaining`;
       if(cleared>=10){finish();return;}
-      later(createSignature,cleared>=7?90:cleared>=3?125:170);
+      later(()=>{
+        const cfg=stageConfig();
+        if(!finished&&liveItems.size<cfg.maxConcurrent) createSignature();
+      },60);
+    }
+
+    function createSignature(){
+      if(finished) return;
+      const cfg=stageConfig();
+      if(liveItems.size>=cfg.maxConcurrent) return;
+      const signature=nextSignature();
+      const pos=randomPos();
+      const el=document.createElement('button');
+      el.type='button';
+      el.className=`starstream-signature emotion-signature energy-${signature.id} is-entering`;
+      el.style.left=pos.x+'%';
+      el.style.top=pos.y+'%';
+      el.style.setProperty('--emotion-rgb',signature.rgb);
+      el.setAttribute('aria-label',`Capture ${signature.name.toLowerCase()} energy signature`);
+      el.innerHTML=`
+        <span class="signature-core power-pulse-energy-core" aria-hidden="true">
+          <svg class="power-pulse-energy-icon" viewBox="66 0 66 126" focusable="false" aria-hidden="true">
+            <path d="M83.34,125.93,98.42,75.57h-32L127.44,0,112.37,50.35h32ZM79,69.55H106.5L97.88,98.34l33.88-42H104.29l8.62-28.78Z"></path>
+          </svg>
+        </span>
+        <span class="signature-scan" aria-hidden="true"></span>`;
+      layer.appendChild(el);
+
+      const item={el,signature,x:pos.x,y:pos.y,locked:false,armed:false};
+      liveItems.add(item);
+
+      later(()=>{
+        if(finished||item.locked||!liveItems.has(item)) return;
+        item.armed=true;
+        el.classList.remove('is-entering');
+      },cfg.armDelay);
+
+      later(()=>expireSignature(item), rand(cfg.lifetimeMin,cfg.lifetimeMax));
+
+      const tap=ev=>{
+        ev.preventDefault();
+        ev.stopPropagation();
+        captureSignature(item);
+      };
+      if(window.PointerEvent) el.addEventListener('pointerdown',tap,{passive:false});
+      el.addEventListener('click',tap,{passive:false});
+    }
+
+    function scheduleSpawn(){
+      if(finished) return;
+      const cfg=stageConfig();
+      later(()=>{
+        if(finished) return;
+        if(liveItems.size<cfg.maxConcurrent) createSignature();
+        scheduleSpawn();
+      }, rand(cfg.spawnMin,cfg.spawnMax));
     }
 
     function finish(){
       finished=true;
       clearTimers();
-      if(active){active.el.classList.add('absorbed');setTimeout(()=>active?.el?.remove(),220);active=null;}
+      for(const item of liveItems){
+        item.locked=true;
+        item.el.classList.add('absorbed');
+        setTimeout(()=>item.el.remove(),180);
+      }
+      liveItems.clear();
       panel?.classList.add('is-complete');
       field.classList.remove('is-hit');
       field.classList.add('stabilised');
@@ -2769,17 +2825,20 @@
 
     renderStability();
     startStarstream();
+    stateEl.textContent='Energy signatures detected';
     createSignature();
+    scheduleSpawn();
 
     cleanupMission=()=>{
       finished=true;
       clearTimers();
       if(raf)cancelAnimationFrame(raf);
       resizeObserver?.disconnect?.();
-      active?.el?.remove();
-      active=null;
+      for(const item of liveItems){item.el.remove();}
+      liveItems.clear();
     };
   }
+
   function bindComet(){
     const dirClass={L:'left',D:'down',U:'up',R:'right'};
     const keys=['L','D','U','R'];
