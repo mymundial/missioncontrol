@@ -377,9 +377,10 @@ if(
   /mc02-static-control/.test(runtime) && /mc02-static-traction/.test(runtime) && /mc02-static-response/.test(runtime) &&
   !/mc02-airflow/.test(runtime) && !/mc02-power-trace/.test(runtime) && !/mc02-control-marker/.test(runtime) &&
   !/mc02-tyre/.test(runtime) && !/mc02-response-packet/.test(runtime) &&
-  /Pass 7\.38\.32: MC-02 static Silverstone icon suite/.test(css) &&
+  /Pass 7\.38\.34: MC-02 icon placement \/ visual-bounds fit/.test(css) &&
   /\.sensor-viz,\n\.mission-diagnostics \.sensor-viz \*\{[\s\S]*?animation:none!important/.test(css) &&
   /mc02-static-aero[\s\S]*?mc02-aero-pit-perfect\.svg/.test(css) &&
+  /mc02-static-stability[\s\S]*?mc02-stunt-driving\.svg/.test(css) &&
   /mc02-static-power[\s\S]*?system-propulsion\.svg/.test(css) &&
   /mc02-static-control[\s\S]*?system-guidance\.svg/.test(css) &&
   /mc02-static-traction[\s\S]*?system-control\.svg/.test(css) &&

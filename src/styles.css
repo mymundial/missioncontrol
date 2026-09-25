@@ -7209,13 +7209,13 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .mission-diagnostics .sensor-stability.done .stability-arc{stroke:rgba(103,218,252,.22);}
 .mission-diagnostics .sensor-stability.done .stability-centre{stroke:rgba(105,220,255,.18);}
 
-/* === Pass 7.38.33: MC-02 static icon fit/alignment cleanup ================= */
+/* === Pass 7.38.34: MC-02 icon placement / visual-bounds fit ============== */
 .mission-diagnostics .diagnostics-head p.support-copy{
   white-space:nowrap;
   max-width:none;
 }
 
-/* Remove legacy diagnostic pseudo artwork and motion. */
+/* No legacy motion or pseudo artwork inside the six MC-02 scan visuals. */
 .mission-diagnostics .sensor-viz::before,
 .mission-diagnostics .sensor-viz::after{
   content:none!important;
@@ -7227,18 +7227,17 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   transition:none!important;
 }
 
-/* One clean, fixed visual zone per tile.
-   This keeps every icon centred between the heading and the TAP TO SCAN label,
-   without changing tile size, copy, or CTA layout. */
+/* The 98px scan tile has a heading ending at ~25px and state text beginning
+   at ~81px. Keep the icon in the bounded band between them. */
 .mission-diagnostics .sensor-viz{
   position:absolute!important;
   left:50%!important;
-  top:58px!important;
+  top:30px!important;
   display:block!important;
   width:108px!important;
   max-width:108px!important;
-  height:52px!important;
-  max-height:52px!important;
+  height:44px!important;
+  max-height:44px!important;
   margin:0!important;
   padding:0!important;
   overflow:visible!important;
@@ -7253,9 +7252,9 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   filter:none!important;
 }
 
-/* One centred icon system across all six diagnostics.
-   Individual width/height values compensate for each SVG's internal whitespace
-   so the perceived size remains consistent across the set. */
+/* All six source SVGs use a 210x126 viewBox but their actual artwork occupies
+   different internal bounds. These sizes normalise the VISIBLE artwork to
+   approximately the same 34px height rather than normalising the viewBox. */
 .mission-diagnostics .mc02-static-icon{
   position:absolute!important;
   left:50%!important;
@@ -7278,51 +7277,43 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   mask-size:contain!important;
 }
 
-/* 01 AERO — full Pit Perfect garage/fan artwork, no crop. */
 .mission-diagnostics .mc02-static-aero{
-  width:80px!important;
-  height:48px!important;
+  width:65px!important;
+  height:39px!important;
   -webkit-mask-image:url("../assets/mc02-aero-pit-perfect.svg")!important;
   mask-image:url("../assets/mc02-aero-pit-perfect.svg")!important;
 }
-/* 02 STABILITY — Stunt Driving. */
 .mission-diagnostics .mc02-static-stability{
-  width:72px!important;
-  height:43px!important;
+  width:62px!important;
+  height:37px!important;
   -webkit-mask-image:url("../assets/mc02-stunt-driving.svg")!important;
   mask-image:url("../assets/mc02-stunt-driving.svg")!important;
 }
-/* 03 POWER — Propulsion speedometer. */
 .mission-diagnostics .mc02-static-power{
-  width:80px!important;
-  height:47px!important;
+  width:68px!important;
+  height:41px!important;
   -webkit-mask-image:url("../assets/system-propulsion.svg")!important;
   mask-image:url("../assets/system-propulsion.svg")!important;
 }
-/* 04 CONTROL — Guidance steering wheel. */
 .mission-diagnostics .mc02-static-control{
-  width:70px!important;
-  height:42px!important;
+  width:59px!important;
+  height:35px!important;
   -webkit-mask-image:url("../assets/system-guidance.svg")!important;
   mask-image:url("../assets/system-guidance.svg")!important;
 }
-/* 05 TRACTION — Control skidding car. */
 .mission-diagnostics .mc02-static-traction{
-  width:74px!important;
-  height:44px!important;
+  width:61px!important;
+  height:37px!important;
   -webkit-mask-image:url("../assets/system-control.svg")!important;
   mask-image:url("../assets/system-control.svg")!important;
 }
-/* 06 RESPONSE — Response cone diagram. */
 .mission-diagnostics .mc02-static-response{
-  width:72px!important;
-  height:43px!important;
+  width:57px!important;
+  height:34px!important;
   -webkit-mask-image:url("../assets/system-response.svg")!important;
   mask-image:url("../assets/system-response.svg")!important;
 }
 
-/* Keep the icon itself cyan for now. Completion is communicated by the card
-   border/state text while the icon suite is being approved. */
 .mission-diagnostics .sensor.done .mc02-static-icon{
   background:#78dfff!important;
   opacity:.94!important;
@@ -7331,21 +7322,21 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 
 @media(max-height:740px){
   .mission-diagnostics .sensor-viz{
-    top:52px!important;
+    top:27px!important;
     width:100px!important;
     max-width:100px!important;
-    height:48px!important;
-    max-height:48px!important;
+    height:42px!important;
+    max-height:42px!important;
   }
   .mission-diagnostics .mc02-static-icon{transform:translate(-50%,-50%) scale(.92)!important;}
 }
 @media(max-height:660px){
   .mission-diagnostics .sensor-viz{
-    top:48px!important;
+    top:25px!important;
     width:94px!important;
     max-width:94px!important;
-    height:44px!important;
-    max-height:44px!important;
+    height:39px!important;
+    max-height:39px!important;
   }
   .mission-diagnostics .mc02-static-icon{transform:translate(-50%,-50%) scale(.86)!important;}
 }
