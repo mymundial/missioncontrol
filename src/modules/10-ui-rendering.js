@@ -251,7 +251,7 @@
       power:'Test Santa-1’s propulsion system.',
       spirit:'Store the recovered energy.',
       placeholder:'This checkpoint is reserved while the final installation game is developed.',
-      artifacts:'Stabilise the racing energy.',
+      artifacts:'Collect the energy signatures.',
       comet:'Align Santa-1’s guidance system.',
       jingle:'Re-engage Santa-1’s flight controls.',
       lando:'Calibrate Santa-1’s flight response.',

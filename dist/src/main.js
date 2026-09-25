@@ -826,7 +826,7 @@
       power:'Test Santa-1’s propulsion system.',
       spirit:'Store the recovered energy.',
       placeholder:'This checkpoint is reserved while the final installation game is developed.',
-      artifacts:'Stabilise the racing energy.',
+      artifacts:'Collect the energy signatures.',
       comet:'Align Santa-1’s guidance system.',
       jingle:'Re-engage Santa-1’s flight controls.',
       lando:'Calibrate Santa-1’s flight response.',
@@ -2820,7 +2820,7 @@
       beam.classList.add('active');
       progress.textContent='10 / 10';
       ping(920,.12,.045);haptic([28,24,58]);
-      setTimeout(()=>showCompletion('Power Stabilised','The racing energy has been stabilised and is ready to power Santa-1.'),900);
+      setTimeout(()=>showCompletion('Power Stabilised','The positive energy signatures have been captured and stabilised, ready to be stored in Santa-1’s Spirit Core.'),900);
     }
 
     renderStability();
