@@ -1,7 +1,12 @@
-assets/system-launch.svg
-assets/mission-audio-icon.webp
+assets/mc02-aero-fan-part.svg
 assets/mc02-aero-fan.svg
-assets/mc02-no-speed-limits.svg
-assets/mc02-traction-drift.svg
+assets/mc02-aero-frame.svg
 assets/mc02-aero-pit-perfect.svg
+assets/mc02-control-outer-ring.svg
+assets/mc02-no-speed-limits.svg
+assets/mc02-power-gauge.svg
+assets/mc02-power-needle.svg
 assets/mc02-stunt-driving.svg
+assets/mc02-traction-drift.svg
+assets/mission-audio-icon.webp
+assets/system-launch.svg

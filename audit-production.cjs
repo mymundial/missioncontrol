@@ -373,28 +373,32 @@ if(
   /Tap to scan/.test(runtime) &&
   /Capture the engineering data needed for Santa-1\./.test(runtime) &&
   /The racing performance data has been captured and is ready to support Santa-1’s recovery systems\./.test(runtime) &&
-  /mc02-icon-aero/.test(runtime) && /mc02-aero-frame/.test(runtime) && /mc02-aero-fan/.test(runtime) &&
+  /mc02-aero-svg/.test(runtime) && /mc02-aero-frame-path/.test(runtime) && /mc02-aero-fan-group/.test(runtime) &&
   /mc02-icon-stability/.test(runtime) && /mc02-stability-car/.test(runtime) && /mc02-stability-headlights/.test(runtime) &&
-  /mc02-icon-power/.test(runtime) && /mc02-power-gauge/.test(runtime) && /mc02-power-needle/.test(runtime) &&
+  /mc02-power-svg/.test(runtime) && /mc02-power-gauge-path/.test(runtime) && /mc02-power-needle-group/.test(runtime) &&
   /mc02-icon-control/.test(runtime) && /mc02-control-wheel/.test(runtime) && /mc02-control-ring/.test(runtime) &&
   /mc02-icon-traction/.test(runtime) && /mc02-traction-car/.test(runtime) && /mc02-traction-skids/.test(runtime) &&
   /mc02-icon-response/.test(runtime) && /mc02-response-cones/.test(runtime) && /mc02-response-arrow/.test(runtime) &&
-  /Pass 7\.38\.35: MC-02 split-SVG diagnostic animation suite/.test(css) &&
-  /sensor-aero\.active \.mc02-aero-fan[\s\S]*?mc02AeroFanSpin/.test(css) &&
+  /Pass 7\.38\.36: MC-02 component animation correction/.test(css) &&
+  /sensor-aero\.active \.mc02-aero-fan-group[\s\S]*?mc02AeroFanSpin/.test(css) &&
+  /sensor-aero\.done \.mc02-aero-fan-path[\s\S]*?var\(--green\)/.test(css) &&
   /sensor-stability\.active \.mc02-icon-stability[\s\S]*?mc02StabilityTilt/.test(css) &&
-  /sensor-stability\.active \.mc02-stability-headlights[\s\S]*?var\(--green\)/.test(css) &&
-  /sensor-power\.active \.mc02-power-needle[\s\S]*?mc02PowerNeedleSweep/.test(css) &&
+  /sensor-stability\.done \.mc02-stability-headlights[\s\S]*?var\(--green\)/.test(css) &&
+  /sensor-power\.active \.mc02-power-needle-group[\s\S]*?mc02PowerNeedleSweep/.test(css) &&
+  /transform-origin:105px 87px/.test(css) &&
+  /mc02-control-mid-ring\.svg/.test(css) &&
   /sensor-control\.active \.mc02-icon-control[\s\S]*?mc02ControlRightAndBack/.test(css) &&
-  /sensor-control\.active \.mc02-control-ring[\s\S]*?var\(--green\)/.test(css) &&
-  /sensor-traction\.active \.mc02-traction-skids[\s\S]*?var\(--green\)/.test(css) &&
-  /sensor-traction\.active \.mc02-traction-shine[\s\S]*?mc02TrackShine/.test(css) &&
-  /sensor-response\.active \.mc02-response-arrow[\s\S]*?var\(--green\)/.test(css) &&
-  /sensor-response\.active \.mc02-response-shine[\s\S]*?mc02TrackShine/.test(css) &&
-  /sensor\.done \.mc02-layer:not\(\.mc02-traction-shine\):not\(\.mc02-response-shine\)[\s\S]*?background:var\(--green\)/.test(css) &&
-  ['mc02-aero-frame.svg','mc02-aero-fan-part.svg','mc02-stability-front-car.svg','mc02-stability-headlights.svg','mc02-power-gauge.svg','mc02-power-needle.svg','mc02-control-outer-ring.svg','mc02-traction-car.svg','mc02-traction-skids.svg','mc02-response-cones.svg','mc02-response-arrow.svg'].every(name=>exists(`assets/${name}`))
+  /sensor-control\.done \.mc02-control-ring[\s\S]*?var\(--green\)/.test(css) &&
+  /sensor-traction\.active \.mc02-traction-car[\s\S]*?animation:none/.test(css) &&
+  /sensor-traction\.done \.mc02-traction-skids[\s\S]*?var\(--green\)/.test(css) &&
+  /mc02TractionColourFlow/.test(css) &&
+  /sensor-response\.done \.mc02-response-arrow[\s\S]*?var\(--green\)/.test(css) &&
+  /mc02ResponseFlow/.test(css) &&
+  !/sensor\.done \.mc02-layer:not/.test(css) &&
+  ['mc02-stability-front-car.svg','mc02-stability-headlights.svg','mc02-control-mid-ring.svg','mc02-traction-car.svg','mc02-traction-skids.svg','mc02-response-cones.svg','mc02-response-arrow.svg'].every(name=>exists(`assets/${name}`))
 ) {
-  ok('MC02 split-SVG animation suite','Velocity Vault uses the approved one-line objective, retained icon placement, source-part scan animations, and whole-icon green capture state.');
-} else fail('MC02 split-SVG animation suite','MC02 split-part mapping, scan animation, completion colour, or required SVG assets are incomplete');
+  ok('MC02 component animation suite','Velocity Vault keeps the approved icon placement while animating only the intended source component; captured state remains selective green with the rest of each icon cyan.');
+} else fail('MC02 component animation suite','MC02 component mapping, pivot animation, selective completion colour, or required SVG assets are incomplete');
 
 // 12) External runtime dependencies / launch notes.
 const urls=[...runtime.matchAll(/https:\/\/[^'"`\s)]+/g)].map(m=>m[0]);

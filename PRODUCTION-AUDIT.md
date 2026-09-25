@@ -10,7 +10,7 @@ PASS  Runtime references — All static runtime asset/font/script/style referenc
 PASS  Dead production assets — Every deployed asset and font is referenced
 PASS  Legacy format references — No runtime references to retired PNG/JPEG/WAV/TTF/OTF files
 PASS  Asset file integrity — WebP, WOFF2 and MP3 signatures match their extensions
-PASS  CSS brace balance — 3235 rule blocks balanced
+PASS  CSS brace balance — 3253 rule blocks balanced
 PASS  Vercel configuration — Static build targets dist with npm run build
 PASS  Admin asset base — /admin uses root-relative base for shared runtime assets
 PASS  Service-worker retirement — Retirement shim only: no fetch interception; clears legacy caches and unregisters
@@ -34,7 +34,7 @@ PASS  MC01 web assets — Bloom audio 53.9 KB; S mark 4.4 KB
 PASS  MC03 visual-only polish — Pre-redesign relay geometry/timing remain intact; route states are dashed future, solid active and solid completed, with node surfaces masking the centre-aligned links.
 PASS  MC03 restrained relay-success pass — Capture ring diameter is reduced, the redundant concentric ring is removed, relay nodes remain cyan, completed links turn green, and travelling packets persist on completed links without changing hit timing.
 PASS  MC03 synchronized timing cue — Travelling packets and the active node pulse share one measured cycle phase; packet arrival coincides with the dotted capture ring and the miss bump/red target feedback is restored.
-PASS  MC02 split-SVG animation suite — Velocity Vault uses the approved one-line objective, retained icon placement, source-part scan animations, and whole-icon green capture state.
+PASS  MC02 component animation suite — Velocity Vault keeps the approved icon placement while animating only the intended source component; captured state remains selective green with the rest of each icon cyan.
 WARN  Deployment footprint — 8.34 MB exceeds the 7 MB audit target
 WARN  ELF FM stream — Current build still identifies the Radio Mast URL as a test stream; replace before final public launch if a production stream is supplied
 WARN  Web app manifest — No install icon is defined. This does not affect normal browser use, only add-to-home-screen presentation.

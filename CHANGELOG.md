@@ -1,20 +1,10 @@
-# Pass 7.38.35 — MC02 split-SVG diagnostic animation suite
+# Pass 7.38.36 — MC02 component animation correction
 
-## Scope
-- MC02 Velocity Vault only.
-- Preserve the verified 7.38.34 card/icon placement geometry and all existing scan timings/mechanics.
-
-## Animation system
-- **Aero:** split the original Pit Perfect artwork into garage/frame and fan assembly. During scan only the fan turns green and spins clockwise. Whole icon turns green on capture.
-- **Stability:** replaced Stunt Driving with the supplied front-on Top Cars artwork. During scan the car gently tilts left/right while only the two original headlight shapes turn green. Whole icon turns green on capture.
-- **Power:** split the original Propulsion speedometer into gauge and needle. During scan only the needle turns green and sweeps from zero to its original source-art position around the real hub. Whole icon turns green on capture.
-- **Control:** retained the original Guidance steering-wheel artwork. During scan it moves from its existing left position to the equivalent right position and back; only the original outer ring turns green. Whole icon turns green on capture.
-- **Traction:** split the original Control/skidding-car artwork into car and original skid-mark paths. During scan only those original skid marks turn green and carry the travelling green-white highlight. Whole icon turns green on capture.
-- **Response:** split the original Response artwork into cones and original arrow/path. During scan only that original arrow/path turns green and carries the travelling green-white highlight. Whole icon turns green on capture.
-
-## Preserved
-- One-line Velocity Vault description: `Capture the engineering data needed for Santa-1.`
-- Six-card 2x3 layout and verified icon band positioning.
-- Existing scan timings `[1600,1900,1700,2000,1800,2200]`.
-- `Tap to scan` → `Scanning…` → `Captured ✓` state flow.
-- `Complete Scan` CTA and mission-complete behaviour.
+## MC02 only
+- Aero: rebuilt as inline SVG so the garage/frame is fixed; only the fan group rotates. Fan is green during scan and remains green after capture; garage remains cyan.
+- Stability: corrected the selected lamp geometry to the actual left/right headlight shapes. Car still performs the gentle stability tilt; only headlights remain green after capture.
+- Power: rebuilt gauge/needle as inline SVG. Gauge remains completely static; needle pivots around the true gauge hub, starts at the zero end, then sweeps to the original/source needle position. Only the needle remains green after capture.
+- Control: replaced the highlighted outer ring with the second/middle ring. Wheel retains the left-to-right-to-left calibration movement; only the second ring remains green after capture.
+- Traction: car is explicitly static and cyan. Original skid-mark SVG geometry only changes colour via a travelling highlight; no scale/geometry animation. Only skid marks remain green after capture.
+- Response: cones remain cyan. Original arrow/path receives a slower bottom-to-top green/white flow. Only the arrow remains green after capture.
+- Removed superseded split assets no longer referenced by Aero, Power, or Control.
