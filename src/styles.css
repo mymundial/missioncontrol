@@ -7605,3 +7605,43 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   .artifact-head .artifact-sponsor{width:116px;max-width:38vw;}
   .starstream-signature.emotion-signature .signature-emotion-icon img{width:52%;height:52%;}
 }
+
+/* === Power Pulse production PNG assets: render cleanly, no legacy target treatment === */
+.starstream-signature.emotion-signature{
+  background:none!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+}
+.starstream-signature.emotion-signature::before,
+.starstream-signature.emotion-signature::after,
+.starstream-signature.emotion-signature .signature-orbit,
+.starstream-signature.emotion-signature .signature-scan{
+  display:none!important;
+}
+.starstream-signature.emotion-signature .signature-core,
+.starstream-signature.emotion-signature .signature-emotion-icon{
+  inset:-7px!important;
+  width:auto!important;
+  height:auto!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  overflow:visible!important;
+}
+.starstream-signature.emotion-signature .signature-core img,
+.starstream-signature.emotion-signature .signature-emotion-icon img{
+  width:100%!important;
+  height:100%!important;
+  max-width:none!important;
+  object-fit:contain!important;
+  object-position:50% 50%!important;
+  opacity:1!important;
+  transform:none!important;
+  filter:none!important;
+}
+@media(max-width:390px){
+  .starstream-signature.emotion-signature .signature-core,
+  .starstream-signature.emotion-signature .signature-emotion-icon{inset:-6px!important;}
+  .starstream-signature.emotion-signature .signature-core img,
+  .starstream-signature.emotion-signature .signature-emotion-icon img{width:100%!important;height:100%!important;}
+}
