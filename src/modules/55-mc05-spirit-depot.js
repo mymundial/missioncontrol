@@ -15,7 +15,7 @@
       A:document.querySelector('.spirit-bank-left'),
       B:document.querySelector('.spirit-bank-right')
     };
-    if(!rig||!stageNumber||stageDots.length!==5||buttons.length!==2||tankMap.A.length!==4||tankMap.B.length!==4) return;
+    if(!rig||!stageNumber||stageDots.length!==8||buttons.length!==2||tankMap.A.length!==4||tankMap.B.length!==4) return;
 
     const tapsPerTank=4;
     const tanksPerBank=4;
@@ -40,23 +40,20 @@
       }catch{}
     }
 
-    function stageFromHits(){
-      if(hits>=totalTaps) return 4;
-      return Math.min(4,Math.floor((hits/totalTaps)*5));
+    function completedTanks(){
+      return Math.min(8,Math.floor(hits/tapsPerTank));
     }
 
     function updateStage(){
-      const stage=stageFromHits();
-      const stageStart=(stage/5)*totalTaps;
-      const stageEnd=((stage+1)/5)*totalTaps;
-      const local=Math.max(0,Math.min(1,(hits-stageStart)/(stageEnd-stageStart)));
-      rig.dataset.stage=String(stage);
-      stageNumber.textContent=String(stage+1).padStart(2,'0');
+      const progressUnits=Math.max(0,Math.min(8,hits/tapsPerTank));
+      const done=completedTanks();
+      rig.dataset.stage=String(done);
+      stageNumber.textContent=String(done).padStart(2,'0');
       stageDots.forEach((dot,i)=>{
-        const progress=i<stage?1:i===stage?local:0;
-        dot.classList.toggle('complete',i<stage||(completed&&i===4));
-        dot.classList.toggle('active',!completed&&i===stage);
-        dot.classList.toggle('on',i<stage||(completed&&i===4));
+        const progress=Math.max(0,Math.min(1,progressUnits-i));
+        dot.classList.toggle('complete',progress>=1);
+        dot.classList.toggle('active',progress>0&&progress<1);
+        dot.classList.toggle('on',progress>0);
         dot.style.setProperty('--stage-progress',String(progress));
       });
     }
@@ -70,8 +67,7 @@
       bank?.classList.toggle('is-next',!completed&&expected===side);
       const tanks=tankMap[side];
       tanks.forEach((tank,displayIndex)=>{
-        const fillOrder=(tanks.length-1)-displayIndex;
-        const local=Math.max(0,Math.min(1,(sideTotal-(fillOrder*tapsPerTank))/tapsPerTank));
+        const local=Math.max(0,Math.min(1,(sideTotal-(displayIndex*tapsPerTank))/tapsPerTank));
         tank.style.setProperty('--tank-fill',String(local));
         tank.classList.toggle('is-active',local>0&&local<1);
         tank.classList.toggle('is-full',local>=1);
@@ -82,7 +78,7 @@
       const bank=bankMap[side];
       const meter=meterMap[side];
       const tanks=tankMap[side];
-      const active=tanks.find(tank=>tank.classList.contains('is-active')) || [...tanks].reverse().find(tank=>tank.classList.contains('is-full'));
+      const active=tanks.find(tank=>tank.classList.contains('is-active')) || [...tanks].filter(tank=>tank.classList.contains('is-full')).pop();
       [bank,meter,button,active].forEach(el=>{
         if(!el) return;
         el.classList.remove('is-pumping');
@@ -95,8 +91,7 @@
 
     function tankJustFilled(side){
       if(sideHits[side]===0||sideHits[side]%tapsPerTank!==0) return;
-      const completedFromBottom=(sideHits[side]/tapsPerTank)-1;
-      const displayIndex=(tanksPerBank-1)-completedFromBottom;
+      const displayIndex=(sideHits[side]/tapsPerTank)-1;
       const tank=tankMap[side][displayIndex];
       if(!tank) return;
       tank.classList.remove('is-locking');
@@ -120,9 +115,11 @@
     function completeSpirit(){
       completed=true;
       rig.classList.add('is-complete');
-      stageNumber.textContent='05';
+      stageNumber.textContent='08';
       stageDots.forEach(dot=>{
-        dot.classList.add('complete','on');dot.classList.remove('active');dot.style.setProperty('--stage-progress','1');
+        dot.classList.add('complete','on');
+        dot.classList.remove('active');
+        dot.style.setProperty('--stage-progress','1');
       });
       updateExpected();
       buttons.forEach(button=>{button.disabled=true;button.classList.remove('is-next');});
@@ -133,7 +130,9 @@
     }
 
     function flashWrong(button){
-      button.classList.remove('is-wrong');void button.offsetWidth;button.classList.add('is-wrong');
+      button.classList.remove('is-wrong');
+      void button.offsetWidth;
+      button.classList.add('is-wrong');
       setTimeout(()=>button.classList.remove('is-wrong'),280);
       haptic([12,22,12]);
     }
@@ -156,7 +155,10 @@
     }
 
     buttons.forEach(button=>button.addEventListener('click',onCharge));
-    updateBank('A');updateBank('B');updateStage();updateExpected();
+    updateBank('A');
+    updateBank('B');
+    updateStage();
+    updateExpected();
 
     cleanupMission=()=>{
       clearTimeout(finishTimer);

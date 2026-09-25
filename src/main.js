@@ -949,13 +949,25 @@
     </div>`;
   }
   function spiritBody(){
-    const tankCells=side=>Array.from({length:4},(_,i)=>`<div class="spirit-tank-cell" data-spirit-tank="${side}-${i}">
+    const tankDefs=[
+      {side:'left',index:0,key:'purple',rgb:'198,92,255',color:'#c65cff',name:'Purple energy'},
+      {side:'left',index:1,key:'green',rgb:'92,245,96',color:'#5cf560',name:'Green energy'},
+      {side:'left',index:2,key:'red',rgb:'255,92,116',color:'#ff5c74',name:'Red energy'},
+      {side:'left',index:3,key:'blue',rgb:'76,219,255',color:'#4cdbff',name:'Light blue energy'},
+      {side:'right',index:0,key:'yellow',rgb:'255,224,84',color:'#ffe054',name:'Yellow energy'},
+      {side:'right',index:1,key:'pink',rgb:'255,110,186',color:'#ff6eba',name:'Pink energy'},
+      {side:'right',index:2,key:'white',rgb:'247,250,255',color:'#f7faff',name:'White energy'},
+      {side:'right',index:3,key:'orange',rgb:'255,176,64',color:'#ffb040',name:'Orange energy'}
+    ];
+    const bhpIcon=`<svg class="spirit-bhp-icon" viewBox="66 0 66 126" focusable="false" aria-hidden="true"><path d="M83.34,125.93,98.42,75.57h-32L127.44,0,112.37,50.35h32ZM79,69.55H106.5L97.88,98.34l33.88-42H104.29l8.62-28.78Z"></path></svg>`;
+    const tankCells=side=>tankDefs.filter(tank=>tank.side===side).map(tank=>`<div class="spirit-tank-cell spirit-tank-${tank.key}" data-spirit-tank="${tank.side}-${tank.index}" data-spirit-color="${tank.key}" style="--tank-rgb:${tank.rgb};--tank-color:${tank.color};" aria-label="${tank.name} storage tank">
       <span class="spirit-tank-energy"></span><span class="spirit-tank-shimmer"></span>
+      <span class="spirit-tank-plate" aria-hidden="true"><span class="spirit-tank-plate-face">${bhpIcon}</span></span>
       <span class="spirit-tank-vent" aria-hidden="true"><i></i><i></i><i></i></span>
     </div>`).join('');
-    const stageDots=Array.from({length:5},(_,i)=>`<i data-spirit-stage-dot="${i}"></i>`).join('');
+    const stageDots=tankDefs.map((tank,i)=>`<i data-spirit-stage-dot="${i}" data-spirit-progress-color="${tank.key}" style="--tank-rgb:${tank.rgb};--tank-color:${tank.color};"></i>`).join('');
     return `<div class="mission-instrument panel spirit-panel" id="spiritRig" data-stage="0">
-      <div class="spirit-score"><span>CORE CHARGE</span><strong><b id="spiritStageNumber">01</b> / 05</strong></div>
+      <div class="spirit-score"><span>CORE CHARGE</span><strong><b id="spiritStageNumber">00</b> / 08</strong></div>
       <div class="spirit-stage-progress" id="spiritStageProgress" aria-hidden="true">${stageDots}</div>
       <div class="spirit-apparatus" aria-label="Spirit energy storage tanks">
         <div class="spirit-meter spirit-meter-left" aria-hidden="true"><span class="spirit-meter-fill"></span><b class="spirit-meter-marker"></b></div>
@@ -2376,7 +2388,7 @@
       A:document.querySelector('.spirit-bank-left'),
       B:document.querySelector('.spirit-bank-right')
     };
-    if(!rig||!stageNumber||stageDots.length!==5||buttons.length!==2||tankMap.A.length!==4||tankMap.B.length!==4) return;
+    if(!rig||!stageNumber||stageDots.length!==8||buttons.length!==2||tankMap.A.length!==4||tankMap.B.length!==4) return;
 
     const tapsPerTank=4;
     const tanksPerBank=4;
@@ -2401,23 +2413,20 @@
       }catch{}
     }
 
-    function stageFromHits(){
-      if(hits>=totalTaps) return 4;
-      return Math.min(4,Math.floor((hits/totalTaps)*5));
+    function completedTanks(){
+      return Math.min(8,Math.floor(hits/tapsPerTank));
     }
 
     function updateStage(){
-      const stage=stageFromHits();
-      const stageStart=(stage/5)*totalTaps;
-      const stageEnd=((stage+1)/5)*totalTaps;
-      const local=Math.max(0,Math.min(1,(hits-stageStart)/(stageEnd-stageStart)));
-      rig.dataset.stage=String(stage);
-      stageNumber.textContent=String(stage+1).padStart(2,'0');
+      const progressUnits=Math.max(0,Math.min(8,hits/tapsPerTank));
+      const done=completedTanks();
+      rig.dataset.stage=String(done);
+      stageNumber.textContent=String(done).padStart(2,'0');
       stageDots.forEach((dot,i)=>{
-        const progress=i<stage?1:i===stage?local:0;
-        dot.classList.toggle('complete',i<stage||(completed&&i===4));
-        dot.classList.toggle('active',!completed&&i===stage);
-        dot.classList.toggle('on',i<stage||(completed&&i===4));
+        const progress=Math.max(0,Math.min(1,progressUnits-i));
+        dot.classList.toggle('complete',progress>=1);
+        dot.classList.toggle('active',progress>0&&progress<1);
+        dot.classList.toggle('on',progress>0);
         dot.style.setProperty('--stage-progress',String(progress));
       });
     }
@@ -2431,8 +2440,7 @@
       bank?.classList.toggle('is-next',!completed&&expected===side);
       const tanks=tankMap[side];
       tanks.forEach((tank,displayIndex)=>{
-        const fillOrder=(tanks.length-1)-displayIndex;
-        const local=Math.max(0,Math.min(1,(sideTotal-(fillOrder*tapsPerTank))/tapsPerTank));
+        const local=Math.max(0,Math.min(1,(sideTotal-(displayIndex*tapsPerTank))/tapsPerTank));
         tank.style.setProperty('--tank-fill',String(local));
         tank.classList.toggle('is-active',local>0&&local<1);
         tank.classList.toggle('is-full',local>=1);
@@ -2443,7 +2451,7 @@
       const bank=bankMap[side];
       const meter=meterMap[side];
       const tanks=tankMap[side];
-      const active=tanks.find(tank=>tank.classList.contains('is-active')) || [...tanks].reverse().find(tank=>tank.classList.contains('is-full'));
+      const active=tanks.find(tank=>tank.classList.contains('is-active')) || [...tanks].filter(tank=>tank.classList.contains('is-full')).pop();
       [bank,meter,button,active].forEach(el=>{
         if(!el) return;
         el.classList.remove('is-pumping');
@@ -2456,8 +2464,7 @@
 
     function tankJustFilled(side){
       if(sideHits[side]===0||sideHits[side]%tapsPerTank!==0) return;
-      const completedFromBottom=(sideHits[side]/tapsPerTank)-1;
-      const displayIndex=(tanksPerBank-1)-completedFromBottom;
+      const displayIndex=(sideHits[side]/tapsPerTank)-1;
       const tank=tankMap[side][displayIndex];
       if(!tank) return;
       tank.classList.remove('is-locking');
@@ -2481,9 +2488,11 @@
     function completeSpirit(){
       completed=true;
       rig.classList.add('is-complete');
-      stageNumber.textContent='05';
+      stageNumber.textContent='08';
       stageDots.forEach(dot=>{
-        dot.classList.add('complete','on');dot.classList.remove('active');dot.style.setProperty('--stage-progress','1');
+        dot.classList.add('complete','on');
+        dot.classList.remove('active');
+        dot.style.setProperty('--stage-progress','1');
       });
       updateExpected();
       buttons.forEach(button=>{button.disabled=true;button.classList.remove('is-next');});
@@ -2494,7 +2503,9 @@
     }
 
     function flashWrong(button){
-      button.classList.remove('is-wrong');void button.offsetWidth;button.classList.add('is-wrong');
+      button.classList.remove('is-wrong');
+      void button.offsetWidth;
+      button.classList.add('is-wrong');
       setTimeout(()=>button.classList.remove('is-wrong'),280);
       haptic([12,22,12]);
     }
@@ -2517,7 +2528,10 @@
     }
 
     buttons.forEach(button=>button.addEventListener('click',onCharge));
-    updateBank('A');updateBank('B');updateStage();updateExpected();
+    updateBank('A');
+    updateBank('B');
+    updateStage();
+    updateExpected();
 
     cleanupMission=()=>{
       clearTimeout(finishTimer);
