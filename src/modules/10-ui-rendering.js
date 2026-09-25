@@ -231,6 +231,9 @@
     if(cp.type==='activation'){
       return `<div class="mission-head mc01-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
     }
+    if(cp.type==='artifacts'){
+      return `<div class="mission-head artifact-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><div class="artifact-sponsor"><img src="./assets/care-bears-logo.png" alt="Care Bears"></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
+    }
     if(cp.type==='spirit'){
       return `<div class="mission-head spirit-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
     }
@@ -396,8 +399,8 @@
     return `<div class="mission-instrument panel artifact-panel">
       <div class="artifact-score"><span>POWER STABILITY</span><strong id="artifactProgress">0 / 10</strong></div>
       <div class="artifact-progress-track" aria-hidden="true">${Array.from({length:10},(_,i)=>`<i data-artifact-step="${i}"></i>`).join('')}</div>
-      <div class="artifact-instruction">Capture <span class="signature-rule-blue">BLUE</span> signatures. Avoid <span class="signature-rule-red">RED</span> interference.</div>
-      <div class="artifact-field" id="artifactField" data-intensity="1" aria-label="Power Pulse energy stabilisation field">
+      <div class="artifact-instruction">Capture positive energy signatures.</div>
+      <div class="artifact-field" id="artifactField" data-intensity="1" aria-label="Power Pulse positive energy field">
         <canvas class="starstream-canvas" id="starstreamCanvas" aria-hidden="true"></canvas>
         <div class="starstream-nebula" aria-hidden="true"></div>
         <div class="starstream-vignette" aria-hidden="true"></div>
@@ -405,7 +408,7 @@
         <div class="artifact-layer" id="artifactLayer"></div>
         <div class="artifact-burst-layer" id="artifactBurstLayer" aria-hidden="true"></div>
       </div>
-      <div class="signal-state artifact-state" id="artifactState">Blue power stabilises · red interference destabilises</div>
+      <div class="signal-state artifact-state" id="artifactState">Positive energy signatures detected</div>
     </div>`;
   }
   function cometBody(){

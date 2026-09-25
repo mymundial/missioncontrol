@@ -56,19 +56,25 @@
     return i;
   }
 
+  const OPENING_MESSAGE = {
+    sender:'MISSION CONTROL',
+    title:'RECOVERY MISSION ACTIVE',
+    body:'Santa-1 has lost power and is grounded at Silverstone. We’ll use the circuit and its racing technology to bring the sleigh back online.'
+  };
+
   const COMPLETION_MESSAGES = {
-    entry:{sender:'MISSION CONTROL',title:'RECOVERY INITIATED',body:'Circuit energy has been routed into Santa-1. The recovery sequence is now underway.'},
-    velocity:{sender:'ENGINEERING',title:'RACING PERFORMANCE PROFILE CONFIRMED',body:'Velocity Vault has captured the racing performance data needed to tune Santa-1’s recovery systems.'},
-    luffield:{sender:'COMMUNICATIONS',title:'COMMS LINK RESTORED',body:'Comms Relay has restored two-way communications with Santa-1. Mission Control is receiving Santa loud and clear.'},
-    power:{sender:'ENGINEERING',title:'POWER STABILISED',body:'Power Pulse has isolated a clean, stable racing-energy supply for Santa-1. It is ready to be stored in the Spirit Core.'},
-    spirit:{sender:'MISSION CONTROL',title:'SPIRIT CORE CHARGED',body:'Stored racing energy is stable and Santa-1’s primary power system is back online.'},
-    escapade:{sender:'PROPULSION SYSTEM',title:'PROPULSION ONLINE',body:'Reindeer Raceway has confirmed Santa-1’s propulsion system can sustain the high-speed output required for flight.'},
-    comet:{sender:'GUIDANCE SYSTEM',title:'GUIDANCE PATH RESTORED',body:'Santa-1 can now process the high-speed directional changes required for flight.'},
-    jingle:{sender:'CONTROL SYSTEM',title:'CONTROL SYNCHRONISED',body:'Jingle Beams has restored stable beam control and energy routing across Santa-1’s flight systems.'},
-    lando:{sender:'RESPONSE SYSTEM',title:'RESPONSE CALIBRATED',body:'Lightspeed Lando has calibrated Santa-1’s high-speed response timing for flight.'},
-    aurora:{sender:'NAVIGATION',title:'NORTH POLE SIGNAL ACQUIRED',body:'Aurora Apex has restored Santa-1’s navigation link and confirmed the route home.'},
-    lapland:{sender:'MISSION CONTROL',title:'ALL SYSTEMS GO',body:'Santa-1 has passed full-power verification and is cleared for launch.'},
-    northern:{sender:'MISSION CONTROL',title:'RECOVERY MISSION COMPLETE',body:'Santa-1 is airborne and the Northern Flight is underway.'}
+    entry:{sender:'MISSION CONTROL',title:'CIRCUIT POWER ROUTED',body:'We’re connected to the circuit. Energy is now reaching Santa-1 and the recovery can begin.'},
+    velocity:{sender:'ENGINEERING',title:'RACING DATA CAPTURED',body:'We’ve got the data we need. Aero, stability, power, control, traction and response have all been captured for the rebuild.'},
+    luffield:{sender:'COMMUNICATIONS',title:'COMMS ESTABLISHED',body:'We’ve got Santa back on comms. The link is clear and Mission Control can stay in contact from here.'},
+    power:{sender:'ENGINEERING',title:'POWER STABILISED',body:'The racing energy is stable and the interference has been cleared. We can now send it on to be stored.'},
+    spirit:{sender:'MISSION CONTROL',title:'SPIRIT CORE CHARGED',body:'The recovered energy is safely stored and both banks are holding steady. Santa-1 has a reliable power reserve again.'},
+    escapade:{sender:'PROPULSION SYSTEM',title:'PROPULSION ONLINE',body:'Propulsion is holding up at speed. Santa-1 can handle the power needed for flight.'},
+    comet:{sender:'GUIDANCE SYSTEM',title:'GUIDANCE ALIGNED',body:'Guidance is aligned and Santa-1 can now deal with rapid changes in direction while staying on course.'},
+    jingle:{sender:'CONTROL SYSTEM',title:'FLIGHT CONTROLS RE-ENGAGED',body:'The flight controls are responding again. All three beams are working together and Santa-1 is stable.'},
+    lando:{sender:'RESPONSE SYSTEM',title:'RESPONSE CALIBRATED',body:'Response timing is where it needs to be. Santa-1 can now react quickly enough for high-speed flight.'},
+    aurora:{sender:'NAVIGATION',title:'NORTH POLE SIGNAL LOCKED',body:'We’ve got a strong North Pole signal. Navigation has a clear reference and the route home is confirmed.'},
+    lapland:{sender:'MISSION CONTROL',title:'ALL SYSTEMS GO',body:'Final checks are complete. Every recovered system is responding correctly and Santa-1 is ready to launch.'},
+    northern:{sender:'MISSION CONTROL',title:'RECOVERY MISSION COMPLETE',body:'Santa-1 is airborne. Recovery complete. The Northern Flight is underway.'}
   };
 
   const SLEIGH_STAGES = [
@@ -138,8 +144,19 @@
       const oldAvailable=Array.isArray(parsed.available)?parsed.available:[];
       const completed=[...new Set(oldCompleted.map(id=>id==='elf'?'luffield':id))];
       const available=[...new Set(oldAvailable.map(id=>id==='elf'?'luffield':id))];
-      // Strip legacy MC-03 messages from the old ELF FM checkpoint implementation.
-      const messages=(Array.isArray(parsed.messages)?parsed.messages:[]).filter(m=>m?.checkpointId!=='elf'&&!String(m?.key||'').includes(':elf'));
+      // Strip legacy MC-03 messages from the old ELF FM checkpoint implementation,
+      // then refresh persisted feed copy from the current canonical scripts.
+      const messages=(Array.isArray(parsed.messages)?parsed.messages:[])
+        .filter(m=>m?.checkpointId!=='elf'&&!String(m?.key||'').includes(':elf'))
+        .map(m=>{
+          if(m?.key==='opening') return {...m,...OPENING_MESSAGE};
+          const key=String(m?.key||'');
+          if(key.startsWith('complete:')){
+            const script=COMPLETION_MESSAGES[key.slice('complete:'.length)];
+            if(script) return {...m,...script};
+          }
+          return m;
+        });
       let routeIndex=normaliseProgressRouteIndex(parsed.routeIndex??ROUTE_START_INDEX,completed);
       // Restore MC-03 for older sessions that skipped the temporarily removed route slot.
       if((Number(parsed.routeRevision)||1)<2 && routeIndex>3 && !completed.includes('luffield')) routeIndex=3;
@@ -185,7 +202,7 @@
   }
   function ensureOpeningMessage(){
     if(!state.onboarded) return;
-    addMessage('opening','MISSION CONTROL','RECOVERY MISSION ACTIVE','Santa-1 has lost power and is grounded at Silverstone. Proceed to the circuit and complete each recovery mission to restore the sleigh and get Santa back in the air.','MC-00');
+    addMessage('opening',OPENING_MESSAGE.sender,OPENING_MESSAGE.title,OPENING_MESSAGE.body,'MC-00');
   }
   function markAllMessagesRead(){
     if(!state.messages.some(m=>!m.read)){state.messageAlert=false;save();return;}
@@ -622,7 +639,7 @@
     const activationDistance=distanceToActivation(cp,state.distance);
     const distanceValue=!cp?'GROTTO':state.targetVisible&&Number.isFinite(activationDistance)?`${Math.round(activationDistance)} M`:'SEARCHING';
     const condition=state.mode==='demo'?'DEMO':state.gpsEnabled===false?'OFF':state.gpsCondition;
-    return `<section class="telemetry-block"><div class="telemetry-heading">TELEMETRY</div><div class="status-strip panel">
+    return `<section class="telemetry-block"><div class="telemetry-heading">MISSION TELEMETRY</div><div class="status-strip panel">
       <div class="status-cell"><div class="status-label">GPS Accuracy</div><div class="status-value gps-${condition.toLowerCase()}">${condition}</div></div>
       <div class="status-cell"><div class="status-label">Sleigh Rebuild</div><div class="status-value">${recovery()}%</div></div>
       <div class="status-cell"><div class="status-label">Next Checkpoint</div><div class="status-value">${distanceValue}</div></div>
@@ -638,13 +655,11 @@
     }
     if(!cp) return `<div class="mission-card message-card panel complete-message compact-message" id="radarMessage"><div><div class="kicker">Mission Control</div><h3>Mission Complete</h3></div></div>`;
     if(cp.type==='activation'){
-      if(state.targetVisible) return `<div class="mission-card message-card panel compact-message" id="radarMessage"><div><div class="kicker">Mission Control</div><h3>Circuit Link Ahead</h3></div></div>`;
-      return `<div class="mission-card message-card panel compact-message" id="radarMessage"><div><div class="kicker">Mission Control</div><h3>Locating Circuit Link</h3></div></div>`;
+      if(state.targetVisible) return `<div class="mission-card message-card panel compact-message" id="radarMessage"><div><div class="kicker">Mission Control</div><h3>Checkpoint Ahead</h3></div></div>`;
+      return `<div class="mission-card message-card panel compact-message" id="radarMessage"><div><div class="kicker">Mission Control</div><h3>Locating Checkpoint</h3></div></div>`;
     }
     if(state.targetVisible){
-      const activationDistance=Math.round(distanceToActivation(cp,state.distance)||0);
-      const title=activationDistance<40?'Closing On Target':'Signal Detected';
-      return `<div class="mission-card message-card panel compact-message" id="radarMessage"><div><div class="kicker">Mission Control</div><h3>${title}</h3></div></div>`;
+      return `<div class="mission-card message-card panel compact-message" id="radarMessage"><div><div class="kicker">Mission Control</div><h3>Checkpoint Ahead</h3></div></div>`;
     }
     return `<div class="mission-card message-card panel compact-message" id="radarMessage"><div><div class="kicker">Mission Control</div><h3>Radar Searching</h3></div></div>`;
   }
@@ -695,7 +710,7 @@
       ];
       return `<section class="onboard with-masthead setup-page mc00-page">${setupHeader}<div class="onboard-card panel mc00-card" data-mc00-mode="${step}"><div class="mc00-copy"><h1>System Diagnostics</h1><p class="support-copy">Santa-1 Sleigh Recovery</p></div><div class="mc00-visual-wrap"><div class="mc00-sleigh-frame"><div class="sleigh-visual sleigh-stage-1 mc00-sleigh-visual" role="img" aria-label="Santa-1 sleigh system diagnostics visual"><div class="sleigh-glow" aria-hidden="true"></div><img class="sleigh-art" src="./assets/sleigh-stage-1.webp" alt="" aria-hidden="true" fetchpriority="high"><div class="mc00-scan-beam" aria-hidden="true"></div></div></div></div>${systemStatusBank(systems,'mc00-system-bank','mc00')}<div class="mc00-progress-row"><div class="mc00-progress" role="progressbar" aria-label="System diagnostics progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="mc00ProgressFill"></span></div><strong id="mc00ProgressValue">0%</strong></div><div class="mc00-complete-popup panel" id="mc00CompleteBlock" hidden><div class="mc00-complete-icon" aria-hidden="true">✓</div><h2>Scan Complete</h2><button class="btn primary wide" id="mc00Continue" data-mc00-continue="${step}">Continue</button></div></div></section>`;
     }
-    if(step==='brief') return `<section class="onboard with-masthead setup-page briefing-page">${setupHeader}<div class="onboard-card panel setup-card"><div class="onboard-icon setup-icon"><span class="setup-icon-glyph"><img src="./assets/mission-briefing-icon.svg" alt=""></span></div><h1>Mission Briefing</h1><p class="support-copy">Santa-1 has lost power. Recovery signals have been detected around the circuit. Complete each mission to recover the energy, data and system calibrations needed to restore the sleigh.</p><div class="setup-actions"><button class="btn primary wide" data-onboard="audio">Continue</button></div></div></section>`;
+    if(step==='brief') return `<section class="onboard with-masthead setup-page briefing-page">${setupHeader}<div class="onboard-card panel setup-card"><div class="onboard-icon setup-icon"><span class="setup-icon-glyph"><img src="./assets/mission-briefing-icon.svg" alt=""></span></div><h1>Mission Briefing</h1><p class="support-copy">Santa needs your help.<br>Santa-1 has made an unscheduled pit stop at Silverstone and the recovery is underway.<br>Follow the signals around the circuit and help bring each system back online to get the sleigh race-ready again.</p><div class="setup-actions"><button class="btn primary wide" data-onboard="audio">Continue</button></div></div></section>`;
     if(step==='audio') return `<section class="onboard with-masthead setup-page audio-page">${setupHeader}<div class="onboard-card panel setup-card"><div class="onboard-icon setup-icon"><span class="setup-icon-glyph">${settingAudioIcon()}</span></div><h1>Mission Audio</h1><p class="support-copy">Mission Control uses proximity alerts, system sounds and live transmissions. You can change Mission Audio at any time in Comms.</p><div class="setup-actions stack"><button class="btn primary wide" data-audio="on">Enable Mission Audio</button><button class="btn secondary wide" data-audio="off">Continue Without Audio</button></div></div></section>`;
     return `<section class="onboard with-masthead setup-page radar-setup-page">${setupHeader}<div class="onboard-card panel setup-card"><div class="onboard-icon setup-icon"><span class="setup-icon-glyph"><img src="./assets/radar-setup-icon.svg" alt=""></span></div><h1>Mission Radar</h1><p class="support-copy">Mission Control uses your location to detect each installation as you move around the circuit.</p><div class="setup-actions stack"><button class="btn primary wide" data-location="request">Enable GPS Location</button><button class="btn secondary wide" data-location="demo">Demo Mode</button></div></div></section>`;
   }
@@ -791,6 +806,9 @@
     if(cp.type==='activation'){
       return `<div class="mission-head mc01-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
     }
+    if(cp.type==='artifacts'){
+      return `<div class="mission-head artifact-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><div class="artifact-sponsor"><img src="./assets/care-bears-logo.png" alt="Care Bears"></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
+    }
     if(cp.type==='spirit'){
       return `<div class="mission-head spirit-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
     }
@@ -802,19 +820,19 @@
   function missionInstruction(type){
     return ({
       activation:'You have now entered the live circuit zone.',
-      diagnostics:'Capture the engineering data needed for Santa-1.',
+      diagnostics:'Capture the racing data needed to rebuild Santa-1.',
       radio:'Tune the receiver to 87.7 and establish a link with ELF FM.',
-      commsrelay:'Restore two-way communications with Santa-1.',
-      power:'Put the recovered power to the test and reach maximum velocity.',
-      spirit:'Balance the charge between both storage banks to stabilise the Spirit Core.',
+      commsrelay:'Establish communications with Santa-1.',
+      power:'Test Santa-1’s propulsion system.',
+      spirit:'Store the recovered energy.',
       placeholder:'This checkpoint is reserved while the final installation game is developed.',
-      artifacts:'Capture stable blue energy pulses and reject red interference to stabilise racing power for Santa-1.',
-      comet:'Lock 10 directional signals to restore Santa-1’s guidance path.',
-      jingle:'Charge all 3 propulsion beams.',
-      lando:'React the moment the lights go out to calibrate Santa-1 flight control.',
-      aurora:'Capture each rotating navigation ring on the North Pole axis.',
-      lapland:'Final systems verification.',
-      northern:'Authorise the restored sleigh for its final Northern Flight.'
+      artifacts:'Stabilise the racing energy.',
+      comet:'Align Santa-1’s guidance system.',
+      jingle:'Re-engage Santa-1’s flight controls.',
+      lando:'Calibrate Santa-1’s flight response.',
+      aurora:'Lock onto the North Pole navigation signal.',
+      lapland:'Complete final systems verification.',
+      northern:'Clear Santa-1 for the Northern Flight.'
     })[type]||'';
   }
   function renderMission(id){
@@ -869,58 +887,12 @@
 
   function diagnosticsBody(){
     const sensors=[
-      {name:'Aero',key:'aero',viz:`<svg viewBox="0 0 120 70" role="presentation">
-        <path class="aero-body" d="M43 25 L50 18 H70 L77 25 L84 32 V42 L76 49 H44 L36 42 V32 Z"/>
-        <path class="aero-centre" d="M60 20V48"/>
-        <path class="aero-flow aero-flow-1" d="M3 12 C25 12 31 15 40 20 C48 24 72 24 80 20 C91 15 99 12 117 12"/>
-        <path class="aero-flow aero-flow-2" d="M2 27 C21 27 30 28 38 31 C45 34 75 34 82 31 C91 28 101 27 118 27"/>
-        <path class="aero-flow aero-flow-3" d="M2 43 C21 43 30 42 38 39 C45 36 75 36 82 39 C91 42 101 43 118 43"/>
-        <path class="aero-flow aero-flow-4" d="M3 58 C25 58 31 55 40 50 C48 46 72 46 80 50 C91 55 99 58 117 58"/>
-        <circle class="aero-probe aero-probe-1" cx="18" cy="12" r="1.8"/><circle class="aero-probe aero-probe-2" cx="15" cy="27" r="1.8"/><circle class="aero-probe aero-probe-3" cx="15" cy="43" r="1.8"/><circle class="aero-probe aero-probe-4" cx="18" cy="58" r="1.8"/>
-      </svg>`},
-      {name:'Stability',key:'stability',viz:`<svg viewBox="0 0 120 70" role="presentation">
-        <path class="stability-reference" d="M12 51H108"/>
-        <path class="stability-arc" d="M38 28 A22 22 0 0 1 82 28"/>
-        <circle class="stability-console" cx="60" cy="35" r="7.5"/>
-        <g class="stability-chassis">
-          <path class="stability-shell" d="M32 31 L41 21 H79 L88 31 L92 43 H28 Z"/>
-          <rect class="stability-wheel stability-wheel-left" x="29" y="43" width="16" height="8" rx="4"/>
-          <rect class="stability-wheel stability-wheel-right" x="75" y="43" width="16" height="8" rx="4"/>
-          <path class="stability-damper stability-damper-left" d="M39 31V44"/><path class="stability-damper stability-damper-right" d="M81 31V44"/>
-        </g>
-        <path class="stability-centre" d="M60 20V50"/>
-        <path class="stability-lock" d="M46 35H74"/>
-        <circle class="stability-point" cx="60" cy="35" r="3.4"/>
-      </svg>`},
-      {name:'Power',key:'power',viz:`<svg viewBox="0 0 120 70" role="presentation">
-        <path class="power-baseline" d="M5 62H115"/>
-        <path class="power-trace-shadow" d="M6 50 L20 48 L30 43 L38 47 L47 30 L55 41 L65 18 L74 34 L83 12 L92 27 L102 9 L115 16"/>
-        <path class="power-trace" d="M6 50 L20 48 L30 43 L38 47 L47 30 L55 41 L65 18 L74 34 L83 12 L92 27 L102 9 L115 16"/>
-        <circle class="power-hotspot" cx="102" cy="9" r="4"/>
-        <g class="power-output-bars"><rect x="8" y="57" width="12" height="5"/><rect x="24" y="54" width="12" height="8"/><rect x="40" y="51" width="12" height="11"/><rect x="56" y="47" width="12" height="15"/><rect x="72" y="43" width="12" height="19"/><rect x="88" y="38" width="12" height="24"/></g>
-      </svg>`},
-      {name:'Control',key:'control',viz:`<svg viewBox="0 0 120 70" role="presentation">
-        <path class="control-path control-path-left" d="M7 35 C20 16 37 12 51 24"/>
-        <path class="control-path control-path-right" d="M113 35 C100 54 83 58 69 46"/>
-        <g class="control-wheel">
-          <circle cx="60" cy="35" r="22"/><circle cx="60" cy="35" r="5"/>
-          <line x1="60" y1="13" x2="60" y2="30"/><line x1="40" y1="43" x2="55" y2="37"/><line x1="80" y1="43" x2="65" y2="37"/>
-        </g>
-        <path class="control-angle" d="M38 18 A29 29 0 0 1 83 19"/><circle class="control-marker" cx="60" cy="7" r="2.5"/>
-      </svg>`},
-      {name:'Traction',key:'traction',viz:`<svg viewBox="0 0 120 70" role="presentation">
-        <path class="traction-road" d="M12 57H108"/>
-        <path class="traction-car" d="M48 12 H72 L81 22 V48 L72 58 H48 L39 48 V22 Z"/>
-        <path class="traction-spine" d="M60 17V53"/>
-        <rect class="traction-wheel w1" x="30" y="18" width="12" height="16" rx="4"/><rect class="traction-wheel w2" x="78" y="18" width="12" height="16" rx="4"/><rect class="traction-wheel w3" x="30" y="37" width="12" height="16" rx="4"/><rect class="traction-wheel w4" x="78" y="37" width="12" height="16" rx="4"/>
-        <rect class="traction-contact c1" x="26" y="22" width="5" height="9" rx="2.5"/><rect class="traction-contact c2" x="89" y="22" width="5" height="9" rx="2.5"/><rect class="traction-contact c3" x="26" y="41" width="5" height="9" rx="2.5"/><rect class="traction-contact c4" x="89" y="41" width="5" height="9" rx="2.5"/>
-      </svg>`},
-      {name:'Response',key:'response',viz:`<svg viewBox="0 0 120 70" role="presentation">
-        <circle class="response-ring response-ring-a" cx="60" cy="35" r="23"/><circle class="response-ring response-ring-b" cx="60" cy="35" r="15"/>
-        <circle class="response-core" cx="60" cy="35" r="5"/>
-        <path class="response-in" d="M6 35H48"/><path class="response-out" d="M72 35H114"/>
-        <circle class="response-pulse response-pulse-in" cx="10" cy="35" r="3"/><circle class="response-pulse response-pulse-out" cx="110" cy="35" r="3"/>
-      </svg>`}
+      {name:'Aero',key:'aero',viz:`<div class="mc02-icon mc02-icon-aero"><svg class="mc02-svg mc02-aero-svg" viewBox="0 0 210 126" aria-hidden="true"><path class="mc02-aero-frame-path" d="M27.16,11.07V120.66h6V17.08h6V120.64h6V17.08H164.74V120.64h6V17.08h6V120.66h6V11.07ZM49.7,34H160.2V28H49.7Z"/><g class="mc02-aero-fan-group"><path class="mc02-aero-fan-path" d="M105,41.51a39.27,39.27,0,1,0,39.27,39.26A39.3,39.3,0,0,0,105,41.51Zm0,72.88a33.62,33.62,0,1,1,33.62-33.62A33.66,33.66,0,0,1,105,114.39Zm14.35-27.73c-1.41.32-4.52.71-6.84-1.35a8.56,8.56,0,0,0,1-2.37c4.32-1.43,10.41-4.22,11.17-12,.86-8.82-8-15.09-14.52-16.73-3.49-.87-6.91.35-8.5,3.05-1.5,2.55-1,5.67,1.27,8.12,1,1.06,2.87,3.56,2.26,6.6H105a8.88,8.88,0,0,0-2.38.33c-3.4-3-8.85-6.9-16-3.68-8.07,3.67-9.09,14.46-7.23,21,1,3.45,3.76,5.8,6.89,5.83h.06c2.94,0,5.36-2,6.34-5.16.42-1.38,1.64-4.26,4.58-5.25a9.18,9.18,0,0,0,1.56,2c-.92,4.45-1.55,11.12,4.79,15.65A12.39,12.39,0,0,0,111,105c5.55,0,11.2-3.17,14.41-6.5,2.5-2.58,3.15-6.15,1.61-8.88S122.62,85.9,119.35,86.66Zm-23-7.24c-4.87,1.25-7.82,5.32-9,9.19-.08.27-.4,1.16-.94,1.16h0c-.41,0-1.15-.47-1.51-1.74-1.1-3.81-1-11.91,4.13-14.25,3.39-1.54,6.13-.29,8.85,1.91A8.6,8.6,0,0,0,96.33,79.42Zm10.19-19.27c.2-.35,1-.76,2.26-.44,3.85,1,10.82,5.09,10.27,10.7-.36,3.71-2.81,5.45-6.07,6.71a8.86,8.86,0,0,0-2.47-3.18c1.35-4.85-.7-9.43-3.46-12.39C106.85,61.34,106.24,60.62,106.52,60.15Zm-5.37,20.62A3.85,3.85,0,1,1,105,84.62,3.85,3.85,0,0,1,101.15,80.77Zm20.2,13.81c-2.76,2.85-9.82,6.82-14.41,3.54-3-2.16-3.31-5.16-2.77-8.6.27,0,.55,0,.83,0a8.71,8.71,0,0,0,3.16-.6c3.52,3.6,8.52,4.1,12.46,3.2.28-.07,1.21-.24,1.48.24S122.27,93.63,121.35,94.58Z"/></g></svg></div>`},
+      {name:'Stability',key:'stability',viz:`<div class="mc02-icon mc02-icon-stability"><span class="mc02-layer mc02-stability-car"></span><span class="mc02-layer mc02-stability-headlights"></span></div>`},
+      {name:'Power',key:'power',viz:`<div class="mc02-icon mc02-icon-power"><svg class="mc02-svg mc02-power-svg" viewBox="0 0 210 126" aria-hidden="true"><path class="mc02-power-gauge-path" d="M105,15.05A72.14,72.14,0,0,0,32.93,87.11a73,73,0,0,0,.77,10.57l.44,3,21.67-3.09-.84-6L39.28,93.82c-.22-2.22-.34-4.47-.34-6.71a65.69,65.69,0,0,1,13.47-39.9L64.67,57.39l3.85-4.63L56.26,42.58a65.89,65.89,0,0,1,45.86-21.44v16h6v-16a65.93,65.93,0,0,1,45.6,21.43L139.11,54.7,141.05,57a47.1,47.1,0,0,1,10.41,36.91l-.64,3.16,25,3.59.44-3a73.21,73.21,0,0,0,.77-10.58A72.15,72.15,0,0,0,105,15.05Z"/><g class="mc02-power-needle-group"><path class="mc02-power-needle-path" d="M171.32,117.08l-64-35.21.06,0-.12,0A5.77,5.77,0,0,0,99.39,89a5.89,5.89,0,0,0,3.16,3.34L170.41,119a1.08,1.08,0,0,0,.91-2Z"/></g></svg></div>`},
+      {name:'Control',key:'control',viz:`<div class="mc02-icon mc02-icon-control"><span class="mc02-layer mc02-control-wheel"></span><span class="mc02-layer mc02-control-ring"></span></div>`},
+      {name:'Traction',key:'traction',viz:`<div class="mc02-icon mc02-icon-traction"><span class="mc02-layer mc02-traction-car"></span><span class="mc02-layer mc02-traction-skids"></span><span class="mc02-layer mc02-traction-shine"></span></div>`},
+      {name:'Response',key:'response',viz:`<div class="mc02-icon mc02-icon-response"><span class="mc02-layer mc02-response-cones"></span><span class="mc02-layer mc02-response-arrow"></span><span class="mc02-layer mc02-response-shine"></span></div>`}
     ];
     return `<div class="mission-instrument panel diagnostics-panel"><div class="sensor-grid diagnostics-grid">${sensors.map((x,i)=>`<button class="sensor sensor-${x.key}" data-sensor="${i}" data-diagnostic="${x.key}"><div class="sensor-head"><span class="num">0${i+1}</span><span class="name">${x.name}</span></div><div class="sensor-viz viz-${x.key}" aria-hidden="true">${x.viz}</div><div class="state">Tap to scan</div></button>`).join('')}</div></div><button class="btn primary wide" id="diagComplete" disabled>Complete Scan</button>`;
   }
@@ -1002,8 +974,8 @@
     return `<div class="mission-instrument panel artifact-panel">
       <div class="artifact-score"><span>POWER STABILITY</span><strong id="artifactProgress">0 / 10</strong></div>
       <div class="artifact-progress-track" aria-hidden="true">${Array.from({length:10},(_,i)=>`<i data-artifact-step="${i}"></i>`).join('')}</div>
-      <div class="artifact-instruction">Capture <span class="signature-rule-blue">BLUE</span> signatures. Avoid <span class="signature-rule-red">RED</span> interference.</div>
-      <div class="artifact-field" id="artifactField" data-intensity="1" aria-label="Power Pulse energy stabilisation field">
+      <div class="artifact-instruction">Capture positive energy signatures.</div>
+      <div class="artifact-field" id="artifactField" data-intensity="1" aria-label="Power Pulse positive energy field">
         <canvas class="starstream-canvas" id="starstreamCanvas" aria-hidden="true"></canvas>
         <div class="starstream-nebula" aria-hidden="true"></div>
         <div class="starstream-vignette" aria-hidden="true"></div>
@@ -1011,7 +983,7 @@
         <div class="artifact-layer" id="artifactLayer"></div>
         <div class="artifact-burst-layer" id="artifactBurstLayer" aria-hidden="true"></div>
       </div>
-      <div class="signal-state artifact-state" id="artifactState">Blue power stabilises · red interference destabilises</div>
+      <div class="signal-state artifact-state" id="artifactState">Positive energy signatures detected</div>
     </div>`;
   }
   function cometBody(){
@@ -1945,7 +1917,7 @@
     if(cp.type==='lando') bindLando();
     if(cp.type==='aurora') bindAurora();
     if(cp.type==='lapland') bindLapland();
-    if(cp.type==='northern') document.getElementById('authoriseFlight').onclick=()=>{showNorthernLaunchSurge();setTimeout(()=>showCompletion('Santa-1 Airborne','Northern Flight completes the recovery mission. Santa-1 is airborne.'),1500);};
+    if(cp.type==='northern') document.getElementById('authoriseFlight').onclick=()=>{showNorthernLaunchSurge();setTimeout(()=>showCompletion('Santa-1 Airborne','The recovery mission is complete. Santa-1 is airborne on the Northern Flight.'),1500);};
   }
   function bindDiagnostics(){
     const done=new Set();
@@ -1972,7 +1944,7 @@
         if(done.size===6)document.getElementById('diagComplete').disabled=false;
       },durations[i]||1800);
     });
-    document.getElementById('diagComplete').onclick=()=>showCompletion('Performance Scan Complete','The engineering data was successfully captured and is now ready to support Santa-1’s recovery systems.');
+    document.getElementById('diagComplete').onclick=()=>showCompletion('Performance Scan Complete','The racing performance data has been captured and is ready to support Santa-1’s recovery systems.');
   }
 
   async function completeElfTuning(){
@@ -2122,7 +2094,7 @@
         if(finished)return;finished=true;
         clearTimeout(introStatic);clearTimeout(santaDelay);clearTimeout(fallback);clearTimeout(tailTimer);stopStatic();
         if(radioWasOn&&elfAudioEl){elfAudioEl.volume=Math.min(elfAudioEl.volume,.025);rampElementVolume(elfAudioEl,previousRadioVolume,520);}
-        setTimeout(()=>showCompletion('Comms Link Restored','The transmission was successfully relayed and the communications link to Santa-1 has been restored.'),260);
+        setTimeout(()=>showCompletion('Comms Link Restored','Communications have been established and Mission Control is now connected to Santa-1.'),260);
       };
       const playSanta=()=>{
         stopStatic();
@@ -2343,7 +2315,7 @@
         if(!powerAudio.paused)fadePowerAudio(0,520,()=>{try{powerAudio.pause();}catch{}});
       }
       cancelAnimationFrame(raf);
-      setTimeout(()=>showCompletion('Raceway Run Complete',''),1100);
+      setTimeout(()=>showCompletion('Raceway Run Complete','The racing energy has been stabilised and is ready to power Santa-1.'),1100);
     }
 
     function frame(now){
@@ -2512,7 +2484,7 @@
       buttons.forEach(button=>{button.disabled=true;button.classList.remove('is-next');});
       haptic([30,28,64]);
       finishTimer=setTimeout(()=>{
-        if(state.missionOpen==='spirit') showCompletion('Spirit Core Charged','');
+        if(state.missionOpen==='spirit') showCompletion('Spirit Core Charged','The recovered energy has been stored and the Spirit Core is fully charged.');
       },950);
     }
 
@@ -2561,19 +2533,34 @@
     const steps=[...document.querySelectorAll('[data-artifact-step]')];
     if(!field||!layer||!burstLayer||!beam||!progress||!stateEl||!canvas) return;
 
+    const EMOTIONS=[
+      {id:'love',name:'Love',rgb:'240,82,97',icon:`<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 40 8.7 25.3C2.8 19.6 6.4 9 15 9c4.1 0 7.2 2.2 9 5.2C25.8 11.2 28.9 9 33 9c8.6 0 12.2 10.6 6.3 16.3L24 40Z" fill="currentColor"/></svg>`},
+      {id:'joy',name:'Joy',rgb:'255,212,71',icon:`<svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="8" fill="currentColor"/><g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M24 6v6M24 36v6M6 24h6M36 24h6M11.3 11.3l4.2 4.2M32.5 32.5l4.2 4.2M36.7 11.3l-4.2 4.2M15.5 32.5l-4.2 4.2"/></g></svg>`},
+      {id:'cheer',name:'Cheer',rgb:'244,111,168',icon:`<svg viewBox="0 0 48 48" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"><path d="M10 34c0-8.3 6.3-15 14-15s14 6.7 14 15"/><path d="M15 34c0-5.3 4-9.5 9-9.5s9 4.2 9 9.5"/><path d="M20 34c0-2.4 1.8-4.5 4-4.5s4 2.1 4 4.5"/></svg>`},
+      {id:'kindness',name:'Kindness',rgb:'168,121,216',icon:`<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M20.5 37 9.8 26.7C5.6 22.6 8.1 15 14.2 15c2.8 0 5.1 1.5 6.3 3.7 1.3-2.2 3.5-3.7 6.4-3.7 6 0 8.6 7.6 4.3 11.7L20.5 37Z" fill="currentColor"/><path d="m35.5 7 1.4 4.1L41 12.5l-4.1 1.4-1.4 4.1-1.4-4.1-4.1-1.4 4.1-1.4L35.5 7Z" fill="currentColor"/></svg>`},
+      {id:'friendship',name:'Friendship',rgb:'143,103,197',icon:`<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M18.5 35 9.6 26.4C6 22.9 8.2 16.5 13.3 16.5c2.4 0 4.2 1.2 5.2 3 1.1-1.8 2.9-3 5.3-3 1.3 0 2.4.4 3.4 1" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M29.5 35 20.6 26.4c-3.6-3.5-1.4-9.9 3.7-9.9 2.4 0 4.2 1.2 5.2 3 1.1-1.8 2.9-3 5.3-3 5.1 0 7.3 6.4 3.7 9.9L29.5 35Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/></svg>`},
+      {id:'hope',name:'Hope',rgb:'85,201,207',icon:`<svg viewBox="0 0 48 48" aria-hidden="true"><path d="m31 10 2.5 6 6.5.5-5 4.3 1.5 6.2-5.5-3.4-5.5 3.4 1.5-6.2-5-4.3 6.5-.5L31 10Z" fill="currentColor"/><path d="M8 34c6-1 10.5-3.1 14-6.5M11 39c6-1.8 10.5-4.6 14-8.3" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>`},
+      {id:'generosity',name:'Generosity',rgb:'117,201,107',icon:`<svg viewBox="0 0 48 48" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"><rect x="9" y="19" width="30" height="21" rx="2"/><path d="M24 19v21M7 19h34v-6H7v6Z"/><path d="M24 13c-5.5 0-9-1.7-9-4.5C15 6.6 16.6 5 18.6 5 22.2 5 24 10.2 24 13Zm0 0c5.5 0 9-1.7 9-4.5C33 6.6 31.4 5 29.4 5 25.8 5 24 10.2 24 13Z"/></svg>`},
+      {id:'wonder',name:'Wonder',rgb:'90,173,225',icon:`<svg viewBox="0 0 48 48" aria-hidden="true"><path d="m24 5 4.3 12.7L41 22l-12.7 4.3L24 39l-4.3-12.7L7 22l12.7-4.3L24 5Z" fill="currentColor"/><path d="m38 8 1.3 3.7L43 13l-3.7 1.3L38 18l-1.3-3.7L33 13l3.7-1.3L38 8Z" fill="currentColor" opacity=".78"/></svg>`}
+    ];
+
     let cleared=0;
     let active=null;
     let timers=[];
     let finished=false;
     let raf=0;
     let resizeObserver=null;
-    let lastType='blue';
-    let redStreak=0;
+    let emotionBag=[];
 
     function clearTimers(){timers.forEach(clearTimeout);timers=[];}
     function later(fn,delay){const t=setTimeout(()=>{timers=timers.filter(id=>id!==t);fn();},delay);timers.push(t);return t;}
     function randomPos(){return {x:14+Math.random()*72,y:14+Math.random()*70};}
     function intensity(){return cleared<3?1:cleared<7?2:3;}
+    function refillEmotionBag(){
+      emotionBag=[...EMOTIONS];
+      for(let i=emotionBag.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[emotionBag[i],emotionBag[j]]=[emotionBag[j],emotionBag[i]];}
+    }
+    function nextEmotion(){if(!emotionBag.length)refillEmotionBag();return emotionBag.pop();}
 
     function setIntensity(){
       const level=intensity();
@@ -2667,35 +2654,20 @@
       raf=requestAnimationFrame(frame);
     }
 
-    function distortField(){
-      field.classList.remove('is-distorted');
-      void field.offsetWidth;
-      field.classList.add('is-distorted');
-      later(()=>field.classList.remove('is-distorted'),220);
-    }
-
-    function chooseType(){
-      if(cleared===0) return 'blue';
-      if(redStreak>=2) return 'blue';
-      const chance=cleared<3?.30:cleared<7?.40:.50;
-      return Math.random()<chance?'red':'blue';
-    }
-
     function createSignature(){
       if(finished||active) return;
-      const type=chooseType();
-      lastType=type;
-      redStreak=type==='red'?redStreak+1:0;
+      const emotion=nextEmotion();
       const pos=randomPos();
       const el=document.createElement('button');
       el.type='button';
-      el.className=`starstream-signature is-${type} is-entering`;
+      el.className=`starstream-signature emotion-signature emotion-${emotion.id} is-entering`;
       el.style.left=pos.x+'%';
       el.style.top=pos.y+'%';
-      el.setAttribute('aria-label',type==='blue'?'Capture blue energy signature':'Avoid red interference signature');
-      el.innerHTML=`<span class="signature-orbit orbit-a" aria-hidden="true"></span><span class="signature-orbit orbit-b" aria-hidden="true"></span><span class="signature-core" aria-hidden="true"><img src="./assets/mission-briefing-icon.svg" alt=""></span><i class="signature-scan" aria-hidden="true"></i>`;
+      el.style.setProperty('--emotion-rgb',emotion.rgb);
+      el.setAttribute('aria-label',`Capture ${emotion.name} energy signature`);
+      el.innerHTML=`<span class="signature-orbit orbit-a" aria-hidden="true"></span><span class="signature-orbit orbit-b" aria-hidden="true"></span><span class="signature-core signature-emotion-icon" aria-hidden="true">${emotion.icon}</span><i class="signature-scan" aria-hidden="true"></i>`;
       layer.appendChild(el);
-      const item={el,type,locked:false};
+      const item={el,emotion,locked:false};
       active=item;
       later(()=>{if(active===item)el.classList.remove('is-entering');},220);
 
@@ -2703,34 +2675,26 @@
         ev.preventDefault();
         ev.stopPropagation();
         if(finished||!active||active!==item||item.locked) return;
-        if(item.type==='red') hitRed(item); else hitBlue(item);
+        captureEmotion(item);
       };
       if(window.PointerEvent) el.addEventListener('pointerdown',tap,{passive:false});
       el.addEventListener('click',tap,{passive:false});
-
-      if(type==='red'){
-        const dwell=intensity()===1?1050+Math.random()*380:intensity()===2?850+Math.random()*330:680+Math.random()*290;
-        later(()=>passRed(item),dwell);
-        return;
-      }
-
-      // Blue signatures remain stable until captured. The previous random
-      // shift/reacquire behaviour has been removed so the rule is explicit:
-      // capture blue, avoid red.
     }
 
-    function spawnBurst(x,y,tone='blue'){
+    function spawnBurst(x,y,rgb){
       const ripple=document.createElement('span');
-      ripple.className=`artifact-ripple ${tone==='red'?'is-red':''}`;
+      ripple.className='artifact-ripple is-emotion';
       ripple.style.left=x+'px';ripple.style.top=y+'px';
+      ripple.style.setProperty('--emotion-rgb',rgb);
       burstLayer.appendChild(ripple);
       later(()=>ripple.remove(),600);
 
       const count=cleared>=7?14:10;
       for(let i=0;i<count;i++){
         const p=document.createElement('i');
-        p.className=`artifact-particle ${tone==='red'?'is-red':''}`;
+        p.className='artifact-particle is-emotion';
         p.style.left=x+'px';p.style.top=y+'px';
+        p.style.setProperty('--emotion-rgb',rgb);
         p.style.setProperty('--dx',`${(Math.random()-.5)*150}px`);
         p.style.setProperty('--dy',`${(Math.random()-.5)*150}px`);
         p.style.setProperty('--rot',`${Math.round((Math.random()-.5)*260)}deg`);
@@ -2738,10 +2702,10 @@
         later(()=>p.remove(),600);
       }
 
-      field.classList.remove('is-hit','is-negative');
+      field.classList.remove('is-hit');
       void field.offsetWidth;
-      field.classList.add(tone==='red'?'is-negative':'is-hit');
-      later(()=>field.classList.remove(tone==='red'?'is-negative':'is-hit'),260);
+      field.classList.add('is-hit');
+      later(()=>field.classList.remove('is-hit'),260);
     }
 
     function signatureCentre(item){
@@ -2756,38 +2720,17 @@
       later(()=>item.el.remove(),delay);
     }
 
-    function hitBlue(item){
+    function captureEmotion(item){
       if(finished||active!==item||item.locked) return;
       const c=signatureCentre(item);
-      spawnBurst(c.x,c.y,'blue');
+      spawnBurst(c.x,c.y,item.emotion.rgb);
       removeSignature(item,'popped',230);
       cleared=Math.min(10,cleared+1);
       renderStability();
       ping(630+cleared*20,.045,.018);haptic(18);
-      stateEl.textContent=cleared===10?'Power stabilised':cleared>=7?'Interference critical · capture blue':`Blue power captured · ${10-cleared} remaining`;
+      stateEl.textContent=cleared===10?'Power stabilised':`${item.emotion.name} energy captured · ${10-cleared} remaining`;
       if(cleared>=10){finish();return;}
       later(createSignature,cleared>=7?90:cleared>=3?125:170);
-    }
-
-    function hitRed(item){
-      if(finished||active!==item||item.locked) return;
-      const c=signatureCentre(item);
-      spawnBurst(c.x,c.y,'red');
-      removeSignature(item,'negative',250);
-      const lost=cleared>0;
-      cleared=Math.max(0,cleared-1);
-      renderStability();
-      distortField();
-      stateEl.textContent=lost?'Interference spike · stability -1':'Interference spike · avoid red';
-      ping(235,.075,.028);haptic([22,26,18]);
-      later(createSignature,270);
-    }
-
-    function passRed(item){
-      if(finished||!active||active!==item||item.locked) return;
-      removeSignature(item,'passed',190);
-      stateEl.textContent='Interference avoided';
-      later(createSignature,150);
     }
 
     function finish(){
@@ -2795,12 +2738,12 @@
       clearTimers();
       if(active){active.el.classList.add('absorbed');setTimeout(()=>active?.el?.remove(),220);active=null;}
       panel?.classList.add('is-complete');
-      field.classList.remove('is-distorted','is-hit','is-negative');
+      field.classList.remove('is-hit');
       field.classList.add('stabilised');
       beam.classList.add('active');
       progress.textContent='10 / 10';
       ping(920,.12,.045);haptic([28,24,58]);
-      setTimeout(()=>showCompletion('Power Stabilised',''),900);
+      setTimeout(()=>showCompletion('Power Stabilised','Santa-1’s propulsion system has been tested and is ready for flight.'),900);
     }
 
     renderStability();
@@ -3066,7 +3009,7 @@
         stopMusic();
         playCompletionSound();
         haptic([30,22,60]);
-        setTimeout(()=>showCompletion('Guidance Path Locked',''),900);
+        setTimeout(()=>showCompletion('Guidance Path Locked','Santa-1’s guidance system has been aligned and the flight path is locked.'),900);
       }
     }
     function frame(){
@@ -3357,7 +3300,7 @@
         playAudio(buzzerAudio,.78,1);
         haptic([30,28,70]);
       },780);
-      finishTimer=setTimeout(()=>showCompletion('Propulsion Online','All three Jingle Beams are charged and Santa-1 propulsion is responding within flight parameters.'),2450);
+      finishTimer=setTimeout(()=>showCompletion('Propulsion Online','Santa-1’s flight controls have been re-engaged and are ready for flight.'),2450);
     }
     function scoreGoal(){
       if(!running) return;
@@ -3548,7 +3491,7 @@
       haptic([20,20,45]); ping(760,.075,.03);
       if(round===4){
         btn.textContent='COMPLETE'; btn.disabled=true;
-        timers.push(setTimeout(()=>showCompletion('Flight Control Calibrated',''),850));
+        timers.push(setTimeout(()=>showCompletion('Flight Control Calibrated','Santa-1’s flight response has been calibrated for high-speed operation.'),850));
       }else{
         const completedRound=round;
         round++;
@@ -3681,7 +3624,7 @@
       ping(1090,.13,.04);
       feedbackTimers.push(setTimeout(()=>ping(1370,.18,.05),260));
       haptic([32,20,68]);
-      completionTimer=setTimeout(()=>showCompletion('North Pole Signal Locked',''),2800);
+      completionTimer=setTimeout(()=>showCompletion('North Pole Signal Locked','The North Pole navigation signal has been locked and Santa-1 has a route home.'),2800);
     }
 
     function lockRing(key){

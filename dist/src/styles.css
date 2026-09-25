@@ -101,7 +101,8 @@ button:disabled{cursor:not-allowed;opacity:.38;}
   
   border-radius:50%;
   border:1px solid rgba(122,226,255,.22);
-  box-shadow:inset 0 0 22px rgba(3,13,19,.58),0 0 18px rgba(75,187,226,.05);
+  background:radial-gradient(circle,transparent 0 70%,rgba(0,4,8,.10) 76%,rgba(0,3,7,.42) 84%,rgba(0,2,5,.82) 94%,rgba(0,1,3,.98) 100%);
+  box-shadow:inset 0 0 18px 12px rgba(0,0,0,.98),inset 0 0 54px 20px rgba(0,0,0,.76),inset 0 0 86px 30px rgba(0,0,0,.42),0 0 18px rgba(75,187,226,.05);
   pointer-events:none;
   z-index:2;
 }
@@ -116,9 +117,12 @@ button:disabled{cursor:not-allowed;opacity:.38;}
 .sweep{position:absolute;inset:4%;border-radius:50%;background:conic-gradient(from 0deg,transparent 0 300deg,rgba(70,205,248,.03) 314deg,rgba(70,205,248,.20) 357deg,rgba(70,205,248,.38) 359deg,transparent 360deg);animation:sweep 4.8s linear infinite;mix-blend-mode:screen;}
 @keyframes sweep{to{transform:rotate(360deg)}}
 .user-dot{position:absolute;left:50%;top:50%;width:10px;height:10px;border-radius:50%;background:#c8f5ff;transform:translate(-50%,-50%);box-shadow:0 0 0 7px rgba(99,217,255,.09),0 0 18px #70ddff;}
-.target-dot{position:absolute;width:12px;height:12px;border-radius:50%;background:#fff;box-shadow:0 0 7px #fff,0 0 15px #9ceaff,0 0 30px rgba(116,225,255,.8);transform:translate(-50%,-50%);transition:left .6s ease,top .6s ease,opacity .25s ease;animation:targetPulse 1.4s ease-in-out infinite;}
+.target-dot{position:absolute;width:20px;height:20px;border-radius:50%;background:transparent;box-shadow:none;transform:translate(-50%,-50%);transition:left .6s ease,top .6s ease,opacity .25s ease;overflow:visible;}
+.target-dot::before,.track-radar-target::before{content:"";position:absolute;left:50%;top:50%;width:10px;height:10px;border-radius:50%;background:#c8f5ff;transform:translate(-50%,-50%);box-shadow:0 0 0 7px rgba(99,217,255,.09),0 0 18px #70ddff;animation:checkpointBeaconFlash 1.25s linear infinite;}
+.target-dot::after,.track-radar-target::after{content:"";position:absolute;left:50%;top:50%;width:18px;height:18px;border-radius:50%;border:1px solid rgba(142,234,255,.88);background:rgba(105,212,239,.08);transform:translate(-50%,-50%) scale(.48);box-shadow:0 0 8px rgba(142,234,255,.38),inset 0 0 8px rgba(142,234,255,.14);animation:checkpointBeaconRing 1.25s ease-out infinite;}
 .target-dot.hidden{opacity:0;}
-@keyframes targetPulse{50%{box-shadow:0 0 8px #fff,0 0 24px #9ceaff,0 0 48px rgba(116,225,255,.75);transform:translate(-50%,-50%) scale(1.2)}}
+@keyframes checkpointBeaconFlash{0%,7%,18%,25%{opacity:1;transform:translate(-50%,-50%) scale(1.14)}10%,21%,100%{opacity:.34;transform:translate(-50%,-50%) scale(.76)}}
+@keyframes checkpointBeaconRing{0%,7%{opacity:.9;transform:translate(-50%,-50%) scale(.44)}34%{opacity:0;transform:translate(-50%,-50%) scale(1.34)}35%,100%{opacity:0;transform:translate(-50%,-50%) scale(.44)}}
 .radar-status{text-align:center;margin:0 0 10px;min-height:35px;}
 .radar-status strong{display:block;color:var(--cyan);font-size:11px;letter-spacing:.16em;text-transform:uppercase;}
 .radar-status span{font-size:10px;color:#789fb0;}
@@ -6285,11 +6289,12 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   width:20px;
   height:20px;
   border-radius:50%;
-  background:#69d4ef;
+  background:transparent;
   border:0;
-  box-shadow:0 0 4px rgba(105,212,239,.28);
+  box-shadow:none;
   transform:translate(-50%,-50%);
   transition:left .12s linear,top .12s linear,opacity .2s ease;
+  overflow:visible;
 }
 .track-radar-target.hidden{opacity:0;}
 .radar.circuit-radar .sweep{z-index:5;pointer-events:none;}
@@ -6299,6 +6304,12 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   height:12px;
   background:#fff;
   border:0;
+  box-shadow:0 0 6px #fff,0 0 14px #9ceaff,0 0 26px rgba(116,225,255,.9);
+}
+.radar.circuit-radar .track-radar-target::before{
+  width:12px;
+  height:12px;
+  background:#fff;
   box-shadow:0 0 6px #fff,0 0 14px #9ceaff,0 0 26px rgba(116,225,255,.9);
 }
 .radar.circuit-radar::before,
@@ -7208,3 +7219,388 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .mission-diagnostics .sensor-stability.done .stability-reference{stroke:rgba(101,219,255,.24);}
 .mission-diagnostics .sensor-stability.done .stability-arc{stroke:rgba(103,218,252,.22);}
 .mission-diagnostics .sensor-stability.done .stability-centre{stroke:rgba(105,220,255,.18);}
+
+/* === Pass 7.38.38: MC-02 Aero / Power optical centring correction ========== */
+.mission-diagnostics .diagnostics-head p.support-copy{
+  white-space:nowrap;
+  max-width:none;
+}
+
+/* Retain the verified MC02 placement geometry. */
+.mission-diagnostics .sensor-viz::before,
+.mission-diagnostics .sensor-viz::after{
+  content:none!important;
+  display:none!important;
+}
+.mission-diagnostics .sensor-viz{
+  position:absolute!important;
+  left:50%!important;
+  top:30px!important;
+  display:block!important;
+  width:108px!important;
+  max-width:108px!important;
+  height:44px!important;
+  max-height:44px!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:visible!important;
+  opacity:.9!important;
+  filter:none!important;
+  background:none!important;
+  transform:translateX(-50%)!important;
+}
+.mission-diagnostics .sensor.active .sensor-viz,
+.mission-diagnostics .sensor.done .sensor-viz{
+  opacity:1!important;
+  filter:none!important;
+}
+
+.mission-diagnostics .mc02-icon{
+  position:absolute!important;
+  left:50%!important;
+  top:50%!important;
+  display:block!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  background:none!important;
+  box-shadow:none!important;
+  transform:translate(-50%,-50%);
+  transform-origin:50% 50%;
+}
+.mission-diagnostics .mc02-layer{
+  position:absolute!important;
+  inset:0!important;
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:#78dfff;
+  box-shadow:none!important;
+  opacity:.92;
+  transform:none!important;
+  -webkit-mask-repeat:no-repeat!important;
+  mask-repeat:no-repeat!important;
+  -webkit-mask-position:center center!important;
+  mask-position:center center!important;
+  -webkit-mask-size:contain!important;
+  mask-size:contain!important;
+}
+.mission-diagnostics .mc02-svg{
+  display:block;
+  width:100%;
+  height:100%;
+  overflow:visible;
+}
+.mission-diagnostics .mc02-svg path{fill:#78dfff;}
+
+/* Normalised visual sizes from the approved placement pass. */
+.mission-diagnostics .mc02-icon-aero{width:65px;height:39px;left:calc(50% - 9px)!important;top:calc(50% - 1px)!important;}
+.mission-diagnostics .mc02-icon-stability{width:77px;height:46px;}
+.mission-diagnostics .mc02-icon-power{width:68px;height:41px;left:calc(50% - 8px)!important;top:calc(50% - 1px)!important;}
+.mission-diagnostics .mc02-icon-control{width:59px;height:35px;}
+.mission-diagnostics .mc02-icon-traction{width:61px;height:37px;left:calc(50% - 2px)!important;top:calc(50% - 1px)!important;}
+.mission-diagnostics .mc02-icon-response{width:57px;height:34px;}
+
+/* 01 AERO — only the fan group rotates. The garage/frame never transforms. */
+.mission-diagnostics .mc02-aero-frame-path{
+  fill:#78dfff!important;
+}
+.mission-diagnostics .mc02-aero-fan-path{
+  fill:#78dfff!important;
+}
+.mission-diagnostics .mc02-aero-fan-group{
+  transform-box:view-box;
+  transform-origin:105px 80.77px;
+  transform:rotate(0deg);
+}
+.mission-diagnostics .sensor-aero.active .mc02-aero-fan-group{
+  animation:mc02AeroFanSpin 1.55s linear 1 forwards!important;
+}
+.mission-diagnostics .sensor-aero.active .mc02-aero-fan-path,
+.mission-diagnostics .sensor-aero.done .mc02-aero-fan-path{
+  fill:var(--green)!important;
+}
+.mission-diagnostics .sensor-aero.done .mc02-aero-fan-group{
+  animation:none!important;
+  transform:rotate(0deg)!important;
+}
+@keyframes mc02AeroFanSpin{
+  from{transform:rotate(0deg)}
+  to{transform:rotate(720deg)}
+}
+
+/* 02 STABILITY — car tilts gently; the actual left/right headlight shapes are
+   the only green component during scan and after capture. */
+.mission-diagnostics .mc02-stability-car{
+  -webkit-mask-image:url("../assets/mc02-stability-front-car.svg")!important;
+  mask-image:url("../assets/mc02-stability-front-car.svg")!important;
+}
+.mission-diagnostics .mc02-stability-headlights{
+  -webkit-mask-image:url("../assets/mc02-stability-headlights.svg")!important;
+  mask-image:url("../assets/mc02-stability-headlights.svg")!important;
+}
+.mission-diagnostics .sensor-stability.active .mc02-icon-stability{
+  animation:mc02StabilityTilt 1.9s ease-in-out 1!important;
+}
+.mission-diagnostics .sensor-stability.active .mc02-stability-headlights,
+.mission-diagnostics .sensor-stability.done .mc02-stability-headlights{
+  background:var(--green)!important;
+}
+.mission-diagnostics .sensor-stability.done .mc02-stability-car{
+  background:#78dfff!important;
+}
+@keyframes mc02StabilityTilt{
+  0%,100%{transform:translate(-50%,-50%) rotate(0deg)}
+  27%{transform:translate(-50%,-50%) rotate(-5deg)}
+  68%{transform:translate(-50%,-50%) rotate(5deg)}
+}
+
+/* 03 POWER — gauge is completely fixed. Only the original needle rotates from
+   the real hub, holds briefly at zero, then sweeps to its source position. */
+.mission-diagnostics .mc02-power-gauge-path{
+  fill:#78dfff!important;
+}
+.mission-diagnostics .mc02-power-needle-path{
+  fill:#78dfff!important;
+}
+.mission-diagnostics .mc02-power-needle-group{
+  transform-box:view-box;
+  transform-origin:105px 87px;
+  transform:rotate(0deg);
+}
+.mission-diagnostics .sensor-power.active .mc02-power-needle-group{
+  animation:mc02PowerNeedleSweep 1.62s cubic-bezier(.25,.72,.2,1) 1 forwards!important;
+}
+.mission-diagnostics .sensor-power.active .mc02-power-needle-path,
+.mission-diagnostics .sensor-power.done .mc02-power-needle-path{
+  fill:var(--green)!important;
+}
+.mission-diagnostics .sensor-power.done .mc02-power-gauge-path{
+  fill:#78dfff!important;
+}
+.mission-diagnostics .sensor-power.done .mc02-power-needle-group{
+  animation:none!important;
+  transform:rotate(0deg)!important;
+}
+@keyframes mc02PowerNeedleSweep{
+  /* Begin at the supplied/max reading, sweep backwards OVER the dial to zero,
+     hold briefly, then build back OVER the dial to the supplied/max reading. */
+  0%{transform:rotate(0deg)}
+  30%{transform:rotate(-228deg)}
+  38%{transform:rotate(-228deg)}
+  100%{transform:rotate(0deg)}
+}
+
+/* 04 CONTROL — whole wheel moves from its existing left position to the
+   equivalent right position and back. Only the second/middle ring is green. */
+.mission-diagnostics .mc02-control-wheel{
+  -webkit-mask-image:url("../assets/system-guidance.svg")!important;
+  mask-image:url("../assets/system-guidance.svg")!important;
+}
+.mission-diagnostics .mc02-control-ring{
+  -webkit-mask-image:url("../assets/mc02-control-mid-ring.svg")!important;
+  mask-image:url("../assets/mc02-control-mid-ring.svg")!important;
+}
+.mission-diagnostics .sensor-control.active .mc02-icon-control{
+  animation:mc02ControlRightAndBack 2s ease-in-out 1!important;
+}
+.mission-diagnostics .sensor-control.active .mc02-control-ring,
+.mission-diagnostics .sensor-control.done .mc02-control-ring{
+  background:var(--green)!important;
+}
+.mission-diagnostics .sensor-control.done .mc02-control-wheel{
+  background:#78dfff!important;
+}
+@keyframes mc02ControlRightAndBack{
+  0%,100%{transform:translate(-50%,-50%) rotate(0deg)}
+  50%{transform:translate(-50%,-50%) rotate(54deg)}
+}
+
+/* 05 TRACTION — car remains completely static and blue. The original skid
+   marks do not move/scale; only their colour carries a travelling highlight. */
+.mission-diagnostics .mc02-traction-car{
+  -webkit-mask-image:url("../assets/mc02-traction-car.svg")!important;
+  mask-image:url("../assets/mc02-traction-car.svg")!important;
+  background:#78dfff!important;
+}
+.mission-diagnostics .mc02-traction-skids,
+.mission-diagnostics .mc02-traction-shine{
+  -webkit-mask-image:url("../assets/mc02-traction-skids.svg")!important;
+  mask-image:url("../assets/mc02-traction-skids.svg")!important;
+  transform:none!important;
+}
+.mission-diagnostics .mc02-traction-shine{opacity:0;}
+.mission-diagnostics .sensor-traction.active .mc02-icon-traction{
+  animation:none!important;
+  transform:translate(-50%,-50%)!important;
+}
+.mission-diagnostics .sensor-traction.active .mc02-traction-car,
+.mission-diagnostics .sensor-traction.active .mc02-traction-skids{
+  animation:none!important;
+  transform:none!important;
+}
+.mission-diagnostics .sensor-traction.active .mc02-traction-skids,
+.mission-diagnostics .sensor-traction.done .mc02-traction-skids{
+  background:var(--green)!important;
+}
+.mission-diagnostics .sensor-traction.active .mc02-traction-shine{
+  opacity:1;
+  background:linear-gradient(90deg,transparent 0%,rgba(128,255,190,.12) 28%,#f4fff9 49%,#b5ffdb 56%,transparent 78%);
+  background-size:260% 100%;
+  animation:mc02TractionColourFlow 1.05s linear infinite!important;
+}
+.mission-diagnostics .sensor-traction.done .mc02-traction-car{
+  background:#78dfff!important;
+}
+.mission-diagnostics .sensor-traction.done .mc02-traction-shine{display:none!important;}
+@keyframes mc02TractionColourFlow{
+  from{background-position:130% 50%}
+  to{background-position:-130% 50%}
+}
+
+/* 06 RESPONSE — cones remain static/blue. The original arrow gets a slower,
+   continuous green-white flow travelling from bottom to top. */
+.mission-diagnostics .mc02-response-cones{
+  -webkit-mask-image:url("../assets/mc02-response-cones.svg")!important;
+  mask-image:url("../assets/mc02-response-cones.svg")!important;
+  background:#78dfff!important;
+}
+.mission-diagnostics .mc02-response-arrow,
+.mission-diagnostics .mc02-response-shine{
+  -webkit-mask-image:url("../assets/mc02-response-arrow.svg")!important;
+  mask-image:url("../assets/mc02-response-arrow.svg")!important;
+  transform:none!important;
+}
+.mission-diagnostics .mc02-response-shine{opacity:0;}
+.mission-diagnostics .sensor-response.active .mc02-response-arrow,
+.mission-diagnostics .sensor-response.done .mc02-response-arrow{
+  background:var(--green)!important;
+}
+.mission-diagnostics .sensor-response.active .mc02-response-shine{
+  opacity:1;
+  background:linear-gradient(0deg,transparent 0%,rgba(124,255,187,.16) 30%,#baffdc 44%,#f6fffb 51%,#baffdc 58%,rgba(124,255,187,.16) 72%,transparent 100%);
+  background-size:100% 280%;
+  animation:mc02ResponseFlow 1.35s linear infinite!important;
+}
+.mission-diagnostics .sensor-response.done .mc02-response-cones{
+  background:#78dfff!important;
+}
+.mission-diagnostics .sensor-response.done .mc02-response-shine{display:none!important;}
+@keyframes mc02ResponseFlow{
+  /* Reverse the travelling sheen so it reads from the bottom of the arrow
+     toward the top. */
+  from{background-position:50% -145%}
+  to{background-position:50% 145%}
+}
+
+/* Captured state is selective: blue structure remains blue, and only the
+   component that was measured/animated stays green. */
+.mission-diagnostics .sensor.done .mc02-icon{
+  animation:none!important;
+}
+
+@media(max-height:740px){
+  .mission-diagnostics .sensor-viz{
+    top:27px!important;
+    width:100px!important;
+    max-width:100px!important;
+    height:42px!important;
+    max-height:42px!important;
+  }
+  .mission-diagnostics .mc02-icon{scale:.92;}
+}
+@media(max-height:660px){
+  .mission-diagnostics .sensor-viz{
+    top:25px!important;
+    width:94px!important;
+    max-width:94px!important;
+    height:39px!important;
+    max-height:39px!important;
+  }
+  .mission-diagnostics .mc02-icon{scale:.86;}
+}
+
+
+/* === Pass 7.38.40: radar depth + checkpoint beacon treatment ============ */
+@media(prefers-reduced-motion:reduce){
+  .target-dot::before,.target-dot::after,.track-radar-target::before,.track-radar-target::after{animation:none!important;}
+  .target-dot::before,.track-radar-target::before{opacity:1;transform:translate(-50%,-50%) scale(1);}
+  .target-dot::after,.track-radar-target::after{opacity:.72;transform:translate(-50%,-50%) scale(1);}
+}
+
+/* === Pass 7-04-09: Care Bears positive-energy signatures === */
+.mission-artifacts .artifact-head{
+  padding-bottom:7px!important;
+}
+.artifact-head .artifact-sponsor{
+  width:128px;
+  max-width:36vw;
+  margin:3px auto 0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.artifact-head .artifact-sponsor img{
+  display:block;
+  width:100%;
+  height:auto;
+  filter:drop-shadow(0 0 8px rgba(93,214,250,.08));
+}
+.artifact-head h1{margin-top:0;}
+
+.starstream-signature.emotion-signature{
+  color:rgb(var(--emotion-rgb));
+  background:
+    radial-gradient(circle,rgba(255,255,255,.26) 0 10%,rgba(var(--emotion-rgb),.28) 18%,rgba(var(--emotion-rgb),.18) 34%,rgba(5,29,48,.68) 52%,rgba(2,14,27,.08) 69%,transparent 73%);
+  box-shadow:
+    0 0 20px rgba(var(--emotion-rgb),.44),
+    0 0 44px rgba(var(--emotion-rgb),.22),
+    inset 0 0 18px rgba(var(--emotion-rgb),.18);
+}
+.starstream-signature.emotion-signature::before{
+  border-color:rgba(var(--emotion-rgb),.9);
+  box-shadow:0 0 12px rgba(var(--emotion-rgb),.42),inset 0 0 12px rgba(var(--emotion-rgb),.15);
+}
+.starstream-signature.emotion-signature::after{
+  border-color:rgba(var(--emotion-rgb),.48);
+}
+.starstream-signature.emotion-signature .signature-orbit{
+  border-color:rgba(var(--emotion-rgb),.34)!important;
+}
+.starstream-signature.emotion-signature .signature-orbit.orbit-a{
+  border-left-color:rgba(255,255,255,.92)!important;
+  border-right-color:rgba(255,255,255,.92)!important;
+}
+.starstream-signature.emotion-signature .signature-core{
+  color:rgb(var(--emotion-rgb));
+}
+.starstream-signature.emotion-signature .signature-emotion-icon svg{
+  display:block;
+  width:48%;
+  height:48%;
+  overflow:visible;
+  filter:
+    drop-shadow(0 0 3px rgba(255,255,255,.88))
+    drop-shadow(0 0 9px rgba(var(--emotion-rgb),.95))
+    drop-shadow(0 0 18px rgba(var(--emotion-rgb),.58));
+}
+.starstream-signature.emotion-signature .signature-scan{
+  background:linear-gradient(90deg,transparent,rgba(var(--emotion-rgb),.82),transparent)!important;
+  box-shadow:0 0 9px rgba(var(--emotion-rgb),.56)!important;
+}
+.artifact-ripple.is-emotion{
+  border-color:rgba(var(--emotion-rgb),.96);
+  box-shadow:0 0 17px rgba(var(--emotion-rgb),.78),inset 0 0 12px rgba(var(--emotion-rgb),.34);
+}
+.artifact-particle.is-emotion{
+  background:rgb(var(--emotion-rgb));
+  box-shadow:0 0 10px rgba(var(--emotion-rgb),.82);
+}
+@media(max-width:390px){
+  .artifact-head .artifact-sponsor{width:116px;max-width:38vw;}
+  .starstream-signature.emotion-signature .signature-emotion-icon svg{width:47%;height:47%;}
+}

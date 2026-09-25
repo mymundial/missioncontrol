@@ -7531,3 +7531,76 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   .target-dot::before,.track-radar-target::before{opacity:1;transform:translate(-50%,-50%) scale(1);}
   .target-dot::after,.track-radar-target::after{opacity:.72;transform:translate(-50%,-50%) scale(1);}
 }
+
+/* === Pass 7-04-09: Care Bears positive-energy signatures === */
+.mission-artifacts .artifact-head{
+  padding-bottom:7px!important;
+}
+.artifact-head .artifact-sponsor{
+  width:128px;
+  max-width:36vw;
+  margin:3px auto 0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.artifact-head .artifact-sponsor img{
+  display:block;
+  width:100%;
+  height:auto;
+  filter:drop-shadow(0 0 8px rgba(93,214,250,.08));
+}
+.artifact-head h1{margin-top:0;}
+
+.starstream-signature.emotion-signature{
+  color:rgb(var(--emotion-rgb));
+  background:
+    radial-gradient(circle,rgba(255,255,255,.26) 0 10%,rgba(var(--emotion-rgb),.28) 18%,rgba(var(--emotion-rgb),.18) 34%,rgba(5,29,48,.68) 52%,rgba(2,14,27,.08) 69%,transparent 73%);
+  box-shadow:
+    0 0 20px rgba(var(--emotion-rgb),.44),
+    0 0 44px rgba(var(--emotion-rgb),.22),
+    inset 0 0 18px rgba(var(--emotion-rgb),.18);
+}
+.starstream-signature.emotion-signature::before{
+  border-color:rgba(var(--emotion-rgb),.9);
+  box-shadow:0 0 12px rgba(var(--emotion-rgb),.42),inset 0 0 12px rgba(var(--emotion-rgb),.15);
+}
+.starstream-signature.emotion-signature::after{
+  border-color:rgba(var(--emotion-rgb),.48);
+}
+.starstream-signature.emotion-signature .signature-orbit{
+  border-color:rgba(var(--emotion-rgb),.34)!important;
+}
+.starstream-signature.emotion-signature .signature-orbit.orbit-a{
+  border-left-color:rgba(255,255,255,.92)!important;
+  border-right-color:rgba(255,255,255,.92)!important;
+}
+.starstream-signature.emotion-signature .signature-core{
+  color:rgb(var(--emotion-rgb));
+}
+.starstream-signature.emotion-signature .signature-emotion-icon svg{
+  display:block;
+  width:48%;
+  height:48%;
+  overflow:visible;
+  filter:
+    drop-shadow(0 0 3px rgba(255,255,255,.88))
+    drop-shadow(0 0 9px rgba(var(--emotion-rgb),.95))
+    drop-shadow(0 0 18px rgba(var(--emotion-rgb),.58));
+}
+.starstream-signature.emotion-signature .signature-scan{
+  background:linear-gradient(90deg,transparent,rgba(var(--emotion-rgb),.82),transparent)!important;
+  box-shadow:0 0 9px rgba(var(--emotion-rgb),.56)!important;
+}
+.artifact-ripple.is-emotion{
+  border-color:rgba(var(--emotion-rgb),.96);
+  box-shadow:0 0 17px rgba(var(--emotion-rgb),.78),inset 0 0 12px rgba(var(--emotion-rgb),.34);
+}
+.artifact-particle.is-emotion{
+  background:rgb(var(--emotion-rgb));
+  box-shadow:0 0 10px rgba(var(--emotion-rgb),.82);
+}
+@media(max-width:390px){
+  .artifact-head .artifact-sponsor{width:116px;max-width:38vw;}
+  .starstream-signature.emotion-signature .signature-emotion-icon svg{width:47%;height:47%;}
+}
