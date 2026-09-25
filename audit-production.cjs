@@ -379,7 +379,9 @@ if(
   /mc02-icon-control/.test(runtime) && /mc02-control-wheel/.test(runtime) && /mc02-control-ring/.test(runtime) &&
   /mc02-icon-traction/.test(runtime) && /mc02-traction-car/.test(runtime) && /mc02-traction-skids/.test(runtime) &&
   /mc02-icon-response/.test(runtime) && /mc02-response-cones/.test(runtime) && /mc02-response-arrow/.test(runtime) &&
-  /Pass 7\.38\.37: MC-02 animation endpoint \/ centring correction/.test(css) &&
+  /Pass 7\.38\.38: MC-02 Aero \/ Power optical centring correction/.test(css) &&
+  /mc02-icon-aero\{width:65px;height:39px;left:calc\(50% - 9px\)!important;/.test(css) &&
+  /mc02-icon-power\{width:68px;height:41px;left:calc\(50% - 8px\)!important;/.test(css) &&
   /sensor-aero\.active \.mc02-aero-fan-group[\s\S]*?mc02AeroFanSpin/.test(css) &&
   /sensor-aero\.done \.mc02-aero-fan-path[\s\S]*?var\(--green\)/.test(css) &&
   /sensor-stability\.active \.mc02-icon-stability[\s\S]*?mc02StabilityTilt/.test(css) &&

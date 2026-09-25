@@ -1,15 +1,11 @@
-# Pass 7.38.37 — MC02 animation endpoint and alignment correction
+# Pass 7.38.38 — MC02 Aero / Power optical centring
 
 ## Scope
-MC02 only. No mission mechanics, scan timings, copy, card dimensions, colours, or non-MC02 behaviour changed.
+- MC02 only.
+- Aero and Power icon horizontal alignment only.
+- No animation, timing, copy, state, sizing, or other card changes.
 
-## Corrections
-- Aero: garage remains fixed; fan now completes two exact rotations and finishes at its original start angle before capture, removing the end-of-scan jump.
-- Aero: corrected the icon's visual vertical centre inside the established scan zone.
-- Stability: unchanged.
-- Power: gauge remains fixed; needle now starts from its supplied/max position, sweeps back to zero over the face of the speedometer, pauses briefly, then builds back to max over the face. The needle finishes at the original supplied position, preventing an end jump.
-- Power: corrected the icon's visual vertical centre inside the established scan zone.
-- Control: unchanged.
-- Traction: unchanged.
-- Response: reversed the existing flowing highlight so it travels bottom-to-top through the original arrow path.
-- Selective green captured states remain unchanged.
+## Changes
+- Aero shifted 9px left so the visible garage/fan artwork aligns with the centred CAPTURED label.
+- Power shifted 8px left so the complete speedometer/needle artwork aligns with the centred CAPTURED label.
+- Cache version bumped to 7.38.38.
