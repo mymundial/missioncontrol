@@ -3669,7 +3669,10 @@
     function setResultState(n,status,value=null){
       const el=results[n-1]; if(!el)return;
       el.className=`lando-result ${status}`;
-      if(value!==null) el.querySelector('strong').textContent=value;
+      if(value!==null){
+        const ms=Math.max(0,Math.round(Number(value)||0));
+        el.innerHTML=`<span class="lando-result-value"><b>${ms}</b><small>MS</small></span>`;
+      }
     }
     function resetLights(){lamps.forEach(l=>l.className='lando-lamp');}
     function lampsForColumn(col){
@@ -3701,7 +3704,7 @@
       const ms=Math.round(performance.now()-goTime);
       armed=false; running=false;
       for(let col=0;col<5;col++) lampsForColumn(col).forEach(l=>l.classList.add('green'));
-      setResultState(round,'complete',`${ms} ms`);
+      setResultState(round,'complete',ms);
       haptic([20,20,45]); ping(760,.075,.03);
       if(round===4){
         btn.textContent='COMPLETE'; btn.disabled=true;

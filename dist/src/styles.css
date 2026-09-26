@@ -8492,3 +8492,40 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .lando-panel .lando-result strong{
   margin:0;
 }
+
+
+/* === Lando recorded result typography === */
+.lando-panel .lando-result-value{
+  position:relative;
+  display:inline-block;
+  width:auto;
+  line-height:1;
+  text-align:center;
+}
+.lando-panel .lando-result-value b{
+  display:block;
+  margin:0;
+  font-family:var(--text);
+  font-size:18px;
+  font-weight:400;
+  line-height:1;
+  letter-spacing:.01em;
+  font-variant-numeric:tabular-nums;
+}
+.lando-panel .lando-result-value small{
+  position:absolute;
+  left:calc(100% + 3px);
+  top:50%;
+  transform:translateY(-44%);
+  margin:0;
+  font-family:var(--text);
+  font-size:7px;
+  font-weight:400;
+  line-height:1;
+  letter-spacing:.08em;
+  color:#72dfff!important;
+}
+@media(max-width:390px){
+  .lando-panel .lando-result-value b{font-size:17px;}
+  .lando-panel .lando-result-value small{font-size:6.5px;}
+}
