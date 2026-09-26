@@ -4,8 +4,40 @@
     const roundEl=document.getElementById('landoRound');
     const lamps=[...document.querySelectorAll('.lando-lamp')];
     const results=[...document.querySelectorAll('[data-lando-result]')];
+    const redLightAudio=Array.from({length:5},()=>new Audio('./assets/lando-red-light-beep.mp3'));
+    const goAudio=new Audio('./assets/lando-go-beep.mp3');
+    redLightAudio.forEach(audio=>{audio.preload='auto';audio.volume=.72;});
+    goAudio.preload='auto';goAudio.volume=.82;
+    let countdownAudioPrimed=false;
     const clear=()=>{timers.forEach(clearTimeout);timers=[]};
-    cleanupMission=clear;
+    function stopCountdownAudio(reset=true){
+      [...redLightAudio,goAudio].forEach(audio=>{try{audio.pause();if(reset)audio.currentTime=0;}catch{}});
+    }
+    function cleanupLando(){clear();stopCountdownAudio(true);}
+    cleanupMission=cleanupLando;
+
+    function primeCountdownAudio(){
+      if(countdownAudioPrimed||!state.audio)return;
+      countdownAudioPrimed=true;
+      [...redLightAudio,goAudio].forEach(audio=>{
+        const target=audio===goAudio?.82:.72;
+        try{
+          audio.volume=0;audio.currentTime=0;
+          const play=audio.play();
+          if(play&&typeof play.then==='function'){
+            play.then(()=>{try{audio.pause();audio.currentTime=0;audio.volume=target;}catch{}}).catch(()=>{audio.volume=target;});
+          }else{audio.pause();audio.currentTime=0;audio.volume=target;}
+        }catch{audio.volume=target;}
+      });
+    }
+    function playCountdownFx(audio,volume){
+      if(!state.audio)return;
+      try{
+        audio.pause();audio.currentTime=0;audio.volume=volume;
+        const play=audio.play();
+        if(play&&typeof play.catch==='function')play.catch(()=>{});
+      }catch{}
+    }
 
     function activeRows(){return Math.min(round,4);}
     function setResultState(n,status,text){
@@ -20,13 +52,14 @@
     }
     function start(){
       clear(); resetLights(); armed=false; running=true; goTime=0;
+      primeCountdownAudio();
       roundEl.textContent=`${round} / 4`;
       btn.textContent='WAIT…'; btn.disabled=false;
       setResultState(round,'active','ACTIVE');
       for(let col=0;col<5;col++){
         timers.push(setTimeout(()=>{
           lampsForColumn(col).forEach(l=>l.classList.add('red'));
-          ping(250+col*28,.035,.01); haptic(8);
+          playCountdownFx(redLightAudio[col],.72); haptic(8);
         },380+col*250));
       }
       const builtAt=380+4*250;
@@ -35,7 +68,7 @@
         lamps.forEach(l=>l.classList.remove('red'));
         armed=true; running=true; goTime=performance.now();
         btn.textContent='GO!';
-        ping(920,.045,.028); haptic(18);
+        playCountdownFx(goAudio,.82); haptic(18);
       },wait));
     }
     function capture(){
