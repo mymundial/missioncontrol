@@ -8472,7 +8472,7 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 }
 
 
-/* === Comet Curve final synchronised state === */
+/* === Comet Curve final locked state === */
 .comet-judgement.perfect{color:#65ef9d!important;}
 .comet-judgement.complete{top:50%!important;color:#65ef9d!important;font-size:40px!important;letter-spacing:.075em!important;text-shadow:0 0 8px currentColor,0 0 22px currentColor!important;}
 @media(max-width:390px){.comet-judgement.complete{font-size:33px!important;}}
