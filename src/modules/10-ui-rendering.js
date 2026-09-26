@@ -255,7 +255,7 @@
       spirit:'Store the recovered energy.',
       placeholder:'This checkpoint is reserved while the final installation game is developed.',
       artifacts:'Collect the energy signatures.',
-      comet:'Align Santa-1’s guidance system.',
+      comet:'Synchronise Santa-1’s guidance system.',
       jingle:'Re-engage Santa-1’s flight controls.',
       lando:'Calibrate Santa-1’s flight response.',
       aurora:'Lock onto the North Pole navigation signal.',
@@ -352,7 +352,7 @@
         <div class="power-scanlines" aria-hidden="true"></div>
         <div class="power-hud">
           <div class="power-time-hud"><span>Time</span><strong id="powerRunState">00:00</strong></div>
-          <div class="power-speed-hud"><span>Speed</span><strong><b id="powerSpeed">0</b><small>MPH</small></strong></div>
+          <div class="power-speed-hud"><span>Speed</span><strong><b id="powerSpeed">000</b><small>MPH</small></strong></div>
           <div class="power-propulsion-hud"><span>Propulsion</span><strong id="powerOutput">0%</strong></div>
         </div>
         <div class="power-rev-wrap"><div class="power-rev" id="powerRev">${revSegments}</div></div>
@@ -436,7 +436,6 @@
     return `<div class="mission-instrument panel comet-panel">
       <div class="comet-score"><span>GUIDANCE LOCK</span><strong id="cometProgress">0 / 10</strong></div>
       <div class="comet-progress-track" aria-hidden="true">${Array.from({length:10},(_,i)=>`<i data-comet-step="${i}"></i>`).join('')}</div>
-      <div class="comet-instruction" id="cometInstruction">Match each signal as it reaches the capture line.</div>
       <div class="comet-game" id="cometGame" aria-label="Directional guidance rhythm game">
         <div class="comet-lanes">${lanes.map(([key])=>`<div class="comet-lane" data-comet-lane="${key}"></div>`).join('')}</div>
         <div class="comet-capture-line" aria-hidden="true"></div>
@@ -446,7 +445,7 @@
         <div class="comet-combo" id="cometCombo" aria-live="polite"></div>
       </div>
       <div class="comet-controls">${lanes.map(([key,dir])=>`<button class="comet-btn comet-btn-${dir}" data-arrow="${key}" aria-label="${btnLabel[key]}">${arrow(dir)}</button>`).join('')}</div>
-      <div class="signal-state comet-state" id="cometState">Guidance rhythm armed</div>
+      <div class="visually-hidden" id="cometState" aria-live="polite">Guidance rhythm armed</div>
     </div>`;
   }
   function jingleBody(){

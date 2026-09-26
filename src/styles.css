@@ -4809,7 +4809,7 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   text-shadow:0 0 12px currentColor;
 }
 .comet-judgement.show{animation:cometJudgement .42s ease-out both;}
-.comet-judgement.perfect{color:#bff8ff;}
+.comet-judgement.perfect{color:#65ef9d;}
 .comet-judgement.good{color:#70def7;}
 .comet-judgement.miss{color:#ff7c88;}
 .comet-judgement.complete{color:#bcf7ff;font-size:17px;animation:cometCompleteLock .7s ease-out both;}
@@ -4884,7 +4884,7 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   letter-spacing:.075em!important;
   text-shadow:0 0 8px currentColor,0 0 22px currentColor!important;
 }
-.comet-judgement.perfect{font-size:40px!important;color:#d9fbff!important;}
+.comet-judgement.perfect{font-size:40px!important;color:#65ef9d!important;text-shadow:0 0 12px rgba(101,239,157,.28)!important;}
 .comet-judgement.good{font-size:36px!important;color:#74e4ff!important;}
 .comet-judgement.miss{font-size:36px!important;color:#ff7581!important;}
 .comet-judgement.complete{font-size:22px!important;}
