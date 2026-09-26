@@ -40,10 +40,10 @@
     }
 
     function activeRows(){return Math.min(round,4);}
-    function setResultState(n,status,text){
+    function setResultState(n,status,value=null){
       const el=results[n-1]; if(!el)return;
       el.className=`lando-result ${status}`;
-      el.querySelector('span').textContent=text;
+      if(value!==null) el.querySelector('strong').textContent=value;
     }
     function resetLights(){lamps.forEach(l=>l.className='lando-lamp');}
     function lampsForColumn(col){
@@ -55,7 +55,7 @@
       primeCountdownAudio();
       roundEl.textContent=`${round} / 4`;
       btn.textContent='WAIT…'; btn.disabled=false;
-      setResultState(round,'active','ACTIVE');
+      setResultState(round,'active');
       for(let col=0;col<5;col++){
         timers.push(setTimeout(()=>{
           lampsForColumn(col).forEach(l=>l.classList.add('red'));
@@ -83,7 +83,7 @@
       }else{
         round++;
         roundEl.textContent=`${round} / 4`;
-        setResultState(round,'active','READY');
+        setResultState(round,'active');
         btn.textContent='NEXT TEST';
       }
     }
@@ -93,7 +93,7 @@
       if(running){
         clear(); running=false; armed=false; resetLights();
         btn.textContent='FALSE START';
-        setResultState(round,'active','RETRY');
+        setResultState(round,'active');
         haptic([20,30,20]);
         timers.push(setTimeout(()=>{btn.textContent='Start Test';},700));
       }

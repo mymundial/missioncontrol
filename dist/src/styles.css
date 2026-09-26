@@ -8481,3 +8481,14 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .lando-panel .lando-results{margin:8px 0 10px;}
 .lando-panel .lando-gantry-art{margin-top:0;}
 .lando-panel .lando-react-btn{margin-top:10px;}
+
+/* === Lando result tiles: number -> recorded time only === */
+.lando-panel .lando-result{
+  min-height:42px;
+  display:grid;
+  place-items:center;
+  align-content:center;
+}
+.lando-panel .lando-result strong{
+  margin:0;
+}

@@ -471,7 +471,7 @@
     return `<div class="mission-instrument panel lando-panel">
       <div class="lando-round-head"><span>REACTION TEST</span><strong id="landoRound">1 / 4</strong></div>
       <div class="lando-results" aria-label="Reaction test results">
-        ${[1,2,3,4].map(i=>`<div class="lando-result ${i===1?'active':''}" data-lando-result="${i}"><strong>0${i}</strong><span>${i===1?'READY':'STANDBY'}</span></div>`).join('')}
+        ${[1,2,3,4].map(i=>`<div class="lando-result ${i===1?'active':''}" data-lando-result="${i}"><strong>${i}</strong></div>`).join('')}
       </div>
       <div class="lando-gantry-art" id="landoGantry" aria-label="Five column start light gantry with four stacked lamps">
         <img src="./assets/lando-gantry.webp" alt="" aria-hidden="true">

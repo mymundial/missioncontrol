@@ -1046,7 +1046,7 @@
     return `<div class="mission-instrument panel lando-panel">
       <div class="lando-round-head"><span>REACTION TEST</span><strong id="landoRound">1 / 4</strong></div>
       <div class="lando-results" aria-label="Reaction test results">
-        ${[1,2,3,4].map(i=>`<div class="lando-result ${i===1?'active':''}" data-lando-result="${i}"><strong>0${i}</strong><span>${i===1?'READY':'STANDBY'}</span></div>`).join('')}
+        ${[1,2,3,4].map(i=>`<div class="lando-result ${i===1?'active':''}" data-lando-result="${i}"><strong>${i}</strong></div>`).join('')}
       </div>
       <div class="lando-gantry-art" id="landoGantry" aria-label="Five column start light gantry with four stacked lamps">
         <img src="./assets/lando-gantry.webp" alt="" aria-hidden="true">
@@ -3666,10 +3666,10 @@
     }
 
     function activeRows(){return Math.min(round,4);}
-    function setResultState(n,status,text){
+    function setResultState(n,status,value=null){
       const el=results[n-1]; if(!el)return;
       el.className=`lando-result ${status}`;
-      el.querySelector('span').textContent=text;
+      if(value!==null) el.querySelector('strong').textContent=value;
     }
     function resetLights(){lamps.forEach(l=>l.className='lando-lamp');}
     function lampsForColumn(col){
@@ -3681,7 +3681,7 @@
       primeCountdownAudio();
       roundEl.textContent=`${round} / 4`;
       btn.textContent='WAIT…'; btn.disabled=false;
-      setResultState(round,'active','ACTIVE');
+      setResultState(round,'active');
       for(let col=0;col<5;col++){
         timers.push(setTimeout(()=>{
           lampsForColumn(col).forEach(l=>l.classList.add('red'));
@@ -3709,7 +3709,7 @@
       }else{
         round++;
         roundEl.textContent=`${round} / 4`;
-        setResultState(round,'active','READY');
+        setResultState(round,'active');
         btn.textContent='NEXT TEST';
       }
     }
@@ -3719,7 +3719,7 @@
       if(running){
         clear(); running=false; armed=false; resetLights();
         btn.textContent='FALSE START';
-        setResultState(round,'active','RETRY');
+        setResultState(round,'active');
         haptic([20,30,20]);
         timers.push(setTimeout(()=>{btn.textContent='Start Test';},700));
       }
