@@ -958,8 +958,8 @@
       <div class="power-arcade" id="powerArcade">
         <div class="power-scanlines" aria-hidden="true"></div>
         <div class="power-hud">
-          <div class="power-time-hud"><span>Time</span><strong id="powerRunState">00:00</strong></div>
-          <div class="power-speed-hud"><span>Speed</span><strong><b id="powerSpeed">000</b><small>MPH</small></strong></div>
+          <div class="power-time-hud"><span>Time</span><strong id="powerRunState">00:00:00</strong></div>
+          <div class="power-speed-hud"><span>Speed</span><strong><b id="powerSpeed">0</b><small>MPH</small></strong></div>
           <div class="power-propulsion-hud"><span>Propulsion</span><strong id="powerOutput">0%</strong></div>
         </div>
         <div class="power-rev-wrap"><div class="power-rev" id="powerRev">${revSegments}</div></div>
@@ -2331,10 +2331,11 @@
     }
 
     function formatRunTime(ms){
-      const totalSeconds = Math.max(0, Math.floor(ms / 1000));
-      const minutes = Math.floor(totalSeconds / 60);
-      const seconds = totalSeconds % 60;
-      return String(minutes).padStart(2,'0') + ':' + String(seconds).padStart(2,'0');
+      const totalCentiseconds=Math.max(0,Math.floor(ms/10));
+      const minutes=Math.floor(totalCentiseconds/6000);
+      const seconds=Math.floor((totalCentiseconds%6000)/100);
+      const centiseconds=totalCentiseconds%100;
+      return String(minutes).padStart(2,'0')+':'+String(seconds).padStart(2,'0')+':'+String(centiseconds).padStart(2,'0');
     }
 
     function updateRoad(dt,norm,now){
@@ -2358,7 +2359,7 @@
     }
 
     function renderPower(norm){
-      speedEl.textContent=String(Math.round(speed)).padStart(3,'0');
+      speedEl.textContent=String(Math.round(speed));
       const output=Math.min(100,Math.round(Math.pow(norm,.82)*100));
       outputEl.textContent=output+'%';
       arcade.style.setProperty('--power-level',norm.toFixed(3));
