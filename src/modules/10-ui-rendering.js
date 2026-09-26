@@ -434,7 +434,7 @@
     const btnLabel={L:'Left',D:'Down',U:'Up',R:'Right'};
     const arrow=(dir,extra='')=>`<span class="comet-arrow-icon comet-arrow-${dir} ${extra}" aria-hidden="true"><i></i><i></i></span>`;
     return `<div class="mission-instrument panel comet-panel">
-      <div class="comet-score"><span>GUIDANCE LOCK</span><strong id="cometProgress">0 / 10</strong></div>
+      <div class="comet-score"><span>GUIDANCE SYNC</span><strong id="cometProgress">0 / 10</strong></div>
       <div class="comet-progress-track" aria-hidden="true">${Array.from({length:10},(_,i)=>`<i data-comet-step="${i}"></i>`).join('')}</div>
       <div class="comet-game" id="cometGame" aria-label="Directional guidance rhythm game">
         <div class="comet-lanes">${lanes.map(([key])=>`<div class="comet-lane" data-comet-lane="${key}"></div>`).join('')}</div>
