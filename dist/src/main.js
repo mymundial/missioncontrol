@@ -2392,9 +2392,7 @@
       button.textContent='MAX SPEED CONFIRMED';
       button.disabled=true;
       arcade.classList.add('captured');
-      runState.classList.add('is-complete');
       outputEl.classList.add('is-complete');
-      speedValue?.classList.add('is-complete');
       car.classList.add('captured');
       burst.classList.add('active');
       ping(980,.16,.055);haptic([34,24,65]);
