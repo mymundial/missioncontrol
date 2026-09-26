@@ -118,6 +118,38 @@
   let cleanupMission = null;
   let audioCtx = null;
   let noiseNode = null;
+
+  const REINDEER_RACEWAY_PRELOAD_IMAGES = [
+    './assets/escapade-logo.png',
+    './assets/power-sky.webp',
+    './assets/power-road.webp',
+    './assets/power-grass.webp',
+    './assets/power-car.webp'
+  ];
+  const REINDEER_RACEWAY_PRELOAD_AUDIO = [
+    './assets/car-engine-loop.wav',
+    './assets/power-acceleration.mp3',
+    './assets/power-win.mp3'
+  ];
+  function preloadReindeerRacewayAssets(){
+    if(window.__reindeerRacewayAssetsPrimed) return;
+    window.__reindeerRacewayAssetsPrimed = true;
+    REINDEER_RACEWAY_PRELOAD_IMAGES.forEach(src=>{
+      const img = new Image();
+      img.decoding = 'async';
+      try{ img.fetchPriority = 'high'; }catch{}
+      img.src = src;
+    });
+    REINDEER_RACEWAY_PRELOAD_AUDIO.forEach(src=>{
+      try{
+        const audio = new Audio();
+        audio.preload = 'auto';
+        audio.src = src;
+        audio.load();
+      }catch{}
+    });
+  }
+  preloadReindeerRacewayAssets();
   let noiseGain = null;
   let elfAudioEl = null;
   let elfTunerPreviewActive = false;
@@ -812,6 +844,9 @@
     if(cp.type==='spirit'){
       return `<div class="mission-head spirit-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><div class="spirit-sponsor"><img src="./assets/care-bears-logo.png?v=7.38.44" alt="Care Bears"></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
     }
+    if(cp.type==='power'&&cp.id==='escapade'){
+      return `<div class="mission-head raceway-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><div class="raceway-sponsor"><img src="./assets/escapade-logo.png?v=1" alt="Escapade"></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
+    }
     if(cp.type==='lapland'){
       return `<div class="mission-head lapland-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><div class="lapland-sponsor"><img src="./assets/las-vegas-logo.webp" alt="Las Vegas"></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
     }
@@ -824,7 +859,7 @@
       radio:'Tune the receiver to 87.7 and establish a link with ELF FM.',
       commsrelay:'Establish communications with Santa-1.',
       power:'Test Santa-1’s propulsion system.',
-      spirit:'Store the positive energy.',
+      spirit:'Store the recovered energy.',
       placeholder:'This checkpoint is reserved while the final installation game is developed.',
       artifacts:'Collect the energy signatures.',
       comet:'Align Santa-1’s guidance system.',
@@ -917,38 +952,17 @@
       <div class="relay-meter"><span>Signal Strength</span><div><i id="relayMeterFill"></i></div></div>
     </div>`;
   }
-  const REINDEER_RACEWAY_ASSETS=[
-    './assets/power-sky.webp',
-    './assets/power-grass.webp',
-    './assets/power-road.webp',
-    './assets/power-car.webp'
-  ];
-  let reindeerRacewayPreloadStarted=false;
-  function preloadReindeerRacewayAssets(){
-    if(reindeerRacewayPreloadStarted||typeof Image==='undefined') return;
-    reindeerRacewayPreloadStarted=true;
-    const load=()=>REINDEER_RACEWAY_ASSETS.forEach(src=>{
-      const img=new Image();
-      img.decoding='async';
-      img.src=src;
-      if(typeof img.decode==='function') img.decode().catch(()=>{});
-    });
-    if(typeof requestIdleCallback==='function') requestIdleCallback(load,{timeout:2200});
-    else setTimeout(load,700);
-  }
-  preloadReindeerRacewayAssets();
-
   function powerBody(){
     const revSegments=Array.from({length:12},()=>'<i></i>').join('');
     return `<div class="mission-instrument panel power-run-panel">
       <div class="power-arcade" id="powerArcade">
         <div class="power-scanlines" aria-hidden="true"></div>
         <div class="power-hud">
-          <div><span>Raceway Run</span><strong id="powerRunState">READY</strong></div>
+          <div><span>Status</span><strong id="powerRunState">READY</strong></div>
           <div><span>Speed Output</span><strong id="powerOutput">0%</strong></div>
-          <div class="power-speed-hud"><span>Speed</span><strong><b id="powerSpeed">000</b><small> MPH</small></strong></div>
+          <div class="power-speed-hud"><span>Speed</span><strong><b id="powerSpeed">000</b><small>MPH</small></strong></div>
         </div>
-        <div class="power-rev-wrap"><span>PACE</span><div class="power-rev" id="powerRev">${revSegments}</div></div>
+        <div class="power-rev-wrap"><div class="power-rev" id="powerRev">${revSegments}</div></div>
         <div class="power-road-scene" id="powerRoad">
           <div class="power-sky-sprite" aria-hidden="true"></div>
           <div class="power-ground" aria-hidden="true">
@@ -958,12 +972,12 @@
           <div class="power-horizon-seam" aria-hidden="true"></div>
           <div class="power-speed-lines" aria-hidden="true">${Array.from({length:12},()=>'<i></i>').join('')}</div>
           <div class="power-car" id="powerCar">
-            <img class="power-car-sprite" src="./assets/power-car.webp" alt="Blue retro pixel racing car seen from behind" decoding="async">
+            <img class="power-car-sprite" src="./assets/power-car.webp" alt="Blue retro pixel racing car seen from behind">
             <span class="power-exhaust power-exhaust-left"></span><span class="power-exhaust power-exhaust-right"></span>
           </div>
           <div class="power-burst" id="powerBurst" aria-hidden="true"><i></i><i></i><i></i></div>
         </div>
-        <div class="power-max-hold"><span>Sustain Max Speed</span><div><i id="powerMaxFill"></i></div><strong id="powerMaxState">STANDBY</strong></div>
+        <div class="power-max-hold"><span>Maintain Max Speed</span><div><i id="powerMaxFill"></i></div><strong id="powerMaxState">STANDBY</strong></div>
       </div>
       <div class="visually-hidden" id="powerState" aria-live="polite">Ready</div>
       <button class="btn primary wide power-accelerator" id="powerAccelerator">Hold to Accelerate</button>
@@ -2213,73 +2227,64 @@
     const speedLines=[...document.querySelectorAll('.power-speed-lines i')];
     const topSpeed=214;
     const sustainRequired=1150;
-    const powerAudio=new Audio('./assets/power-acceleration.mp3');
-    powerAudio.preload='auto';
-    powerAudio.volume=0;
-    const idleAudio=new Audio('./assets/reindeer-engine-idle-loop.wav');
+    const idleAudio=new Audio('./assets/car-engine-loop.wav');
     idleAudio.preload='auto';
     idleAudio.loop=true;
     idleAudio.volume=0;
+    const powerAudio=new Audio('./assets/power-acceleration.mp3');
+    powerAudio.preload='auto';
+    powerAudio.volume=0;
     const powerWinAudio=new Audio('./assets/power-win.mp3');
     powerWinAudio.preload='auto';
     powerWinAudio.volume=.92;
-    let audioFadeRaf=0;
-    let idleFadeRaf=0;
-    let idleStarted=false;
+    const audioFadeMap=new WeakMap();
     let speed=0,holding=false,sustain=0,last=performance.now(),roadPhase=0,grassPhase=0,raf=0,finished=false;
     let thresholdStep=0;
 
-    function cancelPowerAudioFade(){
-      if(audioFadeRaf)cancelAnimationFrame(audioFadeRaf);
-      audioFadeRaf=0;
+    function cancelAudioFade(media){
+      const rafId=audioFadeMap.get(media);
+      if(rafId) cancelAnimationFrame(rafId);
+      audioFadeMap.delete(media);
     }
-    function cancelIdleAudioFade(){
-      if(idleFadeRaf)cancelAnimationFrame(idleFadeRaf);
-      idleFadeRaf=0;
-    }
-    function fadeIdleAudio(target,duration=240,onDone){
-      cancelIdleAudioFade();
-      const from=Number.isFinite(idleAudio.volume)?idleAudio.volume:0;
+    function fadeAudio(media,target,duration=220,onDone){
+      cancelAudioFade(media);
+      const from=Number.isFinite(media.volume)?media.volume:0;
       const start=performance.now();
       const step=now=>{
         const p=Math.min(1,(now-start)/duration);
-        idleAudio.volume=Math.max(0,Math.min(1,from+(target-from)*p));
-        if(p<1)idleFadeRaf=requestAnimationFrame(step);
-        else{idleFadeRaf=0;onDone?.();}
+        media.volume=Math.max(0,Math.min(1,from+(target-from)*p));
+        if(p<1) audioFadeMap.set(media,requestAnimationFrame(step));
+        else{ audioFadeMap.delete(media); onDone?.(); }
       };
-      idleFadeRaf=requestAnimationFrame(step);
+      audioFadeMap.set(media,requestAnimationFrame(step));
     }
-    function ensureIdleAudio(target=.28){
+    function fadePowerAudio(target,duration=220,onDone){
+      fadeAudio(powerAudio,target,duration,onDone);
+    }
+    function startIdleAudio(level=.24){
       if(!state.audio)return;
-      cancelIdleAudioFade();
+      cancelAudioFade(idleAudio);
       if(idleAudio.paused){
         idleAudio.volume=0;
         try{
           const play=idleAudio.play();
-          if(play&&typeof play.then==='function') play.then(()=>{idleStarted=true;fadeIdleAudio(target,220);}).catch(()=>{});
-          else{idleStarted=true;fadeIdleAudio(target,220);}
+          if(play&&typeof play.then==='function') play.then(()=>fadeAudio(idleAudio,level,220)).catch(()=>{});
+          else fadeAudio(idleAudio,level,220);
         }catch{}
-      }else{
-        idleStarted=true;
-        fadeIdleAudio(target,220);
-      }
+      }else fadeAudio(idleAudio,level,220);
     }
-    function fadePowerAudio(target,duration=220,onDone){
-      cancelPowerAudioFade();
-      const from=Number.isFinite(powerAudio.volume)?powerAudio.volume:0;
-      const start=performance.now();
-      const step=now=>{
-        const p=Math.min(1,(now-start)/duration);
-        powerAudio.volume=Math.max(0,Math.min(1,from+(target-from)*p));
-        if(p<1)audioFadeRaf=requestAnimationFrame(step);
-        else{audioFadeRaf=0;onDone?.();}
-      };
-      audioFadeRaf=requestAnimationFrame(step);
+    function pauseIdleAudio(){
+      if(!state.audio||idleAudio.paused)return;
+      cancelAudioFade(idleAudio);
+      fadeAudio(idleAudio,0,200,()=>{try{idleAudio.pause();}catch{}});
+    }
+    function stopIdleAudio(reset=false){
+      cancelAudioFade(idleAudio);
+      try{idleAudio.pause();idleAudio.volume=0;if(reset)idleAudio.currentTime=0;}catch{}
     }
     function startPowerAudio(){
       if(!state.audio)return;
-      ensureIdleAudio(.09);
-      cancelPowerAudioFade();
+      cancelAudioFade(powerAudio);
       // Resume from the exact point reached on the previous acceleration hold.
       // Do not rewind when the player lifts and presses again.
       if(powerAudio.paused){
@@ -2292,21 +2297,14 @@
       }else fadePowerAudio(.82,180);
     }
     function pausePowerAudio(){
-      if(!state.audio)return;
-      ensureIdleAudio(.28);
-      if(powerAudio.paused)return;
-      // Fade the acceleration layer away, then pause without changing currentTime.
-      // The low idle bed remains underneath so coasting never falls silent.
+      if(!state.audio||powerAudio.paused)return;
+      // Fade the engine away, then pause without changing currentTime so the
+      // next acceleration continues naturally from where the sound left off.
       fadePowerAudio(0,240,()=>{try{powerAudio.pause();}catch{}});
     }
     function stopPowerAudio(reset=false){
-      cancelPowerAudioFade();
+      cancelAudioFade(powerAudio);
       try{powerAudio.pause();powerAudio.volume=0;if(reset)powerAudio.currentTime=0;}catch{}
-    }
-    function stopIdleAudio(reset=false){
-      cancelIdleAudioFade();
-      idleStarted=false;
-      try{idleAudio.pause();idleAudio.volume=0;if(reset)idleAudio.currentTime=0;}catch{}
     }
 
     function setHolding(next){
@@ -2314,13 +2312,15 @@
       holding=next;
       button.classList.toggle('pressed',holding);
       if(holding){
+        pauseIdleAudio();
         startPowerAudio();
         runState.textContent=speed>190?'FULL GALLOP':'ACCELERATING';
-        stateEl.textContent=speed>190?'Hold maximum velocity':'Building raceway speed…';
+        stateEl.textContent=speed>190?'Maintain maximum velocity':'Building raceway speed…';
       }else{
         pausePowerAudio();
+        startIdleAudio(speed>1?.24:.2);
         runState.textContent=speed>1?'COASTING':'READY';
-        stateEl.textContent=speed>1?'Hold again to keep accelerating':'Hold to accelerate';
+        stateEl.textContent=speed>1?'Press again to build speed':'Hold to accelerate';
       }
     }
 
@@ -2386,6 +2386,7 @@
       rev.forEach(seg=>seg.classList.add('locked'));
       ping(980,.16,.055);haptic([34,24,65]);
       if(state.audio){
+        pauseIdleAudio();
         // Start the 8-bit win sting on the same frame the engine begins fading,
         // giving the two sounds a short intentional overlap at max power.
         try{
@@ -2394,7 +2395,6 @@
           if(win&&typeof win.catch==='function')win.catch(()=>{});
         }catch{}
         if(!powerAudio.paused)fadePowerAudio(0,520,()=>{try{powerAudio.pause();}catch{}});
-        if(idleStarted&&!idleAudio.paused)fadeIdleAudio(0,420,()=>{try{idleAudio.pause();}catch{}});
       }
       cancelAnimationFrame(raf);
       setTimeout(()=>showCompletion('Raceway Run Complete','Santa-1’s propulsion system has been tested and is ready for flight.'),1100);
@@ -2409,10 +2409,10 @@
         sustain=Math.min(sustainRequired,sustain+dt);
         runState.textContent='MAX VELOCITY';
         maxState.textContent='CAPTURING';
-        stateEl.textContent='Hold maximum velocity to confirm the run';
+        stateEl.textContent='Maintain maximum velocity to confirm the run';
       }else{
         sustain=Math.max(0,sustain-dt*1.7);
-        maxState.textContent=sustain>0?'HOLD SPEED':'STANDBY';
+        maxState.textContent=sustain>0?'MAINTAIN':'STANDBY';
         if(!holding&&speed<1){runState.textContent='READY';}
       }
       maxFill.style.width=(sustain/sustainRequired*100).toFixed(1)+'%';
@@ -2436,8 +2436,8 @@
     button.addEventListener('keyup',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();setHolding(false);}});
     cleanupMission=()=>{
       cancelAnimationFrame(raf);
-      stopPowerAudio(false);
       stopIdleAudio(false);
+      stopPowerAudio(false);
       try{powerWinAudio.pause();powerWinAudio.currentTime=0;}catch{}
     };
     raf=requestAnimationFrame(frame);
@@ -2471,13 +2471,9 @@
     let completed=false;
     let finishTimer=0;
     const reactionTimers=[];
-    const payoffAudio=new Audio('./assets/spirit-tank-fully-charged.wav');
+    const payoffAudio=new Audio('./assets/spirit-tank-vent.mp3');
     payoffAudio.preload='auto';
     payoffAudio.volume=.72;
-    const bubblesAudio=new Audio('./assets/spirit-depot-bubbles-loop.wav');
-    bubblesAudio.preload='auto';
-    bubblesAudio.loop=true;
-    bubblesAudio.volume=.42;
 
     function playTankPayoff(){
       if(!state.audio) return;
@@ -2485,22 +2481,6 @@
         payoffAudio.currentTime=0;
         const play=payoffAudio.play();
         if(play&&typeof play.catch==='function') play.catch(()=>{});
-      }catch{}
-    }
-
-
-    function startBubbles(){
-      if(!state.audio||completed||!bubblesAudio.paused) return;
-      try{
-        const play=bubblesAudio.play();
-        if(play&&typeof play.catch==='function') play.catch(()=>{});
-      }catch{}
-    }
-
-    function stopBubbles(){
-      try{
-        bubblesAudio.pause();
-        bubblesAudio.currentTime=0;
       }catch{}
     }
 
@@ -2564,7 +2544,6 @@
       void tank.offsetWidth;
       tank.classList.add('is-locking');
       setTimeout(()=>tank.classList.remove('is-locking'),900);
-      if(hits>=totalTaps) stopBubbles();
       playTankPayoff();
       haptic([24,18,42]);
     }
@@ -2588,7 +2567,6 @@
 
     function completeSpirit(){
       completed=true;
-      stopBubbles();
       rig.classList.add('is-complete');
       stageNumber.textContent='08';
       stageDots.forEach(dot=>{
@@ -2600,7 +2578,7 @@
       buttons.forEach(button=>{button.disabled=true;button.classList.remove('is-next');});
       haptic([30,28,64]);
       finishTimer=setTimeout(()=>{
-        if(state.missionOpen==='spirit') showCompletion('Spirit Core Charged','The positive energy signatures have been safely stored and the Spirit Core is now fully charged.');
+        if(state.missionOpen==='spirit') showCompletion('Spirit Core Charged','The recovered energy has been stored and the Spirit Core is fully charged.');
       },950);
     }
 
@@ -2617,7 +2595,6 @@
       const button=event.currentTarget;
       const side=button.dataset.charge;
       if(side!==expected){flashWrong(button);return;}
-      startBubbles();
       hits++;
       sideHits[side]++;
       updateBank(side);
@@ -2640,7 +2617,6 @@
       clearTimeout(finishTimer);
       reactionTimers.forEach(clearTimeout);
       buttons.forEach(button=>button.removeEventListener('click',onCharge));
-      stopBubbles();
       try{payoffAudio.pause();payoffAudio.currentTime=0;}catch{}
     };
   }
@@ -2676,16 +2652,6 @@
     let signatureBag=[];
     let liveItems=new Set();
     let capturedSignatures=[];
-    const captureAudioPool=Array.from({length:3},()=>{
-      const audio=new Audio('./assets/power-pulse-energy-pop.wav');
-      audio.preload='auto';
-      audio.volume=.42;
-      return audio;
-    });
-    const boostAudio=new Audio('./assets/power-pulse-energy-boost.wav');
-    boostAudio.preload='auto';
-    boostAudio.volume=.78;
-    let captureAudioIndex=0;
 
     function clearTimers(){timers.forEach(clearTimeout);timers=[];}
     function later(fn,delay){const t=setTimeout(()=>{timers=timers.filter(id=>id!==t);fn();},delay);timers.push(t);return t;}
@@ -2724,23 +2690,6 @@
       field.dataset.intensity=String(level);
       panel?.classList.toggle('is-live',cleared>0);
       panel?.classList.toggle('is-intense',cleared>=7);
-    }
-
-    function playCaptureAudio(isFinal=false){
-      if(!state.audio) return;
-      try{
-        if(isFinal){
-          boostAudio.currentTime=0;
-          const play=boostAudio.play();
-          if(play&&typeof play.catch==='function') play.catch(()=>{});
-          return;
-        }
-        const audio=captureAudioPool[captureAudioIndex%captureAudioPool.length];
-        captureAudioIndex++;
-        audio.currentTime=0;
-        const play=audio.play();
-        if(play&&typeof play.catch==='function') play.catch(()=>{});
-      }catch{}
     }
 
     function renderStability(){
@@ -2902,8 +2851,7 @@
       cleared=Math.min(10,cleared+1);
       capturedSignatures[cleared-1]=item.signature.rgb;
       renderStability();
-      playCaptureAudio(cleared===10);
-      haptic(18);
+      ping(630+cleared*20,.045,.018);haptic(18);
       if(stateEl) stateEl.textContent=cleared===10?'Power stabilised':'';
       if(cleared>=10){finish();return;}
       later(()=>{
@@ -2978,7 +2926,7 @@
       field.classList.add('stabilised');
       beam.classList.add('active');
       progress.textContent='10 / 10';
-      haptic([28,24,58]);
+      ping(920,.12,.045);haptic([28,24,58]);
       setTimeout(()=>showCompletion('Power Stabilised','The positive energy signatures have been captured and stabilised, ready to be stored in the Spirit Core.'),900);
     }
 
@@ -2995,8 +2943,6 @@
       resizeObserver?.disconnect?.();
       for(const item of liveItems){item.el.remove();}
       liveItems.clear();
-      captureAudioPool.forEach(audio=>{try{audio.pause();audio.currentTime=0;}catch{}});
-      try{boostAudio.pause();boostAudio.currentTime=0;}catch{}
     };
   }
 
