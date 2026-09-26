@@ -17,16 +17,53 @@
     const powerAudio=new Audio('./assets/power-acceleration.mp3');
     powerAudio.preload='auto';
     powerAudio.volume=0;
+    const idleAudio=new Audio('./assets/reindeer-engine-idle-loop.wav');
+    idleAudio.preload='auto';
+    idleAudio.loop=true;
+    idleAudio.volume=0;
     const powerWinAudio=new Audio('./assets/power-win.mp3');
     powerWinAudio.preload='auto';
     powerWinAudio.volume=.92;
     let audioFadeRaf=0;
+    let idleFadeRaf=0;
+    let idleStarted=false;
     let speed=0,holding=false,sustain=0,last=performance.now(),roadPhase=0,grassPhase=0,raf=0,finished=false;
     let thresholdStep=0;
 
     function cancelPowerAudioFade(){
       if(audioFadeRaf)cancelAnimationFrame(audioFadeRaf);
       audioFadeRaf=0;
+    }
+    function cancelIdleAudioFade(){
+      if(idleFadeRaf)cancelAnimationFrame(idleFadeRaf);
+      idleFadeRaf=0;
+    }
+    function fadeIdleAudio(target,duration=240,onDone){
+      cancelIdleAudioFade();
+      const from=Number.isFinite(idleAudio.volume)?idleAudio.volume:0;
+      const start=performance.now();
+      const step=now=>{
+        const p=Math.min(1,(now-start)/duration);
+        idleAudio.volume=Math.max(0,Math.min(1,from+(target-from)*p));
+        if(p<1)idleFadeRaf=requestAnimationFrame(step);
+        else{idleFadeRaf=0;onDone?.();}
+      };
+      idleFadeRaf=requestAnimationFrame(step);
+    }
+    function ensureIdleAudio(target=.28){
+      if(!state.audio)return;
+      cancelIdleAudioFade();
+      if(idleAudio.paused){
+        idleAudio.volume=0;
+        try{
+          const play=idleAudio.play();
+          if(play&&typeof play.then==='function') play.then(()=>{idleStarted=true;fadeIdleAudio(target,220);}).catch(()=>{});
+          else{idleStarted=true;fadeIdleAudio(target,220);}
+        }catch{}
+      }else{
+        idleStarted=true;
+        fadeIdleAudio(target,220);
+      }
     }
     function fadePowerAudio(target,duration=220,onDone){
       cancelPowerAudioFade();
@@ -42,6 +79,7 @@
     }
     function startPowerAudio(){
       if(!state.audio)return;
+      ensureIdleAudio(.09);
       cancelPowerAudioFade();
       // Resume from the exact point reached on the previous acceleration hold.
       // Do not rewind when the player lifts and presses again.
@@ -55,14 +93,21 @@
       }else fadePowerAudio(.82,180);
     }
     function pausePowerAudio(){
-      if(!state.audio||powerAudio.paused)return;
-      // Fade the engine away, then pause without changing currentTime so the
-      // next acceleration continues naturally from where the sound left off.
+      if(!state.audio)return;
+      ensureIdleAudio(.28);
+      if(powerAudio.paused)return;
+      // Fade the acceleration layer away, then pause without changing currentTime.
+      // The low idle bed remains underneath so coasting never falls silent.
       fadePowerAudio(0,240,()=>{try{powerAudio.pause();}catch{}});
     }
     function stopPowerAudio(reset=false){
       cancelPowerAudioFade();
       try{powerAudio.pause();powerAudio.volume=0;if(reset)powerAudio.currentTime=0;}catch{}
+    }
+    function stopIdleAudio(reset=false){
+      cancelIdleAudioFade();
+      idleStarted=false;
+      try{idleAudio.pause();idleAudio.volume=0;if(reset)idleAudio.currentTime=0;}catch{}
     }
 
     function setHolding(next){
@@ -150,6 +195,7 @@
           if(win&&typeof win.catch==='function')win.catch(()=>{});
         }catch{}
         if(!powerAudio.paused)fadePowerAudio(0,520,()=>{try{powerAudio.pause();}catch{}});
+        if(idleStarted&&!idleAudio.paused)fadeIdleAudio(0,420,()=>{try{idleAudio.pause();}catch{}});
       }
       cancelAnimationFrame(raf);
       setTimeout(()=>showCompletion('Raceway Run Complete','Santa-1’s propulsion system has been tested and is ready for flight.'),1100);
@@ -192,6 +238,7 @@
     cleanupMission=()=>{
       cancelAnimationFrame(raf);
       stopPowerAudio(false);
+      stopIdleAudio(false);
       try{powerWinAudio.pause();powerWinAudio.currentTime=0;}catch{}
     };
     raf=requestAnimationFrame(frame);
