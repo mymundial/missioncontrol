@@ -958,9 +958,9 @@
       <div class="power-arcade" id="powerArcade">
         <div class="power-scanlines" aria-hidden="true"></div>
         <div class="power-hud">
-          <div><span>Time</span><strong id="powerRunState">00.0S</strong></div>
+          <div class="power-time-hud"><span>Time</span><strong id="powerRunState">00:00</strong></div>
           <div class="power-speed-hud"><span>Speed</span><strong><b id="powerSpeed">000</b><small>MPH</small></strong></div>
-          <div><span>Propulsion</span><strong id="powerOutput">0%</strong></div>
+          <div class="power-propulsion-hud"><span>Propulsion</span><strong id="powerOutput">0%</strong></div>
         </div>
         <div class="power-rev-wrap"><div class="power-rev" id="powerRev">${revSegments}</div></div>
         <div class="power-road-scene" id="powerRoad">
@@ -977,7 +977,7 @@
           </div>
           <div class="power-burst" id="powerBurst" aria-hidden="true"><i></i><i></i><i></i></div>
         </div>
-        <div class="power-max-hold"><span>MAX SPEED</span><div><i id="powerMaxFill"></i></div><strong id="powerMaxState">STANDBY</strong></div>
+        <div class="power-max-hold"><span>SPEED LOCK</span><div><i id="powerMaxFill"></i></div><strong id="powerMaxState">STANDBY</strong></div>
       </div>
       <div class="visually-hidden" id="powerState" aria-live="polite">Ready</div>
       <button class="btn primary wide power-accelerator" id="powerAccelerator">Hold to Accelerate</button>
@@ -2331,8 +2331,10 @@
     }
 
     function formatRunTime(ms){
-      const seconds = Math.max(0, ms / 1000);
-      return String(seconds.toFixed(1)).padStart(4,'0') + 'S';
+      const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = totalSeconds % 60;
+      return String(minutes).padStart(2,'0') + ':' + String(seconds).padStart(2,'0');
     }
 
     function updateRoad(dt,norm,now){
@@ -2382,6 +2384,8 @@
       outputEl.textContent='100%';
       maxFill.style.width='100%';
       maxState.textContent='LOCKED';
+      maxState.classList.remove('is-capturing');
+      maxState.classList.add('is-locked');
       stateEl.textContent='Maximum raceway speed confirmed';
       button.textContent='MAX SPEED CONFIRMED';
       button.disabled=true;
@@ -2417,10 +2421,13 @@
       if(speed>=topSpeed-.75&&holding){
         sustain=Math.min(sustainRequired,sustain+dt);
         maxState.textContent='CAPTURING';
+        maxState.classList.add('is-capturing');
+        maxState.classList.remove('is-locked');
         stateEl.textContent='Maintain maximum velocity to confirm the run';
       }else{
         sustain=Math.max(0,sustain-dt*1.7);
-        maxState.textContent=sustain>0?'MAINTAIN':'STANDBY';
+        maxState.textContent='STANDBY';
+        maxState.classList.remove('is-capturing','is-locked');
       }
       maxFill.style.width=(sustain/sustainRequired*100).toFixed(1)+'%';
       renderPower(norm);updateRoad(dt,norm,now);
