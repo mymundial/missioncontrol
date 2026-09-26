@@ -8398,3 +8398,24 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 
 /* Reindeer Raceway value typography: titles unchanged */
 .power-hud strong,.power-hud strong b{font-weight:600;}
+
+/* Reindeer Raceway: unify TIME / SPEED / PROPULSION value typography */
+.power-hud .power-time-hud strong,
+.power-hud .power-speed-hud strong,
+.power-hud .power-speed-hud strong b,
+.power-hud .power-propulsion-hud strong{
+  font-family:var(--text)!important;
+  font-size:clamp(18px,5.45vw,22px)!important;
+  font-weight:400!important;
+  line-height:1!important;
+  letter-spacing:.02em!important;
+  font-variant-numeric:tabular-nums;
+}
+@media(max-width:360px){
+  .power-hud .power-time-hud strong,
+  .power-hud .power-speed-hud strong,
+  .power-hud .power-speed-hud strong b,
+  .power-hud .power-propulsion-hud strong{
+    font-size:19px!important;
+  }
+}
