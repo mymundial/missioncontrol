@@ -469,19 +469,17 @@
   }
   function landoBody(){
     return `<div class="mission-instrument panel lando-panel">
-      <div class="lando-round-head"><span>REACTION TEST</span><strong id="landoRound">ROUND 1 / 4</strong></div>
+      <div class="lando-round-head"><span>REACTION TEST</span><strong id="landoRound">1 / 4</strong></div>
+      <div class="lando-results" aria-label="Reaction test results">
+        ${[1,2,3,4].map(i=>`<div class="lando-result ${i===1?'active':''}" data-lando-result="${i}"><strong>0${i}</strong><span>${i===1?'READY':'STANDBY'}</span></div>`).join('')}
+      </div>
       <div class="lando-gantry-art" id="landoGantry" aria-label="Five column start light gantry with four stacked lamps">
         <img src="./assets/lando-gantry.webp" alt="" aria-hidden="true">
         <div class="lando-light-overlay" aria-hidden="true">
           ${[0,1,2,3,4].map(col=>[0,1,2,3].map(row=>`<span class="lando-lamp" data-col="${col}" data-row="${row}"></span>`).join('')).join('')}
         </div>
       </div>
-      <div class="reaction-read"><span id="reactionRead">READY</span><small id="reactionUnit"></small></div>
-      <div class="signal-state lando-state" id="landoState">Lights will go out at a random time. Be ready.</div>
       <button class="btn primary wide lando-react-btn" id="reactionBtn">Start Test</button>
-      <div class="lando-results" aria-label="Reaction test results">
-        ${[1,2,3,4].map(i=>`<div class="lando-result ${i===1?'active':''}" data-lando-result="${i}"><strong>0${i}</strong><span>${i===1?'READY':'STANDBY'}</span></div>`).join('')}
-      </div>
     </div>`;
   }
   function auroraBody(){

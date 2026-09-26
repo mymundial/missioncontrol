@@ -8476,3 +8476,8 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .comet-judgement.perfect{color:#65ef9d!important;}
 .comet-judgement.complete{top:50%!important;color:#65ef9d!important;font-size:40px!important;letter-spacing:.075em!important;text-shadow:0 0 8px currentColor,0 0 22px currentColor!important;}
 @media(max-width:390px){.comet-judgement.complete{font-size:33px!important;}}
+
+/* === Lando reaction-test cleanup === */
+.lando-panel .lando-results{margin:8px 0 10px;}
+.lando-panel .lando-gantry-art{margin-top:0;}
+.lando-panel .lando-react-btn{margin-top:10px;}

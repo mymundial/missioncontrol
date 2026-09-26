@@ -1,9 +1,6 @@
   function bindLando(){
     let round=1,armed=false,goTime=0,timers=[],running=false;
     const btn=document.getElementById('reactionBtn');
-    const read=document.getElementById('reactionRead');
-    const unit=document.getElementById('reactionUnit');
-    const st=document.getElementById('landoState');
     const roundEl=document.getElementById('landoRound');
     const lamps=[...document.querySelectorAll('.lando-lamp')];
     const results=[...document.querySelectorAll('[data-lando-result]')];
@@ -23,10 +20,8 @@
     }
     function start(){
       clear(); resetLights(); armed=false; running=true; goTime=0;
-      read.textContent='READY'; unit.textContent='';
-      roundEl.textContent=`ROUND ${round} / 4`;
-      st.textContent='Lights building…';
-      btn.textContent='WAIT FOR LIGHTS'; btn.disabled=false;
+      roundEl.textContent=`${round} / 4`;
+      btn.textContent='WAIT…'; btn.disabled=false;
       setResultState(round,'active','ACTIVE');
       for(let col=0;col<5;col++){
         timers.push(setTimeout(()=>{
@@ -39,30 +34,24 @@
       timers.push(setTimeout(()=>{
         lamps.forEach(l=>l.classList.remove('red'));
         armed=true; running=true; goTime=performance.now();
-        btn.textContent='REACT'; st.textContent='LIGHTS OUT';
+        btn.textContent='GO!';
         ping(920,.045,.028); haptic(18);
       },wait));
     }
     function capture(){
       const ms=Math.round(performance.now()-goTime);
       armed=false; running=false;
-      lampsForColumn(0); // ensure round state is resolved before success flash
       for(let col=0;col<5;col++) lampsForColumn(col).forEach(l=>l.classList.add('green'));
-      read.textContent=ms; unit.textContent='ms';
-      st.textContent=ms<300?'Elite response captured':ms<500?'Strong response captured':'Response captured';
       setResultState(round,'complete',`${ms} ms`);
       haptic([20,20,45]); ping(760,.075,.03);
       if(round===4){
         btn.textContent='COMPLETE'; btn.disabled=true;
         timers.push(setTimeout(()=>showCompletion('Flight Control Calibrated','Santa-1’s flight response has been calibrated for high-speed operation.'),850));
       }else{
-        const completedRound=round;
         round++;
+        roundEl.textContent=`${round} / 4`;
         setResultState(round,'active','READY');
         btn.textContent='NEXT TEST';
-        timers.push(setTimeout(()=>{
-          lampsForColumn(0); // no-op for stable timing
-        },200));
       }
     }
     btn.onclick=()=>{
@@ -70,12 +59,10 @@
       if(armed){capture();return;}
       if(running){
         clear(); running=false; armed=false; resetLights();
-        read.textContent='JUMP START'; unit.textContent='';
-        st.textContent='Too early · retry this round';
-        btn.textContent='Start Test';
+        btn.textContent='FALSE START';
         setResultState(round,'active','RETRY');
         haptic([20,30,20]);
+        timers.push(setTimeout(()=>{btn.textContent='Start Test';},700));
       }
     };
   }
-

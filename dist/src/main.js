@@ -1076,19 +1076,17 @@
   }
   function landoBody(){
     return `<div class="mission-instrument panel lando-panel">
-      <div class="lando-round-head"><span>REACTION TEST</span><strong id="landoRound">ROUND 1 / 4</strong></div>
+      <div class="lando-round-head"><span>REACTION TEST</span><strong id="landoRound">1 / 4</strong></div>
+      <div class="lando-results" aria-label="Reaction test results">
+        ${[1,2,3,4].map(i=>`<div class="lando-result ${i===1?'active':''}" data-lando-result="${i}"><strong>0${i}</strong><span>${i===1?'READY':'STANDBY'}</span></div>`).join('')}
+      </div>
       <div class="lando-gantry-art" id="landoGantry" aria-label="Five column start light gantry with four stacked lamps">
         <img src="./assets/lando-gantry.webp" alt="" aria-hidden="true">
         <div class="lando-light-overlay" aria-hidden="true">
           ${[0,1,2,3,4].map(col=>[0,1,2,3].map(row=>`<span class="lando-lamp" data-col="${col}" data-row="${row}"></span>`).join('')).join('')}
         </div>
       </div>
-      <div class="reaction-read"><span id="reactionRead">READY</span><small id="reactionUnit"></small></div>
-      <div class="signal-state lando-state" id="landoState">Lights will go out at a random time. Be ready.</div>
       <button class="btn primary wide lando-react-btn" id="reactionBtn">Start Test</button>
-      <div class="lando-results" aria-label="Reaction test results">
-        ${[1,2,3,4].map(i=>`<div class="lando-result ${i===1?'active':''}" data-lando-result="${i}"><strong>0${i}</strong><span>${i===1?'READY':'STANDBY'}</span></div>`).join('')}
-      </div>
     </div>`;
   }
   function auroraBody(){
@@ -3664,9 +3662,6 @@
   function bindLando(){
     let round=1,armed=false,goTime=0,timers=[],running=false;
     const btn=document.getElementById('reactionBtn');
-    const read=document.getElementById('reactionRead');
-    const unit=document.getElementById('reactionUnit');
-    const st=document.getElementById('landoState');
     const roundEl=document.getElementById('landoRound');
     const lamps=[...document.querySelectorAll('.lando-lamp')];
     const results=[...document.querySelectorAll('[data-lando-result]')];
@@ -3686,10 +3681,8 @@
     }
     function start(){
       clear(); resetLights(); armed=false; running=true; goTime=0;
-      read.textContent='READY'; unit.textContent='';
-      roundEl.textContent=`ROUND ${round} / 4`;
-      st.textContent='Lights building…';
-      btn.textContent='WAIT FOR LIGHTS'; btn.disabled=false;
+      roundEl.textContent=`${round} / 4`;
+      btn.textContent='WAIT…'; btn.disabled=false;
       setResultState(round,'active','ACTIVE');
       for(let col=0;col<5;col++){
         timers.push(setTimeout(()=>{
@@ -3702,30 +3695,24 @@
       timers.push(setTimeout(()=>{
         lamps.forEach(l=>l.classList.remove('red'));
         armed=true; running=true; goTime=performance.now();
-        btn.textContent='REACT'; st.textContent='LIGHTS OUT';
+        btn.textContent='GO!';
         ping(920,.045,.028); haptic(18);
       },wait));
     }
     function capture(){
       const ms=Math.round(performance.now()-goTime);
       armed=false; running=false;
-      lampsForColumn(0); // ensure round state is resolved before success flash
       for(let col=0;col<5;col++) lampsForColumn(col).forEach(l=>l.classList.add('green'));
-      read.textContent=ms; unit.textContent='ms';
-      st.textContent=ms<300?'Elite response captured':ms<500?'Strong response captured':'Response captured';
       setResultState(round,'complete',`${ms} ms`);
       haptic([20,20,45]); ping(760,.075,.03);
       if(round===4){
         btn.textContent='COMPLETE'; btn.disabled=true;
         timers.push(setTimeout(()=>showCompletion('Flight Control Calibrated','Santa-1’s flight response has been calibrated for high-speed operation.'),850));
       }else{
-        const completedRound=round;
         round++;
+        roundEl.textContent=`${round} / 4`;
         setResultState(round,'active','READY');
         btn.textContent='NEXT TEST';
-        timers.push(setTimeout(()=>{
-          lampsForColumn(0); // no-op for stable timing
-        },200));
       }
     }
     btn.onclick=()=>{
@@ -3733,11 +3720,10 @@
       if(armed){capture();return;}
       if(running){
         clear(); running=false; armed=false; resetLights();
-        read.textContent='JUMP START'; unit.textContent='';
-        st.textContent='Too early · retry this round';
-        btn.textContent='Start Test';
+        btn.textContent='FALSE START';
         setResultState(round,'active','RETRY');
         haptic([20,30,20]);
+        timers.push(setTimeout(()=>{btn.textContent='Start Test';},700));
       }
     };
   }
