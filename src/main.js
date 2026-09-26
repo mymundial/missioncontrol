@@ -2219,6 +2219,7 @@
     const speedEl=document.getElementById('powerSpeed');
     const outputEl=document.getElementById('powerOutput');
     const runState=document.getElementById('powerRunState');
+    const speedValue= speedEl?.closest('strong') || speedEl;
     const stateEl=document.getElementById('powerState');
     const maxFill=document.getElementById('powerMaxFill');
     const maxState=document.getElementById('powerMaxState');
@@ -2391,6 +2392,9 @@
       button.textContent='MAX SPEED CONFIRMED';
       button.disabled=true;
       arcade.classList.add('captured');
+      runState.classList.add('is-complete');
+      outputEl.classList.add('is-complete');
+      speedValue?.classList.add('is-complete');
       car.classList.add('captured');
       burst.classList.add('active');
       rev.forEach(seg=>seg.classList.add('locked'));

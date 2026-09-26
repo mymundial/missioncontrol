@@ -8390,3 +8390,12 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .power-max-hold strong.is-locked{color:#65ef9d;text-shadow:0 0 8px rgba(101,239,157,.28);}
 .power-arcade.captured .power-hud strong{color:#fff;}
 .power-arcade.captured .power-speed-hud small{color:#72dfff;}
+
+/* Reindeer Raceway HUD state enforcement */
+.power-max-hold #powerMaxState.is-capturing{color:#60dfff!important;text-shadow:0 0 8px rgba(96,223,255,.32)!important;}
+.power-max-hold #powerMaxState.is-locked{color:#65ef9d!important;text-shadow:0 0 8px rgba(101,239,157,.32)!important;}
+.power-hud #powerRunState.is-complete,
+.power-hud #powerOutput.is-complete,
+.power-hud .power-speed-hud strong.is-complete,
+.power-hud .power-speed-hud strong.is-complete b,
+.power-hud .power-speed-hud strong.is-complete small{color:#65ef9d!important;text-shadow:0 0 8px rgba(101,239,157,.24)!important;}

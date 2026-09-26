@@ -6,6 +6,7 @@
     const speedEl=document.getElementById('powerSpeed');
     const outputEl=document.getElementById('powerOutput');
     const runState=document.getElementById('powerRunState');
+    const speedValue= speedEl?.closest('strong') || speedEl;
     const stateEl=document.getElementById('powerState');
     const maxFill=document.getElementById('powerMaxFill');
     const maxState=document.getElementById('powerMaxState');
@@ -14,73 +15,65 @@
     const speedLines=[...document.querySelectorAll('.power-speed-lines i')];
     const topSpeed=214;
     const sustainRequired=1150;
-    const powerAudio=new Audio('./assets/power-acceleration.mp3');
-    powerAudio.preload='auto';
-    powerAudio.volume=0;
-    const idleAudio=new Audio('./assets/reindeer-engine-idle-loop.wav');
+    const idleAudio=new Audio('./assets/car-engine-loop.wav');
     idleAudio.preload='auto';
     idleAudio.loop=true;
     idleAudio.volume=0;
+    const powerAudio=new Audio('./assets/power-acceleration.mp3');
+    powerAudio.preload='auto';
+    powerAudio.volume=0;
     const powerWinAudio=new Audio('./assets/power-win.mp3');
     powerWinAudio.preload='auto';
     powerWinAudio.volume=.92;
-    let audioFadeRaf=0;
-    let idleFadeRaf=0;
-    let idleStarted=false;
+    const audioFadeMap=new WeakMap();
     let speed=0,holding=false,sustain=0,last=performance.now(),roadPhase=0,grassPhase=0,raf=0,finished=false;
     let thresholdStep=0;
+    let runStarted=false, elapsed=0;
 
-    function cancelPowerAudioFade(){
-      if(audioFadeRaf)cancelAnimationFrame(audioFadeRaf);
-      audioFadeRaf=0;
+    function cancelAudioFade(media){
+      const rafId=audioFadeMap.get(media);
+      if(rafId) cancelAnimationFrame(rafId);
+      audioFadeMap.delete(media);
     }
-    function cancelIdleAudioFade(){
-      if(idleFadeRaf)cancelAnimationFrame(idleFadeRaf);
-      idleFadeRaf=0;
-    }
-    function fadeIdleAudio(target,duration=240,onDone){
-      cancelIdleAudioFade();
-      const from=Number.isFinite(idleAudio.volume)?idleAudio.volume:0;
+    function fadeAudio(media,target,duration=220,onDone){
+      cancelAudioFade(media);
+      const from=Number.isFinite(media.volume)?media.volume:0;
       const start=performance.now();
       const step=now=>{
         const p=Math.min(1,(now-start)/duration);
-        idleAudio.volume=Math.max(0,Math.min(1,from+(target-from)*p));
-        if(p<1)idleFadeRaf=requestAnimationFrame(step);
-        else{idleFadeRaf=0;onDone?.();}
+        media.volume=Math.max(0,Math.min(1,from+(target-from)*p));
+        if(p<1) audioFadeMap.set(media,requestAnimationFrame(step));
+        else{ audioFadeMap.delete(media); onDone?.(); }
       };
-      idleFadeRaf=requestAnimationFrame(step);
+      audioFadeMap.set(media,requestAnimationFrame(step));
     }
-    function ensureIdleAudio(target=.28){
+    function fadePowerAudio(target,duration=220,onDone){
+      fadeAudio(powerAudio,target,duration,onDone);
+    }
+    function startIdleAudio(level=.24){
       if(!state.audio)return;
-      cancelIdleAudioFade();
+      cancelAudioFade(idleAudio);
       if(idleAudio.paused){
         idleAudio.volume=0;
         try{
           const play=idleAudio.play();
-          if(play&&typeof play.then==='function') play.then(()=>{idleStarted=true;fadeIdleAudio(target,220);}).catch(()=>{});
-          else{idleStarted=true;fadeIdleAudio(target,220);}
+          if(play&&typeof play.then==='function') play.then(()=>fadeAudio(idleAudio,level,220)).catch(()=>{});
+          else fadeAudio(idleAudio,level,220);
         }catch{}
-      }else{
-        idleStarted=true;
-        fadeIdleAudio(target,220);
-      }
+      }else fadeAudio(idleAudio,level,220);
     }
-    function fadePowerAudio(target,duration=220,onDone){
-      cancelPowerAudioFade();
-      const from=Number.isFinite(powerAudio.volume)?powerAudio.volume:0;
-      const start=performance.now();
-      const step=now=>{
-        const p=Math.min(1,(now-start)/duration);
-        powerAudio.volume=Math.max(0,Math.min(1,from+(target-from)*p));
-        if(p<1)audioFadeRaf=requestAnimationFrame(step);
-        else{audioFadeRaf=0;onDone?.();}
-      };
-      audioFadeRaf=requestAnimationFrame(step);
+    function pauseIdleAudio(){
+      if(!state.audio||idleAudio.paused)return;
+      cancelAudioFade(idleAudio);
+      fadeAudio(idleAudio,0,200,()=>{try{idleAudio.pause();}catch{}});
+    }
+    function stopIdleAudio(reset=false){
+      cancelAudioFade(idleAudio);
+      try{idleAudio.pause();idleAudio.volume=0;if(reset)idleAudio.currentTime=0;}catch{}
     }
     function startPowerAudio(){
       if(!state.audio)return;
-      ensureIdleAudio(.09);
-      cancelPowerAudioFade();
+      cancelAudioFade(powerAudio);
       // Resume from the exact point reached on the previous acceleration hold.
       // Do not rewind when the player lifts and presses again.
       if(powerAudio.paused){
@@ -93,35 +86,29 @@
       }else fadePowerAudio(.82,180);
     }
     function pausePowerAudio(){
-      if(!state.audio)return;
-      ensureIdleAudio(.28);
-      if(powerAudio.paused)return;
-      // Fade the acceleration layer away, then pause without changing currentTime.
-      // The low idle bed remains underneath so coasting never falls silent.
+      if(!state.audio||powerAudio.paused)return;
+      // Fade the engine away, then pause without changing currentTime so the
+      // next acceleration continues naturally from where the sound left off.
       fadePowerAudio(0,240,()=>{try{powerAudio.pause();}catch{}});
     }
     function stopPowerAudio(reset=false){
-      cancelPowerAudioFade();
+      cancelAudioFade(powerAudio);
       try{powerAudio.pause();powerAudio.volume=0;if(reset)powerAudio.currentTime=0;}catch{}
-    }
-    function stopIdleAudio(reset=false){
-      cancelIdleAudioFade();
-      idleStarted=false;
-      try{idleAudio.pause();idleAudio.volume=0;if(reset)idleAudio.currentTime=0;}catch{}
     }
 
     function setHolding(next){
       if(finished)return;
       holding=next;
+      if(next) runStarted = true;
       button.classList.toggle('pressed',holding);
       if(holding){
+        pauseIdleAudio();
         startPowerAudio();
-        runState.textContent=speed>190?'FULL GALLOP':'ACCELERATING';
-        stateEl.textContent=speed>190?'Hold maximum velocity':'Building raceway speed…';
+        stateEl.textContent=speed>190?'Maintain maximum velocity':'Building raceway speed…';
       }else{
         pausePowerAudio();
-        runState.textContent=speed>1?'COASTING':'READY';
-        stateEl.textContent=speed>1?'Hold again to keep accelerating':'Hold to accelerate';
+        startIdleAudio(speed>1?.24:.2);
+        stateEl.textContent=speed>1?'Press again to build speed':'Hold to accelerate';
       }
     }
 
@@ -129,6 +116,14 @@
       if(v<72)return 62;
       if(v<155)return 47;
       return 32;
+    }
+
+    function formatRunTime(ms){
+      const totalCentiseconds=Math.max(0,Math.floor(ms/10));
+      const minutes=Math.floor(totalCentiseconds/6000);
+      const seconds=Math.floor((totalCentiseconds%6000)/100);
+      const centiseconds=totalCentiseconds%100;
+      return String(minutes).padStart(2,'0')+':'+String(seconds).padStart(2,'0')+':'+String(centiseconds).padStart(2,'0');
     }
 
     function updateRoad(dt,norm,now){
@@ -152,7 +147,7 @@
     }
 
     function renderPower(norm){
-      speedEl.textContent=String(Math.round(speed)).padStart(3,'0');
+      speedEl.textContent=String(Math.round(speed));
       const output=Math.min(100,Math.round(Math.pow(norm,.82)*100));
       outputEl.textContent=output+'%';
       arcade.style.setProperty('--power-level',norm.toFixed(3));
@@ -174,19 +169,25 @@
       if(finished)return;
       finished=true;holding=false;speed=topSpeed;sustain=sustainRequired;
       renderPower(1);
-      runState.textContent='MAX VELOCITY';
+      runState.textContent=formatRunTime(elapsed);
       outputEl.textContent='100%';
       maxFill.style.width='100%';
       maxState.textContent='LOCKED';
+      maxState.classList.remove('is-capturing');
+      maxState.classList.add('is-locked');
       stateEl.textContent='Maximum raceway speed confirmed';
       button.textContent='MAX SPEED CONFIRMED';
       button.disabled=true;
       arcade.classList.add('captured');
+      runState.classList.add('is-complete');
+      outputEl.classList.add('is-complete');
+      speedValue?.classList.add('is-complete');
       car.classList.add('captured');
       burst.classList.add('active');
       rev.forEach(seg=>seg.classList.add('locked'));
       ping(980,.16,.055);haptic([34,24,65]);
       if(state.audio){
+        pauseIdleAudio();
         // Start the 8-bit win sting on the same frame the engine begins fading,
         // giving the two sounds a short intentional overlap at max power.
         try{
@@ -195,7 +196,6 @@
           if(win&&typeof win.catch==='function')win.catch(()=>{});
         }catch{}
         if(!powerAudio.paused)fadePowerAudio(0,520,()=>{try{powerAudio.pause();}catch{}});
-        if(idleStarted&&!idleAudio.paused)fadeIdleAudio(0,420,()=>{try{idleAudio.pause();}catch{}});
       }
       cancelAnimationFrame(raf);
       setTimeout(()=>showCompletion('Raceway Run Complete','Santa-1’s propulsion system has been tested and is ready for flight.'),1100);
@@ -203,18 +203,23 @@
 
     function frame(now){
       const dt=Math.min(40,now-last);last=now;
+      if(runStarted && !finished){
+        elapsed += dt;
+        runState.textContent = formatRunTime(elapsed);
+      }
       if(holding){speed=Math.min(topSpeed,speed+accelerationRate(speed)*(dt/1000));}
       else{speed=Math.max(0,speed-38*(dt/1000));}
       const norm=Math.max(0,Math.min(1,speed/topSpeed));
       if(speed>=topSpeed-.75&&holding){
         sustain=Math.min(sustainRequired,sustain+dt);
-        runState.textContent='MAX VELOCITY';
         maxState.textContent='CAPTURING';
-        stateEl.textContent='Hold maximum velocity to confirm the run';
+        maxState.classList.add('is-capturing');
+        maxState.classList.remove('is-locked');
+        stateEl.textContent='Maintain maximum velocity to confirm the run';
       }else{
         sustain=Math.max(0,sustain-dt*1.7);
-        maxState.textContent=sustain>0?'HOLD SPEED':'STANDBY';
-        if(!holding&&speed<1){runState.textContent='READY';}
+        maxState.textContent='STANDBY';
+        maxState.classList.remove('is-capturing','is-locked');
       }
       maxFill.style.width=(sustain/sustainRequired*100).toFixed(1)+'%';
       renderPower(norm);updateRoad(dt,norm,now);
@@ -237,8 +242,8 @@
     button.addEventListener('keyup',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();setHolding(false);}});
     cleanupMission=()=>{
       cancelAnimationFrame(raf);
-      stopPowerAudio(false);
       stopIdleAudio(false);
+      stopPowerAudio(false);
       try{powerWinAudio.pause();powerWinAudio.currentTime=0;}catch{}
     };
     raf=requestAnimationFrame(frame);
