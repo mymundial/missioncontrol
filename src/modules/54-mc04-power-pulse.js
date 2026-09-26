@@ -119,11 +119,11 @@
     }
 
     function formatRunTime(ms){
-      const totalCentiseconds=Math.max(0,Math.floor(ms/10));
-      const minutes=Math.floor(totalCentiseconds/6000);
-      const seconds=Math.floor((totalCentiseconds%6000)/100);
-      const centiseconds=totalCentiseconds%100;
-      return String(minutes).padStart(2,'0')+':'+String(seconds).padStart(2,'0')+':'+String(centiseconds).padStart(2,'0');
+      const elapsedMs=Math.max(0,ms);
+      if(elapsedMs>=60000)return '--:--';
+      const seconds=Math.floor(elapsedMs/1000);
+      const centiseconds=Math.floor(elapsedMs/10)%100;
+      return String(seconds).padStart(2,'0')+':'+String(centiseconds).padStart(2,'0');
     }
 
     function updateRoad(dt,norm,now){
@@ -184,7 +184,6 @@
       speedValue?.classList.add('is-complete');
       car.classList.add('captured');
       burst.classList.add('active');
-      rev.forEach(seg=>seg.classList.add('locked'));
       ping(980,.16,.055);haptic([34,24,65]);
       if(state.audio){
         pauseIdleAudio();
