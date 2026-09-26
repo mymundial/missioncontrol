@@ -959,8 +959,8 @@
         <div class="power-scanlines" aria-hidden="true"></div>
         <div class="power-hud">
           <div><span>Time</span><strong id="powerRunState">00.0S</strong></div>
-          <div><span>Propulsion</span><strong id="powerOutput">0%</strong></div>
           <div class="power-speed-hud"><span>Speed</span><strong><b id="powerSpeed">000</b><small>MPH</small></strong></div>
+          <div><span>Propulsion</span><strong id="powerOutput">0%</strong></div>
         </div>
         <div class="power-rev-wrap"><div class="power-rev" id="powerRev">${revSegments}</div></div>
         <div class="power-road-scene" id="powerRoad">
