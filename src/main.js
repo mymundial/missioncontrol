@@ -958,8 +958,8 @@
       <div class="power-arcade" id="powerArcade">
         <div class="power-scanlines" aria-hidden="true"></div>
         <div class="power-hud">
-          <div><span>Status</span><strong id="powerRunState">READY</strong></div>
-          <div><span>Speed Output</span><strong id="powerOutput">0%</strong></div>
+          <div><span>Time</span><strong id="powerRunState">00.0S</strong></div>
+          <div><span>Propulsion</span><strong id="powerOutput">0%</strong></div>
           <div class="power-speed-hud"><span>Speed</span><strong><b id="powerSpeed">000</b><small>MPH</small></strong></div>
         </div>
         <div class="power-rev-wrap"><div class="power-rev" id="powerRev">${revSegments}</div></div>
@@ -977,7 +977,7 @@
           </div>
           <div class="power-burst" id="powerBurst" aria-hidden="true"><i></i><i></i><i></i></div>
         </div>
-        <div class="power-max-hold"><span>Maintain Max Speed</span><div><i id="powerMaxFill"></i></div><strong id="powerMaxState">STANDBY</strong></div>
+        <div class="power-max-hold"><span>MAX SPEED</span><div><i id="powerMaxFill"></i></div><strong id="powerMaxState">STANDBY</strong></div>
       </div>
       <div class="visually-hidden" id="powerState" aria-live="polite">Ready</div>
       <button class="btn primary wide power-accelerator" id="powerAccelerator">Hold to Accelerate</button>
@@ -2240,6 +2240,7 @@
     const audioFadeMap=new WeakMap();
     let speed=0,holding=false,sustain=0,last=performance.now(),roadPhase=0,grassPhase=0,raf=0,finished=false;
     let thresholdStep=0;
+    let runStarted=false, elapsed=0;
 
     function cancelAudioFade(media){
       const rafId=audioFadeMap.get(media);
@@ -2310,16 +2311,15 @@
     function setHolding(next){
       if(finished)return;
       holding=next;
+      if(next) runStarted = true;
       button.classList.toggle('pressed',holding);
       if(holding){
         pauseIdleAudio();
         startPowerAudio();
-        runState.textContent=speed>190?'FULL GALLOP':'ACCELERATING';
         stateEl.textContent=speed>190?'Maintain maximum velocity':'Building raceway speed…';
       }else{
         pausePowerAudio();
         startIdleAudio(speed>1?.24:.2);
-        runState.textContent=speed>1?'COASTING':'READY';
         stateEl.textContent=speed>1?'Press again to build speed':'Hold to accelerate';
       }
     }
@@ -2328,6 +2328,11 @@
       if(v<72)return 62;
       if(v<155)return 47;
       return 32;
+    }
+
+    function formatRunTime(ms){
+      const seconds = Math.max(0, ms / 1000);
+      return String(seconds.toFixed(1)).padStart(4,'0') + 'S';
     }
 
     function updateRoad(dt,norm,now){
@@ -2373,7 +2378,7 @@
       if(finished)return;
       finished=true;holding=false;speed=topSpeed;sustain=sustainRequired;
       renderPower(1);
-      runState.textContent='MAX VELOCITY';
+      runState.textContent=formatRunTime(elapsed);
       outputEl.textContent='100%';
       maxFill.style.width='100%';
       maxState.textContent='LOCKED';
@@ -2402,18 +2407,20 @@
 
     function frame(now){
       const dt=Math.min(40,now-last);last=now;
+      if(runStarted && !finished){
+        elapsed += dt;
+        runState.textContent = formatRunTime(elapsed);
+      }
       if(holding){speed=Math.min(topSpeed,speed+accelerationRate(speed)*(dt/1000));}
       else{speed=Math.max(0,speed-38*(dt/1000));}
       const norm=Math.max(0,Math.min(1,speed/topSpeed));
       if(speed>=topSpeed-.75&&holding){
         sustain=Math.min(sustainRequired,sustain+dt);
-        runState.textContent='MAX VELOCITY';
         maxState.textContent='CAPTURING';
         stateEl.textContent='Maintain maximum velocity to confirm the run';
       }else{
         sustain=Math.max(0,sustain-dt*1.7);
         maxState.textContent=sustain>0?'MAINTAIN':'STANDBY';
-        if(!holding&&speed<1){runState.textContent='READY';}
       }
       maxFill.style.width=(sustain/sustainRequired*100).toFixed(1)+'%';
       renderPower(norm);updateRoad(dt,norm,now);
