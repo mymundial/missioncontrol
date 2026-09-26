@@ -240,9 +240,9 @@
         game.classList.add('complete');
         document.querySelectorAll('.comet-btn').forEach(b=>b.disabled=true);
         comboEl.classList.remove('show');
-        judgement.textContent='SEQUENCE COMPLETE';
+        judgement.textContent='SYNCHRONISED';
         judgement.className='comet-judgement show complete';
-        stateEl.textContent='SEQUENCE COMPLETE';
+        stateEl.textContent='SYNCHRONISED';
         // Hard-stop the rhythm loop before starting the dedicated
         // completion payoff: the two audio sources must never overlap.
         stopMusic();

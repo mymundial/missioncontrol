@@ -252,7 +252,7 @@
       radio:'Tune the receiver to 87.7 and establish a link with ELF FM.',
       commsrelay:'Establish communications with Santa-1.',
       power:'Test Santa-1’s propulsion system.',
-      spirit:'Store the recovered energy.',
+      spirit:'Store the positive energy.',
       placeholder:'This checkpoint is reserved while the final installation game is developed.',
       artifacts:'Collect the energy signatures.',
       comet:'Synchronise Santa-1’s guidance system.',
@@ -352,7 +352,7 @@
         <div class="power-scanlines" aria-hidden="true"></div>
         <div class="power-hud">
           <div class="power-time-hud"><span>Time</span><strong id="powerRunState">00:00</strong></div>
-          <div class="power-speed-hud"><span>Speed</span><strong><b id="powerSpeed">000</b><small>MPH</small></strong></div>
+          <div class="power-speed-hud"><span>Speed</span><strong><b id="powerSpeed">0</b><small>MPH</small></strong></div>
           <div class="power-propulsion-hud"><span>Propulsion</span><strong id="powerOutput">0%</strong></div>
         </div>
         <div class="power-rev-wrap"><div class="power-rev" id="powerRev">${revSegments}</div></div>

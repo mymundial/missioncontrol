@@ -4809,7 +4809,7 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   text-shadow:0 0 12px currentColor;
 }
 .comet-judgement.show{animation:cometJudgement .42s ease-out both;}
-.comet-judgement.perfect{color:#65ef9d;}
+.comet-judgement.perfect{color:#bff8ff;}
 .comet-judgement.good{color:#70def7;}
 .comet-judgement.miss{color:#ff7c88;}
 .comet-judgement.complete{color:#bcf7ff;font-size:17px;animation:cometCompleteLock .7s ease-out both;}
@@ -4884,7 +4884,7 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   letter-spacing:.075em!important;
   text-shadow:0 0 8px currentColor,0 0 22px currentColor!important;
 }
-.comet-judgement.perfect{font-size:40px!important;color:#65ef9d!important;text-shadow:0 0 12px rgba(101,239,157,.28)!important;}
+.comet-judgement.perfect{font-size:40px!important;color:#d9fbff!important;}
 .comet-judgement.good{font-size:36px!important;color:#74e4ff!important;}
 .comet-judgement.miss{font-size:36px!important;color:#ff7581!important;}
 .comet-judgement.complete{font-size:22px!important;}
@@ -8419,3 +8419,60 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
     font-size:19px!important;
   }
 }
+
+/* === Pass 7.38.55: Spirit Depot tank colour alignment + solid core charge bars === */
+.spirit-panel .spirit-stage-progress i{
+  background:#04141f !important;
+  border-color:rgba(var(--tank-rgb),.58) !important;
+  box-shadow:inset 0 1px rgba(255,255,255,.04) !important;
+}
+.spirit-panel .spirit-stage-progress i::after{
+  background:rgb(var(--tank-rgb)) !important;
+  box-shadow:0 0 9px rgba(var(--tank-rgb),.34) !important;
+}
+.spirit-panel .spirit-stage-progress i.on,
+.spirit-panel .spirit-stage-progress i.complete,
+.spirit-panel .spirit-stage-progress i.active{
+  border-color:rgba(var(--tank-rgb),.92) !important;
+}
+
+.spirit-panel .spirit-tank-cell{
+  border-color:rgba(var(--tank-rgb),.68) !important;
+  box-shadow:
+    0 7px 13px rgba(0,0,0,.3),
+    inset 0 0 0 2px rgba(6,14,18,.88),
+    inset 0 0 18px rgba(0,0,0,.56),
+    0 0 0 1px rgba(var(--tank-rgb),.16),
+    0 0 18px rgba(var(--tank-rgb),.14) !important;
+}
+.spirit-panel .spirit-tank-cell::after{
+  border-color:rgba(var(--tank-rgb),.58) !important;
+  background:linear-gradient(180deg,rgba(var(--tank-rgb),.18),rgba(var(--tank-rgb),.08) 52%,rgba(7,18,27,.96) 100%) !important;
+  box-shadow:
+    0 0 0 1px rgba(5,13,17,.96),
+    inset 0 1px rgba(255,255,255,.08),
+    inset 0 0 18px rgba(var(--tank-rgb),.08),
+    0 0 14px rgba(var(--tank-rgb),.12) !important;
+}
+.spirit-panel .spirit-tank-plate{
+  border-color:rgba(var(--tank-rgb),.42) !important;
+  box-shadow:0 3px 10px rgba(0,0,0,.38), inset 0 0 0 1px rgba(255,255,255,.03), 0 0 10px rgba(var(--tank-rgb),.10) !important;
+}
+.spirit-panel .spirit-tank-plate-face{
+  background:linear-gradient(180deg,rgba(var(--tank-rgb),.08),rgba(4,13,20,.96)) !important;
+}
+.spirit-panel .spirit-bhp-icon{
+  fill:rgba(var(--tank-rgb),.48) !important;
+}
+.spirit-panel .spirit-tank-cell.is-active{
+  border-color:rgba(var(--tank-rgb),.9) !important;
+}
+.spirit-panel .spirit-tank-cell.is-full{
+  border-color:rgba(var(--tank-rgb),1) !important;
+}
+
+
+/* === Comet Curve final synchronised state === */
+.comet-judgement.perfect{color:#65ef9d!important;}
+.comet-judgement.complete{top:50%!important;color:#65ef9d!important;font-size:40px!important;letter-spacing:.075em!important;text-shadow:0 0 8px currentColor,0 0 22px currentColor!important;}
+@media(max-width:390px){.comet-judgement.complete{font-size:33px!important;}}
