@@ -8583,3 +8583,52 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   background:#65ef9d;
   box-shadow:0 0 18px rgba(101,239,157,.22);
 }
+
+
+/* === Aurora Apex: navigation lock track + permanent capture control + audio-feedback pass === */
+.aurora-progress-head strong{
+  color:#72dfff;
+}
+.aurora-lock-track{
+  position:relative;
+  z-index:6;
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:5px;
+  width:100%;
+  margin:0 0 10px;
+}
+.aurora-lock-track i{
+  display:block;
+  height:6px;
+  border:1px solid rgba(75,184,218,.48);
+  border-radius:1px;
+  background:#061a25;
+  box-shadow:inset 0 1px rgba(255,255,255,.025);
+  transition:border-color .18s ease,background .18s ease,box-shadow .18s ease;
+}
+.aurora-lock-track i.locked{
+  border-color:rgba(101,239,157,.96);
+  background:#65ef9d;
+  box-shadow:0 0 9px rgba(101,239,157,.24),inset 0 0 0 1px rgba(255,255,255,.10);
+}
+.aurora-capture-btn,
+.aurora-capture-btn:disabled{
+  opacity:1;
+}
+.aurora-capture-btn:not(.locked){
+  color:var(--white);
+  cursor:pointer;
+}
+.aurora-capture-btn.locked,
+.aurora-capture-btn.locked:disabled{
+  color:#061a11;
+  border-color:#65ef9d;
+  background:#65ef9d;
+  box-shadow:0 0 18px rgba(101,239,157,.22);
+  cursor:default;
+}
+@media(max-width:390px){
+  .aurora-lock-track{gap:4px;margin-bottom:9px;}
+  .aurora-lock-track i{height:5px;}
+}

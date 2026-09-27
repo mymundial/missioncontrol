@@ -1062,6 +1062,7 @@
     return `<div class="mission-instrument panel aurora-panel">
       <div class="aurora-atmosphere" aria-hidden="true"></div>
       <div class="aurora-progress-head"><span>Navigation Lock</span><strong id="auroraLockCount">0 / 3</strong></div>
+      <div class="aurora-lock-track" id="auroraLockTrack" aria-label="Navigation lock progress">${Array.from({length:3},()=>'<i></i>').join('')}</div>
       <div class="aurora-north" aria-hidden="true"><span class="aurora-north-star">✦</span><strong>North Pole</strong><i></i></div>
       <div class="aurora-dial" id="auroraDial" role="img" aria-label="Aurora Apex navigation alignment instrument">
         <div class="aurora-field" aria-hidden="true"></div>
@@ -1072,7 +1073,7 @@
         <div class="aurora-final-wave" aria-hidden="true"></div>
         <div class="aurora-compass" aria-hidden="true"><span>✦</span></div>
       </div>
-      <button class="btn primary wide aurora-capture-btn" id="auroraCaptureBtn" disabled>Align Signal</button>
+      <button class="btn primary wide aurora-capture-btn" id="auroraCaptureBtn">CAPTURE</button>
       <div class="visually-hidden" id="auroraState" aria-live="polite">Align the active navigation ring with the North Pole axis.</div>
     </div>`;
   }
@@ -3733,11 +3734,12 @@
     const dial=document.getElementById('auroraDial');
     const captureBtn=document.getElementById('auroraCaptureBtn');
     const lockCount=document.getElementById('auroraLockCount');
+    const lockTrack=[...document.querySelectorAll('#auroraLockTrack i')];
     const stateEl=document.getElementById('auroraState');
     const north=document.querySelector('.aurora-north');
     const pulseEl=document.querySelector('.aurora-charge-pulse');
     const finalWave=document.querySelector('.aurora-final-wave');
-    if(!dial||!captureBtn||!lockCount||!stateEl)return;
+    if(!dial||!captureBtn||!lockCount||lockTrack.length!==3||!stateEl)return;
 
     const ringEls={
       outer:document.querySelector('[data-aurora-ring="outer"]'),
@@ -3748,9 +3750,6 @@
     const labels={outer:'Outer',middle:'Middle',inner:'Inner'};
     const angles={outer:132,middle:-84,inner:164};
     const baseSpeeds={outer:62,middle:-84,inner:126};
-    // The visible capture button becomes available through this near-axis window.
-    // This keeps the interaction forgiving enough for a public mobile experience
-    // while preserving the different ring speeds.
     const captureWindows={outer:38,middle:30,inner:24};
     const pulseSizes={outer:'91%',middle:'60%',inner:'34%'};
     const locked={outer:false,middle:false,inner:false};
@@ -3758,11 +3757,20 @@
     const reduced=!!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
     const speedScale=reduced ? .72 : 1;
 
+    const lockAudio=new Audio('./assets/aurora-ring-lock.wav');
+    lockAudio.preload='auto';
+    lockAudio.volume=.78;
+    const ambientAudio=new Audio('./assets/aurora-ambient-loop.wav');
+    ambientAudio.preload='auto';
+    ambientAudio.loop=true;
+    ambientAudio.volume=.17;
+
     let activeIndex=0;
     let finished=false;
     let raf=0;
     let lastTs=0;
     let completionTimer=0;
+    let ambientFadeRaf=0;
     const feedbackTimers=[];
 
     const normalise=a=>((a%360)+360)%360;
@@ -3774,8 +3782,45 @@
       ringEls[key].style.setProperty('--aurora-rotation',`${angles[key]}deg`);
     }
 
+    function startAmbient(){
+      if(!state.audio||finished||!ambientAudio.paused)return;
+      ambientAudio.volume=.17;
+      try{
+        const play=ambientAudio.play();
+        if(play&&typeof play.catch==='function')play.catch(()=>{});
+      }catch{}
+    }
+
+    function fadeAmbientOut(duration=520){
+      cancelAnimationFrame(ambientFadeRaf);
+      if(ambientAudio.paused)return;
+      const from=ambientAudio.volume;
+      const started=performance.now();
+      const step=now=>{
+        const p=Math.min(1,(now-started)/duration);
+        ambientAudio.volume=Math.max(0,from*(1-p));
+        if(p<1)ambientFadeRaf=requestAnimationFrame(step);
+        else{
+          ambientFadeRaf=0;
+          try{ambientAudio.pause();ambientAudio.currentTime=0;ambientAudio.volume=.17;}catch{}
+        }
+      };
+      ambientFadeRaf=requestAnimationFrame(step);
+    }
+
+    function playLockAudio(){
+      if(!state.audio)return;
+      try{
+        lockAudio.currentTime=0;
+        const play=lockAudio.play();
+        if(play&&typeof play.catch==='function')play.catch(()=>{});
+      }catch{}
+    }
+
     function updateProgress(){
-      lockCount.textContent=`${lockedCount()} / 3`;
+      const count=lockedCount();
+      lockCount.textContent=`${count} / 3`;
+      lockTrack.forEach((segment,i)=>segment.classList.toggle('locked',i<count));
     }
 
     function updateStage(){
@@ -3806,16 +3851,9 @@
       feedbackTimers.push(setTimeout(()=>el.classList.remove(className),delay));
     }
 
-    function setCaptureButton(ready){
-      if(finished)return;
-      captureBtn.disabled=!ready;
-      captureBtn.textContent=ready?'CAPTURE':'ALIGN SIGNAL';
-      captureBtn.classList.toggle('capture-ready',ready);
-    }
-
     function finishSequence(){
       finished=true;
-      dial.classList.remove('capture-ready','miss');
+      dial.classList.remove('capture-ready','miss','desync');
       dial.classList.add('complete');
       if(north) north.classList.add('complete');
       order.forEach(key=>ringEls[key].classList.add('final-surge'));
@@ -3825,11 +3863,11 @@
         finalWave.classList.add('fire');
       }
       updateProgress();
-      captureBtn.disabled=true;
       captureBtn.textContent='LOCKED';
-      captureBtn.classList.remove('capture-ready');
       captureBtn.classList.add('locked');
+      captureBtn.disabled=true;
       stateEl.textContent='Navigation route locked to the North Pole.';
+      fadeAmbientOut();
       ping(1090,.13,.04);
       feedbackTimers.push(setTimeout(()=>ping(1370,.18,.05),260));
       haptic([32,20,68]);
@@ -3841,21 +3879,20 @@
       angles[key]=0;
       renderRing(key);
       locked[key]=true;
-      ringEls[key].classList.remove('near-lock','active','miss');
+      ringEls[key].classList.remove('near-lock','active','miss','desync');
       ringEls[key].classList.add('locked');
       clearMomentClass(ringEls[key],'lock-burst',620);
-      dial.classList.remove('capture-ready','miss');
+      dial.classList.remove('capture-ready','miss','desync');
       fireInwardPulse(key);
+      playLockAudio();
 
       const charge=lockedCount();
       dial.dataset.charge=String(charge);
       updateProgress();
-      ping(700+(charge-1)*145,.09,.03+charge*.004);
       haptic(charge===3?[24,18,50]:[18,15,34]);
 
       activeIndex++;
       if(activeIndex>=order.length){
-        setCaptureButton(false);
         feedbackTimers.push(setTimeout(finishSequence,360));
       }else{
         updateStage();
@@ -3863,6 +3900,21 @@
         clearMomentClass(ringEls[next],'wake',520);
         updateReadiness();
       }
+    }
+
+    function missCapture(key){
+      if(!key||finished)return;
+      const direction=Math.sign(baseSpeeds[key])||1;
+      desyncVelocity[key]+=direction*118;
+      clearMomentClass(ringEls[key],'desync',260);
+      clearMomentClass(dial,'desync',230);
+      clearMomentClass(ringEls[key],'miss',250);
+      stateEl.textContent='Navigation alignment missed.';
+      haptic([12,22,12]);
+      ping(185,.07,.022);
+      feedbackTimers.push(setTimeout(()=>{
+        if(!finished&&key===activeKey())stateEl.textContent=`Align the ${labels[key].toLowerCase()} navigation ring with the North Pole axis.`;
+      },520));
     }
 
     function updateReadiness(){
@@ -3876,7 +3928,6 @@
       }
       dial.classList.toggle('capture-ready',ready);
       if(north) north.classList.toggle('capture-ready',ready);
-      setCaptureButton(ready);
     }
 
     function frame(ts){
@@ -3902,19 +3953,26 @@
 
     captureBtn.addEventListener('click',()=>{
       const key=activeKey();
-      if(!key||finished||captureBtn.disabled)return;
-      lockRing(key);
+      if(!key||finished)return;
+      startAmbient();
+      const offset=Math.abs(signed(angles[key]));
+      if(offset<=captureWindows[key]) lockRing(key);
+      else missCapture(key);
     });
 
     order.forEach(renderRing);
     updateStage();
     updateReadiness();
+    startAmbient();
     raf=requestAnimationFrame(frame);
 
     cleanupMission=()=>{
       cancelAnimationFrame(raf);
+      cancelAnimationFrame(ambientFadeRaf);
       clearTimeout(completionTimer);
       feedbackTimers.forEach(clearTimeout);
+      try{lockAudio.pause();lockAudio.currentTime=0;}catch{}
+      try{ambientAudio.pause();ambientAudio.currentTime=0;ambientAudio.volume=.17;}catch{}
     };
   }
   let laplandMusic=null;

@@ -487,6 +487,7 @@
     return `<div class="mission-instrument panel aurora-panel">
       <div class="aurora-atmosphere" aria-hidden="true"></div>
       <div class="aurora-progress-head"><span>Navigation Lock</span><strong id="auroraLockCount">0 / 3</strong></div>
+      <div class="aurora-lock-track" id="auroraLockTrack" aria-label="Navigation lock progress">${Array.from({length:3},()=>'<i></i>').join('')}</div>
       <div class="aurora-north" aria-hidden="true"><span class="aurora-north-star">✦</span><strong>North Pole</strong><i></i></div>
       <div class="aurora-dial" id="auroraDial" role="img" aria-label="Aurora Apex navigation alignment instrument">
         <div class="aurora-field" aria-hidden="true"></div>
@@ -497,7 +498,7 @@
         <div class="aurora-final-wave" aria-hidden="true"></div>
         <div class="aurora-compass" aria-hidden="true"><span>✦</span></div>
       </div>
-      <button class="btn primary wide aurora-capture-btn" id="auroraCaptureBtn" disabled>Align Signal</button>
+      <button class="btn primary wide aurora-capture-btn" id="auroraCaptureBtn">CAPTURE</button>
       <div class="visually-hidden" id="auroraState" aria-live="polite">Align the active navigation ring with the North Pole axis.</div>
     </div>`;
   }
