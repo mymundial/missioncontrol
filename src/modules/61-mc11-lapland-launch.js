@@ -119,7 +119,7 @@
 
     // MC01–MC10 each restore one named system. Lapland Launch checks those ten
     // systems in mission order before the derived LAUNCH SYSTEMS state can go ONLINE.
-    const checks=['entry','diagnostics','luffield','power','spirit','escapade','comet','jingle','lando','aurora'];
+    const checks=['entry','velocity','luffield','power','spirit','escapade','comet','jingle','lando','aurora'];
     const systemKeys=['circuitry','diagnostic','comms','power','core','propulsion','guidance','control','response','navigation'];
     const setCharge=value=>panel.style.setProperty('--lapland-charge',String(Math.max(0,Math.min(1,value))));
     const setRowState=(key,nextState,label)=>{

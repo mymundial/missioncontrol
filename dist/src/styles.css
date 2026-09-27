@@ -8646,9 +8646,9 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .aurora-dial[data-charge="3"] .aurora-compass-mark{filter:drop-shadow(0 0 7px rgba(145,255,202,.72));}
 
 /* === Lapland Launch: 10-system finale + ELF Engineering + Vegas party === */
-.lapland-head .lapland-sponsor{opacity:.9;}
-.lapland-head .lapland-sponsor img{filter:drop-shadow(0 0 8px rgba(183,94,255,.15));}
-.lapland-head.is-launch-clear .lapland-sponsor{filter:drop-shadow(0 0 10px rgba(197,91,255,.36));}
+.lapland-head .lapland-sponsor{opacity:1;filter:drop-shadow(0 0 8px rgba(188,82,255,.30));}
+.lapland-head .lapland-sponsor img{filter:drop-shadow(0 0 5px rgba(235,201,255,.48)) drop-shadow(0 0 13px rgba(187,76,255,.44)) drop-shadow(0 0 22px rgba(123,61,255,.20));}
+.lapland-head.is-launch-clear .lapland-sponsor{filter:drop-shadow(0 0 8px rgba(230,191,255,.58)) drop-shadow(0 0 18px rgba(194,78,255,.58));}
 
 .lapland-stage[hidden]{display:none!important;}
 .lapland-verification-stage{position:relative;z-index:2;}

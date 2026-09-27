@@ -183,16 +183,18 @@
       : state.completed.includes('lapland')
         ? {name:'Flight Ready',copy:'Lapland Launch has completed the final systems verification. Every rebuilt system is stable and Santa-1 is fully cleared for launch.'}
         : {name:info.name,copy:info.copy};
+    // DOM is row-paired so this interleave renders mission order 1–5 down column 1,
+    // then 6–10 down column 2.
     const systems=[
       systemStatusEntry('circuitry',state.completed.includes('entry')?'Online':'Offline',state.completed.includes('entry')?'online':'offline'),
-      systemStatusEntry('diagnostic',state.completed.includes('diagnostics')?'Online':'Offline',state.completed.includes('diagnostics')?'online':'offline'),
-      systemStatusEntry('comms',state.completed.includes('luffield')?'Online':'Offline',state.completed.includes('luffield')?'online':'offline'),
-      systemStatusEntry('guidance',state.completed.includes('comet')?'Online':'Offline',state.completed.includes('comet')?'online':'offline'),
-      systemStatusEntry('power',state.completed.includes('power')?'Online':'Offline',state.completed.includes('power')?'online':'offline'),
-      systemStatusEntry('control',state.completed.includes('jingle')?'Online':'Offline',state.completed.includes('jingle')?'online':'offline'),
-      systemStatusEntry('core',state.completed.includes('spirit')?'Online':'Offline',state.completed.includes('spirit')?'online':'offline'),
-      systemStatusEntry('response',state.completed.includes('lando')?'Online':'Offline',state.completed.includes('lando')?'online':'offline'),
       systemStatusEntry('propulsion',state.completed.includes('escapade')?'Online':'Offline',state.completed.includes('escapade')?'online':'offline'),
+      systemStatusEntry('diagnostic',state.completed.includes('velocity')?'Online':'Offline',state.completed.includes('velocity')?'online':'offline'),
+      systemStatusEntry('guidance',state.completed.includes('comet')?'Online':'Offline',state.completed.includes('comet')?'online':'offline'),
+      systemStatusEntry('comms',state.completed.includes('luffield')?'Online':'Offline',state.completed.includes('luffield')?'online':'offline'),
+      systemStatusEntry('control',state.completed.includes('jingle')?'Online':'Offline',state.completed.includes('jingle')?'online':'offline'),
+      systemStatusEntry('power',state.completed.includes('power')?'Online':'Offline',state.completed.includes('power')?'online':'offline'),
+      systemStatusEntry('response',state.completed.includes('lando')?'Online':'Offline',state.completed.includes('lando')?'online':'offline'),
+      systemStatusEntry('core',state.completed.includes('spirit')?'Online':'Offline',state.completed.includes('spirit')?'online':'offline'),
       systemStatusEntry('navigation',state.completed.includes('aurora')?'Online':'Offline',state.completed.includes('aurora')?'online':'offline')
     ];
     return `<div class="sleigh-card panel"><div class="sleigh-title-row"><div><div class="kicker sleigh-pretitle">Sleigh Rebuild</div><h1>Santa-1</h1></div><strong class="sleigh-percent">${r}%</strong></div><div class="sleigh-development-bar" role="progressbar" aria-label="Santa-1 rebuild progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${r}"><div class="sleigh-development-spectrum" aria-hidden="true"></div><div class="sleigh-development-mask" style="left:${r}%" aria-hidden="true"></div></div><div class="sleigh-visual sleigh-stage-${stage}"><div class="sleigh-glow" aria-hidden="true"></div><img class="sleigh-art" src="${info.asset}" alt="Santa-1 ${postStatus.name} rebuild stage"></div><div class="sleigh-update-box panel soft"><div class="kicker sleigh-systems-title">Engineering Update</div><p class="sleigh-systems-copy">${postStatus.copy}</p></div><div class="sleigh-systems panel soft"><div class="kicker sleigh-systems-title">System Status</div>${systemStatusBank(systems,'sleigh-system-bank')}</div></div>`;
@@ -511,16 +513,18 @@
   function laplandBody(){
     // Ten mission-linked systems, arranged as two balanced five-row columns.
     // Existing system names remain unchanged; MC01/MC02 add CIRCUITRY + DIAGNOSTIC.
+    // Row-paired markup is interleaved so the visible columns read in mission order:
+    // column 1 = 1–5, column 2 = 6–10.
     const systems=[
       systemStatusEntry('circuitry'),
-      systemStatusEntry('diagnostic'),
-      systemStatusEntry('comms'),
-      systemStatusEntry('guidance'),
-      systemStatusEntry('power'),
-      systemStatusEntry('control'),
-      systemStatusEntry('core'),
-      systemStatusEntry('response'),
       systemStatusEntry('propulsion'),
+      systemStatusEntry('diagnostic'),
+      systemStatusEntry('guidance'),
+      systemStatusEntry('comms'),
+      systemStatusEntry('control'),
+      systemStatusEntry('power'),
+      systemStatusEntry('response'),
+      systemStatusEntry('core'),
       systemStatusEntry('navigation')
     ];
     return `<div class="mission-instrument panel lapland-panel" id="laplandPanel" style="--lapland-charge:0">

@@ -168,7 +168,7 @@ const unhandled=[...new Set(checkpointTypes)].filter(t=>!handled.has(t));
 if(unhandled.length) fail('Mission handlers',`Unhandled checkpoint types: ${unhandled.join(', ')}`);
 else ok('Mission handlers','Every route checkpoint type has an audited render/bind or automatic flow');
 
-if(/const checks=\['entry','diagnostics','luffield','power','spirit','escapade','comet','jingle','lando','aurora'\]/.test(runtime) && /const systemKeys=\['circuitry','diagnostic','comms','power','core','propulsion','guidance','control','response','navigation'\]/.test(runtime) && !/const checks=\[[^\]]*'elf-radio'/.test(runtime)) {
+if(/const checks=\['entry','velocity','luffield','power','spirit','escapade','comet','jingle','lando','aurora'\]/.test(runtime) && /const systemKeys=\['circuitry','diagnostic','comms','power','core','propulsion','guidance','control','response','navigation'\]/.test(runtime) && !/const checks=\[[^\]]*'elf-radio'/.test(runtime)) {
   ok('Lapland Launch dependency','Launch initialisation follows the approved MC-01 to MC-10 ten-system sequence');
 } else fail('Lapland Launch dependency','Launch initialisation does not match the approved MC-01 to MC-10 system sequence');
 

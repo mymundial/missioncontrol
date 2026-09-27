@@ -127,7 +127,7 @@
   function saveOverrides(){ localStorage.setItem(OVERRIDE_STORAGE, JSON.stringify(overrides)); }
   function set(patch, rerender=true){ state={...state,...patch}; save(); if(rerender) render(); }
   function recovery(){
-    const restorationMissions=['entry','diagnostics','luffield','power','spirit','escapade','comet','jingle','lando','aurora'];
+    const restorationMissions=['entry','velocity','luffield','power','spirit','escapade','comet','jingle','lando','aurora'];
     const restored=restorationMissions.reduce((total,id)=>total+(state.completed.includes(id)?1:0),0);
     return Math.min(100,restored*10);
   }
