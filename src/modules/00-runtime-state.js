@@ -73,7 +73,7 @@
     jingle:{sender:'CONTROL SYSTEM',title:'FLIGHT CONTROLS RE-ENGAGED',body:'The flight controls are responding again. All three beams are working together and Santa-1 is stable.'},
     lando:{sender:'RESPONSE SYSTEM',title:'RESPONSE CALIBRATED',body:'Response timing is where it needs to be. Santa-1 can now react quickly enough for high-speed flight.'},
     aurora:{sender:'NAVIGATION',title:'NORTH POLE SIGNAL LOCKED',body:'We’ve got a strong North Pole signal. Navigation has a clear reference and the route home is confirmed.'},
-    lapland:{sender:'MISSION CONTROL',title:'ALL SYSTEMS GO',body:'Final checks are complete. Every recovered system is responding correctly and Santa-1 is ready to launch.'},
+    lapland:{sender:'MISSION CONTROL',title:'LAUNCH SYSTEMS ONLINE',body:'Every restored system is responding correctly. Santa-1’s launch systems are online and ready for the final flight sequence.'},
     northern:{sender:'MISSION CONTROL',title:'RECOVERY MISSION COMPLETE',body:'Santa-1 is airborne. Recovery complete. The Northern Flight is underway.'}
   };
 

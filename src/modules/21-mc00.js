@@ -24,14 +24,16 @@
     stopMc00Scan();
 
     const scanSystems = [
-      { key:'comms', start:3, end:14 },
-      { key:'power', start:16, end:27 },
-      { key:'core', start:29, end:40 },
-      { key:'propulsion', start:42, end:53 },
-      { key:'guidance', start:55, end:66 },
-      { key:'control', start:68, end:79 },
-      { key:'response', start:81, end:91 },
-      { key:'navigation', start:93, end:99 }
+      { key:'circuitry', start:2, end:10 },
+      { key:'diagnostic', start:11, end:19 },
+      { key:'comms', start:20, end:28 },
+      { key:'power', start:29, end:37 },
+      { key:'core', start:38, end:46 },
+      { key:'propulsion', start:47, end:55 },
+      { key:'guidance', start:56, end:64 },
+      { key:'control', start:65, end:73 },
+      { key:'response', start:74, end:82 },
+      { key:'navigation', start:83, end:96 }
     ];
 
     let progressValue = 0;

@@ -127,11 +127,9 @@
   function saveOverrides(){ localStorage.setItem(OVERRIDE_STORAGE, JSON.stringify(overrides)); }
   function set(patch, rerender=true){ state={...state,...patch}; save(); if(rerender) render(); }
   function recovery(){
-    if(state.completed.includes('aurora')) return 100;
-    if(state.completed.includes('comet')) return 70;
-    if(state.completed.includes('power')) return 40;
-    if(state.completed.includes('entry')) return 10;
-    return 0;
+    const restorationMissions=['entry','diagnostics','luffield','power','spirit','escapade','comet','jingle','lando','aurora'];
+    const restored=restorationMissions.reduce((total,id)=>total+(state.completed.includes(id)?1:0),0);
+    return Math.min(100,restored*10);
   }
   function sleighStage(){
     for(let i=SLEIGH_STAGES.length-1;i>=1;i--){

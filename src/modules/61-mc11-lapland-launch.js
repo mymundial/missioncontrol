@@ -107,17 +107,20 @@
   function bindLapland(){
     const btn=document.getElementById('initiateTest');
     const panel=document.getElementById('laplandPanel');
-    const payoff=document.getElementById('laplandPayoff');
+    const verificationStage=document.getElementById('laplandVerificationStage');
+    const transmissionStage=document.getElementById('laplandTransmissionStage');
+    const partyStage=document.getElementById('laplandPartyStage');
+    const masterStatus=document.getElementById('laplandMasterStatus');
+    const masterValue=document.getElementById('laplandMasterValue');
     const head=document.querySelector('.lapland-head');
-    if(!btn||!panel) return;
+    if(!btn||!panel||!verificationStage||!transmissionStage||!partyStage||!masterStatus||!masterValue) return;
 
     startLaplandMusic();
 
-    // Final verification mirrors the same eight systems restored by MC-03 to MC-10.
-    // Each row resolves STANDBY -> CHECKING -> ONLINE/OFFLINE. Launch clearance
-    // is a verification outcome, not a ninth system state.
-    const checks=['luffield','power','spirit','escapade','comet','jingle','lando','aurora'];
-    const systemKeys=['comms','power','core','propulsion','guidance','control','response','navigation'];
+    // MC01–MC10 each restore one named system. Lapland Launch checks those ten
+    // systems in mission order before the derived LAUNCH SYSTEMS state can go ONLINE.
+    const checks=['entry','diagnostics','luffield','power','spirit','escapade','comet','jingle','lando','aurora'];
+    const systemKeys=['circuitry','diagnostic','comms','power','core','propulsion','guidance','control','response','navigation'];
     const setCharge=value=>panel.style.setProperty('--lapland-charge',String(Math.max(0,Math.min(1,value))));
     const setRowState=(key,nextState,label)=>{
       const row=document.querySelector(`[data-verify-system="${key}"]`);
@@ -127,30 +130,63 @@
       row.classList.add(`is-${nextState}`);
       status.textContent=label;
     };
-    const celebrate=()=>{
+    const setMasterOnline=()=>{
+      masterValue.textContent='Online';
+      masterStatus.classList.remove('is-offline');
+      masterStatus.classList.add('is-online');
+      panel.classList.add('is-complete');
+      head?.classList.add('is-launch-clear');
+      ping(820,.08,.026);
+      laplandLater(()=>ping(1080,.12,.038),150);
+      haptic([20,24,62]);
+    };
+    const showTransmission=()=>{
       if(state.missionOpen!=='lapland') return;
-      panel.classList.add('is-complete','is-celebrating');
-      head?.classList.add('is-launch-clear','is-celebrating');
-      if(payoff) payoff.hidden=false;
-      fadeLaplandMusic(.9,260);
-      ping(940,.16,.055);haptic([25,35,85]);
-      laplandLater(()=>panel.classList.remove('is-celebrating'),7600);
-      laplandLater(()=>head?.classList.remove('is-celebrating'),7600);
+      verificationStage.hidden=true;
+      partyStage.hidden=true;
+      transmissionStage.hidden=false;
+      panel.classList.remove('is-verifying','is-celebrating','is-party');
+      panel.classList.add('is-transmission');
+      head?.classList.remove('is-celebrating');
+      if(laplandMusic&&!laplandMusic.paused) fadeLaplandMusic(.07,420);
+      playLaplandClearance(showParty);
+    };
+    const showParty=()=>{
+      if(state.missionOpen!=='lapland') return;
+      transmissionStage.hidden=true;
+      verificationStage.hidden=true;
+      partyStage.hidden=false;
+      panel.classList.remove('is-transmission');
+      panel.classList.add('is-party','is-celebrating');
+      head?.classList.add('is-celebrating');
+      fadeLaplandMusic(.9,620);
+      ping(1040,.14,.045);
+      laplandLater(()=>ping(1320,.18,.045),210);
+      haptic([25,28,75]);
       laplandLater(()=>{
         if(state.missionOpen==='lapland'){
-          showCompletion('Launch Clear','Every restored system has passed final verification. Santa-1 is cleared for launch.');
+          showCompletion('Launch Systems Online','Santa-1 is fully online and ready for the final flight sequence.');
         }
       },8200);
     };
+
+    masterStatus.classList.add('is-offline');
+    masterValue.textContent='Offline';
 
     btn.onclick=()=>{
       if(btn.dataset.review==='true'){ stopLaplandAudio();set({missionOpen:null,nav:'missions'});return; }
       btn.disabled=true;
       clearLaplandTimers();
-      panel.classList.remove('is-complete','is-celebrating','has-attention');
+      panel.querySelector('.final-check-note')?.remove();
+      panel.classList.remove('is-complete','is-celebrating','is-party','is-transmission','has-attention');
       head?.classList.remove('is-launch-clear','is-celebrating');
       panel.classList.add('is-verifying');
-      if(payoff) payoff.hidden=true;
+      transmissionStage.hidden=true;
+      partyStage.hidden=true;
+      verificationStage.hidden=false;
+      masterStatus.classList.remove('is-online');
+      masterStatus.classList.add('is-offline');
+      masterValue.textContent='Offline';
       setCharge(0);
       const missing=[];
 
@@ -161,14 +197,14 @@
       checks.forEach((checkpointId,i)=>laplandLater(()=>{
         const key=systemKeys[i];
         setRowState(key,'checking','Checking');
-        ping(430+i*45,.04,.014);
+        ping(430+i*34,.04,.012);
 
         laplandLater(()=>{
           const ready=state.completed.includes(checkpointId);
           setRowState(key,ready?'online':'offline',ready?'Online':'Offline');
           if(!ready) missing.push(checkpointId);
-          setCharge((i+1)/8);
-          ping(ready?540+i*50:220,.055,.018);
+          setCharge((i+1)/checks.length);
+          ping(ready?540+i*38:220,.05,.016);
 
           if(i===checks.length-1){
             laplandLater(()=>{
@@ -177,23 +213,21 @@
               panel.classList.remove('is-verifying');
 
               if(clear){
-                if(laplandMusic&&!laplandMusic.paused) fadeLaplandMusic(.08,520);
-                head?.classList.add('is-launch-clear');
                 btn.hidden=true;
-                ping(770,.055,.018);
-                haptic([18,25,35]);
-                playLaplandClearance(celebrate);
+                setMasterOnline();
+                // Let the launch-status reward land before the narrative hand-off.
+                laplandLater(showTransmission,1550);
               } else {
                 if(laplandMusic&&!laplandMusic.paused) fadeLaplandMusic(.34,350);
                 panel.classList.add('has-attention');
                 btn.disabled=false; btn.dataset.review='true'; btn.textContent='View Missions';
                 const note=document.createElement('div'); note.className='final-check-note';
-                note.innerHTML=`<div class="kicker">Systems Require Attention</div><p>${missing.length} ${missing.length===1?'system':'systems'} must be restored before Santa-1 can be cleared for launch.</p>`;
-                panel.appendChild(note); haptic([20,35,20]);
+                note.innerHTML=`<div class="kicker">Systems Require Attention</div><p>${missing.length} ${missing.length===1?'system':'systems'} must be restored before launch systems can come online.</p>`;
+                verificationStage.appendChild(note); haptic([20,35,20]);
               }
-            },680);
+            },620);
           }
-        },240);
-      },260+i*430));
+        },220);
+      },220+i*360));
     };
   }
