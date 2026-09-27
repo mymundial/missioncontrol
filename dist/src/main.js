@@ -1104,7 +1104,6 @@
       <section class="lapland-stage lapland-verification-stage" id="laplandVerificationStage">
         ${systemStatusBank(systems,'lapland-system-bank','verify')}
         <div class="lapland-launch-slot">
-          <div class="lapland-master-status" id="laplandMasterStatus" hidden><span>Launch Systems</span><strong id="laplandMasterValue">Offline</strong></div>
           <button class="btn primary wide lapland-test-btn" id="initiateTest">Initialise Launch</button>
         </div>
       </section>
@@ -1119,9 +1118,11 @@
       </section>
       <section class="lapland-stage lapland-party-stage" id="laplandPartyStage" hidden aria-label="Las Vegas launch celebration">
         <div class="lapland-party-lightshow" aria-hidden="true">
+          <i class="lapland-party-wash"></i>
           <i class="lapland-party-beam party-beam-a"></i><i class="lapland-party-beam party-beam-b"></i><i class="lapland-party-beam party-beam-c"></i><i class="lapland-party-reflections"></i>
+          <div class="lapland-flame-line"><i class="lapland-flame-unit flame-1"></i><i class="lapland-flame-unit flame-2"></i><i class="lapland-flame-unit flame-3"></i><i class="lapland-flame-unit flame-4"></i></div>
         </div>
-        <div class="lapland-disco-rig" aria-hidden="true"><i class="lapland-disco-cable"></i><div class="lapland-disco-ball"><span class="lapland-disco-grid"></span><span class="lapland-disco-glint"></span></div></div>
+        <div class="lapland-disco-rig" aria-hidden="true"><i class="lapland-disco-cable"></i><video class="lapland-disco-video" id="laplandDiscoVideo" muted loop playsinline preload="auto"><source src="./assets/disco-ball-alpha-loop-720.webm" type="video/webm"></video></div>
         <div class="lapland-party-status"><span>Launch Systems</span><strong>Online</strong></div>
       </section>
     </div>`;
@@ -4032,6 +4033,7 @@
       laplandVoice=new Audio('./assets/lapland-chief-engineer.mp3');
       laplandVoice.preload='auto';
       laplandVoice.volume=1;
+      try{laplandVoice.load();}catch{}
     }
     return laplandVoice;
   }
@@ -4085,28 +4087,56 @@
     clearLaplandTimers();
     cancelAnimationFrame(laplandVolumeRaf);laplandVolumeRaf=0;
     stopStatic();
-    if(laplandVoice){try{laplandVoice.pause();if(reset)laplandVoice.currentTime=0;}catch{}}
+    if(laplandVoice){
+      laplandVoice.onended=null;laplandVoice.onerror=null;
+      try{laplandVoice.pause();if(reset)laplandVoice.currentTime=0;laplandVoice.volume=1;}catch{}
+    }
     if(laplandMusic){try{laplandMusic.pause();if(reset)laplandMusic.currentTime=0;laplandMusic.volume=.34;}catch{}}
     if(restoreRadio) endMissionAudioRadioOverride('lapland');
   }
+
+  // Mirror the reliable Luffield transmission pattern: static intro, clean gap,
+  // primed narrative audio, audio-end/fallback completion, and a guaranteed
+  // on-screen dwell so mobile playback failure can never skip the card.
   function playLaplandClearance(onComplete){
-    const finish=()=>{
-      startStatic(.07);
-      laplandLater(()=>{stopStatic();onComplete?.();},280);
-    };
-    if(!state.audio){finish();return;}
+    const shownAt=performance.now();
+    const minDwell=6500;
+    let introStatic=null,voiceDelay=null,fallback=null,tailTimer=null,finishTimer=null,finished=false;
     const voice=getLaplandVoice();
-    startStatic(.085);
-    laplandLater(()=>{
+    const finish=()=>{
+      if(finished)return;
+      const remaining=Math.max(0,minDwell-(performance.now()-shownAt));
+      finished=true;
+      finishTimer=laplandLater(()=>{
+        clearTimeout(introStatic);clearTimeout(voiceDelay);clearTimeout(fallback);clearTimeout(tailTimer);
+        stopStatic();
+        voice.onended=null;voice.onerror=null;
+        onComplete?.();
+      },remaining);
+    };
+    if(state.audio) startStatic(.05);
+    introStatic=laplandLater(()=>stopStatic(),430);
+    voiceDelay=laplandLater(()=>{
       stopStatic();
-      try{voice.currentTime=0;}catch{}
-      voice.onended=finish;
-      voice.onerror=finish;
+      if(!state.audio){finish();return;}
       try{
-        const p=voice.play();
-        if(p&&typeof p.catch==='function') p.catch(finish);
+        voice.currentTime=0;voice.volume=1;
+        const play=voice.play();
+        if(play&&typeof play.catch==='function') play.catch(finish);
+        voice.onended=()=>{
+          startStatic(.028);
+          tailTimer=laplandLater(()=>{stopStatic();finish();},220);
+        };
+        voice.onerror=finish;
+        fallback=laplandLater(finish,14000);
       }catch{finish();}
-    },260);
+    },900);
+    return ()=>{
+      clearTimeout(introStatic);clearTimeout(voiceDelay);clearTimeout(fallback);clearTimeout(tailTimer);clearTimeout(finishTimer);
+      voice.onended=null;voice.onerror=null;
+      try{voice.pause();voice.currentTime=0;voice.volume=1;}catch{}
+      stopStatic();
+    };
   }
 
   function bindLapland(){
@@ -4115,15 +4145,14 @@
     const verificationStage=document.getElementById('laplandVerificationStage');
     const transmissionStage=document.getElementById('laplandTransmissionStage');
     const partyStage=document.getElementById('laplandPartyStage');
-    const masterStatus=document.getElementById('laplandMasterStatus');
-    const masterValue=document.getElementById('laplandMasterValue');
+    const discoVideo=document.getElementById('laplandDiscoVideo');
     const head=document.querySelector('.lapland-head');
-    if(!btn||!panel||!verificationStage||!transmissionStage||!partyStage||!masterStatus||!masterValue) return;
+    if(!btn||!panel||!verificationStage||!transmissionStage||!partyStage) return;
 
     startLaplandMusic();
 
-    // MC01–MC10 each restore one named system. Lapland Launch checks those ten
-    // systems in mission order before the derived LAUNCH SYSTEMS state can go ONLINE.
+    // MC01–MC10 each restore one named system. Checks run down column 1 first,
+    // then column 2, matching the visible mission-order layout.
     const checks=['entry','velocity','luffield','power','spirit','escapade','comet','jingle','lando','aurora'];
     const systemKeys=['circuitry','diagnostic','comms','power','core','propulsion','guidance','control','response','navigation'];
     const setCharge=value=>panel.style.setProperty('--lapland-charge',String(Math.max(0,Math.min(1,value))));
@@ -4135,16 +4164,31 @@
       row.classList.add(`is-${nextState}`);
       status.textContent=label;
     };
-    const setMasterOnline=()=>{
-      masterValue.textContent='Online';
-      masterStatus.classList.remove('is-offline');
-      masterStatus.classList.add('is-online');
+    const setButtonState=mode=>{
+      btn.classList.remove('is-initialising','is-complete');
+      delete btn.dataset.review;
+      if(mode==='initialising'){
+        btn.disabled=true;
+        btn.textContent='INITIALISING…';
+        btn.classList.add('is-initialising');
+      }else if(mode==='complete'){
+        btn.disabled=true;
+        btn.textContent='COMPLETE';
+        btn.classList.add('is-complete');
+      }else{
+        btn.disabled=false;
+        btn.textContent='INITIALISE LAUNCH';
+      }
+    };
+    const setLaunchComplete=()=>{
+      setButtonState('complete');
       panel.classList.add('is-complete');
       head?.classList.add('is-launch-clear');
       ping(820,.08,.026);
       laplandLater(()=>ping(1080,.12,.038),150);
       haptic([20,24,62]);
     };
+    let stopTransmission=()=>{};
     const showTransmission=()=>{
       if(state.missionOpen!=='lapland') return;
       verificationStage.hidden=true;
@@ -4153,18 +4197,22 @@
       panel.classList.remove('is-verifying','is-celebrating','is-party');
       panel.classList.add('is-transmission');
       head?.classList.remove('is-celebrating');
-      if(laplandMusic&&!laplandMusic.paused) fadeLaplandMusic(.07,420);
-      playLaplandClearance(showParty);
+      if(laplandMusic&&!laplandMusic.paused) fadeLaplandMusic(.055,420);
+      stopTransmission=playLaplandClearance(showParty);
     };
     const showParty=()=>{
       if(state.missionOpen!=='lapland') return;
+      stopTransmission();stopTransmission=()=>{};
       transmissionStage.hidden=true;
       verificationStage.hidden=true;
       partyStage.hidden=false;
       panel.classList.remove('is-transmission');
       panel.classList.add('is-party','is-celebrating');
       head?.classList.add('is-celebrating');
-      fadeLaplandMusic(.9,620);
+      if(discoVideo){
+        try{discoVideo.currentTime=0;const p=discoVideo.play();if(p&&typeof p.catch==='function')p.catch(()=>{});}catch{}
+      }
+      fadeLaplandMusic(.9,780);
       ping(1040,.14,.045);
       laplandLater(()=>ping(1320,.18,.045),210);
       haptic([25,28,75]);
@@ -4172,17 +4220,28 @@
         if(state.missionOpen==='lapland'){
           showCompletion('Launch Systems Online','Santa-1 is fully online and ready for the final flight sequence.');
         }
-      },8200);
+      },10000);
     };
 
-    masterStatus.classList.add('is-offline');
-    masterValue.textContent='Offline';
+    setButtonState('idle');
 
     btn.onclick=()=>{
-      if(btn.dataset.review==='true'){ stopLaplandAudio();set({missionOpen:null,nav:'missions'});return; }
-      btn.disabled=true;
-      btn.hidden=true;
-      masterStatus.hidden=false;
+      if(btn.dataset.review==='true'){stopLaplandAudio();set({missionOpen:null,nav:'missions'});return;}
+
+      // Prime ELF ENGINEERING audio inside the user gesture, exactly like the
+      // reliable Santa transmission at Luffield. This unlocks later playback on mobile.
+      if(state.audio){
+        const voice=getLaplandVoice();
+        try{
+          voice.currentTime=0;voice.volume=0;
+          const prime=voice.play();
+          if(prime&&typeof prime.then==='function') prime.then(()=>{
+            try{voice.pause();voice.currentTime=0;voice.volume=1;}catch{}
+          }).catch(()=>{try{voice.volume=1;}catch{}});
+        }catch{try{voice.volume=1;}catch{}}
+      }
+
+      setButtonState('initialising');
       clearLaplandTimers();
       panel.querySelector('.final-check-note')?.remove();
       panel.classList.remove('is-complete','is-celebrating','is-party','is-transmission','has-attention');
@@ -4191,9 +4250,6 @@
       transmissionStage.hidden=true;
       partyStage.hidden=true;
       verificationStage.hidden=false;
-      masterStatus.classList.remove('is-online');
-      masterStatus.classList.add('is-offline');
-      masterValue.textContent='Offline';
       setCharge(0);
       const missing=[];
 
@@ -4220,21 +4276,27 @@
               panel.classList.remove('is-verifying');
 
               if(clear){
-                setMasterOnline();
-                // Let the launch-status reward land before the narrative hand-off.
+                setLaunchComplete();
+                // Let COMPLETE register before the narrative hand-off.
                 laplandLater(showTransmission,1550);
-              } else {
+              }else{
                 if(laplandMusic&&!laplandMusic.paused) fadeLaplandMusic(.34,350);
                 panel.classList.add('has-attention');
-                btn.hidden=false; btn.disabled=false; btn.dataset.review='true'; btn.textContent='View Missions';
+                btn.disabled=false;btn.dataset.review='true';btn.textContent='View Missions';btn.classList.remove('is-initialising','is-complete');
                 const note=document.createElement('div'); note.className='final-check-note';
                 note.innerHTML=`<div class="kicker">Systems Require Attention</div><p>${missing.length} ${missing.length===1?'system':'systems'} must be restored before launch systems can come online.</p>`;
-                verificationStage.appendChild(note); haptic([20,35,20]);
+                verificationStage.appendChild(note);haptic([20,35,20]);
               }
             },620);
           }
         },220);
       },220+i*360));
+    };
+
+    cleanupMission=()=>{
+      stopTransmission();
+      if(discoVideo){try{discoVideo.pause();discoVideo.currentTime=0;}catch{}}
+      stopLaplandAudio();
     };
   }
 

@@ -531,7 +531,6 @@
       <section class="lapland-stage lapland-verification-stage" id="laplandVerificationStage">
         ${systemStatusBank(systems,'lapland-system-bank','verify')}
         <div class="lapland-launch-slot">
-          <div class="lapland-master-status" id="laplandMasterStatus" hidden><span>Launch Systems</span><strong id="laplandMasterValue">Offline</strong></div>
           <button class="btn primary wide lapland-test-btn" id="initiateTest">Initialise Launch</button>
         </div>
       </section>
@@ -546,9 +545,11 @@
       </section>
       <section class="lapland-stage lapland-party-stage" id="laplandPartyStage" hidden aria-label="Las Vegas launch celebration">
         <div class="lapland-party-lightshow" aria-hidden="true">
+          <i class="lapland-party-wash"></i>
           <i class="lapland-party-beam party-beam-a"></i><i class="lapland-party-beam party-beam-b"></i><i class="lapland-party-beam party-beam-c"></i><i class="lapland-party-reflections"></i>
+          <div class="lapland-flame-line"><i class="lapland-flame-unit flame-1"></i><i class="lapland-flame-unit flame-2"></i><i class="lapland-flame-unit flame-3"></i><i class="lapland-flame-unit flame-4"></i></div>
         </div>
-        <div class="lapland-disco-rig" aria-hidden="true"><i class="lapland-disco-cable"></i><div class="lapland-disco-ball"><span class="lapland-disco-grid"></span><span class="lapland-disco-glint"></span></div></div>
+        <div class="lapland-disco-rig" aria-hidden="true"><i class="lapland-disco-cable"></i><video class="lapland-disco-video" id="laplandDiscoVideo" muted loop playsinline preload="auto"><source src="./assets/disco-ball-alpha-loop-720.webm" type="video/webm"></video></div>
         <div class="lapland-party-status"><span>Launch Systems</span><strong>Online</strong></div>
       </section>
     </div>`;

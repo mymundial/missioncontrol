@@ -8922,3 +8922,191 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 @media(prefers-reduced-motion:reduce){
   .lapland-disco-glint{animation:none!important;}
 }
+
+/* === Lapland Launch refinement: persistent CTA + reliable transmission + show finale === */
+.lapland-head .lapland-sponsor{
+  position:relative;
+  isolation:isolate;
+  overflow:visible;
+  opacity:1;
+  filter:none;
+}
+.lapland-head .lapland-sponsor::before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  inset:14% -22% 4%;
+  border-radius:50%;
+  background:radial-gradient(ellipse at center,rgba(205,89,255,.30) 0%,rgba(143,68,255,.14) 40%,transparent 74%);
+  filter:blur(9px);
+  opacity:.78;
+  pointer-events:none;
+}
+.lapland-head .lapland-sponsor img{
+  position:relative;
+  z-index:1;
+  opacity:1;
+  filter:drop-shadow(0 0 3px rgba(247,224,255,.52)) drop-shadow(0 0 8px rgba(196,77,255,.34));
+}
+.lapland-head.is-launch-clear .lapland-sponsor::before{opacity:1;transform:scale(1.06);}
+.lapland-head.is-launch-clear .lapland-sponsor img{filter:drop-shadow(0 0 4px rgba(255,241,255,.68)) drop-shadow(0 0 10px rgba(206,91,255,.46));}
+
+/* Use the normal Mission Control button geometry throughout. */
+.lapland-launch-slot{margin:5px 0 8px;}
+.lapland-launch-slot .lapland-test-btn{
+  min-height:48px;
+  margin:0;
+  font-family:inherit;
+  transition:opacity .2s ease,border-color .2s ease,background .2s ease,color .2s ease,box-shadow .2s ease,filter .2s ease;
+}
+.lapland-test-btn.is-initialising,
+.lapland-test-btn.is-initialising:disabled{
+  opacity:.52;
+  color:#c2d5dd;
+  border-color:#37677b;
+  background:linear-gradient(180deg,rgba(13,67,88,.72),rgba(7,45,63,.78));
+  box-shadow:inset 0 0 15px rgba(73,174,207,.04);
+  cursor:default;
+}
+.lapland-test-btn.is-complete,
+.lapland-test-btn.is-complete:disabled{
+  opacity:1;
+  color:#061a11;
+  border-color:#65ef9d;
+  background:#65ef9d;
+  box-shadow:0 0 18px rgba(101,239,157,.22);
+  cursor:default;
+}
+
+/* Keep the ELF Engineering hand-off as one self-contained transmission card. */
+.lapland-panel.is-transmission{padding:0;overflow:visible;border-color:transparent;background:transparent;box-shadow:none;}
+.lapland-panel.is-transmission::before,.lapland-panel.is-transmission::after{display:none;}
+.lapland-transmission-stage{width:100%;min-height:0;display:block;}
+.lapland-incoming{width:100%;margin:0;padding:27px 18px 25px;}
+
+/* Finale: transparent rendered disco ball + layered, genuinely seamless show lighting. */
+.lapland-party-stage{
+  min-height:410px;
+  background:
+    radial-gradient(circle at 50% 25%,rgba(202,93,255,.20),transparent 29%),
+    radial-gradient(circle at 16% 68%,rgba(54,208,255,.13),transparent 30%),
+    radial-gradient(circle at 86% 68%,rgba(255,67,181,.13),transparent 31%),
+    linear-gradient(180deg,#071522 0%,#050b15 62%,#02060d 100%);
+}
+.lapland-party-wash{
+  inset:-18%;
+  background:
+    radial-gradient(circle at 24% 48%,rgba(63,215,255,.13),transparent 31%),
+    radial-gradient(circle at 70% 42%,rgba(222,77,255,.15),transparent 34%),
+    radial-gradient(circle at 53% 82%,rgba(255,66,151,.09),transparent 32%);
+  filter:blur(20px);
+  opacity:.78;
+  mix-blend-mode:screen;
+  animation:laplandPartyWashLoop 12s ease-in-out infinite;
+}
+.lapland-party-beam.party-beam-a{animation:laplandPartyBeamALoop 7.4s ease-in-out infinite;}
+.lapland-party-beam.party-beam-b{animation:laplandPartyBeamBLoop 8.6s ease-in-out -2.1s infinite;}
+.lapland-party-beam.party-beam-c{animation:laplandPartyBeamCLoop 9.8s ease-in-out -4.4s infinite;}
+.lapland-party-reflections{animation:laplandPartyReflectionsLoop 11.6s linear infinite;}
+
+.lapland-disco-rig{
+  top:0;
+  width:230px;
+  height:270px;
+  transform:translateX(-50%) translateY(-245px);
+  animation:laplandDiscoDrop 1.15s cubic-bezier(.18,.82,.25,1.02) .15s forwards;
+}
+.lapland-disco-cable{height:58px;opacity:.72;}
+.lapland-disco-video{
+  position:absolute;
+  z-index:3;
+  left:50%;
+  top:38px;
+  width:220px;
+  height:220px;
+  transform:translateX(-50%);
+  object-fit:contain;
+  pointer-events:none;
+  filter:drop-shadow(0 0 10px rgba(231,247,255,.32)) drop-shadow(0 0 30px rgba(183,74,255,.20));
+}
+
+/* Four restrained flame units reference the Hamilton Straight show without taking over the UI. */
+.lapland-flame-line{
+  position:absolute;
+  z-index:2;
+  left:5%;right:5%;bottom:52px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  pointer-events:none;
+}
+.lapland-flame-unit{
+  position:relative!important;
+  width:18px;
+  height:64px;
+  transform-origin:50% 100%;
+  clip-path:polygon(50% 0%,68% 27%,83% 51%,73% 78%,100% 100%,0 100%,27% 78%,17% 51%,34% 27%);
+  background:linear-gradient(180deg,rgba(255,247,201,.98) 0 18%,rgba(255,190,76,.96) 32%,rgba(255,91,46,.82) 66%,rgba(221,41,110,.15) 100%);
+  filter:blur(.15px) drop-shadow(0 0 8px rgba(255,132,53,.56)) drop-shadow(0 0 19px rgba(255,55,120,.22));
+  opacity:.72;
+}
+.lapland-flame-unit::after{
+  content:"";
+  position:absolute;
+  left:50%;bottom:0;
+  width:7px;height:72%;
+  transform:translateX(-50%);
+  background:linear-gradient(180deg,rgba(255,255,244,.98),rgba(255,205,85,.86) 48%,rgba(255,105,48,.14));
+  filter:blur(1px);
+}
+.lapland-flame-unit.flame-1{animation:laplandFlameLoopA 2.8s ease-in-out infinite;}
+.lapland-flame-unit.flame-2{animation:laplandFlameLoopB 3.3s ease-in-out -.9s infinite;}
+.lapland-flame-unit.flame-3{animation:laplandFlameLoopA 3.1s ease-in-out -1.7s infinite;}
+.lapland-flame-unit.flame-4{animation:laplandFlameLoopB 2.9s ease-in-out -.4s infinite;}
+
+@keyframes laplandPartyWashLoop{
+  0%,100%{transform:translate3d(-2%,1%,0) scale(1);opacity:.68;}
+  35%{transform:translate3d(3%,-2%,0) scale(1.05);opacity:.9;}
+  68%{transform:translate3d(-1%,3%,0) scale(1.02);opacity:.76;}
+}
+@keyframes laplandPartyBeamALoop{
+  0%,100%{transform:rotate(16deg) translateX(-48px);opacity:.48;}
+  50%{transform:rotate(35deg) translateX(62px);opacity:.96;}
+}
+@keyframes laplandPartyBeamBLoop{
+  0%,100%{transform:rotate(-15deg) translateX(50px);opacity:.42;}
+  50%{transform:rotate(-37deg) translateX(-68px);opacity:.94;}
+}
+@keyframes laplandPartyBeamCLoop{
+  0%,100%{transform:rotate(-4deg) translateX(-54px);opacity:.30;}
+  50%{transform:rotate(17deg) translateX(58px);opacity:.82;}
+}
+@keyframes laplandPartyReflectionsLoop{
+  0%,100%{transform:translate3d(-7px,-4px,0);background-position:0 0,0 0,0 0,0 0,0 0,0 0,0 0;opacity:.68;}
+  25%{transform:translate3d(8px,-2px,0);background-position:19px 13px,-17px 16px,24px -9px,-15px -12px,14px 18px,-20px 12px,18px -14px;opacity:.90;}
+  50%{transform:translate3d(9px,7px,0);background-position:34px 21px,-29px 26px,42px -16px,-27px -22px,26px 33px,-36px 21px,31px -25px;opacity:.76;}
+  75%{transform:translate3d(-4px,8px,0);background-position:17px 10px,-13px 12px,21px -8px,-12px -10px,13px 16px,-18px 10px,16px -12px;opacity:.92;}
+}
+@keyframes laplandFlameLoopA{
+  0%,100%{transform:scaleY(.66) scaleX(.92);opacity:.50;}
+  48%{transform:scaleY(1.02) scaleX(1.04);opacity:.90;}
+  68%{transform:scaleY(.78) scaleX(.96);opacity:.66;}
+}
+@keyframes laplandFlameLoopB{
+  0%,100%{transform:scaleY(.54) scaleX(.90);opacity:.44;}
+  38%{transform:scaleY(.86) scaleX(.98);opacity:.76;}
+  62%{transform:scaleY(1.08) scaleX(1.06);opacity:.94;}
+}
+
+@media(max-width:390px){
+  .lapland-launch-slot .lapland-test-btn{min-height:48px;}
+  .lapland-party-stage{min-height:370px;}
+  .lapland-disco-rig{width:205px;height:245px;}
+  .lapland-disco-video{width:195px;height:195px;}
+  .lapland-flame-line{bottom:48px;}
+  .lapland-flame-unit{width:15px;height:54px;}
+}
+@media(prefers-reduced-motion:reduce){
+  .lapland-party-wash,.lapland-party-beam,.lapland-party-reflections,.lapland-flame-unit{animation:none!important;}
+  .lapland-disco-video{filter:drop-shadow(0 0 10px rgba(231,247,255,.28));}
+}
