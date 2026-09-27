@@ -4446,7 +4446,7 @@
       clearTimeout(minDwellTimer);clearTimeout(fallbackTimer);stopStatic();
       const elapsed=performance.now()-opened;
       const wait=Math.max(0,6200-elapsed);
-      northernLater(showNorthernDeparture,wait+180);
+      northernLater(showNorthernMissionComplete,wait+180);
     };
 
     // Audio intentionally pending: preserve the final-transmission beat visually
@@ -4465,25 +4465,25 @@
         <span class="northern-departure-sleigh"><b></b></span>
       </div>
       <div class="kicker">Northern Flight</div>
-      <h2>Departure Confirmed</h2>
-      <p>Santa-1 is leaving Silverstone.</p>
+      <h2>Flight Authorised</h2>
+      <p>Santa-1 departure sequence active.</p>
     </div>`;
 
     const panel=document.getElementById('northernDeparturePanel');
-    const flyby=getNorthernFlybyAudio();
-    let finished=false;
-    const finish=()=>{if(finished)return;finished=true;northernLater(showNorthernAirborneTakeover,520);};
-    northernLater(()=>{panel?.classList.add('flyby');haptic([22,30,70]);ping(720,.12,.035);},3150);
+    northernLater(()=>{panel?.classList.add('flyby');haptic([22,30,70]);ping(720,.12,.035);},360);
+    northernLater(showNorthernAirborneTakeover,2050);
+  }
 
-    if(!state.audio){northernLater(finish,9700);return;}
-    try{
-      flyby.currentTime=0;flyby.volume=.95;
-      flyby.onended=finish;
-      flyby.onerror=()=>northernLater(finish,9700);
-      const play=flyby.play();
-      if(play&&typeof play.catch==='function')play.catch(()=>northernLater(finish,9700));
-      northernLater(finish,11200);
-    }catch{northernLater(finish,9700);}
+  function showNorthernMissionComplete(){
+    const flyby=getNorthernFlybyAudio();
+    if(state.audio){
+      try{
+        flyby.onended=null;flyby.onerror=null;flyby.currentTime=0;flyby.volume=.95;
+        const play=flyby.play();
+        if(play&&typeof play.catch==='function')play.catch(()=>{});
+      }catch{}
+    }
+    showCompletion('Santa-1 Airborne','Santa-1 is airborne. Recovery complete. The Northern Flight is underway.');
   }
 
   function playNorthernAirborneMagic(){ /* Awaiting isolated Christmas Magic second-hit asset. */ }
@@ -4498,7 +4498,7 @@
     el.setAttribute('aria-live','polite');
     el.innerHTML=`<div class="northern-airborne-field" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
       <div class="northern-airborne-copy">
-        <div class="kicker">Mission Complete</div>
+        <div class="kicker">Northern Flight</div>
         <span>SANTA-1</span>
         <h1>AIRBORNE</h1>
         <div class="northern-airborne-status">
@@ -4508,14 +4508,12 @@
       </div>`;
     document.body.appendChild(el);northernTakeoverEl=el;
     northernLater(()=>el.classList.add('is-settled'),250);
+    northernLater(()=>el.classList.add('is-exiting'),2850);
     northernLater(()=>{
-      el.classList.add('is-exiting');
-      showCompletion('Santa-1 Airborne','Northern Flight is underway. The recovery mission is complete.');
-    },3900);
-    northernLater(()=>{
+      showNorthernTransmission();
       if(el.isConnected)el.remove();
       if(northernTakeoverEl===el)northernTakeoverEl=null;
-    },4380);
+    },3300);
   }
 
   function bindNorthern(){
@@ -4586,7 +4584,7 @@
       stateEl.textContent='Authorised';
       hint.textContent='Santa-1 cleared for departure.';
       ping(920,.16,.05);haptic([30,30,85]);
-      northernLater(showNorthernTransmission,1450);
+      northernLater(showNorthernDeparture,1450);
     };
 
     const tick=now=>{
