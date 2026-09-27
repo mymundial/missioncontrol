@@ -8977,6 +8977,8 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .lapland-party-beam.party-beam-c{animation:laplandPartyBeamCLoop 9.8s ease-in-out -4.4s infinite;}
 .lapland-party-reflections{animation:laplandPartyReflectionsLoop 11.6s linear infinite;}
 
+/* Ball + connector are one animated assembly. The connector now belongs to
+   the rig itself, so it cannot appear before the ball or drift off-axis. */
 .lapland-disco-rig{
   position:absolute;
   z-index:3;
@@ -8985,32 +8987,20 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   width:230px;
   height:280px;
   transform:translateX(-50%) translateY(-245px);
-  animation:laplandDiscoDrop 1.15s cubic-bezier(.18,.82,.25,1.02) .15s forwards;
+  animation:laplandDiscoAssemblyDrop 1.15s cubic-bezier(.18,.82,.25,1.02) .15s forwards;
 }
-/* Party suspension axis is owned by the scene itself, so it always starts at
-   the top edge of the box and runs behind the transparent disco-ball video. */
-.lapland-party-stage::before{
+.lapland-disco-rig::before{
   content:"";
   position:absolute;
-  z-index:2;
+  z-index:1;
   top:0;
   left:50%;
   width:2px;
-  height:112px;
+  height:64px;
   transform:translateX(-50%);
   background:linear-gradient(180deg,rgba(222,242,250,.30),rgba(231,252,255,.78) 72%,rgba(231,252,255,.42));
   box-shadow:0 0 6px rgba(188,237,255,.24);
   pointer-events:none;
-}
-.lapland-disco-rig{
-  position:absolute;
-  z-index:3;
-  top:0;
-  left:50%;
-  width:230px;
-  height:280px;
-  transform:translateX(-50%) translateY(-245px);
-  animation:laplandDiscoDrop 1.15s cubic-bezier(.18,.82,.25,1.02) .15s forwards;
 }
 .lapland-disco-video{
   position:absolute;
@@ -9019,7 +9009,9 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   top:56px;
   width:220px;
   height:220px;
-  transform:translateX(-50%);
+  /* The rendered sphere is a fraction right-weighted inside the WebM canvas.
+     A tiny optical correction keeps the visible ball on the shared centre axis. */
+  transform:translateX(calc(-50% - 1.5px));
   object-fit:contain;
   pointer-events:none;
   filter:drop-shadow(0 0 10px rgba(231,247,255,.32)) drop-shadow(0 0 30px rgba(183,74,255,.20));
@@ -9029,10 +9021,10 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   z-index:4;
   width:min(100%,320px);
   margin-top:auto;
-  padding:17px 6px 2px;
+  padding:0 6px 2px;
   display:grid;
   justify-items:center;
-  gap:5px;
+  gap:7px;
   text-align:center;
   background:none;
   border:0;
@@ -9040,22 +9032,19 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   box-shadow:none;
   backdrop-filter:none;
 }
-.lapland-party-message::before{
-  content:"";
-  position:absolute;
-  top:0;
-  left:50%;
-  width:72%;
-  height:1px;
-  transform:translateX(-50%);
-  background:linear-gradient(90deg,transparent,rgba(105,202,228,.46) 22%,rgba(157,232,226,.58) 50%,rgba(105,202,228,.46) 78%,transparent);
-}
 .lapland-party-message span{
-  font-size:8px;
+  font-size:9px;
   line-height:1;
   font-weight:800;
-  letter-spacing:.26em;
-  color:#7ea6b9;
+  letter-spacing:.25em;
+  color:#69d7f2;
+  text-shadow:0 0 8px rgba(79,211,245,.22);
+}
+.lapland-clearance-divider{
+  display:block;
+  width:72%;
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(105,202,228,.42) 22%,rgba(157,232,226,.58) 50%,rgba(105,202,228,.42) 78%,transparent);
 }
 .lapland-party-message strong{
   font-family:var(--display);
@@ -9066,6 +9055,12 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   text-transform:uppercase;
   white-space:nowrap;
   text-shadow:0 0 10px rgba(220,248,255,.10),0 0 18px rgba(101,239,157,.07);
+}
+
+@keyframes laplandDiscoAssemblyDrop{
+  0%{transform:translateX(-50%) translateY(-245px);}
+  72%{transform:translateX(-50%) translateY(8px);}
+  100%{transform:translateX(-50%) translateY(0);}
 }
 
 @keyframes laplandPartyWashLoop{
@@ -9095,13 +9090,16 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 @media(max-width:390px){
   .lapland-launch-slot .lapland-test-btn{min-height:48px;}
   .lapland-party-stage{min-height:370px;}
-  .lapland-party-stage::before{height:101px;}
   .lapland-disco-rig{top:0;width:205px;height:252px;}
-  .lapland-disco-video{top:50px;width:195px;height:195px;}
-  .lapland-party-message{width:min(100%,290px);padding-top:15px;}
+  .lapland-disco-rig::before{height:57px;}
+  .lapland-disco-video{top:50px;width:195px;height:195px;transform:translateX(calc(-50% - 1.25px));}
+  .lapland-party-message{width:min(100%,290px);}
   .lapland-party-message strong{font-size:18px;}
 }
 @media(prefers-reduced-motion:reduce){
   .lapland-party-wash,.lapland-party-beam,.lapland-party-reflections{animation:none!important;}
   .lapland-disco-video{filter:drop-shadow(0 0 10px rgba(231,247,255,.28));}
 }
+
+/* Final Lapland corrective guard: no scene-owned suspension line. */
+.lapland-party-stage::before{content:none!important;}

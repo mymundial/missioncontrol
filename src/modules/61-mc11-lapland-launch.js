@@ -168,7 +168,7 @@
       delete btn.dataset.review;
       if(mode==='initialising'){
         btn.disabled=true;
-        btn.textContent='VERIFYING SYSTEMS';
+        btn.textContent='SYSTEM VERIFICATION';
         btn.classList.add('is-initialising');
       }else if(mode==='complete'){
         btn.disabled=true;

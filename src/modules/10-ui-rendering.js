@@ -551,6 +551,7 @@
         <div class="lapland-disco-rig" aria-hidden="true"><video class="lapland-disco-video" id="laplandDiscoVideo" muted loop playsinline preload="auto"><source src="./assets/disco-ball-alpha-loop-720.webm" type="video/webm"></video></div>
         <div class="lapland-party-message">
           <span>SANTA-1</span>
+          <i class="lapland-clearance-divider" aria-hidden="true"></i>
           <strong>CLEARED FOR LAUNCH</strong>
         </div>
       </section>

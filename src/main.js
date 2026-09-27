@@ -1124,6 +1124,7 @@
         <div class="lapland-disco-rig" aria-hidden="true"><video class="lapland-disco-video" id="laplandDiscoVideo" muted loop playsinline preload="auto"><source src="./assets/disco-ball-alpha-loop-720.webm" type="video/webm"></video></div>
         <div class="lapland-party-message">
           <span>SANTA-1</span>
+          <i class="lapland-clearance-divider" aria-hidden="true"></i>
           <strong>CLEARED FOR LAUNCH</strong>
         </div>
       </section>
@@ -4176,7 +4177,7 @@
       delete btn.dataset.review;
       if(mode==='initialising'){
         btn.disabled=true;
-        btn.textContent='VERIFYING SYSTEMS';
+        btn.textContent='SYSTEM VERIFICATION';
         btn.classList.add('is-initialising');
       }else if(mode==='complete'){
         btn.disabled=true;
