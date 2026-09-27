@@ -841,7 +841,7 @@
       lando:'Calibrate Santa-1’s flight response.',
       aurora:'Lock onto the North Pole navigation signal.',
       lapland:'Bring Santa-1’s launch systems online.',
-      northern:'Complete final flight checks and authorise Santa-1 for departure.'
+      northern:'Authorise Santa-1 for departure.'
     })[type]||'';
   }
   function renderMission(id){
@@ -1130,11 +1130,7 @@
       </section>
     </div>`;
   }
-  function northernBody(){return `<div class="mission-instrument panel northern-panel" id="northernPanel" style="--northern-hold:0;--northern-hold-angle:0deg">
-      <div class="northern-control-head">
-        <div class="northern-flight-symbol" aria-hidden="true"><i></i><span></span></div>
-        <div><div class="kicker">Final Flight Authorisation</div><strong>Farm Curve Control</strong></div>
-      </div>
+  function northernBody(){return `<div class="mission-instrument panel northern-panel" id="northernPanel" style="--northern-hold:0">
       <div class="northern-conditions" aria-label="Final flight conditions">
         <div class="northern-condition" data-flight-check="0"><span>Flight Path</span><strong>Checking</strong><i></i></div>
         <div class="northern-condition" data-flight-check="1"><span>Airspace</span><strong>Checking</strong><i></i></div>
@@ -1147,10 +1143,9 @@
         <div class="northern-vector-readout"><span>Santa-1</span><strong id="northernState">Standby</strong></div>
       </div>
       <button class="btn primary wide northern-authorise-btn" id="authoriseFlight" disabled>
-        <span class="northern-hold-gauge" aria-hidden="true"><i></i></span>
         <span class="northern-authorise-label">Hold to Authorise Flight</span>
       </button>
-      <div class="northern-hint" id="northernHint">Final flight checks in progress.</div>
+      <div class="visually-hidden" id="northernHint" aria-live="polite">Final flight checks in progress.</div>
     </div>`}
 
 
@@ -4413,11 +4408,6 @@
   function stopNorthernSequence(){
     northernTimers.forEach(clearTimeout); northernTimers=[];
     if(northernHoldRaf){cancelAnimationFrame(northernHoldRaf);northernHoldRaf=0;}
-    [northernFlybyAudio].forEach(audio=>{
-      if(!audio)return;
-      audio.onended=null;audio.onerror=null;
-      try{audio.pause();audio.currentTime=0;}catch{}
-    });
     if(northernTakeoverEl){northernTakeoverEl.remove();northernTakeoverEl=null;}
     stopStatic();
   }
@@ -4456,24 +4446,6 @@
     northernTimers.push(minDwellTimer);
   }
 
-  function showNorthernDeparture(){
-    const mc=document.getElementById('missionContent'); if(!mc)return;
-    mc.innerHTML=`<div class="mission-instrument panel northern-departure-panel" id="northernDeparturePanel">
-      <div class="northern-departure-sky" aria-hidden="true">
-        <i class="northern-departure-axis"></i>
-        <i class="northern-departure-trail trail-a"></i><i class="northern-departure-trail trail-b"></i><i class="northern-departure-trail trail-c"></i>
-        <span class="northern-departure-sleigh"><b></b></span>
-      </div>
-      <div class="kicker">Northern Flight</div>
-      <h2>Flight Authorised</h2>
-      <p>Santa-1 departure sequence active.</p>
-    </div>`;
-
-    const panel=document.getElementById('northernDeparturePanel');
-    northernLater(()=>{panel?.classList.add('flyby');haptic([22,30,70]);ping(720,.12,.035);},360);
-    northernLater(showNorthernAirborneTakeover,2050);
-  }
-
   function showNorthernMissionComplete(){
     const flyby=getNorthernFlybyAudio();
     if(state.audio){
@@ -4498,6 +4470,7 @@
     el.setAttribute('aria-live','polite');
     el.innerHTML=`<div class="northern-airborne-field" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
       <div class="northern-airborne-copy">
+        <img class="northern-airborne-mark" src="./assets/silverstone-s-mark.webp" alt="">
         <div class="kicker">Northern Flight</div>
         <span>SANTA-1</span>
         <h1>AIRBORNE</h1>
@@ -4544,7 +4517,7 @@
       button.disabled=false;
       panel.classList.add('is-ready');
       stateEl.textContent='Ready';
-      hint.textContent='Hold the control to give final flight authorisation.';
+      hint.textContent='Santa-1 ready for final authorisation.';
     },1850);
 
     let holding=false;
@@ -4555,7 +4528,6 @@
     const setProgress=value=>{
       const p=Math.max(0,Math.min(1,value));
       panel.style.setProperty('--northern-hold',String(p));
-      panel.style.setProperty('--northern-hold-angle',`${Math.round(p*360)}deg`);
       button.setAttribute('aria-valuenow',String(Math.round(p*100)));
       if(holding&&!authorised){
         stateEl.textContent=p<.34?'Standby':p<.72?'Clearance':'Authorising';
@@ -4570,7 +4542,7 @@
       button.classList.remove('is-holding');
       setProgress(0);
       stateEl.textContent='Ready';
-      hint.textContent='Hold the control to give final flight authorisation.';
+      hint.textContent='Santa-1 ready for final authorisation.';
     };
 
     const authorise=()=>{
@@ -4584,7 +4556,7 @@
       stateEl.textContent='Authorised';
       hint.textContent='Santa-1 cleared for departure.';
       ping(920,.16,.05);haptic([30,30,85]);
-      northernLater(showNorthernDeparture,1450);
+      northernLater(showNorthernAirborneTakeover,900);
     };
 
     const tick=now=>{

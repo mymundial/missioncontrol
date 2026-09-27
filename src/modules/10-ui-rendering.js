@@ -268,7 +268,7 @@
       lando:'Calibrate Santa-1’s flight response.',
       aurora:'Lock onto the North Pole navigation signal.',
       lapland:'Bring Santa-1’s launch systems online.',
-      northern:'Complete final flight checks and authorise Santa-1 for departure.'
+      northern:'Authorise Santa-1 for departure.'
     })[type]||'';
   }
   function renderMission(id){
@@ -557,11 +557,7 @@
       </section>
     </div>`;
   }
-  function northernBody(){return `<div class="mission-instrument panel northern-panel" id="northernPanel" style="--northern-hold:0;--northern-hold-angle:0deg">
-      <div class="northern-control-head">
-        <div class="northern-flight-symbol" aria-hidden="true"><i></i><span></span></div>
-        <div><div class="kicker">Final Flight Authorisation</div><strong>Farm Curve Control</strong></div>
-      </div>
+  function northernBody(){return `<div class="mission-instrument panel northern-panel" id="northernPanel" style="--northern-hold:0">
       <div class="northern-conditions" aria-label="Final flight conditions">
         <div class="northern-condition" data-flight-check="0"><span>Flight Path</span><strong>Checking</strong><i></i></div>
         <div class="northern-condition" data-flight-check="1"><span>Airspace</span><strong>Checking</strong><i></i></div>
@@ -574,10 +570,9 @@
         <div class="northern-vector-readout"><span>Santa-1</span><strong id="northernState">Standby</strong></div>
       </div>
       <button class="btn primary wide northern-authorise-btn" id="authoriseFlight" disabled>
-        <span class="northern-hold-gauge" aria-hidden="true"><i></i></span>
         <span class="northern-authorise-label">Hold to Authorise Flight</span>
       </button>
-      <div class="northern-hint" id="northernHint">Final flight checks in progress.</div>
+      <div class="visually-hidden" id="northernHint" aria-live="polite">Final flight checks in progress.</div>
     </div>`}
 
 

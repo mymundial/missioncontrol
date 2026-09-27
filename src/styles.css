@@ -9134,17 +9134,7 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   content:"";position:absolute;inset:0;pointer-events:none;opacity:.34;
   background:repeating-linear-gradient(90deg,transparent 0 35px,rgba(100,215,248,.025) 36px,transparent 37px);
 }
-.northern-control-head{position:relative;z-index:1;display:flex;align-items:center;gap:10px;padding:1px 1px 10px;border-bottom:1px solid rgba(104,205,235,.14);}
-.northern-control-head>div:last-child{min-width:0;}
-.northern-control-head strong{display:block;margin-top:3px;font-family:var(--display);font-size:18px;line-height:1;text-transform:uppercase;letter-spacing:.025em;color:#e9f8fd;}
-.northern-flight-symbol{position:relative;flex:0 0 38px;width:38px;height:38px;border:1px solid rgba(99,216,255,.3);border-radius:50%;background:rgba(12,60,82,.48);box-shadow:inset 0 0 14px rgba(67,196,232,.06);}
-.northern-flight-symbol::before,.northern-flight-symbol::after{content:"";position:absolute;left:50%;transform:translateX(-50%);background:var(--cyan);}
-.northern-flight-symbol::before{top:8px;width:1px;height:19px;box-shadow:0 0 8px rgba(98,216,255,.48);}
-.northern-flight-symbol::after{top:7px;width:7px;height:7px;clip-path:polygon(50% 0,100% 100%,50% 72%,0 100%);}
-.northern-flight-symbol i{position:absolute;left:8px;right:8px;bottom:8px;height:1px;background:rgba(112,214,242,.28);}
-.northern-flight-symbol span{position:absolute;left:50%;bottom:7px;width:4px;height:4px;transform:translateX(-50%);border-radius:50%;background:#d9f8ff;box-shadow:0 0 8px rgba(149,234,255,.55);}
-
-.northern-conditions{position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:10px;}
+.northern-conditions{position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:0;}
 .northern-condition{position:relative;min-width:0;padding:9px 6px 8px;border:1px solid rgba(83,166,194,.18);border-radius:8px;background:rgba(3,23,35,.42);text-align:center;overflow:hidden;transition:border-color .3s ease,background .3s ease,box-shadow .3s ease;}
 .northern-condition span{display:block;min-height:18px;color:#6e9caf;font-size:7px;line-height:9px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;}
 .northern-condition strong{display:block;margin-top:4px;font-family:var(--display);font-size:13px;line-height:1;text-transform:uppercase;color:#7692a0;letter-spacing:.03em;transition:color .3s ease;}
@@ -9172,33 +9162,14 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .northern-panel.is-authorised .northern-vector-readout{top:22%;}
 .northern-panel.is-authorised .northern-vector-readout strong{color:var(--green);}
 
-.northern-authorise-btn{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:10px;overflow:hidden;isolation:isolate;touch-action:none;user-select:none;-webkit-user-select:none;}
+.northern-authorise-btn{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;overflow:hidden;isolation:isolate;touch-action:none;user-select:none;-webkit-user-select:none;}
 .northern-authorise-btn::before{content:"";position:absolute;z-index:-1;inset:0;transform-origin:left center;transform:scaleX(var(--northern-hold));background:linear-gradient(90deg,rgba(95,220,255,.12),rgba(99,235,187,.24));transition:transform .08s linear;}
 .northern-authorise-btn.is-holding{border-color:#8ae8ff;box-shadow:0 0 22px rgba(55,195,237,.15),inset 0 0 20px rgba(69,208,246,.07);}
 .northern-authorise-btn.is-authorised::before{background:rgba(87,239,145,.14);}
-.northern-hold-gauge{position:relative;width:26px;height:26px;flex:0 0 26px;border-radius:50%;background:conic-gradient(var(--green) var(--northern-hold-angle),rgba(172,229,245,.18) 0);display:grid;place-items:center;}
-.northern-hold-gauge::after{content:"";position:absolute;inset:3px;border-radius:50%;background:#126c92;transition:background .25s ease;}
-.northern-hold-gauge i{position:relative;z-index:1;width:5px;height:5px;border-radius:50%;background:#dffaff;box-shadow:0 0 7px rgba(210,249,255,.5);}
-.northern-authorise-btn.success .northern-hold-gauge::after{background:#1c6847;}
 .northern-authorise-label{position:relative;z-index:1;white-space:nowrap;}
-.northern-hint{position:relative;z-index:1;min-height:15px;margin-top:7px;text-align:center;color:#779fac;font-size:8px;line-height:13px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;}
 
 .northern-incoming{min-height:306px;display:flex;flex-direction:column;justify-content:center;}
 .northern-incoming .kicker{color:#72dfff;}
-
-.northern-departure-panel{position:relative;min-height:330px;overflow:hidden;text-align:center;display:flex;flex-direction:column;justify-content:flex-end;padding:22px 16px 25px;background:linear-gradient(180deg,rgba(4,22,35,.98),rgba(5,37,54,.96));}
-.northern-departure-panel .kicker,.northern-departure-panel h2,.northern-departure-panel p{position:relative;z-index:3;}
-.northern-departure-panel h2{font-family:var(--display);font-size:30px;line-height:1;text-transform:uppercase;margin:5px 0 7px;color:#edfaff;}
-.northern-departure-panel p{margin:0;color:#89afbd;font-size:11px;}
-.northern-departure-sky{position:absolute;inset:0 0 88px;overflow:hidden;background:radial-gradient(circle at 50% 76%,rgba(55,185,226,.12),transparent 34%);}
-.northern-departure-axis{position:absolute;left:50%;top:14px;bottom:0;width:1px;transform:translateX(-50%);background:linear-gradient(180deg,transparent,rgba(91,213,247,.26) 28%,rgba(91,213,247,.54) 82%,transparent);}
-.northern-departure-sleigh{position:absolute;left:50%;bottom:28px;width:30px;height:30px;transform:translateX(-50%);border:1px solid rgba(117,224,255,.55);border-radius:50%;box-shadow:0 0 0 7px rgba(60,195,235,.045),0 0 18px rgba(78,211,247,.12);transition:bottom 1.35s cubic-bezier(.15,.75,.17,1),transform 1.35s cubic-bezier(.15,.75,.17,1),opacity .9s ease;}
-.northern-departure-sleigh b{position:absolute;inset:9px;border-radius:50%;background:#ddfaff;box-shadow:0 0 12px rgba(136,231,255,.8);}
-.northern-departure-trail{position:absolute;left:50%;bottom:0;width:1px;height:95px;transform-origin:bottom;background:linear-gradient(180deg,transparent,rgba(101,219,250,.45));opacity:.18;}
-.northern-departure-trail.trail-a{transform:translateX(-34px) rotate(-4deg);}.northern-departure-trail.trail-b{transform:translateX(0);opacity:.32;}.northern-departure-trail.trail-c{transform:translateX(34px) rotate(4deg);}
-.northern-departure-panel.flyby .northern-departure-sleigh{bottom:calc(100% - 36px);transform:translateX(-50%) scale(.72);opacity:.35;}
-.northern-departure-panel.flyby .northern-departure-sky::after{content:"";position:absolute;left:-15%;right:-15%;height:35%;bottom:-40%;background:linear-gradient(180deg,transparent,rgba(105,225,255,.14),rgba(230,252,255,.8),rgba(88,220,255,.28),transparent);filter:blur(5px);box-shadow:0 0 70px rgba(82,216,255,.35);animation:northernDepartureSweep 1.35s cubic-bezier(.5,.02,.2,1) forwards;}
-@keyframes northernDepartureSweep{to{bottom:115%;}}
 
 .northern-airborne-takeover{position:fixed;z-index:180;inset:0;display:grid;place-items:center;padding:28px;background:radial-gradient(circle at 50% 45%,rgba(35,142,183,.2),transparent 34%),linear-gradient(180deg,#031724,#020e18);overflow:hidden;opacity:0;transition:opacity .22s ease;}
 .northern-airborne-takeover.is-settled{opacity:1;}
@@ -9210,6 +9181,7 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 @keyframes northernAirborneRay{from{opacity:.16;height:50%}to{opacity:.48;height:67%}}
 .northern-airborne-copy{position:relative;z-index:2;width:min(100%,360px);text-align:center;transform:translateY(8px) scale(.985);opacity:0;transition:transform .65s cubic-bezier(.2,.8,.2,1),opacity .5s ease;}
 .northern-airborne-takeover.is-settled .northern-airborne-copy{transform:none;opacity:1;}
+.northern-airborne-mark{display:block;width:42px;height:auto;margin:0 auto 12px;filter:drop-shadow(0 0 10px rgba(113,224,255,.14));}
 .northern-airborne-copy>.kicker{color:#72dfff;margin-bottom:18px;}
 .northern-airborne-copy>span{display:block;color:#92bdd0;font-size:10px;font-weight:800;letter-spacing:.28em;text-indent:.28em;text-transform:uppercase;}
 .northern-airborne-copy h1{font-family:var(--display);font-size:clamp(55px,16vw,78px);line-height:.82;margin:9px 0 26px;color:#eefcff;letter-spacing:.015em;text-transform:uppercase;text-shadow:0 0 24px rgba(105,224,255,.18);}
@@ -9219,16 +9191,13 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .northern-airborne-status strong{display:block;margin-top:4px;font-family:var(--display);font-size:17px;text-transform:uppercase;color:var(--green);letter-spacing:.035em;}
 
 @media(max-width:390px){
-  .northern-control-head strong{font-size:17px;}
   .northern-vector{height:120px;margin:8px 0;}
   .northern-condition{padding:8px 4px 7px;}
   .northern-condition span{font-size:6.5px;letter-spacing:.08em;}
   .northern-condition strong{font-size:12px;}
   .northern-authorise-label{font-size:11px;}
-  .northern-departure-panel{min-height:310px;}
 }
 @media(prefers-reduced-motion:reduce){
-  .northern-condition,.northern-vector-node,.northern-vector-readout,.northern-departure-sleigh,.northern-airborne-copy{transition-duration:.1s!important;}
+  .northern-condition,.northern-vector-node,.northern-vector-readout,.northern-airborne-copy{transition-duration:.1s!important;}
   .northern-airborne-field i{animation:none!important;}
-  .northern-departure-panel.flyby .northern-departure-sky::after{animation-duration:.2s!important;}
 }
