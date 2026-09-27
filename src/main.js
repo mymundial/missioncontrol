@@ -1121,7 +1121,6 @@
           <i class="lapland-party-wash"></i>
           <i class="lapland-party-beam party-beam-a"></i><i class="lapland-party-beam party-beam-b"></i><i class="lapland-party-beam party-beam-c"></i><i class="lapland-party-reflections"></i>
         </div>
-        <i class="lapland-disco-cable" aria-hidden="true"></i>
         <div class="lapland-disco-rig" aria-hidden="true"><video class="lapland-disco-video" id="laplandDiscoVideo" muted loop playsinline preload="auto"><source src="./assets/disco-ball-alpha-loop-720.webm" type="video/webm"></video></div>
         <div class="lapland-party-message">
           <span>SANTA-1</span>
