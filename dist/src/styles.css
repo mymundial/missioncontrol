@@ -8804,8 +8804,8 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   animation:none;
 }
 .lapland-head .lapland-sponsor img{
-  opacity:.98;
-  filter:drop-shadow(0 0 4px rgba(187,82,255,.26));
+  opacity:.96;
+  filter:drop-shadow(0 0 5px rgba(241,245,255,.12));
 }
 .lapland-head.is-launch-clear .lapland-sponsor{
   opacity:1;
@@ -8813,7 +8813,7 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   animation:none;
 }
 .lapland-head.is-launch-clear .lapland-sponsor img{
-  filter:drop-shadow(0 0 5px rgba(205,111,255,.32));
+  filter:drop-shadow(0 0 6px rgba(241,245,255,.18));
 }
 
 .lapland-launch-slot{
@@ -8979,18 +8979,37 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .lapland-party-reflections{animation:laplandPartyReflectionsLoop 11.6s linear infinite;}
 
 .lapland-disco-rig{
+  position:absolute;
+  z-index:3;
   top:0;
+  left:50%;
   width:230px;
-  height:270px;
+  height:280px;
   transform:translateX(-50%) translateY(-245px);
   animation:laplandDiscoDrop 1.15s cubic-bezier(.18,.82,.25,1.02) .15s forwards;
 }
-.lapland-disco-cable{height:58px;opacity:.72;}
+/* Connector is anchored to the party panel, not the moving video rig.
+   At 220px render size the first visible disco-ball pixels begin ~7px into
+   the alpha video, so 63px meets the sphere cleanly at its final position. */
+.lapland-disco-cable{
+  position:absolute;
+  z-index:2;
+  top:0;
+  left:50%;
+  width:2px;
+  height:63px;
+  transform:translateX(-50%) scaleY(0);
+  transform-origin:50% 0;
+  background:linear-gradient(180deg,rgba(221,241,250,.24),rgba(227,251,255,.82));
+  box-shadow:0 0 6px rgba(188,237,255,.28);
+  opacity:.88;
+  animation:laplandDiscoCableDrop 1.05s cubic-bezier(.18,.82,.25,1) .2s forwards;
+}
 .lapland-disco-video{
   position:absolute;
   z-index:3;
   left:50%;
-  top:38px;
+  top:56px;
   width:220px;
   height:220px;
   transform:translateX(-50%);
@@ -8998,7 +9017,46 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   pointer-events:none;
   filter:drop-shadow(0 0 10px rgba(231,247,255,.32)) drop-shadow(0 0 30px rgba(183,74,255,.20));
 }
-
+.lapland-party-message{
+  position:relative;
+  z-index:4;
+  width:100%;
+  box-sizing:border-box;
+  margin-top:auto;
+  padding:10px 16px 11px;
+  display:grid;
+  justify-items:center;
+  gap:5px;
+  text-align:center;
+  border:1px solid rgba(75,154,184,.34);
+  border-top-color:rgba(101,239,157,.52);
+  border-radius:10px;
+  background:linear-gradient(180deg,rgba(5,27,39,.72),rgba(3,18,28,.82));
+  box-shadow:0 0 16px rgba(75,216,176,.045),inset 0 0 18px rgba(84,190,214,.025);
+  backdrop-filter:blur(3px);
+}
+.lapland-party-message span{
+  font-size:8px;
+  line-height:1;
+  font-weight:800;
+  letter-spacing:.25em;
+  color:#87abc0;
+}
+.lapland-party-message strong{
+  font-family:var(--display);
+  font-size:clamp(20px,5.2vw,29px);
+  line-height:1;
+  letter-spacing:.035em;
+  color:#e8f4fb;
+  text-transform:uppercase;
+  white-space:nowrap;
+  text-shadow:0 0 12px rgba(231,247,255,.12),0 0 24px rgba(103,240,160,.09);
+}
+@keyframes laplandDiscoCableDrop{
+  0%{transform:translateX(-50%) scaleY(0);opacity:.18;}
+  70%{transform:translateX(-50%) scaleY(.88);opacity:.7;}
+  100%{transform:translateX(-50%) scaleY(1);opacity:.88;}
+}
 
 @keyframes laplandPartyWashLoop{
   0%,100%{transform:translate3d(-2%,1%,0) scale(1);opacity:.68;}
@@ -9030,10 +9088,14 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 @media(max-width:390px){
   .lapland-launch-slot .lapland-test-btn{min-height:48px;}
   .lapland-party-stage{min-height:370px;}
-  .lapland-disco-rig{width:205px;height:245px;}
-  .lapland-disco-video{width:195px;height:195px;}
+  .lapland-disco-rig{top:0;width:205px;height:252px;}
+  .lapland-disco-cable{height:57px;}
+  .lapland-disco-video{top:50px;width:195px;height:195px;}
+  .lapland-party-message{padding:9px 12px 10px;}
+  .lapland-party-message strong{font-size:20px;}
 }
 @media(prefers-reduced-motion:reduce){
-  .lapland-party-wash,.lapland-party-beam,.lapland-party-reflections{animation:none!important;}
+  .lapland-party-wash,.lapland-party-beam,.lapland-party-reflections,.lapland-disco-cable{animation:none!important;}
+  .lapland-disco-cable{transform:translateX(-50%) scaleY(1);}
   .lapland-disco-video{filter:drop-shadow(0 0 10px rgba(231,247,255,.28));}
 }
