@@ -32,6 +32,9 @@
     ambientAudio.preload='auto';
     ambientAudio.loop=true;
     ambientAudio.volume=.17;
+    const missAudio=new Audio('./assets/aurora-miss.mp3');
+    missAudio.preload='auto';
+    missAudio.volume=.82;
 
     let activeIndex=0;
     let finished=false;
@@ -81,6 +84,15 @@
       try{
         lockAudio.currentTime=0;
         const play=lockAudio.play();
+        if(play&&typeof play.catch==='function')play.catch(()=>{});
+      }catch{}
+    }
+
+    function playMissAudio(){
+      if(!state.audio)return;
+      try{
+        missAudio.currentTime=0;
+        const play=missAudio.play();
         if(play&&typeof play.catch==='function')play.catch(()=>{});
       }catch{}
     }
@@ -179,7 +191,7 @@
       clearMomentClass(ringEls[key],'miss',250);
       stateEl.textContent='Navigation alignment missed.';
       haptic([12,22,12]);
-      ping(185,.07,.022);
+      playMissAudio();
       feedbackTimers.push(setTimeout(()=>{
         if(!finished&&key===activeKey())stateEl.textContent=`Align the ${labels[key].toLowerCase()} navigation ring with the North Pole axis.`;
       },520));
@@ -240,6 +252,7 @@
       clearTimeout(completionTimer);
       feedbackTimers.forEach(clearTimeout);
       try{lockAudio.pause();lockAudio.currentTime=0;}catch{}
+      try{missAudio.pause();missAudio.currentTime=0;}catch{}
       try{ambientAudio.pause();ambientAudio.currentTime=0;ambientAudio.volume=.17;}catch{}
     };
   }

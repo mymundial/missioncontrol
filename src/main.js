@@ -1063,7 +1063,7 @@
       <div class="aurora-atmosphere" aria-hidden="true"></div>
       <div class="aurora-progress-head"><span>Navigation Lock</span><strong id="auroraLockCount">0 / 3</strong></div>
       <div class="aurora-lock-track" id="auroraLockTrack" aria-label="Navigation lock progress">${Array.from({length:3},()=>'<i></i>').join('')}</div>
-      <div class="aurora-north" aria-hidden="true"><span class="aurora-north-star">✦</span><strong>North Pole</strong><i></i></div>
+      <div class="aurora-north" aria-hidden="true"><span class="aurora-north-star">✦</span><i></i></div>
       <div class="aurora-dial" id="auroraDial" role="img" aria-label="Aurora Apex navigation alignment instrument">
         <div class="aurora-field" aria-hidden="true"></div>
         <div class="aurora-target-line" aria-hidden="true"></div>
@@ -1071,7 +1071,7 @@
         ${rings.map(key=>`<div class="aurora-ring aurora-ring-${key}" data-aurora-ring="${key}" aria-hidden="true"><img src="./assets/aurora-ring-${key}.webp" alt=""><span class="aurora-lock-notch"></span></div>`).join('')}
         <div class="aurora-charge-pulse" aria-hidden="true"></div>
         <div class="aurora-final-wave" aria-hidden="true"></div>
-        <div class="aurora-compass" aria-hidden="true"><span>✦</span></div>
+        <div class="aurora-compass" aria-hidden="true"><span><img class="aurora-compass-mark" src="./assets/silverstone-s-mark.webp" alt=""></span></div>
       </div>
       <button class="btn primary wide aurora-capture-btn" id="auroraCaptureBtn">CAPTURE</button>
       <div class="visually-hidden" id="auroraState" aria-live="polite">Align the active navigation ring with the North Pole axis.</div>
@@ -3764,6 +3764,9 @@
     ambientAudio.preload='auto';
     ambientAudio.loop=true;
     ambientAudio.volume=.17;
+    const missAudio=new Audio('./assets/aurora-miss.mp3');
+    missAudio.preload='auto';
+    missAudio.volume=.82;
 
     let activeIndex=0;
     let finished=false;
@@ -3813,6 +3816,15 @@
       try{
         lockAudio.currentTime=0;
         const play=lockAudio.play();
+        if(play&&typeof play.catch==='function')play.catch(()=>{});
+      }catch{}
+    }
+
+    function playMissAudio(){
+      if(!state.audio)return;
+      try{
+        missAudio.currentTime=0;
+        const play=missAudio.play();
         if(play&&typeof play.catch==='function')play.catch(()=>{});
       }catch{}
     }
@@ -3911,7 +3923,7 @@
       clearMomentClass(ringEls[key],'miss',250);
       stateEl.textContent='Navigation alignment missed.';
       haptic([12,22,12]);
-      ping(185,.07,.022);
+      playMissAudio();
       feedbackTimers.push(setTimeout(()=>{
         if(!finished&&key===activeKey())stateEl.textContent=`Align the ${labels[key].toLowerCase()} navigation ring with the North Pole axis.`;
       },520));
@@ -3972,6 +3984,7 @@
       clearTimeout(completionTimer);
       feedbackTimers.forEach(clearTimeout);
       try{lockAudio.pause();lockAudio.currentTime=0;}catch{}
+      try{missAudio.pause();missAudio.currentTime=0;}catch{}
       try{ambientAudio.pause();ambientAudio.currentTime=0;ambientAudio.volume=.17;}catch{}
     };
   }
