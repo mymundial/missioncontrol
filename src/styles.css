@@ -8977,13 +8977,18 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .lapland-party-beam.party-beam-c{animation:laplandPartyBeamCLoop 9.8s ease-in-out -4.4s infinite;}
 .lapland-party-reflections{animation:laplandPartyReflectionsLoop 11.6s linear infinite;}
 
-/* Ball + connector are one animated assembly. The connector now belongs to
-   the rig itself, so it cannot appear before the ball or drift off-axis. */
+/* One shared centre spine for the finale. The connector and ball enter as
+   one assembly, while the line continues behind the sphere to its centre so it
+   can never visually fall short of the ball. */
+.lapland-party-stage{--lapland-finale-axis:50%;}
 .lapland-disco-rig{
+  --lapland-ball-size:220px;
+  --lapland-ball-top:56px;
+  --lapland-ball-mid:166px;
   position:absolute;
   z-index:3;
   top:0;
-  left:50%;
+  left:var(--lapland-finale-axis);
   width:230px;
   height:280px;
   transform:translateX(-50%) translateY(-245px);
@@ -8996,7 +9001,7 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   top:0;
   left:50%;
   width:2px;
-  height:64px;
+  height:var(--lapland-ball-mid);
   transform:translateX(-50%);
   background:linear-gradient(180deg,rgba(222,242,250,.30),rgba(231,252,255,.78) 72%,rgba(231,252,255,.42));
   box-shadow:0 0 6px rgba(188,237,255,.24);
@@ -9006,23 +9011,25 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   position:absolute;
   z-index:3;
   left:50%;
-  top:56px;
-  width:220px;
-  height:220px;
-  /* The WebM's visible opaque sphere sits ~3.26% left of the 720px canvas centre.
-     Shift the canvas right by the same proportion so the visible sphere, not the
-     transparent video box, lands on the shared connector/title centre axis. */
+  top:var(--lapland-ball-top);
+  width:var(--lapland-ball-size);
+  height:var(--lapland-ball-size);
+  /* The WebM's visible sphere is offset within its transparent canvas. Keep the
+     measured compensation so the visible sphere itself lands on the shared axis. */
   transform:translateX(-46.74%);
   object-fit:contain;
   pointer-events:none;
   filter:drop-shadow(0 0 10px rgba(231,247,255,.32)) drop-shadow(0 0 30px rgba(183,74,255,.20));
 }
 .lapland-party-message{
-  position:relative;
+  position:absolute;
   z-index:4;
-  width:min(100%,320px);
-  margin-top:auto;
-  padding:0 6px 2px;
+  left:var(--lapland-finale-axis);
+  bottom:22px;
+  width:min(calc(100% - 32px),320px);
+  margin:0;
+  padding:0;
+  transform:translateX(-50%);
   display:grid;
   justify-items:center;
   gap:7px;
@@ -9034,10 +9041,14 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   backdrop-filter:none;
 }
 .lapland-party-message span{
+  display:block;
+  width:100%;
   font-size:9px;
   line-height:1;
   font-weight:800;
   letter-spacing:.25em;
+  text-indent:.25em;
+  text-align:center;
   color:#69d7f2;
   text-shadow:0 0 8px rgba(79,211,245,.22);
 }
@@ -9045,13 +9056,18 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   display:block;
   width:72%;
   height:1px;
+  justify-self:center;
   background:linear-gradient(90deg,transparent,rgba(105,202,228,.42) 22%,rgba(157,232,226,.58) 50%,rgba(105,202,228,.42) 78%,transparent);
 }
 .lapland-party-message strong{
+  display:block;
+  width:100%;
   font-family:var(--display);
   font-size:clamp(18px,4.8vw,25px);
   line-height:1;
   letter-spacing:.035em;
+  text-indent:.035em;
+  text-align:center;
   color:#e7f4fa;
   text-transform:uppercase;
   white-space:nowrap;
@@ -9091,10 +9107,8 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 @media(max-width:390px){
   .lapland-launch-slot .lapland-test-btn{min-height:48px;}
   .lapland-party-stage{min-height:370px;}
-  .lapland-disco-rig{top:0;width:205px;height:252px;}
-  .lapland-disco-rig::before{height:57px;}
-  .lapland-disco-video{top:50px;width:195px;height:195px;}
-  .lapland-party-message{width:min(100%,290px);}
+  .lapland-disco-rig{--lapland-ball-size:195px;--lapland-ball-top:50px;--lapland-ball-mid:147.5px;top:0;width:205px;height:252px;}
+  .lapland-party-message{width:min(calc(100% - 32px),290px);}
   .lapland-party-message strong{font-size:18px;}
 }
 @media(prefers-reduced-motion:reduce){
