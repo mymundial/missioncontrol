@@ -8535,3 +8535,51 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   .lando-panel .lando-result-value b{font-size:17px;}
   .lando-panel .lando-result-value small{font-size:6.5px;}
 }
+
+/* === Aurora Apex: explicit capture control + navigation lock progress === */
+.aurora-progress-head{
+  position:relative;
+  z-index:6;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin:0 2px 8px;
+  color:#7faabd;
+  font-size:8px;
+  line-height:1;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  font-weight:800;
+}
+.aurora-progress-head strong{
+  font-family:var(--display);
+  font-size:14px;
+  line-height:1;
+  letter-spacing:.06em;
+  color:#dff8ff;
+  white-space:nowrap;
+}
+.aurora-dial{
+  cursor:default;
+}
+.aurora-capture-btn{
+  position:relative;
+  z-index:6;
+  margin-top:12px;
+}
+.aurora-capture-btn:disabled{
+  opacity:.48;
+  cursor:default;
+}
+.aurora-capture-btn.capture-ready:not(:disabled){
+  opacity:1;
+}
+.aurora-capture-btn.locked,
+.aurora-capture-btn.locked:disabled{
+  opacity:1;
+  color:#061a11;
+  border-color:#65ef9d;
+  background:#65ef9d;
+  box-shadow:0 0 18px rgba(101,239,157,.22);
+}

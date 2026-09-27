@@ -483,21 +483,22 @@
     </div>`;
   }
   function auroraBody(){
-    const rings=[['outer','Outer Ring'],['middle','Middle Ring'],['inner','Inner Ring']];
+    const rings=['outer','middle','inner'];
     return `<div class="mission-instrument panel aurora-panel">
       <div class="aurora-atmosphere" aria-hidden="true"></div>
+      <div class="aurora-progress-head"><span>Navigation Lock</span><strong id="auroraLockCount">0 / 3</strong></div>
       <div class="aurora-north" aria-hidden="true"><span class="aurora-north-star">✦</span><strong>North Pole</strong><i></i></div>
-      <div class="aurora-dial" id="auroraDial" tabindex="0" role="application" aria-label="Aurora Apex navigation capture. Tap to capture the outer and middle rings on the North Pole axis. Hold to brake the inner ring into alignment.">
+      <div class="aurora-dial" id="auroraDial" role="img" aria-label="Aurora Apex navigation alignment instrument">
         <div class="aurora-field" aria-hidden="true"></div>
         <div class="aurora-target-line" aria-hidden="true"></div>
         <div class="aurora-capture-gate" aria-hidden="true"><i></i></div>
-        ${rings.map(([key])=>`<div class="aurora-ring aurora-ring-${key}" data-aurora-ring="${key}" aria-hidden="true"><img src="./assets/aurora-ring-${key}.webp" alt=""><span class="aurora-lock-notch"></span></div>`).join('')}
+        ${rings.map(key=>`<div class="aurora-ring aurora-ring-${key}" data-aurora-ring="${key}" aria-hidden="true"><img src="./assets/aurora-ring-${key}.webp" alt=""><span class="aurora-lock-notch"></span></div>`).join('')}
         <div class="aurora-charge-pulse" aria-hidden="true"></div>
         <div class="aurora-final-wave" aria-hidden="true"></div>
         <div class="aurora-compass" aria-hidden="true"><span>✦</span></div>
       </div>
-      <div class="aurora-ring-statuses" aria-label="Navigation ring status">${rings.map(([key,label],i)=>`<div class="aurora-ring-status ${i===0?'active':'tracking'}" data-aurora-status="${key}"><span class="aurora-mini-ring"></span><div><strong>${label}</strong><small>${i===0?'Tap to capture':'Tracking'}</small></div></div>`).join('')}</div>
-      <div class="visually-hidden" id="auroraState" aria-live="polite">Outer ring active. Tap when its marker reaches the North Pole axis.</div>
+      <button class="btn primary wide aurora-capture-btn" id="auroraCaptureBtn" disabled>Align Signal</button>
+      <div class="visually-hidden" id="auroraState" aria-live="polite">Align the active navigation ring with the North Pole axis.</div>
     </div>`;
   }
   function laplandBody(){

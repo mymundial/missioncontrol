@@ -1058,21 +1058,22 @@
     </div>`;
   }
   function auroraBody(){
-    const rings=[['outer','Outer Ring'],['middle','Middle Ring'],['inner','Inner Ring']];
+    const rings=['outer','middle','inner'];
     return `<div class="mission-instrument panel aurora-panel">
       <div class="aurora-atmosphere" aria-hidden="true"></div>
+      <div class="aurora-progress-head"><span>Navigation Lock</span><strong id="auroraLockCount">0 / 3</strong></div>
       <div class="aurora-north" aria-hidden="true"><span class="aurora-north-star">✦</span><strong>North Pole</strong><i></i></div>
-      <div class="aurora-dial" id="auroraDial" tabindex="0" role="application" aria-label="Aurora Apex navigation capture. Tap to capture the outer and middle rings on the North Pole axis. Hold to brake the inner ring into alignment.">
+      <div class="aurora-dial" id="auroraDial" role="img" aria-label="Aurora Apex navigation alignment instrument">
         <div class="aurora-field" aria-hidden="true"></div>
         <div class="aurora-target-line" aria-hidden="true"></div>
         <div class="aurora-capture-gate" aria-hidden="true"><i></i></div>
-        ${rings.map(([key])=>`<div class="aurora-ring aurora-ring-${key}" data-aurora-ring="${key}" aria-hidden="true"><img src="./assets/aurora-ring-${key}.webp" alt=""><span class="aurora-lock-notch"></span></div>`).join('')}
+        ${rings.map(key=>`<div class="aurora-ring aurora-ring-${key}" data-aurora-ring="${key}" aria-hidden="true"><img src="./assets/aurora-ring-${key}.webp" alt=""><span class="aurora-lock-notch"></span></div>`).join('')}
         <div class="aurora-charge-pulse" aria-hidden="true"></div>
         <div class="aurora-final-wave" aria-hidden="true"></div>
         <div class="aurora-compass" aria-hidden="true"><span>✦</span></div>
       </div>
-      <div class="aurora-ring-statuses" aria-label="Navigation ring status">${rings.map(([key,label],i)=>`<div class="aurora-ring-status ${i===0?'active':'tracking'}" data-aurora-status="${key}"><span class="aurora-mini-ring"></span><div><strong>${label}</strong><small>${i===0?'Tap to capture':'Tracking'}</small></div></div>`).join('')}</div>
-      <div class="visually-hidden" id="auroraState" aria-live="polite">Outer ring active. Tap when its marker reaches the North Pole axis.</div>
+      <button class="btn primary wide aurora-capture-btn" id="auroraCaptureBtn" disabled>Align Signal</button>
+      <div class="visually-hidden" id="auroraState" aria-live="polite">Align the active navigation ring with the North Pole axis.</div>
     </div>`;
   }
   function laplandBody(){
@@ -3730,28 +3731,27 @@
   }
   function bindAurora(){
     const dial=document.getElementById('auroraDial');
+    const captureBtn=document.getElementById('auroraCaptureBtn');
+    const lockCount=document.getElementById('auroraLockCount');
     const stateEl=document.getElementById('auroraState');
     const north=document.querySelector('.aurora-north');
     const pulseEl=document.querySelector('.aurora-charge-pulse');
     const finalWave=document.querySelector('.aurora-final-wave');
-    if(!dial||!stateEl)return;
+    if(!dial||!captureBtn||!lockCount||!stateEl)return;
 
     const ringEls={
       outer:document.querySelector('[data-aurora-ring="outer"]'),
       middle:document.querySelector('[data-aurora-ring="middle"]'),
       inner:document.querySelector('[data-aurora-ring="inner"]')
     };
-    const statusEls={
-      outer:document.querySelector('[data-aurora-status="outer"]'),
-      middle:document.querySelector('[data-aurora-status="middle"]'),
-      inner:document.querySelector('[data-aurora-status="inner"]')
-    };
     const order=['outer','middle','inner'];
     const labels={outer:'Outer',middle:'Middle',inner:'Inner'};
     const angles={outer:132,middle:-84,inner:164};
     const baseSpeeds={outer:62,middle:-84,inner:126};
-    const captureWindows={outer:24,middle:18,inner:11};
-    const readyWindows={outer:38,middle:30,inner:24};
+    // The visible capture button becomes available through this near-axis window.
+    // This keeps the interaction forgiving enough for a public mobile experience
+    // while preserving the different ring speeds.
+    const captureWindows={outer:38,middle:30,inner:24};
     const pulseSizes={outer:'91%',middle:'60%',inner:'34%'};
     const locked={outer:false,middle:false,inner:false};
     const desyncVelocity={outer:0,middle:0,inner:0};
@@ -3759,9 +3759,6 @@
     const speedScale=reduced ? .72 : 1;
 
     let activeIndex=0;
-    let pointerId=null;
-    let braking=false;
-    let brakeFactor=1;
     let finished=false;
     let raf=0;
     let lastTs=0;
@@ -3771,35 +3768,26 @@
     const normalise=a=>((a%360)+360)%360;
     const signed=a=>{const n=normalise(a);return n>180?n-360:n;};
     const activeKey=()=>order[activeIndex]||null;
+    const lockedCount=()=>order.filter(key=>locked[key]).length;
 
     function renderRing(key){
       ringEls[key].style.setProperty('--aurora-rotation',`${angles[key]}deg`);
     }
 
-    function setStatus(key,mode){
-      const el=statusEls[key];
-      if(!el)return;
-      el.classList.toggle('active',mode==='active');
-      el.classList.toggle('locked',mode==='locked');
-      el.classList.toggle('tracking',mode==='tracking');
-      const small=el.querySelector('small');
-      if(!small)return;
-      if(mode==='locked') small.innerHTML='Locked <span class="checkmark-icon checkmark-icon--inline checkmark-icon--tiny" aria-hidden="true"></span>';
-      else if(mode==='active') small.textContent=key==='inner'?'Hold to brake':'Tap to capture';
-      else small.textContent='Tracking';
+    function updateProgress(){
+      lockCount.textContent=`${lockedCount()} / 3`;
     }
 
     function updateStage(){
-      const active=activeKey();
       order.forEach((key,i)=>{
-        const mode=locked[key]?'locked':i===activeIndex?'active':'tracking';
-        setStatus(key,mode);
-        ringEls[key].classList.toggle('active',mode==='active');
-        ringEls[key].classList.toggle('tracking',mode==='tracking');
+        const isLocked=locked[key];
+        const isActive=!isLocked&&i===activeIndex;
+        ringEls[key].classList.toggle('active',isActive);
+        ringEls[key].classList.toggle('tracking',!isLocked&&!isActive);
       });
-      if(active){
-        stateEl.textContent=active==='inner'?'Inner ring active. Press and hold to brake it into the North Pole axis.':`${labels[active]} ring active. Tap when its marker reaches the North Pole axis.`;
-      }
+      const active=activeKey();
+      if(active) stateEl.textContent=`Align the ${labels[active].toLowerCase()} navigation ring with the North Pole axis.`;
+      updateProgress();
     }
 
     function fireInwardPulse(key){
@@ -3818,12 +3806,16 @@
       feedbackTimers.push(setTimeout(()=>el.classList.remove(className),delay));
     }
 
+    function setCaptureButton(ready){
+      if(finished)return;
+      captureBtn.disabled=!ready;
+      captureBtn.textContent=ready?'CAPTURE':'ALIGN SIGNAL';
+      captureBtn.classList.toggle('capture-ready',ready);
+    }
+
     function finishSequence(){
       finished=true;
-      braking=false;
-      brakeFactor=1;
-      dial.classList.remove('capture-ready','braking','miss');
-      releasePointer();
+      dial.classList.remove('capture-ready','miss');
       dial.classList.add('complete');
       if(north) north.classList.add('complete');
       order.forEach(key=>ringEls[key].classList.add('final-surge'));
@@ -3832,6 +3824,11 @@
         void finalWave.offsetWidth;
         finalWave.classList.add('fire');
       }
+      updateProgress();
+      captureBtn.disabled=true;
+      captureBtn.textContent='LOCKED';
+      captureBtn.classList.remove('capture-ready');
+      captureBtn.classList.add('locked');
       stateEl.textContent='Navigation route locked to the North Pole.';
       ping(1090,.13,.04);
       feedbackTimers.push(setTimeout(()=>ping(1370,.18,.05),260));
@@ -3844,56 +3841,28 @@
       angles[key]=0;
       renderRing(key);
       locked[key]=true;
-      ringEls[key].classList.remove('near-lock','braking','active','miss');
+      ringEls[key].classList.remove('near-lock','active','miss');
       ringEls[key].classList.add('locked');
       clearMomentClass(ringEls[key],'lock-burst',620);
-      dial.classList.remove('capture-ready','braking','miss');
+      dial.classList.remove('capture-ready','miss');
       fireInwardPulse(key);
 
-      const charge=order.filter(k=>locked[k]).length;
+      const charge=lockedCount();
       dial.dataset.charge=String(charge);
-      setStatus(key,'locked');
+      updateProgress();
       ping(700+(charge-1)*145,.09,.03+charge*.004);
       haptic(charge===3?[24,18,50]:[18,15,34]);
 
       activeIndex++;
       if(activeIndex>=order.length){
+        setCaptureButton(false);
         feedbackTimers.push(setTimeout(finishSequence,360));
       }else{
         updateStage();
         const next=activeKey();
         clearMomentClass(ringEls[next],'wake',520);
+        updateReadiness();
       }
-    }
-
-    function missCapture(key){
-      const kick={outer:210,middle:290,inner:380}[key]||240;
-      const direction=Math.sign(baseSpeeds[key]||1);
-      desyncVelocity[key]+=direction*kick;
-      ringEls[key].classList.remove('desync');
-      dial.classList.remove('desync');
-      void ringEls[key].offsetWidth;
-      ringEls[key].classList.add('desync');
-      dial.classList.add('desync');
-      clearMomentClass(ringEls[key],'miss',260);
-      clearMomentClass(dial,'miss',260);
-      feedbackTimers.push(setTimeout(()=>ringEls[key].classList.remove('desync'),key==='inner'?300:240));
-      feedbackTimers.push(setTimeout(()=>dial.classList.remove('desync'),220));
-      stateEl.textContent=`${labels[key]} ring passed the capture window. Keep watching the North Pole axis.`;
-      ping(key==='inner'?245:285,.045,.014);
-      haptic(key==='inner'?[10,18,8]:8);
-    }
-
-    function tryCapture(){
-      const key=activeKey();
-      if(!key||finished)return false;
-      const offset=Math.abs(signed(angles[key]));
-      if(offset<=captureWindows[key]){
-        lockRing(key);
-        return true;
-      }
-      missCapture(key);
-      return false;
     }
 
     function updateReadiness(){
@@ -3902,11 +3871,12 @@
       order.forEach(k=>ringEls[k].classList.remove('near-lock'));
       if(key&&!finished){
         const offset=Math.abs(signed(angles[key]));
-        ready=offset<=readyWindows[key];
+        ready=offset<=captureWindows[key];
         ringEls[key].classList.toggle('near-lock',ready);
       }
       dial.classList.toggle('capture-ready',ready);
       if(north) north.classList.toggle('capture-ready',ready);
+      setCaptureButton(ready);
     }
 
     function frame(ts){
@@ -3915,15 +3885,10 @@
       lastTs=ts;
 
       if(!finished){
-        const active=activeKey();
-        const targetBrake=active==='inner'&&braking ? .17 : 1;
-        brakeFactor+=(targetBrake-brakeFactor)*Math.min(1,dt*7.5);
-
         order.forEach(key=>{
           if(locked[key])return;
           let speed=baseSpeeds[key]*speedScale;
           if(key==='inner') speed*=1+.12*Math.sin(ts/620);
-          if(key==='inner'&&active==='inner') speed*=brakeFactor;
           speed+=desyncVelocity[key];
           angles[key]+=speed*dt;
           desyncVelocity[key]*=Math.exp(-dt*11.5);
@@ -3931,81 +3896,14 @@
           renderRing(key);
         });
         updateReadiness();
-
-        if(active==='inner'&&braking&&Math.abs(signed(angles.inner))<=captureWindows.inner){
-          lockRing('inner');
-        }
       }
       if(!finished)raf=requestAnimationFrame(frame);
     }
 
-    function releasePointer(){
-      if(pointerId===null)return;
-      try{dial.releasePointerCapture(pointerId);}catch{}
-      pointerId=null;
-    }
-
-    dial.addEventListener('pointerdown',e=>{
-      if(finished||pointerId!==null)return;
+    captureBtn.addEventListener('click',()=>{
       const key=activeKey();
-      if(!key)return;
-      e.preventDefault();
-      pointerId=e.pointerId;
-      try{dial.setPointerCapture(pointerId);}catch{}
-      if(key==='inner'){
-        braking=true;
-        dial.classList.add('braking');
-        ringEls.inner.classList.add('braking');
-        statusEls.inner.querySelector('small').textContent='Braking · hold';
-        stateEl.textContent='Inner ring braking. Hold until the marker reaches the North Pole axis.';
-      }else{
-        dial.classList.add('pressed');
-      }
-    });
-
-    dial.addEventListener('pointerup',e=>{
-      if(e.pointerId!==pointerId)return;
-      const key=activeKey();
-      if(key==='inner'){
-        braking=false;
-        dial.classList.remove('braking');
-        ringEls.inner.classList.remove('braking');
-        if(!finished&&!tryCapture())setStatus('inner','active');
-      }else if(key){
-        tryCapture();
-      }
-      dial.classList.remove('pressed');
-      releasePointer();
-    });
-
-    dial.addEventListener('pointercancel',e=>{
-      if(e.pointerId!==pointerId)return;
-      braking=false;
-      dial.classList.remove('braking','pressed');
-      if(ringEls.inner)ringEls.inner.classList.remove('braking');
-      if(activeKey())setStatus(activeKey(),'active');
-      releasePointer();
-    });
-
-    dial.addEventListener('keydown',e=>{
-      if(finished||e.repeat||!['Enter',' '].includes(e.key))return;
-      e.preventDefault();
-      const key=activeKey();
-      if(key==='inner'){
-        braking=true;
-        dial.classList.add('braking');
-        ringEls.inner.classList.add('braking');
-        setStatus('inner','active');
-      }else tryCapture();
-    });
-
-    dial.addEventListener('keyup',e=>{
-      if(finished||!['Enter',' '].includes(e.key)||activeKey()!=='inner')return;
-      e.preventDefault();
-      braking=false;
-      dial.classList.remove('braking');
-      ringEls.inner.classList.remove('braking');
-      if(!tryCapture())setStatus('inner','active');
+      if(!key||finished||captureBtn.disabled)return;
+      lockRing(key);
     });
 
     order.forEach(renderRing);
@@ -4017,8 +3915,6 @@
       cancelAnimationFrame(raf);
       clearTimeout(completionTimer);
       feedbackTimers.forEach(clearTimeout);
-      braking=false;
-      releasePointer();
     };
   }
   let laplandMusic=null;
