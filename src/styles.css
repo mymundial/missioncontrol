@@ -8800,3 +8800,125 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   from{opacity:.9;transform:scale(1);filter:drop-shadow(0 0 7px rgba(183,94,255,.22));}
   to{opacity:1;transform:scale(1.025);filter:drop-shadow(0 0 15px rgba(205,108,255,.55));}
 }
+
+/* === Lapland Launch refinement: launch slot, standalone transmission, cleaner Vegas mark === */
+.lapland-head .lapland-sponsor{
+  opacity:1;
+  filter:none;
+  animation:none;
+}
+.lapland-head .lapland-sponsor img{
+  opacity:.98;
+  filter:drop-shadow(0 0 4px rgba(187,82,255,.26));
+}
+.lapland-head.is-launch-clear .lapland-sponsor{
+  opacity:1;
+  filter:none;
+  animation:none;
+}
+.lapland-head.is-launch-clear .lapland-sponsor img{
+  filter:drop-shadow(0 0 5px rgba(205,111,255,.32));
+}
+
+.lapland-launch-slot{
+  position:relative;
+  z-index:3;
+  width:100%;
+  margin:5px 0 8px;
+}
+.lapland-launch-slot .lapland-master-status{
+  margin:0;
+}
+.lapland-launch-slot .lapland-test-btn{
+  min-height:70px;
+  margin:0;
+  font-family:var(--display);
+  letter-spacing:.045em;
+}
+.lapland-launch-slot .lapland-master-status:not([hidden]) + .lapland-test-btn:not([hidden]){
+  margin-top:8px;
+  min-height:48px;
+}
+
+/* Transmission is a new full card state, not a card nested inside the verification panel. */
+.lapland-panel.is-transmission{
+  padding:0;
+  overflow:visible;
+  border-color:transparent;
+  background:transparent;
+  box-shadow:none;
+}
+.lapland-panel.is-transmission::before,
+.lapland-panel.is-transmission::after{
+  display:none;
+}
+.lapland-transmission-stage{
+  min-height:0;
+  width:100%;
+  display:block;
+}
+.lapland-incoming{
+  width:100%;
+  margin:0;
+  padding:27px 18px 25px;
+  border:1px solid rgba(87,239,145,.42);
+  border-radius:var(--radius);
+  background:
+    radial-gradient(circle at 50% 32%,rgba(56,210,247,.10),transparent 34%),
+    linear-gradient(180deg,rgba(8,46,65,.97),rgba(5,28,42,.98));
+  box-shadow:var(--shadow),0 0 22px rgba(69,213,227,.055);
+  overflow:hidden;
+}
+
+/* Unbranded mirrored disco-ball treatment until a dedicated branded motion asset is supplied. */
+.lapland-disco-ball{
+  width:156px;
+  height:156px;
+  top:55px;
+  border:1px solid rgba(237,250,255,.72);
+  background:
+    radial-gradient(circle at 30% 22%,rgba(255,255,255,.98) 0 2%,rgba(235,249,255,.72) 3%,transparent 14%),
+    radial-gradient(circle at 64% 69%,rgba(207,100,255,.22),transparent 32%),
+    radial-gradient(circle at 35% 72%,rgba(76,222,255,.18),transparent 35%),
+    radial-gradient(circle at 50% 48%,#d9edf4 0%,#a9bdc9 24%,#738897 50%,#405260 71%,#172631 100%);
+  box-shadow:
+    0 0 20px rgba(213,239,255,.34),
+    0 0 42px rgba(179,91,255,.12),
+    inset -22px -22px 30px rgba(5,12,21,.42),
+    inset 16px 13px 22px rgba(255,255,255,.20);
+}
+.lapland-disco-grid{
+  inset:-5%;
+  opacity:.56;
+  background-image:
+    repeating-linear-gradient(0deg,rgba(15,37,49,.42) 0 1px,transparent 1px 13px),
+    repeating-linear-gradient(90deg,rgba(15,37,49,.42) 0 1px,transparent 1px 13px);
+  background-size:auto;
+  mix-blend-mode:multiply;
+  animation:laplandDiscoTurn 8.5s linear infinite;
+}
+.lapland-disco-ball::after{
+  background:linear-gradient(108deg,transparent 17%,rgba(255,255,255,.44) 34%,rgba(223,249,255,.10) 42%,transparent 51%,rgba(197,101,255,.12) 68%,transparent 80%);
+  animation:laplandDiscoShine 2.6s linear infinite;
+}
+.lapland-disco-glint{
+  position:absolute;
+  z-index:5;
+  left:28%;
+  top:23%;
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  background:#fff;
+  box-shadow:0 0 7px #fff,0 0 17px rgba(182,235,255,.82),0 0 28px rgba(206,112,255,.42);
+  animation:laplandDiscoGlint 2.2s ease-in-out infinite alternate;
+}
+@keyframes laplandDiscoGlint{from{opacity:.5;transform:scale(.72);}to{opacity:1;transform:scale(1.12);}}
+
+@media(max-width:390px){
+  .lapland-launch-slot .lapland-test-btn{min-height:64px;}
+  .lapland-disco-ball{width:140px;height:140px;}
+}
+@media(prefers-reduced-motion:reduce){
+  .lapland-disco-glint{animation:none!important;}
+}

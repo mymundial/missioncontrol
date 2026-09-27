@@ -176,6 +176,8 @@
     btn.onclick=()=>{
       if(btn.dataset.review==='true'){ stopLaplandAudio();set({missionOpen:null,nav:'missions'});return; }
       btn.disabled=true;
+      btn.hidden=true;
+      masterStatus.hidden=false;
       clearLaplandTimers();
       panel.querySelector('.final-check-note')?.remove();
       panel.classList.remove('is-complete','is-celebrating','is-party','is-transmission','has-attention');
@@ -213,14 +215,13 @@
               panel.classList.remove('is-verifying');
 
               if(clear){
-                btn.hidden=true;
                 setMasterOnline();
                 // Let the launch-status reward land before the narrative hand-off.
                 laplandLater(showTransmission,1550);
               } else {
                 if(laplandMusic&&!laplandMusic.paused) fadeLaplandMusic(.34,350);
                 panel.classList.add('has-attention');
-                btn.disabled=false; btn.dataset.review='true'; btn.textContent='View Missions';
+                btn.hidden=false; btn.disabled=false; btn.dataset.review='true'; btn.textContent='View Missions';
                 const note=document.createElement('div'); note.className='final-check-note';
                 note.innerHTML=`<div class="kicker">Systems Require Attention</div><p>${missing.length} ${missing.length===1?'system':'systems'} must be restored before launch systems can come online.</p>`;
                 verificationStage.appendChild(note); haptic([20,35,20]);

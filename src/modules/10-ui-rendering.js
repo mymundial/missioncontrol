@@ -530,11 +530,13 @@
     return `<div class="mission-instrument panel lapland-panel" id="laplandPanel" style="--lapland-charge:0">
       <section class="lapland-stage lapland-verification-stage" id="laplandVerificationStage">
         ${systemStatusBank(systems,'lapland-system-bank','verify')}
-        <div class="lapland-master-status" id="laplandMasterStatus"><span>Launch Systems</span><strong id="laplandMasterValue">Offline</strong></div>
-        <button class="btn primary wide lapland-test-btn" id="initiateTest">Initialise Launch</button>
+        <div class="lapland-launch-slot">
+          <div class="lapland-master-status" id="laplandMasterStatus" hidden><span>Launch Systems</span><strong id="laplandMasterValue">Offline</strong></div>
+          <button class="btn primary wide lapland-test-btn" id="initiateTest">Initialise Launch</button>
+        </div>
       </section>
       <section class="lapland-stage lapland-transmission-stage" id="laplandTransmissionStage" hidden>
-        <div class="panel incoming-transmission lapland-incoming">
+        <div class="incoming-transmission lapland-incoming">
           <div class="transmission-icon"><span></span><i></i><i></i><i></i></div>
           <div class="kicker">Incoming Transmission</div>
           <h2>ELF ENGINEERING</h2>
@@ -546,7 +548,7 @@
         <div class="lapland-party-lightshow" aria-hidden="true">
           <i class="lapland-party-beam party-beam-a"></i><i class="lapland-party-beam party-beam-b"></i><i class="lapland-party-beam party-beam-c"></i><i class="lapland-party-reflections"></i>
         </div>
-        <div class="lapland-disco-rig" aria-hidden="true"><i class="lapland-disco-cable"></i><div class="lapland-disco-ball"><span class="lapland-disco-grid"></span><img src="./assets/las-vegas-logo-purple.webp" alt=""></div></div>
+        <div class="lapland-disco-rig" aria-hidden="true"><i class="lapland-disco-cable"></i><div class="lapland-disco-ball"><span class="lapland-disco-grid"></span><span class="lapland-disco-glint"></span></div></div>
         <div class="lapland-party-status"><span>Launch Systems</span><strong>Online</strong></div>
       </section>
     </div>`;
