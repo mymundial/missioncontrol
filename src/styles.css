@@ -9009,9 +9009,10 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   top:56px;
   width:220px;
   height:220px;
-  /* The rendered sphere is a fraction right-weighted inside the WebM canvas.
-     A tiny optical correction keeps the visible ball on the shared centre axis. */
-  transform:translateX(calc(-50% - 1.5px));
+  /* The WebM's visible opaque sphere sits ~3.26% left of the 720px canvas centre.
+     Shift the canvas right by the same proportion so the visible sphere, not the
+     transparent video box, lands on the shared connector/title centre axis. */
+  transform:translateX(-46.74%);
   object-fit:contain;
   pointer-events:none;
   filter:drop-shadow(0 0 10px rgba(231,247,255,.32)) drop-shadow(0 0 30px rgba(183,74,255,.20));
@@ -9092,7 +9093,7 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   .lapland-party-stage{min-height:370px;}
   .lapland-disco-rig{top:0;width:205px;height:252px;}
   .lapland-disco-rig::before{height:57px;}
-  .lapland-disco-video{top:50px;width:195px;height:195px;transform:translateX(calc(-50% - 1.25px));}
+  .lapland-disco-video{top:50px;width:195px;height:195px;}
   .lapland-party-message{width:min(100%,290px);}
   .lapland-party-message strong{font-size:18px;}
 }
