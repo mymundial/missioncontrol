@@ -8495,10 +8495,17 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 
 
 /* === Lando recorded result typography === */
+.lando-panel .lando-result{
+  justify-items:center;
+  align-items:center;
+}
 .lando-panel .lando-result-value{
-  position:relative;
-  display:inline-block;
+  display:inline-flex;
+  align-items:baseline;
+  justify-content:center;
+  gap:3px;
   width:auto;
+  margin:0 auto;
   line-height:1;
   text-align:center;
 }
@@ -8513,16 +8520,15 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   font-variant-numeric:tabular-nums;
 }
 .lando-panel .lando-result-value small{
-  position:absolute;
-  left:calc(100% + 3px);
-  top:50%;
-  transform:translateY(-44%);
+  position:static;
+  transform:none;
   margin:0;
   font-family:var(--text);
   font-size:7px;
   font-weight:400;
   line-height:1;
-  letter-spacing:.08em;
+  letter-spacing:.04em;
+  text-transform:none;
   color:#72dfff!important;
 }
 @media(max-width:390px){

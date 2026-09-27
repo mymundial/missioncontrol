@@ -4,8 +4,8 @@
     const roundEl=document.getElementById('landoRound');
     const lamps=[...document.querySelectorAll('.lando-lamp')];
     const results=[...document.querySelectorAll('[data-lando-result]')];
-    const redLightAudio=Array.from({length:5},()=>new Audio('./assets/lando-red-light-beep.mp3'));
-    const goAudio=new Audio('./assets/lando-go-beep.mp3');
+    const redLightAudio=Array.from({length:5},()=>new Audio('./assets/lando-red-light-beep.wav'));
+    const goAudio=new Audio('./assets/lando-go-beep.wav');
     redLightAudio.forEach(audio=>{audio.preload='auto';audio.volume=.72;});
     goAudio.preload='auto';goAudio.volume=.82;
     let countdownAudioPrimed=false;
@@ -45,7 +45,7 @@
       el.className=`lando-result ${status}`;
       if(value!==null){
         const ms=Math.max(0,Math.round(Number(value)||0));
-        el.innerHTML=`<span class="lando-result-value"><b>${ms}</b><small>MS</small></span>`;
+        el.innerHTML=`<span class="lando-result-value"><b>${ms}</b><small>ms</small></span>`;
       }
     }
     function resetLights(){lamps.forEach(l=>l.className='lando-lamp');}
@@ -82,7 +82,7 @@
       haptic([20,20,45]); ping(760,.075,.03);
       if(round===4){
         btn.textContent='COMPLETE'; btn.disabled=true;
-        timers.push(setTimeout(()=>showCompletion('Flight Control Calibrated','Santa-1’s flight response has been calibrated for high-speed operation.'),850));
+        timers.push(setTimeout(()=>showCompletion('Flight Control Calibrated','Santa-1’s flight response has been calibrated for high-speed operation.'),1000));
       }else{
         round++;
         roundEl.textContent=`${round} / 4`;
