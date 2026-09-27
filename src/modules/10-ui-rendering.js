@@ -547,10 +547,8 @@
         <div class="lapland-party-lightshow" aria-hidden="true">
           <i class="lapland-party-wash"></i>
           <i class="lapland-party-beam party-beam-a"></i><i class="lapland-party-beam party-beam-b"></i><i class="lapland-party-beam party-beam-c"></i><i class="lapland-party-reflections"></i>
-          <div class="lapland-flame-line"><i class="lapland-flame-unit flame-1"></i><i class="lapland-flame-unit flame-2"></i><i class="lapland-flame-unit flame-3"></i><i class="lapland-flame-unit flame-4"></i></div>
         </div>
         <div class="lapland-disco-rig" aria-hidden="true"><i class="lapland-disco-cable"></i><video class="lapland-disco-video" id="laplandDiscoVideo" muted loop playsinline preload="auto"><source src="./assets/disco-ball-alpha-loop-720.webm" type="video/webm"></video></div>
-        <div class="lapland-party-status"><span>Launch Systems</span><strong>Online</strong></div>
       </section>
     </div>`;
   }
