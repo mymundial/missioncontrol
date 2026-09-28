@@ -556,7 +556,7 @@
           <i class="lapland-party-wash"></i>
           <i class="lapland-party-beam party-beam-a"></i><i class="lapland-party-beam party-beam-b"></i><i class="lapland-party-beam party-beam-c"></i><i class="lapland-party-reflections"></i>
         </div>
-        <div class="lapland-disco-rig" aria-hidden="true"><div class="lapland-disco-video" id="laplandDiscoVisual"></div></div>
+        <div class="lapland-disco-rig" aria-hidden="true"><canvas class="lapland-disco-video" id="laplandDiscoVisual" width="180" height="180"></canvas></div>
         <div class="lapland-party-message">
           <span>SANTA-1</span>
           <i class="lapland-clearance-divider" aria-hidden="true"></i>

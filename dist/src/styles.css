@@ -10532,3 +10532,60 @@ button,[role="button"]{touch-action:manipulation;}
   100%{background-position:0% 0%}
 }
 @media(prefers-reduced-motion:reduce){.lapland-disco-video{animation:none!important;background-position:0% 0%!important;}}
+
+
+/* === Mobile correction: Lapland transmission, Spirit bolt alignment, Jingle puck === */
+/* Spirit Depot: keep the bolt fully inside the existing square and optically centre it. */
+.spirit-power-bolt svg{
+  transform:translateY(-1.5px)!important;
+  transform-origin:50% 50%!important;
+}
+
+/* Jingle Beams: one sensible puck size for PLAY, countdown and live gameplay. */
+.jingle-puck,
+.jingle-puck.is-ready,
+.jingle-puck.is-countdown{
+  width:46px!important;
+  height:46px!important;
+  min-width:46px!important;
+  min-height:46px!important;
+}
+.jingle-play-icon{
+  display:none;
+  position:absolute!important;
+  left:50%!important;
+  top:50%!important;
+  width:72px!important;
+  height:auto!important;
+  max-width:none!important;
+  inset:auto!important;
+  transform:translate(-50%,-50%)!important;
+  object-fit:contain!important;
+  opacity:1!important;
+  filter:none!important;
+  pointer-events:none!important;
+}
+.jingle-puck.is-ready .jingle-play-icon{display:block!important;}
+.jingle-puck.is-countdown .jingle-play-icon{display:none!important;}
+.jingle-puck.is-countdown>i{
+  inset:4px!important;
+  border-width:2px!important;
+}
+.jingle-puck-countdown{
+  font-size:18px!important;
+  font-weight:800!important;
+  line-height:1!important;
+}
+
+/* Lapland Launch: the disco is painted by JS from the sprite sheet. */
+.lapland-disco-video{
+  display:block!important;
+  opacity:1!important;
+  visibility:visible!important;
+  background:none!important;
+  animation:none!important;
+  overflow:visible!important;
+  border-radius:0!important;
+  transform:translateX(-50%)!important;
+  filter:drop-shadow(0 0 10px rgba(231,247,255,.32)) drop-shadow(0 0 30px rgba(183,74,255,.20))!important;
+}

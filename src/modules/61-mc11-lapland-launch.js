@@ -36,11 +36,15 @@
   function primeLaplandVoiceSilently(){
     if(!state.audio)return;
     const voice=getLaplandVoice();
+    // Loading is enough. Do not call play() to prime this clip: on iOS a muted
+    // media-element prime can leak/restart and sounds like the transmission has
+    // already begun before the real playback starts.
     try{
-      voice.pause();voice.currentTime=0;voice.volume=1;voice.muted=true;
-      const prime=voice.play();
-      if(prime&&typeof prime.then==='function') prime.then(()=>{try{voice.pause();voice.currentTime=0;}catch{}}).catch(()=>{});
-      else{voice.pause();voice.currentTime=0;}
+      voice.pause();
+      voice.currentTime=0;
+      voice.volume=1;
+      voice.muted=false;
+      voice.load();
     }catch{}
   }
   function getLaplandExitSfx(){
@@ -192,6 +196,48 @@
     const head=document.querySelector('.lapland-head');
     if(!btn||!panel||!verificationStage||!transmissionStage||!partyStage) return;
 
+    // Render the disco ball from the existing 8x5 sprite sheet onto a canvas.
+    // Canvas cropping is much more reliable on mobile Safari than animating a
+    // very large transparent WebP as a CSS background.
+    let discoRaf=0;
+    let discoStartedAt=0;
+    let discoLastFrame=-1;
+    const discoSprite=new Image();
+    discoSprite.decoding='async';
+    discoSprite.src='./assets/disco-ball-sprite.webp';
+    const drawDiscoFrame=frame=>{
+      if(!(discoVisual instanceof HTMLCanvasElement)||!discoSprite.complete||!discoSprite.naturalWidth)return;
+      const ctx=discoVisual.getContext('2d');
+      if(!ctx)return;
+      const cols=8,rows=5,total=40;
+      const index=((frame%total)+total)%total;
+      const sw=discoSprite.naturalWidth/cols;
+      const sh=discoSprite.naturalHeight/rows;
+      const sx=(index%cols)*sw;
+      const sy=Math.floor(index/cols)*sh;
+      ctx.clearRect(0,0,discoVisual.width,discoVisual.height);
+      ctx.drawImage(discoSprite,sx,sy,sw,sh,0,0,discoVisual.width,discoVisual.height);
+    };
+    const stopDisco=()=>{
+      cancelAnimationFrame(discoRaf);
+      discoRaf=0;
+      discoLastFrame=-1;
+    };
+    const startDisco=()=>{
+      if(!(discoVisual instanceof HTMLCanvasElement))return;
+      stopDisco();
+      discoStartedAt=performance.now();
+      const render=now=>{
+        if(state.missionOpen!=='lapland'||partyStage.hidden){stopDisco();return;}
+        const frame=Math.floor((now-discoStartedAt)/100)%40;
+        if(frame!==discoLastFrame){discoLastFrame=frame;drawDiscoFrame(frame);}
+        discoRaf=requestAnimationFrame(render);
+      };
+      drawDiscoFrame(0);
+      discoRaf=requestAnimationFrame(render);
+    };
+    discoSprite.addEventListener('load',()=>drawDiscoFrame(0),{once:true});
+
     startLaplandMusic();
 
     // MC01–MC10 each restore one named system. Checks run down column 1 first,
@@ -264,6 +310,7 @@
       panel.classList.remove('is-transmission');
       panel.classList.add('is-party','is-celebrating');
       head?.classList.add('is-celebrating');
+      startDisco();
       fadeLaplandMusic(.9,780);
       ping(1040,.14,.045);
       laplandLater(()=>ping(1320,.18,.045),210);
@@ -346,6 +393,7 @@
 
     cleanupMission=()=>{
       stopTransmission();
+      stopDisco();
       stopLaplandAudio();
     };
   }
