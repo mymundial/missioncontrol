@@ -80,7 +80,7 @@
     if(state.messageAlert&&unreadCount()>0){
       return `<div class="mission-card message-card panel comms-alert" id="radarMessage"><div class="comms-alert-copy"><div class="kicker">Mission Control</div><h3>New Message</h3></div><div class="comms-alert-actions"><button class="linkbtn comms-action" data-read-messages>Read</button><button class="linkbtn comms-action" data-dismiss-messages>Dismiss</button></div></div>`;
     }
-    if(!cp) return `<div class="mission-card message-card panel complete-message compact-message" id="radarMessage"><div><h3>Mission Complete</h3></div></div>`;
+    if(!cp) return `<div class="mission-card message-card panel complete-message compact-message" id="radarMessage"><div><div class="kicker">Mission Complete</div><h3>Meet Santa at his Christmas Grotto</h3></div></div>`;
     const activationGap=distanceToActivation(cp,state.distance);
     const acquired=state.targetVisible&&Number.isFinite(activationGap)&&activationGap<=60;
     if(cp.type==='activation'){
@@ -553,7 +553,7 @@
           <i class="lapland-party-wash"></i>
           <i class="lapland-party-beam party-beam-a"></i><i class="lapland-party-beam party-beam-b"></i><i class="lapland-party-beam party-beam-c"></i><i class="lapland-party-reflections"></i>
         </div>
-        <div class="lapland-disco-rig" aria-hidden="true"><img class="lapland-disco-video" id="laplandDiscoVisual" src="./assets/disco-ball-alpha-loop-540.webp" alt="" decoding="async"></div>
+        <div class="lapland-disco-rig" aria-hidden="true"><img class="lapland-disco-video" id="laplandDiscoVisual" src="./assets/disco-ball-alpha-static.webp" alt="" decoding="async"></div>
         <div class="lapland-party-message">
           <span>SANTA-1</span>
           <i class="lapland-clearance-divider" aria-hidden="true"></i>

@@ -99,9 +99,16 @@
           resetLights();
           btn.classList.remove('success','is-measured');
           btn.textContent='START TEST';btn.disabled=false;
-        },760));
+        },1250));
       }
     }
+
+    function onFastReactionPress(e){
+      if(!armed||e.pointerType==='mouse') return;
+      e.preventDefault();
+      capture();
+    }
+    btn.addEventListener('pointerdown',onFastReactionPress,{passive:false});
     btn.onclick=()=>{
       if(btn.textContent==='Start Test'||btn.textContent==='START TEST'){start();return;}
       if(armed){capture();return;}
@@ -114,4 +121,6 @@
         timers.push(setTimeout(()=>{btn.textContent='START TEST';},700));
       }
     };
+    const previousCleanup=cleanupMission;
+    cleanupMission=()=>{btn.removeEventListener('pointerdown',onFastReactionPress);previousCleanup?.();};
   }

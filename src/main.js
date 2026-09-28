@@ -655,7 +655,7 @@
     if(state.messageAlert&&unreadCount()>0){
       return `<div class="mission-card message-card panel comms-alert" id="radarMessage"><div class="comms-alert-copy"><div class="kicker">Mission Control</div><h3>New Message</h3></div><div class="comms-alert-actions"><button class="linkbtn comms-action" data-read-messages>Read</button><button class="linkbtn comms-action" data-dismiss-messages>Dismiss</button></div></div>`;
     }
-    if(!cp) return `<div class="mission-card message-card panel complete-message compact-message" id="radarMessage"><div><h3>Mission Complete</h3></div></div>`;
+    if(!cp) return `<div class="mission-card message-card panel complete-message compact-message" id="radarMessage"><div><div class="kicker">Mission Complete</div><h3>Meet Santa at his Christmas Grotto</h3></div></div>`;
     const activationGap=distanceToActivation(cp,state.distance);
     const acquired=state.targetVisible&&Number.isFinite(activationGap)&&activationGap<=60;
     if(cp.type==='activation'){
@@ -1128,7 +1128,7 @@
           <i class="lapland-party-wash"></i>
           <i class="lapland-party-beam party-beam-a"></i><i class="lapland-party-beam party-beam-b"></i><i class="lapland-party-beam party-beam-c"></i><i class="lapland-party-reflections"></i>
         </div>
-        <div class="lapland-disco-rig" aria-hidden="true"><img class="lapland-disco-video" id="laplandDiscoVisual" src="./assets/disco-ball-alpha-loop-540.webp" alt="" decoding="async"></div>
+        <div class="lapland-disco-rig" aria-hidden="true"><img class="lapland-disco-video" id="laplandDiscoVisual" src="./assets/disco-ball-alpha-static.webp" alt="" decoding="async"></div>
         <div class="lapland-party-message">
           <span>SANTA-1</span>
           <i class="lapland-clearance-divider" aria-hidden="true"></i>
@@ -1723,7 +1723,7 @@
     if(gpsValue){const condition=state.mode==='demo'?'DEMO':state.gpsCondition;gpsValue.textContent=condition;gpsValue.className=`status-value gps-${condition.toLowerCase()}`;}
     const sleighValue=document.querySelector('.status-cell:nth-child(2) .status-value'); if(sleighValue)sleighValue.textContent=`${recovery()}%`;
     const checkpointValue=document.querySelector('.status-cell:last-child .status-value');
-    if(checkpointValue){const d=distanceToActivation(cp,state.distance);checkpointValue.textContent=!cp?'COMPLETE':state.targetVisible&&Number.isFinite(d)?`${Math.round(d)} M`:'SEARCHING';}
+    if(checkpointValue){const d=distanceToActivation(cp,state.distance);checkpointValue.textContent=!cp?'GARAGES':state.targetVisible&&Number.isFinite(d)?`${Math.round(d)} M`:'SEARCHING';}
     const target=document.querySelector('.target-dot');
     const finalCircuitOverview=state.completed.includes('northern');
     const circuitMode=state.completed.includes('entry')||finalCircuitOverview;
@@ -2646,7 +2646,7 @@
       const button=tank.querySelector('[data-spirit-charge]');
       if(button){
         button.disabled=completed||hits>=tapsPerTank;
-        button.classList.toggle('is-charging',hits>0&&hits<tapsPerTank);
+        button.classList.toggle('is-charging',hits<tapsPerTank);
         button.classList.toggle('is-full',hits>=tapsPerTank);
       }
     }
@@ -3417,7 +3417,7 @@
     let vy=0;
     let previousPuck={x:0,y:0};
     const speeds=[0,0.245,0.285,0.325];
-    const goalPositions=[0,.50,.31,.69];
+    const goalWidths=[null,'48%','39%',null];
 
     const strikePool=Array.from({length:3},()=>{
       const a=new Audio('./assets/jingle-puck-strike.mp3');
@@ -3503,9 +3503,10 @@
       else setPaddleX(paddleX);
     }
     function setReceiverForBeam(n){
-      const position=goalPositions[n]||.5;
-      receiver.style.left=`${position*100}%`;
-      requestAnimationFrame(()=>updateBounds());
+      receiver.style.left='50%';
+      receiver.style.width=goalWidths[n]||'';
+      receiver.dataset.beam=String(n);
+      requestAnimationFrame(()=>requestAnimationFrame(()=>updateBounds()));
     }
     function pulseRail(side){
       const rail=arena.querySelector(`.rail-${side}`);
@@ -3653,8 +3654,20 @@
         puckX+=vx*dt;
         puckY+=vy*dt;
         const r=bounds.puckR;
-        if(puckX-r<=4&&vx<0){puckX=r+4;vx=Math.abs(vx);pulseRail('left');playStrike(.2,.93);}
-        if(puckX+r>=bounds.w-4&&vx>0){puckX=bounds.w-r-4;vx=-Math.abs(vx);pulseRail('right');playStrike(.2,1.05);}
+        const minX=r+4;
+        const maxX=bounds.w-r-4;
+        if(puckX<minX&&vx<0){
+          const overrun=minX-puckX;
+          puckX=minX+overrun;
+          vx=Math.abs(vx);
+          pulseRail('left');playStrike(.2,.93);
+        }
+        if(puckX>maxX&&vx>0){
+          const overrun=puckX-maxX;
+          puckX=maxX-overrun;
+          vx=-Math.abs(vx);
+          pulseRail('right');playStrike(.2,1.05);
+        }
 
         if(vy<0&&puckY-r<=bounds.goalBottom){
           if(puckX>=bounds.apertureLeft&&puckX<=bounds.apertureRight){
@@ -3662,7 +3675,9 @@
           }else if(puckX>=bounds.goalLeft&&puckX<=bounds.goalRight){
             postHit(puckX<((bounds.goalLeft+bounds.goalRight)/2)?'left':'right');
           }else if(puckY-r<=6){
-            puckY=r+6;
+            const minY=r+6;
+            const overrun=minY-puckY;
+            puckY=minY+Math.max(0,overrun);
             vy=Math.abs(vy);
             playStrike(.18,.97);
           }
@@ -3875,9 +3890,16 @@
           resetLights();
           btn.classList.remove('success','is-measured');
           btn.textContent='START TEST';btn.disabled=false;
-        },760));
+        },1250));
       }
     }
+
+    function onFastReactionPress(e){
+      if(!armed||e.pointerType==='mouse') return;
+      e.preventDefault();
+      capture();
+    }
+    btn.addEventListener('pointerdown',onFastReactionPress,{passive:false});
     btn.onclick=()=>{
       if(btn.textContent==='Start Test'||btn.textContent==='START TEST'){start();return;}
       if(armed){capture();return;}
@@ -3890,6 +3912,8 @@
         timers.push(setTimeout(()=>{btn.textContent='START TEST';},700));
       }
     };
+    const previousCleanup=cleanupMission;
+    cleanupMission=()=>{btn.removeEventListener('pointerdown',onFastReactionPress);previousCleanup?.();};
   }
   function bindAurora(){
     const panel=document.querySelector('.aurora-panel');
@@ -4141,6 +4165,8 @@
   let laplandVoice=null;
   let laplandExitSfx=null;
   let laplandVolumeRaf=0;
+  let laplandMusicSource=null;
+  let laplandMusicGain=null;
   let laplandTimers=[];
 
   function clearLaplandTimers(){
@@ -4201,14 +4227,40 @@
       if(p&&typeof p.catch==='function') p.catch(finish);
     }catch{finish();}
   }
+  function ensureLaplandMusicGraph(){
+    if(laplandMusicGain) return laplandMusicGain;
+    const music=getLaplandMusic();
+    const ctx=ensureAudio();
+    if(!ctx) return null;
+    try{
+      laplandMusicSource=ctx.createMediaElementSource(music);
+      laplandMusicGain=ctx.createGain();
+      laplandMusicGain.gain.value=.34;
+      laplandMusicSource.connect(laplandMusicGain).connect(ctx.destination);
+      music.volume=1;
+      return laplandMusicGain;
+    }catch{return null;}
+  }
   function fadeLaplandMusic(target,duration=350,onDone){
     if(!laplandMusic){onDone?.();return;}
+    const level=Math.max(0,Math.min(1,target));
+    const gain=ensureLaplandMusicGraph();
+    if(gain&&audioCtx){
+      const now=audioCtx.currentTime;
+      try{
+        gain.gain.cancelScheduledValues(now);
+        gain.gain.setValueAtTime(gain.gain.value,now);
+        gain.gain.linearRampToValueAtTime(level,now+Math.max(.01,duration/1000));
+      }catch{gain.gain.value=level;}
+      if(onDone) laplandLater(onDone,duration);
+      return;
+    }
     cancelAnimationFrame(laplandVolumeRaf);
     const from=laplandMusic.volume;
     const started=performance.now();
     const step=now=>{
       const p=Math.min(1,(now-started)/duration);
-      laplandMusic.volume=from+(target-from)*p;
+      laplandMusic.volume=from+(level-from)*p;
       if(p<1) laplandVolumeRaf=requestAnimationFrame(step);
       else {laplandVolumeRaf=0;onDone?.();}
     };
@@ -4220,7 +4272,13 @@
     const music=getLaplandMusic();
     music.loop=true;
     if(music.ended) music.currentTime=0;
-    music.volume=Math.min(music.volume||.34,.34);
+    const gain=ensureLaplandMusicGraph();
+    if(gain&&audioCtx){
+      music.volume=1;
+      const now=audioCtx.currentTime;
+      gain.gain.cancelScheduledValues(now);
+      gain.gain.setValueAtTime(Math.min(gain.gain.value||.34,.34),now);
+    }else music.volume=Math.min(music.volume||.34,.34);
     try{
       const p=music.play();
       if(p&&typeof p.catch==='function') p.catch(()=>endMissionAudioRadioOverride('lapland'));
@@ -4234,7 +4292,10 @@
       laplandVoice.onended=null;laplandVoice.onerror=null;
       try{laplandVoice.pause();if(reset)laplandVoice.currentTime=0;laplandVoice.volume=1;laplandVoice.muted=false;}catch{}
     }
-    if(laplandMusic){try{laplandMusic.pause();if(reset)laplandMusic.currentTime=0;laplandMusic.volume=.34;}catch{}}
+    if(laplandMusic){
+      try{laplandMusic.pause();if(reset)laplandMusic.currentTime=0;laplandMusic.volume=laplandMusicGain?1:.34;}catch{}
+      if(laplandMusicGain&&audioCtx){try{laplandMusicGain.gain.cancelScheduledValues(audioCtx.currentTime);laplandMusicGain.gain.setValueAtTime(.34,audioCtx.currentTime);}catch{}}
+    }
     if(restoreRadio) endMissionAudioRadioOverride('lapland');
   }
 
@@ -4342,7 +4403,7 @@
       panel.classList.remove('is-verifying','is-celebrating','is-party');
       panel.classList.add('is-transmission');
       head?.classList.remove('is-celebrating');
-      if(laplandMusic&&!laplandMusic.paused) fadeLaplandMusic(.055,420);
+      if(laplandMusic&&!laplandMusic.paused) fadeLaplandMusic(.018,360);
       stopTransmission=playLaplandClearance(showParty);
     };
     const revealParty=()=>{

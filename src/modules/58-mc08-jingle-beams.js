@@ -32,7 +32,7 @@
     let vy=0;
     let previousPuck={x:0,y:0};
     const speeds=[0,0.245,0.285,0.325];
-    const goalPositions=[0,.50,.31,.69];
+    const goalWidths=[null,'48%','39%',null];
 
     const strikePool=Array.from({length:3},()=>{
       const a=new Audio('./assets/jingle-puck-strike.mp3');
@@ -118,9 +118,10 @@
       else setPaddleX(paddleX);
     }
     function setReceiverForBeam(n){
-      const position=goalPositions[n]||.5;
-      receiver.style.left=`${position*100}%`;
-      requestAnimationFrame(()=>updateBounds());
+      receiver.style.left='50%';
+      receiver.style.width=goalWidths[n]||'';
+      receiver.dataset.beam=String(n);
+      requestAnimationFrame(()=>requestAnimationFrame(()=>updateBounds()));
     }
     function pulseRail(side){
       const rail=arena.querySelector(`.rail-${side}`);
@@ -268,8 +269,20 @@
         puckX+=vx*dt;
         puckY+=vy*dt;
         const r=bounds.puckR;
-        if(puckX-r<=4&&vx<0){puckX=r+4;vx=Math.abs(vx);pulseRail('left');playStrike(.2,.93);}
-        if(puckX+r>=bounds.w-4&&vx>0){puckX=bounds.w-r-4;vx=-Math.abs(vx);pulseRail('right');playStrike(.2,1.05);}
+        const minX=r+4;
+        const maxX=bounds.w-r-4;
+        if(puckX<minX&&vx<0){
+          const overrun=minX-puckX;
+          puckX=minX+overrun;
+          vx=Math.abs(vx);
+          pulseRail('left');playStrike(.2,.93);
+        }
+        if(puckX>maxX&&vx>0){
+          const overrun=puckX-maxX;
+          puckX=maxX-overrun;
+          vx=-Math.abs(vx);
+          pulseRail('right');playStrike(.2,1.05);
+        }
 
         if(vy<0&&puckY-r<=bounds.goalBottom){
           if(puckX>=bounds.apertureLeft&&puckX<=bounds.apertureRight){
@@ -277,7 +290,9 @@
           }else if(puckX>=bounds.goalLeft&&puckX<=bounds.goalRight){
             postHit(puckX<((bounds.goalLeft+bounds.goalRight)/2)?'left':'right');
           }else if(puckY-r<=6){
-            puckY=r+6;
+            const minY=r+6;
+            const overrun=minY-puckY;
+            puckY=minY+Math.max(0,overrun);
             vy=Math.abs(vy);
             playStrike(.18,.97);
           }

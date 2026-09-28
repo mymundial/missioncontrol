@@ -9813,3 +9813,88 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
     font-size:6.3px!important;
   }
 }
+
+/* === Mobile polish pass 2026-09-28 =====================================
+   Prevent accidental double-tap zoom while preserving pan/pinch gestures,
+   strengthen Spirit Depot interaction feedback, smooth Jingle/Lapland mobile
+   motion, and resolve the final radar state. */
+html,body,.app-shell{touch-action:manipulation;}
+button,[role="button"],.mission-instrument{-webkit-tap-highlight-color:transparent;}
+
+/* Spirit Depot: larger power control, live pulse/glow until the tank locks. */
+.spirit-tank-power{
+  width:52px!important;height:52px!important;
+  min-width:52px!important;min-height:52px!important;
+  border-radius:13px!important;
+  animation:none!important;
+  box-shadow:0 0 0 2px rgba(3,12,18,.72),0 0 16px rgba(var(--tank-rgb),.22),inset 0 0 14px rgba(var(--tank-rgb),.11)!important;
+}
+.spirit-tank-power img{
+  width:23px!important;height:31px!important;
+  filter:drop-shadow(0 0 5px rgba(167,239,255,.55)) drop-shadow(0 0 10px rgba(var(--tank-rgb),.34))!important;
+}
+.spirit-tank-power.is-charging{
+  animation:spiritTankPowerLive 1.15s ease-in-out infinite!important;
+}
+.spirit-tank-power.is-full,.spirit-tank-cell.is-full .spirit-tank-power{
+  animation:none!important;
+  filter:brightness(1.12)!important;
+  box-shadow:0 0 0 2px rgba(3,12,18,.72),0 0 13px rgba(var(--tank-rgb),.56),0 0 26px rgba(var(--tank-rgb),.28),inset 0 0 15px rgba(var(--tank-rgb),.18)!important;
+}
+.spirit-tank-power.is-full img,.spirit-tank-cell.is-full .spirit-tank-power img{
+  filter:brightness(1.18) drop-shadow(0 0 5px rgba(255,255,255,.48)) drop-shadow(0 0 11px rgba(var(--tank-rgb),.82))!important;
+}
+@keyframes spiritTankPowerLive{
+  0%,100%{transform:translate(-50%,-50%) scale(.96);filter:brightness(.9);box-shadow:0 0 0 2px rgba(3,12,18,.72),0 0 11px rgba(var(--tank-rgb),.20),inset 0 0 12px rgba(var(--tank-rgb),.08)}
+  50%{transform:translate(-50%,-50%) scale(1.075);filter:brightness(1.25);box-shadow:0 0 0 2px rgba(3,12,18,.72),0 0 19px rgba(var(--tank-rgb),.50),0 0 31px rgba(var(--tank-rgb),.20),inset 0 0 16px rgba(var(--tank-rgb),.18)}
+}
+@media(max-width:390px){
+  .spirit-tank-power{width:48px!important;height:48px!important;min-width:48px!important;min-height:48px!important;border-radius:12px!important;}
+  .spirit-tank-power img{width:21px!important;height:29px!important;}
+}
+
+/* Jingle Beams: one centred target that gets progressively tighter. */
+.jingle-receiver{left:50%!important;transition:width .34s cubic-bezier(.22,.8,.22,1),filter .2s ease!important;}
+.jingle-receiver[data-beam="1"]{min-width:0!important;}
+.jingle-receiver[data-beam="2"]{min-width:0!important;}
+.mission-jingle .mission-content>.completion{align-self:start!important;height:auto!important;min-height:0!important;padding:22px 20px!important;}
+.mission-jingle .mission-content:has(>.completion){align-content:start!important;}
+
+/* Lapland: use a single lightweight alpha frame and let the GPU animate it. */
+.lapland-disco-video{
+  transform:translateX(-50%) rotate(0deg)!important;
+  transform-origin:50% 50%!important;
+  animation:laplandDiscoSmoothSpin 8.5s linear infinite!important;
+  will-change:transform;
+  backface-visibility:hidden;
+}
+@keyframes laplandDiscoSmoothSpin{
+  from{transform:translateX(-50%) rotate(0deg)}
+  to{transform:translateX(-50%) rotate(360deg)}
+}
+@media(prefers-reduced-motion:reduce){.lapland-disco-video{animation:none!important;}}
+
+/* Final radar: circuit confirms green, while the box remains cyan system chrome. */
+.track-radar-map.final-overview .track-radar-art{
+  background:var(--green)!important;
+  filter:drop-shadow(0 0 5px rgba(87,239,145,.28))!important;
+}
+#radarMessage.complete-message{
+  text-align:left!important;
+  align-content:center!important;
+}
+#radarMessage.complete-message .kicker{
+  color:var(--green)!important;
+  text-align:left!important;
+  text-shadow:0 0 8px rgba(87,239,145,.18)!important;
+}
+#radarMessage.complete-message h3{
+  color:#eefbff!important;
+  text-align:left!important;
+  font-size:16px!important;
+  line-height:1.12!important;
+  white-space:normal!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  text-shadow:none!important;
+}

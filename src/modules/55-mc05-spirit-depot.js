@@ -66,7 +66,7 @@
       const button=tank.querySelector('[data-spirit-charge]');
       if(button){
         button.disabled=completed||hits>=tapsPerTank;
-        button.classList.toggle('is-charging',hits>0&&hits<tapsPerTank);
+        button.classList.toggle('is-charging',hits<tapsPerTank);
         button.classList.toggle('is-full',hits>=tapsPerTank);
       }
     }

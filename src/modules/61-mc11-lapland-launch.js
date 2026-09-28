@@ -2,6 +2,8 @@
   let laplandVoice=null;
   let laplandExitSfx=null;
   let laplandVolumeRaf=0;
+  let laplandMusicSource=null;
+  let laplandMusicGain=null;
   let laplandTimers=[];
 
   function clearLaplandTimers(){
@@ -62,14 +64,40 @@
       if(p&&typeof p.catch==='function') p.catch(finish);
     }catch{finish();}
   }
+  function ensureLaplandMusicGraph(){
+    if(laplandMusicGain) return laplandMusicGain;
+    const music=getLaplandMusic();
+    const ctx=ensureAudio();
+    if(!ctx) return null;
+    try{
+      laplandMusicSource=ctx.createMediaElementSource(music);
+      laplandMusicGain=ctx.createGain();
+      laplandMusicGain.gain.value=.34;
+      laplandMusicSource.connect(laplandMusicGain).connect(ctx.destination);
+      music.volume=1;
+      return laplandMusicGain;
+    }catch{return null;}
+  }
   function fadeLaplandMusic(target,duration=350,onDone){
     if(!laplandMusic){onDone?.();return;}
+    const level=Math.max(0,Math.min(1,target));
+    const gain=ensureLaplandMusicGraph();
+    if(gain&&audioCtx){
+      const now=audioCtx.currentTime;
+      try{
+        gain.gain.cancelScheduledValues(now);
+        gain.gain.setValueAtTime(gain.gain.value,now);
+        gain.gain.linearRampToValueAtTime(level,now+Math.max(.01,duration/1000));
+      }catch{gain.gain.value=level;}
+      if(onDone) laplandLater(onDone,duration);
+      return;
+    }
     cancelAnimationFrame(laplandVolumeRaf);
     const from=laplandMusic.volume;
     const started=performance.now();
     const step=now=>{
       const p=Math.min(1,(now-started)/duration);
-      laplandMusic.volume=from+(target-from)*p;
+      laplandMusic.volume=from+(level-from)*p;
       if(p<1) laplandVolumeRaf=requestAnimationFrame(step);
       else {laplandVolumeRaf=0;onDone?.();}
     };
@@ -81,7 +109,13 @@
     const music=getLaplandMusic();
     music.loop=true;
     if(music.ended) music.currentTime=0;
-    music.volume=Math.min(music.volume||.34,.34);
+    const gain=ensureLaplandMusicGraph();
+    if(gain&&audioCtx){
+      music.volume=1;
+      const now=audioCtx.currentTime;
+      gain.gain.cancelScheduledValues(now);
+      gain.gain.setValueAtTime(Math.min(gain.gain.value||.34,.34),now);
+    }else music.volume=Math.min(music.volume||.34,.34);
     try{
       const p=music.play();
       if(p&&typeof p.catch==='function') p.catch(()=>endMissionAudioRadioOverride('lapland'));
@@ -95,7 +129,10 @@
       laplandVoice.onended=null;laplandVoice.onerror=null;
       try{laplandVoice.pause();if(reset)laplandVoice.currentTime=0;laplandVoice.volume=1;laplandVoice.muted=false;}catch{}
     }
-    if(laplandMusic){try{laplandMusic.pause();if(reset)laplandMusic.currentTime=0;laplandMusic.volume=.34;}catch{}}
+    if(laplandMusic){
+      try{laplandMusic.pause();if(reset)laplandMusic.currentTime=0;laplandMusic.volume=laplandMusicGain?1:.34;}catch{}
+      if(laplandMusicGain&&audioCtx){try{laplandMusicGain.gain.cancelScheduledValues(audioCtx.currentTime);laplandMusicGain.gain.setValueAtTime(.34,audioCtx.currentTime);}catch{}}
+    }
     if(restoreRadio) endMissionAudioRadioOverride('lapland');
   }
 
@@ -203,7 +240,7 @@
       panel.classList.remove('is-verifying','is-celebrating','is-party');
       panel.classList.add('is-transmission');
       head?.classList.remove('is-celebrating');
-      if(laplandMusic&&!laplandMusic.paused) fadeLaplandMusic(.055,420);
+      if(laplandMusic&&!laplandMusic.paused) fadeLaplandMusic(.018,360);
       stopTransmission=playLaplandClearance(showParty);
     };
     const revealParty=()=>{
