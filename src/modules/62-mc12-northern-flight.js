@@ -67,10 +67,9 @@
   function showNorthernTransmission(){
     const mc=document.getElementById('missionContent'); if(!mc)return;
     mc.innerHTML=`<div class="mission-instrument panel incoming-transmission northern-incoming">
-      <div class="transmission-icon"><span></span><i></i><i></i><i></i></div>
-      <div class="kicker">Final Transmission</div>
-      <h2>SANTA-1</h2>
       <div class="transmission-wave">${'<b></b>'.repeat(24)}</div>
+      <div class="kicker">Incoming Transmission</div>
+      <h2>SANTA-1</h2>
       <div class="signal-state lock">Signal locked</div>
     </div>`;
 
@@ -138,16 +137,7 @@
     el.className='northern-airborne-takeover';
     el.setAttribute('role','status');
     el.setAttribute('aria-live','polite');
-    el.innerHTML=`<div class="northern-airborne-field" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-      <div class="northern-airborne-copy">
-        <img class="northern-airborne-mark" src="./assets/silverstone-s-mark.webp" alt="">
-        <div class="kicker">Northern Flight</div>
-        <h1>AIRBORNE</h1>
-        <div class="northern-airborne-status">
-          <div><small>Systems</small><strong>100%</strong></div>
-          <div><small>Northern Flight</small><strong>Active</strong></div>
-        </div>
-      </div>`;
+    el.innerHTML=`<div class="northern-airborne-sweep" aria-hidden="true"></div><div class="northern-airborne-copy"><img class="northern-airborne-mark" src="./assets/silverstone-s-mark.webp" alt=""><div class="northern-airborne-santa">SANTA-1</div><h1>AIRBORNE</h1></div>`;
     document.body.appendChild(el);northernTakeoverEl=el;
     northernLater(()=>el.classList.add('is-settled'),180);
     northernLater(()=>el.classList.add('is-exiting'),3820);

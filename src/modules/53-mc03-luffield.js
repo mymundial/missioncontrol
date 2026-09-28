@@ -2,8 +2,8 @@
     const nodes=[...document.querySelectorAll('[data-relay]')];
     const hops=[...document.querySelectorAll('[data-hop]')];
     const stateEl=document.getElementById('relayState');
-    const meterFill=document.getElementById('relayMeterFill');
-    const meterText=document.getElementById('relayMeterText');
+    const progressCount=document.getElementById('relayLockedCount');
+    const progressBars=[...document.querySelectorAll('[data-relay-progress]')];
         const cycles=[1900,1650,1450,1300];
     const relayFxShort=new Audio('./assets/mc03-relay-success-short.mp3');
     const relayFxFull=new Audio('./assets/mc03-relay-success-full.mp3');
@@ -82,12 +82,14 @@
       hops.forEach((h,i)=>h.classList.toggle('active',i===stage&&!h.classList.contains('locked')));
       carrierPackets.forEach(packet=>packet.style.opacity='0');
       requestAnimationFrame(alignRelayRoute);
-      stateEl.textContent=`Tap Relay 0${stage+1} when the pulse meets the capture ring.`;
+      stateEl.textContent=`Relay 0${stage+1} armed`;
+      if(progressCount)progressCount.textContent=`${stage} / 4`;
+      progressBars.forEach((bar,i)=>bar.classList.toggle('on',i<stage));
     }
     function showIncomingTransmission(){
       finishing=true;cancelAnimationFrame(raf);
       const mc=document.getElementById('missionContent');if(!mc)return;
-      mc.innerHTML=`<div class="mission-instrument panel incoming-transmission"><div class="transmission-icon"><span></span><i></i><i></i><i></i></div><div class="kicker">Incoming Transmission</div><h2>SANTA-1</h2><div class="transmission-wave">${'<b></b>'.repeat(24)}</div><div class="signal-state lock" id="incomingState">Signal locked</div></div>`;
+      mc.innerHTML=`<div class="mission-instrument panel incoming-transmission"><div class="transmission-wave">${'<b></b>'.repeat(24)}</div><div class="kicker">Incoming Transmission</div><h2>SANTA-1</h2><div class="signal-state lock" id="incomingState">Signal locked</div></div>`;
       const radioWasOn=Boolean(state.elfAudioOn&&elfAudioEl&&!elfAudioEl.paused);
       const previousRadioVolume=radioWasOn?elfAudioEl.volume:1;
       let stopDuck=()=>{};
@@ -141,8 +143,8 @@
       hops[stage]?.classList.remove('active');
       hops[stage]?.classList.add('locked');
       carrierPackets.forEach(packet=>packet.style.opacity='0');
-      meterFill.style.width=`${25+(stage*25)}%`;
-      if(meterText)meterText.textContent=['ACQUIRED','ROUTED','STRONG','LOCKED'][stage];
+      if(progressCount)progressCount.textContent=`${stage+1} / 4`;
+      progressBars.forEach((bar,i)=>bar.classList.toggle('on',i<=stage));
       stateEl.textContent=stage===3?'Transmission path locked.':'Relay locked · signal strengthened.';
       playRelayFx(stage===3?relayFxFull:relayFxShort,stage===3?.95:.9);haptic([20,25,38]);
       if(stage===3){

@@ -57,7 +57,7 @@
       clear(); resetLights(); armed=false; running=true; goTime=0;
       primeCountdownAudio();
       roundEl.textContent=`${round} / 4`;
-      btn.textContent='WAIT…'; btn.disabled=false;
+      btn.textContent='STANDBY'; btn.disabled=false; btn.classList.remove('success','is-measured'); btn.classList.add('is-standby');
       setResultState(round,'active');
       for(let col=0;col<5;col++){
         timers.push(setTimeout(()=>{
@@ -70,7 +70,8 @@
       timers.push(setTimeout(()=>{
         lamps.forEach(l=>l.classList.remove('red'));
         armed=true; running=true; goTime=performance.now();
-        btn.textContent='GO!';
+        btn.classList.remove('is-standby');
+        btn.textContent='GO';
         playCountdownFx(goAudio,.82); haptic(18);
       },wait));
     }
@@ -79,26 +80,35 @@
       armed=false; running=false;
       for(let col=0;col<5;col++) lampsForColumn(col).forEach(l=>l.classList.add('green'));
       setResultState(round,'complete',ms);
+      const currentResult=results[round-1]; if(currentResult) currentResult.dataset.ms=String(ms);
+      btn.classList.remove('is-standby');btn.classList.add('success','is-measured');
+      btn.textContent='REACTION MEASURED';btn.disabled=true;
       haptic([20,20,45]); ping(760,.075,.03);
       if(round===4){
-        btn.textContent='COMPLETE'; btn.disabled=true;
-        timers.push(setTimeout(()=>showCompletion('Flight Control Calibrated','Santa-1’s flight response has been calibrated for high-speed operation.'),1000));
+        const scored=results.map(el=>({el,ms:Number(el.dataset.ms)})).filter(x=>Number.isFinite(x.ms));
+        const best=scored.sort((a,b)=>a.ms-b.ms)[0];
+        timers.push(setTimeout(()=>{best?.el.classList.add('best');haptic([18,20,52]);},520));
+        timers.push(setTimeout(()=>showCompletion('Response Calibrated','Santa-1’s flight response has been calibrated for high-speed operation.'),1750));
       }else{
-        round++;
-        roundEl.textContent=`${round} / 4`;
-        setResultState(round,'active');
-        btn.textContent='NEXT TEST';
+        timers.push(setTimeout(()=>{
+          round++;
+          roundEl.textContent=`${round} / 4`;
+          setResultState(round,'active');
+          btn.classList.remove('success','is-measured');
+          btn.textContent='START TEST';btn.disabled=false;
+        },760));
       }
     }
     btn.onclick=()=>{
-      if(btn.textContent==='Start Test'||btn.textContent==='NEXT TEST'){start();return;}
+      if(btn.textContent==='Start Test'||btn.textContent==='START TEST'){start();return;}
       if(armed){capture();return;}
       if(running){
         clear(); running=false; armed=false; resetLights();
+        btn.classList.remove('is-standby');
         btn.textContent='FALSE START';
         setResultState(round,'active');
         haptic([20,30,20]);
-        timers.push(setTimeout(()=>{btn.textContent='Start Test';},700));
+        timers.push(setTimeout(()=>{btn.textContent='START TEST';},700));
       }
     };
   }

@@ -64,11 +64,11 @@
   function statusStrip(){
     const cp=current();
     const activationDistance=distanceToActivation(cp,state.distance);
-    const distanceValue=!cp?'GROTTO':state.targetVisible&&Number.isFinite(activationDistance)?`${Math.round(activationDistance)} M`:'SEARCHING';
+    const distanceValue=!cp?'GARAGES':state.targetVisible&&Number.isFinite(activationDistance)?`${Math.round(activationDistance)} M`:'SEARCHING';
     const condition=state.mode==='demo'?'DEMO':state.gpsEnabled===false?'OFF':state.gpsCondition;
     return `<section class="telemetry-block"><div class="telemetry-heading">MISSION TELEMETRY</div><div class="status-strip panel">
       <div class="status-cell"><div class="status-label">GPS Accuracy</div><div class="status-value gps-${condition.toLowerCase()}">${condition}</div></div>
-      <div class="status-cell"><div class="status-label">Sleigh Rebuild</div><div class="status-value">${recovery()}%</div></div>
+      <div class="status-cell"><div class="status-label">Sleigh Rebuild</div><div class="status-value ${recovery()>=100?'is-complete':''}">${recovery()}%</div></div>
       <div class="status-cell"><div class="status-label">Next Checkpoint</div><div class="status-value">${distanceValue}</div></div>
     </div></section>`;
   }
@@ -80,10 +80,16 @@
     if(state.messageAlert&&unreadCount()>0){
       return `<div class="mission-card message-card panel comms-alert" id="radarMessage"><div class="comms-alert-copy"><div class="kicker">Mission Control</div><h3>New Message</h3></div><div class="comms-alert-actions"><button class="linkbtn comms-action" data-read-messages>Read</button><button class="linkbtn comms-action" data-dismiss-messages>Dismiss</button></div></div>`;
     }
-    if(!cp) return `<div class="mission-card message-card panel complete-message compact-message" id="radarMessage"><div><div class="kicker">Mission Control</div><h3>Mission Complete</h3></div></div>`;
+    if(!cp) return `<div class="mission-card message-card panel complete-message compact-message" id="radarMessage"><div><h3>Mission Complete</h3></div></div>`;
+    const activationGap=distanceToActivation(cp,state.distance);
+    const acquired=state.targetVisible&&Number.isFinite(activationGap)&&activationGap<=60;
     if(cp.type==='activation'){
+      if(acquired) return `<div class="mission-card message-card panel compact-message target-acquired-message" id="radarMessage"><div><div class="kicker">Mission Control</div><h3>Target Acquired</h3></div></div>`;
       if(state.targetVisible) return `<div class="mission-card message-card panel compact-message" id="radarMessage"><div><div class="kicker">Mission Control</div><h3>Checkpoint Ahead</h3></div></div>`;
       return `<div class="mission-card message-card panel compact-message" id="radarMessage"><div><div class="kicker">Mission Control</div><h3>Locating Checkpoint</h3></div></div>`;
+    }
+    if(acquired){
+      return `<div class="mission-card message-card panel compact-message target-acquired-message" id="radarMessage"><div><div class="kicker">Mission Control</div><h3>Target Acquired</h3></div></div>`;
     }
     if(state.targetVisible){
       return `<div class="mission-card message-card panel compact-message" id="radarMessage"><div><div class="kicker">Mission Control</div><h3>Checkpoint Ahead</h3></div></div>`;
@@ -127,20 +133,19 @@
     if(step==='mc00-live'){
       const systems=[
         systemStatusEntry('circuitry'),
-        systemStatusEntry('diagnostic'),
-        systemStatusEntry('comms'),
-        systemStatusEntry('guidance'),
-        systemStatusEntry('power'),
-        systemStatusEntry('control'),
-        systemStatusEntry('core'),
-        systemStatusEntry('response'),
         systemStatusEntry('propulsion'),
+        systemStatusEntry('diagnostic'),
+        systemStatusEntry('guidance'),
+        systemStatusEntry('comms'),
+        systemStatusEntry('control'),
+        systemStatusEntry('power'),
+        systemStatusEntry('response'),
+        systemStatusEntry('core'),
         systemStatusEntry('navigation')
       ];
       return `<section class="onboard with-masthead setup-page mc00-page">${setupHeader}<div class="onboard-card panel mc00-card" data-mc00-mode="${step}"><div class="mc00-copy"><h1>System Diagnostics</h1><p class="support-copy">Santa-1 Sleigh Recovery</p></div><div class="mc00-visual-wrap"><div class="mc00-sleigh-frame"><div class="sleigh-visual sleigh-stage-1 mc00-sleigh-visual" role="img" aria-label="Santa-1 sleigh system diagnostics visual"><div class="sleigh-glow" aria-hidden="true"></div><img class="sleigh-art" src="./assets/sleigh-stage-1.webp" alt="" aria-hidden="true" fetchpriority="high"><div class="mc00-scan-beam" aria-hidden="true"></div></div></div></div>${systemStatusBank(systems,'mc00-system-bank','mc00')}<div class="mc00-progress-row"><div class="mc00-progress" role="progressbar" aria-label="System diagnostics progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="mc00ProgressFill"></span></div><strong id="mc00ProgressValue">0%</strong></div><div class="mc00-complete-popup panel" id="mc00CompleteBlock" hidden><div class="mc00-complete-icon" aria-hidden="true"><span class="checkmark-icon checkmark-icon--large"></span></div><h2>Scan Complete</h2><button class="btn primary wide" id="mc00Continue" data-mc00-continue="${step}">Continue</button></div></div></section>`;
     }
-    if(step==='brief') return `<section class="onboard with-masthead setup-page briefing-page">${setupHeader}<div class="onboard-card panel setup-card"><div class="onboard-icon setup-icon"><span class="setup-icon-glyph"><img src="./assets/mission-briefing-icon.svg" alt=""></span></div><h1>Mission Briefing</h1><p class="support-copy">Santa needs your help.<br>Santa-1 has made an unscheduled pit stop at Silverstone and the recovery is underway.<br>Follow the signals around the circuit and help bring each system back online to get the sleigh race-ready again.</p><div class="setup-actions"><button class="btn primary wide" data-onboard="audio">Continue</button></div></div></section>`;
-    if(step==='audio') return `<section class="onboard with-masthead setup-page audio-page">${setupHeader}<div class="onboard-card panel setup-card"><div class="onboard-icon setup-icon"><span class="setup-icon-glyph">${settingAudioIcon()}</span></div><h1>Mission Audio</h1><p class="support-copy">Mission Control uses proximity alerts, system sounds and live transmissions. You can change Mission Audio at any time in Comms.</p><div class="setup-actions stack"><button class="btn primary wide" data-audio="on">Enable Mission Audio</button><button class="btn secondary wide" data-audio="off">Continue Without Audio</button></div></div></section>`;
+    if(step==='brief') return `<section class="onboard with-masthead setup-page briefing-page">${setupHeader}<div class="onboard-card panel setup-card"><div class="onboard-icon setup-icon"><span class="setup-icon-glyph"><img src="./assets/mission-briefing-icon.svg" alt=""></span></div><h1>Mission Briefing</h1><div class="support-copy briefing-copy"><p><strong>Santa needs your help.</strong></p><p>Santa-1 has made an unscheduled pit stop at Silverstone and the recovery is underway.</p><p>Follow the signals around the circuit and help bring each system back online to get the sleigh race-ready again.</p></div><div class="setup-actions"><button class="btn primary wide" data-onboard="location">Continue</button></div></div></section>`;
     return `<section class="onboard with-masthead setup-page radar-setup-page">${setupHeader}<div class="onboard-card panel setup-card"><div class="onboard-icon setup-icon"><span class="setup-icon-glyph"><img src="./assets/radar-setup-icon.svg" alt=""></span></div><h1>Mission Radar</h1><p class="support-copy">Mission Control uses your location to detect each installation as you move around the circuit.</p><div class="setup-actions stack"><button class="btn primary wide" data-location="request">Enable GPS Location</button><button class="btn secondary wide" data-location="demo">Demo Mode</button></div></div></section>`;
   }
   function renderRadar(){
@@ -155,7 +160,8 @@
         : '';
     const userMarker=finalCircuitOverview?'':'<div class="user-dot"></div>';
     const targetMarker=!finalCircuitOverview&&cp?'<div class="target-dot hidden"></div>':'';
-    return `<section class="radar-page${modeClass}">${statusStrip()}<section class="radar-zone" aria-label="Live checkpoint radar"><section class="radar-wrap"><div class="radar${circuitMode?' circuit-radar':''}${finalCircuitOverview?' circuit-overview-radar':''}">${circuitLayer}<div class="sweep"></div>${userMarker}${targetMarker}</div></section></section>${radarMessage(cp)}</section>`;
+    const elfPrompt=(!state.elfPromptSeen&&!state.elfUnlocked)?`<div class="elf-onboard-backdrop"><div class="panel elf-onboard-prompt" role="dialog" aria-modal="true" aria-label="ELF FM"><div class="onboard-icon elf-onboard-icon"><img src="./assets/radio-setting-icon.svg" alt=""></div><h2>ELF FM</h2><p>Connect to ELF FM through Mission Control?</p><div class="elf-onboard-actions"><button class="btn primary wide" data-elf-onboard="tune">Tune In</button><button class="btn secondary wide" data-elf-onboard="continue">Continue Mission</button></div></div></div>`:'';
+    return `<section class="radar-page${modeClass}">${statusStrip()}<section class="radar-zone" aria-label="Live checkpoint radar"><section class="radar-wrap"><div class="radar${circuitMode?' circuit-radar':''}${finalCircuitOverview?' circuit-overview-radar':''}">${circuitLayer}<div class="sweep"></div>${userMarker}${targetMarker}</div></section></section>${radarMessage(cp)}</section>${elfPrompt}`;
   }
   function missionStatus(cp){
     const idx=checkpointIndex(cp.id);
@@ -189,15 +195,15 @@
       systemStatusEntry('circuitry',state.completed.includes('entry')?'Online':'Offline',state.completed.includes('entry')?'online':'offline'),
       systemStatusEntry('propulsion',state.completed.includes('escapade')?'Online':'Offline',state.completed.includes('escapade')?'online':'offline'),
       systemStatusEntry('diagnostic',state.completed.includes('velocity')?'Online':'Offline',state.completed.includes('velocity')?'online':'offline'),
-      systemStatusEntry('guidance',state.completed.includes('comet')?'Online':'Offline',state.completed.includes('comet')?'online':'offline'),
+      systemStatusEntry('guidance',state.completed.includes('jingle')?'Online':'Offline',state.completed.includes('jingle')?'online':'offline'),
       systemStatusEntry('comms',state.completed.includes('luffield')?'Online':'Offline',state.completed.includes('luffield')?'online':'offline'),
-      systemStatusEntry('control',state.completed.includes('jingle')?'Online':'Offline',state.completed.includes('jingle')?'online':'offline'),
+      systemStatusEntry('control',state.completed.includes('comet')?'Online':'Offline',state.completed.includes('comet')?'online':'offline'),
       systemStatusEntry('power',state.completed.includes('power')?'Online':'Offline',state.completed.includes('power')?'online':'offline'),
       systemStatusEntry('response',state.completed.includes('lando')?'Online':'Offline',state.completed.includes('lando')?'online':'offline'),
       systemStatusEntry('core',state.completed.includes('spirit')?'Online':'Offline',state.completed.includes('spirit')?'online':'offline'),
       systemStatusEntry('navigation',state.completed.includes('aurora')?'Online':'Offline',state.completed.includes('aurora')?'online':'offline')
     ];
-    return `<div class="sleigh-card panel"><div class="sleigh-title-row"><div><div class="kicker sleigh-pretitle">Sleigh Rebuild</div><h1>Santa-1</h1></div><strong class="sleigh-percent">${r}%</strong></div><div class="sleigh-development-bar" role="progressbar" aria-label="Santa-1 rebuild progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${r}"><div class="sleigh-development-spectrum" aria-hidden="true"></div><div class="sleigh-development-mask" style="left:${r}%" aria-hidden="true"></div></div><div class="sleigh-visual sleigh-stage-${stage}"><div class="sleigh-glow" aria-hidden="true"></div><img class="sleigh-art" src="${info.asset}" alt="Santa-1 ${postStatus.name} rebuild stage"></div><div class="sleigh-update-box panel soft"><div class="kicker sleigh-systems-title">Engineering Update</div><p class="sleigh-systems-copy">${postStatus.copy}</p></div><div class="sleigh-systems panel soft"><div class="kicker sleigh-systems-title">System Status</div>${systemStatusBank(systems,'sleigh-system-bank')}</div></div>`;
+    return `<div class="sleigh-card panel"><div class="sleigh-title-row"><div><div class="kicker sleigh-pretitle">Sleigh Rebuild</div><h1>Santa-1</h1></div><strong class="sleigh-percent">${r}%</strong></div><div class="sleigh-development-bar" role="progressbar" aria-label="Santa-1 rebuild progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${r}"><div class="sleigh-development-spectrum" aria-hidden="true"></div><div class="sleigh-development-mask" style="left:${r}%" aria-hidden="true"></div></div><div class="sleigh-visual sleigh-stage-${stage}"><div class="sleigh-glow" aria-hidden="true"></div><img class="sleigh-art" src="${info.asset}" alt="Santa-1 ${postStatus.name} rebuild stage"></div><div class="sleigh-systems panel soft"><div class="kicker sleigh-systems-title">System Status</div>${systemStatusBank(systems,'sleigh-system-bank')}</div></div>`;
   }
 
   function systemStatusBank(systems,extraClass='',dataPrefix=''){
@@ -225,7 +231,7 @@
     const radioButton=state.elfUnlocked
       ? `<button class="mission-setting-toggle radio-setting ${state.elfAudioOn?'on':'off'}" id="elfAudioToggle" data-elf-audio aria-pressed="${state.elfAudioOn?'true':'false'}" aria-label="ELF FM ${state.elfAudioOn?'on':'off'}" ${streamReady?'':'aria-disabled="true"'}><span class="mission-setting-icon"><img src="./assets/radio-setting-icon.svg" alt=""></span><span class="mission-setting-copy"><span>ELF FM</span></span></button>`
       : `<button class="mission-setting-toggle radio-setting off" data-tune-elf aria-pressed="false" aria-label="Tune ELF FM"><span class="mission-setting-icon"><img src="./assets/radio-setting-icon.svg" alt=""></span><span class="mission-setting-copy"><span>ELF FM</span></span></button>`;
-    const settings=`<section class="mission-settings panel"><div class="mission-settings-head"><div class="kicker">Mission Settings</div></div><div class="mission-settings-grid"><button class="mission-setting-toggle ${gpsOn?'on':'off'}" data-gps-setting aria-pressed="${gpsOn?'true':'false'}" aria-label="GPS Location ${gpsOn?'on':'off'}"><span class="mission-setting-icon"><img src="./assets/radar-setup-icon.svg" alt=""></span><span class="mission-setting-copy"><span>GPS Location</span></span></button><button class="mission-setting-toggle ${state.audio?'on':'off'}" data-mission-audio-setting aria-pressed="${state.audio?'true':'false'}" aria-label="Mission Audio ${state.audio?'on':'off'}"><span class="mission-setting-icon">${settingAudioIcon()}</span><span class="mission-setting-copy"><span>Mission Audio</span></span></button>${radioButton}</div></section>`;
+    const settings=`<section class="mission-settings panel"><div class="mission-settings-head"><div class="kicker">Mission Settings</div></div><div class="mission-settings-grid"><div class="mission-setting-toggle mission-setting-status ${gpsOn?'on':'off'}" aria-label="GPS Location ${state.mode==='demo'?'demo':gpsOn?'active':state.gpsCondition.toLowerCase()}"><span class="mission-setting-icon"><img src="./assets/radar-setup-icon.svg" alt=""></span><span class="mission-setting-copy"><span>GPS Location</span><strong>${state.mode==='demo'?'DEMO':gpsOn?'ACTIVE':state.gpsCondition}</strong></span></div><button class="mission-setting-toggle ${state.audio?'on':'off'}" data-mission-audio-setting aria-pressed="${state.audio?'true':'false'}" aria-label="Mission Audio ${state.audio?'on':'off'}"><span class="mission-setting-icon">${settingAudioIcon()}</span><span class="mission-setting-copy"><span>Mission Audio</span></span></button>${radioButton}</div></section>`;
     const feedBody=feed||'<div class="comms-empty panel">No transmissions received.</div>';
     return `${settings}<section class="comms-feed"><div class="comms-section-title"><span>Message Feed</span></div><div class="comms-feed-viewport"><div class="comms-feed-scroll">${feedBody}</div></div></section>`;
   }
@@ -234,7 +240,7 @@
   function missionHeader(cp){
     const label=`${cp.mc} / ${cp.location}`;
     if(cp.type==='diagnostics'){
-      return `<div class="mission-head diagnostics-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><div class="diagnostics-brand"><img src="./assets/audi-rings.webp" alt="Audi"></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
+      return `<div class="mission-head diagnostics-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><div class="diagnostics-brand"><img src="./assets/audi-rings-2026.webp" alt="Audi"></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
     }
     if(cp.type==='activation'){
       return `<div class="mission-head mc01-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
@@ -263,8 +269,8 @@
       spirit:'Store the positive energy.',
       placeholder:'This checkpoint is reserved while the final installation game is developed.',
       artifacts:'Collect the energy signatures.',
-      comet:'Synchronise Santa-1’s guidance system.',
-      jingle:'Re-engage Santa-1’s flight controls.',
+      comet:'Calibrate Santa-1’s flight controls.',
+      jingle:'Restore Santa-1’s guidance system.',
       lando:'Calibrate Santa-1’s flight response.',
       aurora:'Lock onto the North Pole navigation signal.',
       lapland:'Bring Santa-1’s launch systems online.',
@@ -299,6 +305,10 @@
     const node=geoToCircuitPoint(cp?.lat,cp?.lng)||{x:88.88,y:31.11};
     const nodeX=node.x.toFixed(2),nodeY=node.y.toFixed(2);
     return `<div class="mission-instrument panel mc01-panel" id="mc01Activation" data-stage="detected">
+      <div class="mc01-transfer" aria-label="Circuit Link energy transfer progress">
+        <div class="mc01-transfer-meta"><span>Energy Transfer</span><strong id="mc01TransferValue">0%</strong></div>
+        <div class="mc01-transfer-track"><i id="mc01TransferFill"></i></div>
+      </div>
       <div class="mc01-track-stage" aria-hidden="true">
         <div class="mc01-track-shadow"></div>
         <div class="mc01-track-outline"></div>
@@ -314,16 +324,12 @@
         <div class="mc01-readout-copy"><span id="mc01StateLabel">Circuit Link</span><strong id="mc01State">Signal Detected</strong></div>
         <div class="mc01-signal-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
       </div>
-      <div class="mc01-transfer" aria-label="Circuit Link energy transfer progress">
-        <div class="mc01-transfer-meta"><span>Energy Transfer</span><strong id="mc01TransferValue">0%</strong></div>
-        <div class="mc01-transfer-track"><i id="mc01TransferFill"></i></div>
-      </div>
     </div>`;
   }
 
   function diagnosticsBody(){
     const sensors=[
-      {name:'Aero',key:'aero',viz:`<div class="mc02-icon mc02-icon-aero"><svg class="mc02-svg mc02-aero-svg" viewBox="0 0 210 126" aria-hidden="true"><path class="mc02-aero-frame-path" d="M27.16,11.07V120.66h6V17.08h6V120.64h6V17.08H164.74V120.64h6V17.08h6V120.66h6V11.07ZM49.7,34H160.2V28H49.7Z"/><g class="mc02-aero-fan-group"><path class="mc02-aero-fan-path" d="M105,41.51a39.27,39.27,0,1,0,39.27,39.26A39.3,39.3,0,0,0,105,41.51Zm0,72.88a33.62,33.62,0,1,1,33.62-33.62A33.66,33.66,0,0,1,105,114.39Zm14.35-27.73c-1.41.32-4.52.71-6.84-1.35a8.56,8.56,0,0,0,1-2.37c4.32-1.43,10.41-4.22,11.17-12,.86-8.82-8-15.09-14.52-16.73-3.49-.87-6.91.35-8.5,3.05-1.5,2.55-1,5.67,1.27,8.12,1,1.06,2.87,3.56,2.26,6.6H105a8.88,8.88,0,0,0-2.38.33c-3.4-3-8.85-6.9-16-3.68-8.07,3.67-9.09,14.46-7.23,21,1,3.45,3.76,5.8,6.89,5.83h.06c2.94,0,5.36-2,6.34-5.16.42-1.38,1.64-4.26,4.58-5.25a9.18,9.18,0,0,0,1.56,2c-.92,4.45-1.55,11.12,4.79,15.65A12.39,12.39,0,0,0,111,105c5.55,0,11.2-3.17,14.41-6.5,2.5-2.58,3.15-6.15,1.61-8.88S122.62,85.9,119.35,86.66Zm-23-7.24c-4.87,1.25-7.82,5.32-9,9.19-.08.27-.4,1.16-.94,1.16h0c-.41,0-1.15-.47-1.51-1.74-1.1-3.81-1-11.91,4.13-14.25,3.39-1.54,6.13-.29,8.85,1.91A8.6,8.6,0,0,0,96.33,79.42Zm10.19-19.27c.2-.35,1-.76,2.26-.44,3.85,1,10.82,5.09,10.27,10.7-.36,3.71-2.81,5.45-6.07,6.71a8.86,8.86,0,0,0-2.47-3.18c1.35-4.85-.7-9.43-3.46-12.39C106.85,61.34,106.24,60.62,106.52,60.15Zm-5.37,20.62A3.85,3.85,0,1,1,105,84.62,3.85,3.85,0,0,1,101.15,80.77Zm20.2,13.81c-2.76,2.85-9.82,6.82-14.41,3.54-3-2.16-3.31-5.16-2.77-8.6.27,0,.55,0,.83,0a8.71,8.71,0,0,0,3.16-.6c3.52,3.6,8.52,4.1,12.46,3.2.28-.07,1.21-.24,1.48.24S122.27,93.63,121.35,94.58Z"/></g></svg></div>`},
+      {name:'Aero',key:'aero',viz:`<div class="mc02-icon mc02-icon-aero"><svg class="mc02-svg mc02-aero-svg" viewBox="0 0 210 126" aria-hidden="true"><path class="mc02-aero-frame-path" d="M27.16,11.07V120.66h6V17.08h6V120.64h6V17.08H164.74V120.64h6V17.08h6V120.66h6V11.07ZM49.7,34H160.2V28H49.7Z"/><g class="mc02-aero-fan-group"><path class="mc02-aero-fan-path" d="M105,41.51a39.27,39.27,0,1,0,39.27,39.26A39.3,39.3,0,0,0,105,41.51Zm0,72.88a33.62,33.62,0,1,1,33.62-33.62A33.66,33.66,0,0,1,105,114.39Zm14.35-27.73c-1.41.32-4.52.71-6.84-1.35a8.56,8.56,0,0,0,1-2.37c4.32-1.43,10.41-4.22,11.17-12,.86-8.82-8-15.09-14.52-16.73-3.49-.87-6.91.35-8.5,3.05-1.5,2.55-1,5.67,1.27,8.12,1,1.06,2.87,3.56,2.26,6.6H105a8.88,8.88,0,0,0-2.38.33c-3.4-3-8.85-6.9-16-3.68-8.07,3.67-9.09,14.46-7.23,21,1,3.45,3.76,5.8,6.89,5.83h.06c2.94,0,5.36-2,6.34-5.16.42-1.38,1.64-4.26,4.58-5.25a9.18,9.18,0,0,0,1.56,2c-.92,4.45-1.55,11.12,4.79,15.65A12.39,12.39,0,0,0,111,105c5.55,0,11.2-3.17,14.41-6.5,2.5-2.58,3.15-6.15,1.61-8.88S122.62,85.9,119.35,86.66Zm-23-7.24c-4.87,1.25-7.82,5.32-9,9.19-.08.27-.4,1.16-.94,1.16h0c-.41,0-1.15-.47-1.51-1.74-1.1-3.81-1-11.91,4.13-14.25,3.39-1.54,6.13-.29,8.85,1.91A8.6,8.6,0,0,0,96.33,79.42Zm10.19-19.27c.2-.35,1-.76,2.26-.44,3.85,1,10.82,5.09,10.27,10.7-.36,3.71-2.81,5.45-6.07,6.71a8.86,8.86,0,0,0-2.47-3.18c1.35-4.85-.7-9.43-3.46-12.39C106.85,61.34,106.24,60.62,106.52,60.15Zm-5.37,20.62A3.85,3.85,0,1,1,105,84.62,3.85,3.85,0,0,1,101.15,80.77Zm20.2,13.81c-2.76,2.85-9.82,6.82-14.41,3.54-3-2.16-3.31-5.16-2.77-8.6.27,0,.55,0,.83,0a8.71,8.71,0,0,0,3.16-.6c3.52,3.6,8.52,4.1,12.46,3.2.28-.07,1.21-.24,1.48.24S122.27,93.63,121.35,94.58Z"/><circle class="mc02-aero-fan-ring" cx="105" cy="80.77" r="36.45"/></g></svg></div>`},
       {name:'Stability',key:'stability',viz:`<div class="mc02-icon mc02-icon-stability"><span class="mc02-layer mc02-stability-car"></span><span class="mc02-layer mc02-stability-headlights"></span></div>`},
       {name:'Power',key:'power',viz:`<div class="mc02-icon mc02-icon-power"><svg class="mc02-svg mc02-power-svg" viewBox="0 0 210 126" aria-hidden="true"><path class="mc02-power-gauge-path" d="M105,15.05A72.14,72.14,0,0,0,32.93,87.11a73,73,0,0,0,.77,10.57l.44,3,21.67-3.09-.84-6L39.28,93.82c-.22-2.22-.34-4.47-.34-6.71a65.69,65.69,0,0,1,13.47-39.9L64.67,57.39l3.85-4.63L56.26,42.58a65.89,65.89,0,0,1,45.86-21.44v16h6v-16a65.93,65.93,0,0,1,45.6,21.43L139.11,54.7,141.05,57a47.1,47.1,0,0,1,10.41,36.91l-.64,3.16,25,3.59.44-3a73.21,73.21,0,0,0,.77-10.58A72.15,72.15,0,0,0,105,15.05Z"/><g class="mc02-power-needle-group"><path class="mc02-power-needle-path" d="M171.32,117.08l-64-35.21.06,0-.12,0A5.77,5.77,0,0,0,99.39,89a5.89,5.89,0,0,0,3.16,3.34L170.41,119a1.08,1.08,0,0,0,.91-2Z"/></g></svg></div>`},
       {name:'Control',key:'control',viz:`<div class="mc02-icon mc02-icon-control"><span class="mc02-layer mc02-control-wheel"></span><span class="mc02-layer mc02-control-ring"></span></div>`},
@@ -336,7 +342,8 @@
   function radioBody(){return `<div class="mission-instrument panel"><div class="wave" id="radioWave">${'<i></i>'.repeat(28)}</div><div class="frequency"><span id="freqVal">86.4</span> <small>FM</small></div><div class="range-wrap"><input id="freqRange" class="range" type="range" min="86" max="89" value="86.4" step="0.1"><div class="freq-marks"><span>86.0</span><span>87.0</span><span>88.0</span><span>89.0</span></div></div><div class="signal-state" id="signalState">Searching for signal</div><button class="btn primary wide" id="lockSignal" disabled>Lock Signal</button></div>`}
   function commsRelayBody(){
     return `<div class="mission-instrument panel comms-relay-panel">
-      <div class="signal-state relay-instruction" id="relayState">Tap Relay 01 when the pulse meets the capture ring.</div>
+      <div class="relay-progress-head"><span>RELAYS LOCKED</span><strong id="relayLockedCount">0 / 4</strong></div>
+      <div class="relay-progress-track" aria-label="Relay lock progress">${Array.from({length:4},(_,i)=>`<i data-relay-progress="${i}"></i>`).join('')}</div>
       <div class="relay-network" id="relayNetwork" aria-label="Signal relay network">
         <svg class="relay-route" viewBox="0 0 100 150" preserveAspectRatio="none" aria-hidden="true">
           <line class="relay-hop-line" data-hop="0" x1="25" y1="25" x2="75" y2="25"></line>
@@ -350,7 +357,7 @@
         ${[0,1,2,3].map(i=>`<div class="relay-cell relay-capture"><button class="relay-node ${i===0?'active':''}" data-relay="${i}" aria-label="Relay ${i+1}"><span class="relay-target"></span><span class="relay-pulse"></span><span class="relay-core">0${i+1}</span></button><small>RELAY 0${i+1}</small></div>`).join('')}
         <div class="relay-cell relay-endpoint relay-destination"><span class="relay-receiver-icon"></span><small>RECEIVER</small></div>
       </div>
-      <div class="relay-meter"><span>Signal Strength</span><div><i id="relayMeterFill"></i></div></div>
+      <div class="visually-hidden" id="relayState" aria-live="polite">Relay 01 armed</div>
     </div>`;
   }
   function powerBody(){
@@ -415,8 +422,8 @@
         <div class="spirit-meter spirit-meter-right" aria-hidden="true"><span class="spirit-meter-fill"></span><b class="spirit-meter-marker"></b></div>
       </div>
       <div class="spirit-charge-controls" aria-label="Storage tank charging controls">
-        <button class="spirit-charge-btn is-next" data-charge="A" aria-label="Charge left tank bank"><strong>A</strong></button>
-        <button class="spirit-charge-btn" data-charge="B" aria-label="Charge right tank bank"><strong>B</strong></button>
+        <button class="spirit-charge-btn is-next" data-charge="A" aria-label="Charge left tank bank"><strong>TAP</strong></button>
+        <button class="spirit-charge-btn" data-charge="B" aria-label="Charge right tank bank"><strong></strong></button>
       </div>
     </div>`;
   }
@@ -442,9 +449,9 @@
     const btnLabel={L:'Left',D:'Down',U:'Up',R:'Right'};
     const arrow=(dir,extra='')=>`<span class="comet-arrow-icon comet-arrow-${dir} ${extra}" aria-hidden="true"><i></i><i></i></span>`;
     return `<div class="mission-instrument panel comet-panel">
-      <div class="comet-score"><span>GUIDANCE SYNC</span><strong id="cometProgress">0 / 10</strong></div>
+      <div class="comet-score"><span>CONTROL CALIBRATION</span><strong id="cometProgress">0 / 10</strong></div>
       <div class="comet-progress-track" aria-hidden="true">${Array.from({length:10},(_,i)=>`<i data-comet-step="${i}"></i>`).join('')}</div>
-      <div class="comet-game" id="cometGame" aria-label="Directional guidance rhythm game">
+      <div class="comet-game" id="cometGame" aria-label="Directional flight control calibration game">
         <div class="comet-lanes">${lanes.map(([key])=>`<div class="comet-lane" data-comet-lane="${key}"></div>`).join('')}</div>
         <div class="comet-capture-line" aria-hidden="true"></div>
         <div class="comet-notes" id="cometNotes" aria-hidden="true"></div>
@@ -453,16 +460,15 @@
         <div class="comet-combo" id="cometCombo" aria-live="polite"></div>
       </div>
       <div class="comet-controls">${lanes.map(([key,dir])=>`<button class="comet-btn comet-btn-${dir}" data-arrow="${key}" aria-label="${btnLabel[key]}">${arrow(dir)}</button>`).join('')}</div>
-      <div class="visually-hidden" id="cometState" aria-live="polite">Guidance rhythm armed</div>
+      <div class="visually-hidden" id="cometState" aria-live="polite">Flight controls armed</div>
     </div>`;
   }
   function jingleBody(){
     return `<div class="mission-instrument panel jingle-panel" id="jinglePanel">
-      <div class="jingle-beam-progress" aria-label="Jingle Beam charge progress">
-        ${[1,2,3].map(i=>`<div class="jingle-beam-indicator ${i===1?'is-next':''}" data-jingle-beam="${i}"><span aria-hidden="true"><i></i></span><strong>0${i}</strong></div>`).join('')}
-      </div>
-      <div class="jingle-arena" id="jingleArena" tabindex="0" role="application" aria-label="Jingle Beams propulsion game. Drag to move the paddle and direct the charge through the bright centre beam. The receiver edges rebound the puck.">
-        <div class="jingle-grid" aria-hidden="true"></div>
+      <div class="jingle-progress-head"><span>GUIDANCE LOCK</span><strong id="jingleLockCount">0 / 3</strong></div>
+      <div class="jingle-lock-track" aria-label="Guidance lock progress">${[1,2,3].map(i=>`<i class="${i===1?'is-next':''}" data-jingle-beam="${i}"></i>`).join('')}</div>
+      <div class="jingle-arena" id="jingleArena" tabindex="0" role="application" aria-label="Jingle Beams guidance game. Tap or slide horizontally to steer the paddle and direct the charge into each receiver.">
+        <div class="jingle-grid" aria-hidden="true"><img class="jingle-centre-mark" src="./assets/silverstone-s-mark.webp" alt=""></div>
         <div class="jingle-energy-rail rail-left" aria-hidden="true"><i></i></div>
         <div class="jingle-energy-rail rail-right" aria-hidden="true"><i></i></div>
         <div class="jingle-receiver" id="jingleReceiver" aria-hidden="true"><span></span><i></i></div>
@@ -470,7 +476,7 @@
         <div class="jingle-puck-trail" id="jinglePuckTrail" aria-hidden="true"></div>
         <div class="jingle-puck" id="jinglePuck" aria-hidden="true"><i></i></div>
         <div class="jingle-paddle" id="jinglePaddle" aria-hidden="true"><i></i></div>
-        <div class="jingle-drag-prompt" id="jinglePrompt"><strong>DRAG TO MOVE</strong></div>
+        <div class="jingle-drag-prompt" id="jinglePrompt"><strong>TAP TO STEER</strong></div>
       </div>
       <div class="jingle-state" id="jingleState" aria-live="polite">Beam 01 ready</div>
     </div>`;
@@ -536,10 +542,9 @@
       </section>
       <section class="lapland-stage lapland-transmission-stage" id="laplandTransmissionStage" hidden>
         <div class="incoming-transmission lapland-incoming">
-          <div class="transmission-icon"><span></span><i></i><i></i><i></i></div>
+          <div class="transmission-wave">${'<b></b>'.repeat(24)}</div>
           <div class="kicker">Incoming Transmission</div>
           <h2>ELF ENGINEERING</h2>
-          <div class="transmission-wave">${'<b></b>'.repeat(24)}</div>
           <div class="signal-state lock">Signal locked</div>
         </div>
       </section>
@@ -558,11 +563,10 @@
     </div>`;
   }
   function northernBody(){return `<div class="mission-instrument panel northern-panel" id="northernPanel">
-      <div class="northern-control-title">Flight Control</div>
       <div class="northern-conditions" aria-label="Final flight conditions">
-        <div class="northern-condition" data-flight-check="0"><span>Flight Path</span><strong>Checking</strong><i></i></div>
-        <div class="northern-condition" data-flight-check="1"><span>Airspace</span><strong>Checking</strong><i></i></div>
-        <div class="northern-condition" data-flight-check="2"><span>Launch Window</span><strong>Checking</strong><i></i></div>
+        <div class="northern-condition" data-flight-check="0"><span>Flight Path</span><strong>Checking</strong></div>
+        <div class="northern-condition" data-flight-check="1"><span>Airspace</span><strong>Checking</strong></div>
+        <div class="northern-condition" data-flight-check="2"><span>Launch Window</span><strong>Checking</strong></div>
       </div>
       <div class="northern-vector" aria-hidden="true">
         <i class="northern-vector-axis"></i>

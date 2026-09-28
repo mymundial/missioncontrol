@@ -10,10 +10,18 @@
     document.querySelectorAll('[data-read-messages]').forEach(b=>b.addEventListener('click',()=>{markAllMessagesRead();set({nav:'comms'});}));
     document.querySelectorAll('[data-dismiss-messages]').forEach(b=>b.addEventListener('click',dismissMessageAlert));
     document.querySelectorAll('[data-tune-elf]').forEach(b=>b.addEventListener('click',()=>openElfTuner()));
+    document.querySelectorAll('[data-elf-onboard]').forEach(b=>b.addEventListener('click',()=>{
+      state.elfPromptSeen=true;save();
+      if(b.dataset.elfOnboard==='tune'){
+        ping(780,.06,.04);haptic(25);
+        set({missionOpen:'elf-radio',missionReturnNav:'radar'});
+      }else render();
+    }));
     document.querySelectorAll('[data-elf-audio]').forEach(b=>b.addEventListener('click',toggleElfAudio));
     document.querySelectorAll('[data-mission-audio-setting]').forEach(b=>b.addEventListener('click',toggleMissionAudioSetting));
     document.querySelectorAll('[data-gps-setting]').forEach(b=>b.addEventListener('click',toggleGpsSetting));
     document.querySelectorAll('[data-onboard]').forEach(b=>b.addEventListener('click',()=>{
+      if(state.audio) ensureAudio();
       set({bootDone:b.dataset.onboard});
     }));
     document.querySelectorAll('[data-mc00-continue]').forEach(b=>b.addEventListener('click',()=>continueMc00Sequence(b.dataset.mc00Continue)));

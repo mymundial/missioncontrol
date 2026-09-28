@@ -8,6 +8,7 @@
     const goalFlare=document.getElementById('jingleGoalFlare');
     const prompt=document.getElementById('jinglePrompt');
     const stateEl=document.getElementById('jingleState');
+    const lockCount=document.getElementById('jingleLockCount');
     if(!panel||!arena||!puck||!trail||!paddle||!receiver||!stateEl) return;
 
     let beam=1;
@@ -205,21 +206,22 @@
       const current=beamEl(n);
       current?.classList.remove('is-next');
       current?.classList.add('is-charged');
-      current?.setAttribute('aria-label',`Beam 0${n} charged`);
+      current?.setAttribute('aria-label',`Guidance lock ${n} complete`);
       const next=beamEl(n+1);
       next?.classList.add('is-next');
+      if(lockCount)lockCount.textContent=`${n} / 3`;
     }
     function finishGame(){
       running=false;
       panel.classList.add('is-complete');
       arena.classList.add('is-complete');
-      stateEl.textContent='PROPULSION ONLINE';
+      stateEl.textContent='GUIDANCE LOCKED';
       clearTimeout(buzzerTimer);
       buzzerTimer=setTimeout(()=>{
         playAudio(buzzerAudio,.78,1);
         haptic([30,28,70]);
       },780);
-      finishTimer=setTimeout(()=>showCompletion('Propulsion Online','Santa-1’s flight controls have been re-engaged and are ready for flight.'),2450);
+      finishTimer=setTimeout(()=>showCompletion('Guidance Locked','Santa-1’s guidance system is locked and ready for flight.'),2450);
     }
     function scoreGoal(){
       if(!running) return;

@@ -248,7 +248,7 @@
         stopMusic();
         playCompletionSound();
         haptic([30,22,60]);
-        setTimeout(()=>showCompletion('Guidance Path Locked','Santa-1’s guidance system has been aligned and the flight path is locked.'),900);
+        setTimeout(()=>showCompletion('Flight Controls Calibrated','Santa-1’s flight controls have been calibrated and are responding correctly.'),900);
       }
     }
     function frame(){

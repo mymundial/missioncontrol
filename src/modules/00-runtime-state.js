@@ -69,8 +69,8 @@
     power:{sender:'ENGINEERING',title:'POWER STABILISED',body:'The racing energy is stable and the interference has been cleared. We can now send it on to be stored.'},
     spirit:{sender:'MISSION CONTROL',title:'SPIRIT CORE CHARGED',body:'The recovered energy is safely stored and both banks are holding steady. Santa-1 has a reliable power reserve again.'},
     escapade:{sender:'PROPULSION SYSTEM',title:'PROPULSION ONLINE',body:'Propulsion is holding up at speed. Santa-1 can handle the power needed for flight.'},
-    comet:{sender:'GUIDANCE SYSTEM',title:'GUIDANCE ALIGNED',body:'Guidance is aligned and Santa-1 can now deal with rapid changes in direction while staying on course.'},
-    jingle:{sender:'CONTROL SYSTEM',title:'FLIGHT CONTROLS RE-ENGAGED',body:'The flight controls are responding again. All three beams are working together and Santa-1 is stable.'},
+    comet:{sender:'CONTROL SYSTEM',title:'FLIGHT CONTROLS CALIBRATED',body:'Flight controls are calibrated and Santa-1 can now respond cleanly to rapid changes in direction.'},
+    jingle:{sender:'GUIDANCE SYSTEM',title:'GUIDANCE LOCKED',body:'Guidance is locked. All three beams are working together and Santa-1 has a stable flight reference.'},
     lando:{sender:'RESPONSE SYSTEM',title:'RESPONSE CALIBRATED',body:'Response timing is where it needs to be. Santa-1 can now react quickly enough for high-speed flight.'},
     aurora:{sender:'NAVIGATION',title:'NORTH POLE SIGNAL LOCKED',body:'We’ve got a strong North Pole signal. Navigation has a clear reference and the route home is confirmed.'},
     lapland:{sender:'MISSION CONTROL',title:'LAUNCH SYSTEMS ONLINE',body:'Every restored system is responding correctly. Santa-1’s launch systems are online and ready for the final flight sequence.'},
@@ -81,7 +81,7 @@
     {stage:1,trigger:null,name:'Grounded',asset:'./assets/sleigh-stage-1.webp',milestone:'Initial State',next:'Circuit Link',copy:'Santa-1 remains grounded in stripped-back recovery condition. Mission Control is waiting for enough circuit energy to energise the chassis and begin the rebuild.'},
     {stage:2,trigger:'entry',name:'Recovery Initiated',asset:'./assets/sleigh-stage-2.webp',milestone:'Circuit Link',next:'Spirit Depot',copy:'Initial circuit energy has been routed into Santa-1. The chassis is energised and the recovery sequence is underway, while the individual sleigh systems remain offline until they are restored.'},
     {stage:3,trigger:'spirit',name:'Core Recovery',asset:'./assets/sleigh-stage-3.webp',milestone:'Spirit Depot',next:'Jingle Beams',copy:'Spirit Depot has brought the Spirit Core online. Santa-1’s major body and core systems are now energised and the physical rebuild is visibly advancing.'},
-    {stage:4,trigger:'jingle',name:'Flight Systems Recovery',asset:'./assets/sleigh-stage-4.webp',milestone:'Jingle Beams',next:'Aurora Apex',copy:'Jingle Beams has brought Santa-1’s control system online. Flight hardware is now substantially restored and the sleigh is approaching full operational condition.'},
+    {stage:4,trigger:'jingle',name:'Flight Systems Recovery',asset:'./assets/sleigh-stage-4.webp',milestone:'Jingle Beams',next:'Aurora Apex',copy:'Jingle Beams has brought Santa-1’s guidance system online. Flight hardware is now substantially restored and the sleigh is approaching full operational condition.'},
     {stage:5,trigger:'aurora',name:'Rebuild Complete',asset:'./assets/sleigh-stage-5.webp',milestone:'Aurora Apex',next:'Lapland Launch',copy:'Aurora Apex has brought navigation online and completed the rebuild. Santa-1 now has a fully restored frame, active flight systems and a confirmed route home, ready for final verification at Lapland Launch.'}
   ];
 
@@ -104,6 +104,7 @@
     missionReturnNav:'radar',
     elfUnlocked:false,
     elfAudioOn:false,
+    elfPromptSeen:false,
     lastMessage:'SEARCHING FOR RECOVERY SIGNALS',
     bootDone:false,
     messages:[],
@@ -172,6 +173,7 @@
         missionOpen:parsed.missionOpen==='entry'?null:(parsed.missionOpen||null),
         elfUnlocked:Boolean(parsed.elfUnlocked),
         elfAudioOn:false,
+        elfPromptSeen:Boolean(parsed.elfPromptSeen),
         // Never trust a persisted in-range lock after a refresh. Live GPS must
         // revalidate the checkpoint before a mission can be opened again.
         targetInRange:liveMode?false:Boolean(parsed.targetInRange),

@@ -136,7 +136,9 @@
       buttons.forEach(button=>{
         const isNext=!completed&&button.dataset.charge===expected;
         button.classList.toggle('is-next',isNext);
-        button.disabled=completed?true:false;
+        button.disabled=completed||!isNext;
+        const label=button.querySelector('strong');
+        if(label) label.textContent=isNext?'TAP':'';
       });
       updateBank('A');
       updateBank('B');
