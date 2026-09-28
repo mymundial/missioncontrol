@@ -2025,7 +2025,7 @@
     const captureAudio=new Audio('./assets/mc02-scan-capture.mp3');
     captureAudio.preload='auto';
     captureAudio.volume=.82;
-    const submitAudio=new Audio('./assets/mc02-scan-hit.mp3');
+    const submitAudio=new Audio('./assets/mc02-mission-complete.mp3');
     submitAudio.preload='auto';
     submitAudio.volume=.82;
     let busy=false;

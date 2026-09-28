@@ -9422,3 +9422,11 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   0%,100%{transform:translate(-50%,-50%) rotate(0deg)}
   50%{transform:translate(-50%,-50%) rotate(54deg)}
 }
+
+/* MC02 CONTROL final sync: one natural out-and-back motion within the 1.2s control scan. */
+.mission-diagnostics .sensor-control.active .mc02-icon-control{animation:mc02ControlRightReturnSynced 1.2s cubic-bezier(.42,0,.58,1) 1 both!important;}
+.mission-diagnostics .sensor-control.active .mc02-control-wheel{animation:none!important;}
+@keyframes mc02ControlRightReturnSynced{
+  0%,100%{transform:translate(-50%,-50%) rotate(0deg)}
+  50%{transform:translate(-50%,-50%) rotate(54deg)}
+}
