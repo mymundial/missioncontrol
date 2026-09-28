@@ -155,6 +155,7 @@
     }
     const blockTankGesture=event=>{event.preventDefault();event.stopPropagation();};
     buttons.forEach(button=>{
+      button.addEventListener('touchstart',blockTankGesture,{passive:false});
       button.addEventListener('pointerdown',blockTankGesture,{passive:false});
       button.addEventListener('pointerup',onCharge,{passive:false});
       button.addEventListener('touchend',blockTankGesture,{passive:false});
@@ -169,6 +170,7 @@
       clearTimeout(finishTimer);
       reactionTimers.forEach(clearTimeout);
       buttons.forEach(button=>{
+        button.removeEventListener('touchstart',blockTankGesture);
         button.removeEventListener('pointerdown',blockTankGesture);
         button.removeEventListener('pointerup',onCharge);
         button.removeEventListener('touchend',blockTankGesture);

@@ -1110,8 +1110,8 @@
     return `<div class="mission-instrument panel lapland-panel" id="laplandPanel" style="--lapland-charge:0">
       <section class="lapland-stage lapland-verification-stage" id="laplandVerificationStage">
         <div class="lapland-online-progress" id="laplandOnlineProgress">
-          <div class="lapland-online-head"><span>SYSTEMS ONLINE</span><strong id="laplandOnlineCount">0 / 20</strong></div>
-          <div class="lapland-online-track" aria-label="Launch system verification progress">${Array.from({length:20},(_,i)=>`<i data-lapland-progress="${i}"></i>`).join('')}</div>
+          <div class="lapland-online-head"><span>SYSTEMS ONLINE</span><strong id="laplandOnlineCount">0 / 10</strong></div>
+          <div class="lapland-online-track" aria-label="Launch system verification progress">${Array.from({length:10},(_,i)=>`<i data-lapland-progress="${i}"></i>`).join('')}</div>
         </div>
         ${systemStatusBank(systems,'lapland-system-bank','verify')}
         <div class="lapland-launch-slot">
@@ -2331,6 +2331,8 @@
       if(stage===3){
         hops.forEach(h=>h.classList.add('locked'));
         const dest=document.querySelector('.relay-destination');dest?.classList.add('locked');
+        const receiverIcon=dest?.querySelector('.relay-receiver-icon img');
+        if(receiverIcon) receiverIcon.src='./assets/relay-receiver-hi-spec-green.svg';
         // Prime the Santa media element inside the final user gesture, but at
         // zero volume. This preserves reliable mobile playback while the
         // visible carrier/static intro and clean pause happen afterwards.
@@ -2755,6 +2757,7 @@
     }
     const blockTankGesture=event=>{event.preventDefault();event.stopPropagation();};
     buttons.forEach(button=>{
+      button.addEventListener('touchstart',blockTankGesture,{passive:false});
       button.addEventListener('pointerdown',blockTankGesture,{passive:false});
       button.addEventListener('pointerup',onCharge,{passive:false});
       button.addEventListener('touchend',blockTankGesture,{passive:false});
@@ -2769,6 +2772,7 @@
       clearTimeout(finishTimer);
       reactionTimers.forEach(clearTimeout);
       buttons.forEach(button=>{
+        button.removeEventListener('touchstart',blockTankGesture);
         button.removeEventListener('pointerdown',blockTankGesture);
         button.removeEventListener('pointerup',onCharge);
         button.removeEventListener('touchend',blockTankGesture);
@@ -3088,6 +3092,12 @@
       setTimeout(()=>showCompletion('Power Stabilised','The positive energy signatures have been captured and stabilised, ready to be stored in the Spirit Core.'),900);
     }
 
+    const blockFieldGesture=event=>{
+      if(event.cancelable) event.preventDefault();
+    };
+    field.addEventListener('touchmove',blockFieldGesture,{passive:false});
+    field.addEventListener('gesturestart',blockFieldGesture,{passive:false});
+
     renderStability();
     startStarstream();
     if(stateEl) stateEl.textContent='';
@@ -3101,6 +3111,8 @@
       resizeObserver?.disconnect?.();
       for(const item of liveItems){item.el.remove();}
       liveItems.clear();
+      field.removeEventListener('touchmove',blockFieldGesture);
+      field.removeEventListener('gesturestart',blockFieldGesture);
     };
   }
   function bindComet(){
@@ -4416,14 +4428,14 @@
     const systemKeys=['circuitry','diagnostic','comms','power','core','propulsion','guidance','control','response','navigation'];
     const setCharge=value=>panel.style.setProperty('--lapland-charge',String(Math.max(0,Math.min(1,value))));
     const setOnlineProgress=(onlineSystems,complete=false)=>{
-      const ticks=Math.max(0,Math.min(20,onlineSystems*2));
+      const ticks=Math.max(0,Math.min(10,onlineSystems));
       if(onlineCount){
-        onlineCount.textContent=`${ticks} / 20`;
-        onlineCount.classList.toggle('complete',complete&&ticks===20);
+        onlineCount.textContent=`${ticks} / 10`;
+        onlineCount.classList.toggle('complete',complete&&ticks===10);
       }
       onlineSegments.forEach((segment,i)=>{
         segment.classList.toggle('on',i<ticks);
-        segment.classList.toggle('complete',complete&&ticks===20);
+        segment.classList.toggle('complete',complete&&ticks===10);
       });
     };
     const setRowState=(key,nextState,label)=>{

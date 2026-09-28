@@ -535,8 +535,8 @@
     return `<div class="mission-instrument panel lapland-panel" id="laplandPanel" style="--lapland-charge:0">
       <section class="lapland-stage lapland-verification-stage" id="laplandVerificationStage">
         <div class="lapland-online-progress" id="laplandOnlineProgress">
-          <div class="lapland-online-head"><span>SYSTEMS ONLINE</span><strong id="laplandOnlineCount">0 / 20</strong></div>
-          <div class="lapland-online-track" aria-label="Launch system verification progress">${Array.from({length:20},(_,i)=>`<i data-lapland-progress="${i}"></i>`).join('')}</div>
+          <div class="lapland-online-head"><span>SYSTEMS ONLINE</span><strong id="laplandOnlineCount">0 / 10</strong></div>
+          <div class="lapland-online-track" aria-label="Launch system verification progress">${Array.from({length:10},(_,i)=>`<i data-lapland-progress="${i}"></i>`).join('')}</div>
         </div>
         ${systemStatusBank(systems,'lapland-system-bank','verify')}
         <div class="lapland-launch-slot">

@@ -159,6 +159,8 @@
       if(stage===3){
         hops.forEach(h=>h.classList.add('locked'));
         const dest=document.querySelector('.relay-destination');dest?.classList.add('locked');
+        const receiverIcon=dest?.querySelector('.relay-receiver-icon img');
+        if(receiverIcon) receiverIcon.src='./assets/relay-receiver-hi-spec-green.svg';
         // Prime the Santa media element inside the final user gesture, but at
         // zero volume. This preserves reliable mobile playback while the
         // visible carrier/static intro and clean pause happen afterwards.

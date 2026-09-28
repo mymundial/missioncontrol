@@ -200,14 +200,14 @@
     const systemKeys=['circuitry','diagnostic','comms','power','core','propulsion','guidance','control','response','navigation'];
     const setCharge=value=>panel.style.setProperty('--lapland-charge',String(Math.max(0,Math.min(1,value))));
     const setOnlineProgress=(onlineSystems,complete=false)=>{
-      const ticks=Math.max(0,Math.min(20,onlineSystems*2));
+      const ticks=Math.max(0,Math.min(10,onlineSystems));
       if(onlineCount){
-        onlineCount.textContent=`${ticks} / 20`;
-        onlineCount.classList.toggle('complete',complete&&ticks===20);
+        onlineCount.textContent=`${ticks} / 10`;
+        onlineCount.classList.toggle('complete',complete&&ticks===10);
       }
       onlineSegments.forEach((segment,i)=>{
         segment.classList.toggle('on',i<ticks);
-        segment.classList.toggle('complete',complete&&ticks===20);
+        segment.classList.toggle('complete',complete&&ticks===10);
       });
     };
     const setRowState=(key,nextState,label)=>{
