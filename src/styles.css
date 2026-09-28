@@ -3239,10 +3239,10 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .mission-diagnostics .viz-control .control-path{fill:none;stroke:#77dcfb;stroke-width:1.3;stroke-dasharray:6 5;opacity:.45;}
 .mission-diagnostics .viz-control .control-angle{fill:none;stroke:rgba(116,223,255,.38);stroke-width:1;stroke-dasharray:3 4;}
 .mission-diagnostics .viz-control .control-marker{fill:#d9f9ff;opacity:.55;}
-.mission-diagnostics .sensor-control.active .control-wheel{animation:mc02Steer 1.15s ease-in-out infinite;}
+.mission-diagnostics .sensor-control.active .control-wheel{animation:mc02Steer 1.2s ease-in-out 1 both;}
 .mission-diagnostics .sensor-control.active .control-path-left{animation:mc02ControlPath .6s linear infinite;}
 .mission-diagnostics .sensor-control.active .control-path-right{animation:mc02ControlPath .6s linear infinite reverse;}
-.mission-diagnostics .sensor-control.active .control-marker{animation:mc02ControlMarker 1.15s ease-in-out infinite;}
+.mission-diagnostics .sensor-control.active .control-marker{animation:mc02ControlMarker 1.2s ease-in-out 1 both;}
 .mission-diagnostics .sensor-control.done .control-wheel circle,.mission-diagnostics .sensor-control.done .control-wheel line,.mission-diagnostics .sensor-control.done .control-path{stroke:var(--green);}
 @keyframes mc02Steer{0%,100%{transform:rotate(-18deg)}50%{transform:rotate(18deg)}}
 @keyframes mc02ControlPath{to{stroke-dashoffset:-22}}

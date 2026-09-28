@@ -1,6 +1,6 @@
   function bindDiagnostics(){
     const done=new Set();
-    const durations=[1600,1900,1700,1200,1800,2200];
+    const durations=[1600,1900,1700,1200,1680,2050];
     const scanAudioPaths=[
       './assets/mc02-scan-aero.mp3',
       './assets/mc02-scan-stability.mp3',
@@ -15,10 +15,10 @@
       audio.volume=.72;
       return audio;
     });
-    const captureAudio=new Audio('./assets/mc02-scan-hit.mp3');
+    const captureAudio=new Audio('./assets/mc02-scan-capture.mp3');
     captureAudio.preload='auto';
     captureAudio.volume=.82;
-    const submitAudio=new Audio('./assets/mc02-scan-complete.mp3');
+    const submitAudio=new Audio('./assets/mc02-scan-hit.mp3');
     submitAudio.preload='auto';
     submitAudio.volume=.82;
     let busy=false;
