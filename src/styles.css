@@ -10089,3 +10089,313 @@ button,[role="button"],.mission-instrument{-webkit-tap-highlight-color:transpare
 @media(max-width:390px) and (max-height:720px){
   .aurora-dial{width:min(100%,36dvh,300px)!important;}
 }
+
+
+/* === Mobile QA pass 2026-09-28 — balance, controls, audio priority ===== */
+
+/* MC00 + Sleigh: settle between image-dominant and status-dominant layouts. */
+@media(max-width:520px){
+  .setup-page.mc00-page .mc00-card{
+    grid-template-rows:auto clamp(210px,35dvh,285px) auto auto!important;
+    row-gap:8px!important;
+  }
+  .mc00-system-bank{
+    height:auto!important;
+    align-content:start!important;
+    padding:1px 5px!important;
+    row-gap:4px!important;
+  }
+  .mc00-system-bank .system-status-name,
+  .mc00-system-bank .system-status-value{
+    min-height:21px!important;
+    font-size:7px!important;
+    letter-spacing:.08em!important;
+  }
+  .mc00-sleigh-visual .sleigh-art{
+    inset:7% 6% 8%!important;
+    width:88%!important;
+    height:85%!important;
+  }
+
+  .nav-view>.sleigh-card .sleigh-visual{
+    flex:0 0 clamp(180px,28dvh,235px)!important;
+    min-height:180px!important;
+    height:clamp(180px,28dvh,235px)!important;
+    max-height:235px!important;
+  }
+  .nav-view>.sleigh-card .sleigh-visual .sleigh-art{
+    inset:7% 6% 8%!important;
+    width:88%!important;
+    height:85%!important;
+  }
+  .nav-view>.sleigh-card .sleigh-systems{
+    flex:0 0 auto!important;
+    min-height:0!important;
+    padding:9px 9px 8px!important;
+  }
+  .nav-view>.sleigh-card .sleigh-system-bank{
+    flex:0 0 auto!important;
+    align-content:start!important;
+    row-gap:3px!important;
+  }
+  .nav-view>.sleigh-card .sleigh-systems .system-status-name,
+  .nav-view>.sleigh-card .sleigh-systems .system-status-value{
+    min-height:20px!important;
+    font-size:6.8px!important;
+  }
+}
+@media(max-width:390px) and (max-height:760px){
+  .setup-page.mc00-page .mc00-card{
+    grid-template-rows:auto clamp(180px,32dvh,230px) auto auto!important;
+  }
+  .mc00-system-bank .system-status-name,
+  .mc00-system-bank .system-status-value{min-height:19px!important;font-size:6.6px!important;}
+  .nav-view>.sleigh-card .sleigh-visual{
+    flex-basis:155px!important;min-height:155px!important;height:155px!important;max-height:175px!important;
+  }
+  .nav-view>.sleigh-card .sleigh-systems .system-status-name,
+  .nav-view>.sleigh-card .sleigh-systems .system-status-value{min-height:18px!important;font-size:6.4px!important;}
+}
+
+/* Comms Relay: render real SVG assets rather than CSS masks. */
+.relay-radio-icon::before,.relay-receiver-icon::before,
+.relay-radio-icon::after,.relay-receiver-icon::after{display:none!important;content:none!important;}
+.relay-radio-icon img,.relay-receiver-icon img{
+  display:block!important;
+  width:54px!important;
+  height:38px!important;
+  object-fit:contain!important;
+  filter:drop-shadow(0 0 7px rgba(117,220,251,.30));
+  pointer-events:none;
+}
+.relay-destination.locked .relay-receiver-icon img{
+  filter:hue-rotate(82deg) saturate(1.18) brightness(1.08) drop-shadow(0 0 8px rgba(87,239,145,.42));
+}
+@media(max-width:390px){
+  .relay-radio-icon img,.relay-receiver-icon img{width:48px!important;height:34px!important;}
+}
+
+/* Spirit Depot: the bolt itself is the visual cue; the control chassis stays fixed. */
+.spirit-power-bolt{
+  display:grid!important;
+  place-items:center!important;
+  width:29px!important;
+  height:37px!important;
+  background:none!important;
+  -webkit-mask:none!important;
+  mask:none!important;
+  color:var(--tank-color)!important;
+  filter:none!important;
+}
+.spirit-power-bolt svg{display:block;width:100%;height:100%;overflow:visible;}
+.spirit-power-bolt path{fill:currentColor!important;}
+.spirit-tank-power.is-charging .spirit-power-bolt{
+  animation:spiritBoltLiveSvg 1.02s ease-in-out infinite!important;
+}
+.spirit-tank-power.is-full .spirit-power-bolt,
+.spirit-tank-cell.is-full .spirit-power-bolt{
+  animation:none!important;
+  transform:scale(1.07)!important;
+  filter:brightness(1.34) drop-shadow(0 0 5px rgba(255,255,255,.52)) drop-shadow(0 0 12px rgba(var(--tank-rgb),.98)) drop-shadow(0 0 20px rgba(var(--tank-rgb),.52))!important;
+}
+@keyframes spiritBoltLiveSvg{
+  0%,100%{transform:scale(.92);filter:brightness(.92) drop-shadow(0 0 5px rgba(var(--tank-rgb),.55)) drop-shadow(0 0 10px rgba(var(--tank-rgb),.25));}
+  50%{transform:scale(1.14);filter:brightness(1.44) drop-shadow(0 0 5px rgba(255,255,255,.45)) drop-shadow(0 0 14px rgba(var(--tank-rgb),.98)) drop-shadow(0 0 23px rgba(var(--tank-rgb),.42));}
+}
+.spirit-tank-power{touch-action:manipulation!important;}
+button,[role="button"]{touch-action:manipulation;}
+@media(max-width:390px){
+  .spirit-power-bolt{width:27px!important;height:35px!important;}
+}
+
+/* Jingle Beams: user-started puck, then 3-2-1 inside the same outer ring. */
+.jingle-puck{
+  border:0!important;
+  padding:0!important;
+  appearance:none!important;
+  -webkit-appearance:none!important;
+}
+.jingle-puck.is-ready,.jingle-puck.is-countdown{
+  width:64px!important;
+  height:64px!important;
+  background:radial-gradient(circle at 42% 38%,#f7feff 0 20%,#d8fbff 48%,#77e8ff 72%,#38b9dd 100%)!important;
+  box-shadow:0 0 8px rgba(255,255,255,.75),0 0 20px rgba(108,231,255,.72),0 0 34px rgba(50,204,242,.42)!important;
+}
+.jingle-puck.is-ready{pointer-events:auto!important;cursor:pointer!important;}
+.jingle-puck.is-ready>i{display:none!important;}
+.jingle-play-icon{
+  display:none;
+  position:absolute;
+  inset:5px;
+  width:54px;
+  height:54px;
+  object-fit:contain;
+  pointer-events:none;
+}
+.jingle-puck.is-ready .jingle-play-icon{display:block;}
+.jingle-puck.is-countdown .jingle-play-icon{display:none!important;}
+.jingle-puck.is-countdown>i{
+  display:block!important;
+  inset:6px!important;
+  border:3px solid #120531!important;
+  box-shadow:none!important;
+}
+.jingle-puck-countdown{
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  font-family:var(--display);
+  font-size:29px;
+  line-height:1;
+  color:#120531;
+  letter-spacing:0;
+  text-shadow:none;
+}
+.jingle-puck:not(.is-countdown) .jingle-puck-countdown{display:none;}
+.jingle-arena.is-awaiting-start .jingle-drag-prompt{opacity:0!important;pointer-events:none!important;}
+.jingle-receiver[data-beam="1"]{width:clamp(240px,78%,300px)!important;}
+.jingle-receiver[data-beam="2"]{width:clamp(210px,68%,260px)!important;}
+.jingle-receiver[data-beam="3"]{width:clamp(180px,58%,220px)!important;}
+
+/* Aurora Apex: give the ring instrument the mobile canvas it needs. */
+@media(max-width:520px){
+  .aurora-panel{padding:10px 8px 10px!important;}
+  .aurora-dial{width:min(100%,46dvh,390px)!important;margin:1px auto!important;}
+  .aurora-progress-head{margin-bottom:5px!important;}
+  .aurora-lock-track{margin-bottom:5px!important;}
+}
+@media(max-width:390px) and (max-height:720px){
+  .aurora-dial{width:min(100%,41dvh,330px)!important;}
+}
+
+/* Lapland Launch: 20-point system verification progress. */
+.lapland-online-progress{position:relative;z-index:2;margin:2px 0 9px;}
+.lapland-online-head{
+  display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+  margin-bottom:7px;
+  color:#74dfff;
+  text-transform:uppercase;
+  letter-spacing:.14em;
+  font-size:8px;
+  font-weight:800;
+}
+.lapland-online-head strong{font-family:var(--display);font-size:15px;letter-spacing:.05em;color:#69dfff;}
+.lapland-online-head strong.complete{color:var(--green);text-shadow:0 0 9px rgba(87,239,145,.25);}
+.lapland-online-track{display:grid;grid-template-columns:repeat(20,minmax(0,1fr));gap:3px;}
+.lapland-online-track i{
+  display:block;height:7px;border:1px solid rgba(79,190,225,.48);border-radius:4px;background:rgba(5,30,43,.72);
+  box-shadow:inset 0 0 6px rgba(59,190,225,.06);
+}
+.lapland-online-track i.on{
+  border-color:#65dfff;background:#58d7fa;box-shadow:0 0 6px rgba(88,215,250,.30);
+}
+.lapland-online-track i.complete{
+  border-color:#6bf0a0;background:var(--green);box-shadow:0 0 6px rgba(87,239,145,.34);
+}
+@media(max-width:390px){
+  .lapland-online-track{gap:2px;}
+  .lapland-online-track i{height:6px;}
+  .lapland-online-head{font-size:7px;margin-bottom:6px;}
+  .lapland-online-head strong{font-size:14px;}
+  .lapland-panel .lapland-system-bank{margin-top:3px!important;}
+}
+
+/* Lapland disco: predecoded 8x8 alpha sprite, 8 fps, GPU-friendly on iOS. */
+.lapland-disco-video{
+  display:block!important;
+  background-image:url("./assets/disco-ball-sprite.webp")!important;
+  background-repeat:no-repeat!important;
+  background-size:800% 800%!important;
+  background-position:0% 0%;
+  transform:translateX(-50%)!important;
+  transform-origin:50% 50%!important;
+  animation:laplandDiscoSprite 8s steps(1,end) infinite!important;
+  will-change:background-position;
+  backface-visibility:hidden;
+}
+@keyframes laplandDiscoSprite{
+  0.0000%{background-position:0.0000% 0.0000%}
+  1.5625%{background-position:14.2857% 0.0000%}
+  3.1250%{background-position:28.5714% 0.0000%}
+  4.6875%{background-position:42.8571% 0.0000%}
+  6.2500%{background-position:57.1429% 0.0000%}
+  7.8125%{background-position:71.4286% 0.0000%}
+  9.3750%{background-position:85.7143% 0.0000%}
+  10.9375%{background-position:100.0000% 0.0000%}
+  12.5000%{background-position:0.0000% 14.2857%}
+  14.0625%{background-position:14.2857% 14.2857%}
+  15.6250%{background-position:28.5714% 14.2857%}
+  17.1875%{background-position:42.8571% 14.2857%}
+  18.7500%{background-position:57.1429% 14.2857%}
+  20.3125%{background-position:71.4286% 14.2857%}
+  21.8750%{background-position:85.7143% 14.2857%}
+  23.4375%{background-position:100.0000% 14.2857%}
+  25.0000%{background-position:0.0000% 28.5714%}
+  26.5625%{background-position:14.2857% 28.5714%}
+  28.1250%{background-position:28.5714% 28.5714%}
+  29.6875%{background-position:42.8571% 28.5714%}
+  31.2500%{background-position:57.1429% 28.5714%}
+  32.8125%{background-position:71.4286% 28.5714%}
+  34.3750%{background-position:85.7143% 28.5714%}
+  35.9375%{background-position:100.0000% 28.5714%}
+  37.5000%{background-position:0.0000% 42.8571%}
+  39.0625%{background-position:14.2857% 42.8571%}
+  40.6250%{background-position:28.5714% 42.8571%}
+  42.1875%{background-position:42.8571% 42.8571%}
+  43.7500%{background-position:57.1429% 42.8571%}
+  45.3125%{background-position:71.4286% 42.8571%}
+  46.8750%{background-position:85.7143% 42.8571%}
+  48.4375%{background-position:100.0000% 42.8571%}
+  50.0000%{background-position:0.0000% 57.1429%}
+  51.5625%{background-position:14.2857% 57.1429%}
+  53.1250%{background-position:28.5714% 57.1429%}
+  54.6875%{background-position:42.8571% 57.1429%}
+  56.2500%{background-position:57.1429% 57.1429%}
+  57.8125%{background-position:71.4286% 57.1429%}
+  59.3750%{background-position:85.7143% 57.1429%}
+  60.9375%{background-position:100.0000% 57.1429%}
+  62.5000%{background-position:0.0000% 71.4286%}
+  64.0625%{background-position:14.2857% 71.4286%}
+  65.6250%{background-position:28.5714% 71.4286%}
+  67.1875%{background-position:42.8571% 71.4286%}
+  68.7500%{background-position:57.1429% 71.4286%}
+  70.3125%{background-position:71.4286% 71.4286%}
+  71.8750%{background-position:85.7143% 71.4286%}
+  73.4375%{background-position:100.0000% 71.4286%}
+  75.0000%{background-position:0.0000% 85.7143%}
+  76.5625%{background-position:14.2857% 85.7143%}
+  78.1250%{background-position:28.5714% 85.7143%}
+  79.6875%{background-position:42.8571% 85.7143%}
+  81.2500%{background-position:57.1429% 85.7143%}
+  82.8125%{background-position:71.4286% 85.7143%}
+  84.3750%{background-position:85.7143% 85.7143%}
+  85.9375%{background-position:100.0000% 85.7143%}
+  87.5000%{background-position:0.0000% 100.0000%}
+  89.0625%{background-position:14.2857% 100.0000%}
+  90.6250%{background-position:28.5714% 100.0000%}
+  92.1875%{background-position:42.8571% 100.0000%}
+  93.7500%{background-position:57.1429% 100.0000%}
+  95.3125%{background-position:71.4286% 100.0000%}
+  96.8750%{background-position:85.7143% 100.0000%}
+  98.4375%{background-position:100.0000% 100.0000%}
+  100%{background-position:0% 0%}
+}
+@media(prefers-reduced-motion:reduce){.lapland-disco-video{animation:none!important;background-position:0% 0%!important;}}
+
+/* Northern Flight: shared button type scale and no undersized authorisation copy. */
+.northern-authorise-btn .northern-authorise-label{
+  font-family:var(--text)!important;
+  font-size:inherit!important;
+  font-weight:900!important;
+  letter-spacing:.08em!important;
+}
+@media(max-width:390px){.northern-authorise-label{font-size:inherit!important;}}
+
+/* Final radar: completed circuit remains Mission Control cyan; success is in copy. */
+.track-radar-map.final-overview .track-radar-art{
+  background:var(--cyan)!important;
+  filter:drop-shadow(0 0 5px rgba(83,218,255,.30))!important;
+}
+#radarMessage.complete-message h3{text-transform:uppercase!important;}
+

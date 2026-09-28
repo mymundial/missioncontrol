@@ -655,7 +655,7 @@
     if(state.messageAlert&&unreadCount()>0){
       return `<div class="mission-card message-card panel comms-alert" id="radarMessage"><div class="comms-alert-copy"><div class="kicker">Mission Control</div><h3>New Message</h3></div><div class="comms-alert-actions"><button class="linkbtn comms-action" data-read-messages>Read</button><button class="linkbtn comms-action" data-dismiss-messages>Dismiss</button></div></div>`;
     }
-    if(!cp) return `<div class="mission-card message-card panel complete-message compact-message" id="radarMessage"><div><div class="kicker">Mission Complete</div><h3>Meet Santa at his Christmas Grotto</h3></div></div>`;
+    if(!cp) return `<div class="mission-card message-card panel complete-message compact-message" id="radarMessage"><div><div class="kicker">Mission Complete</div><h3>MEET SANTA AT HIS GROTTO</h3></div></div>`;
     const activationGap=distanceToActivation(cp,state.distance);
     const acquired=state.targetVisible&&Number.isFinite(activationGap)&&activationGap<=60;
     if(cp.type==='activation'){
@@ -842,7 +842,7 @@
     return ({
       activation:'You have now entered the live circuit zone.',
       diagnostics:'Capture the racing data needed to rebuild Santa-1.',
-      radio:'Tune the receiver to 87.7 and establish a link with ELF FM.',
+      radio:'Tune the receiver to 87.7 Elf FM.',
       commsrelay:'Establish communications with Santa-1.',
       power:'Test Santa-1’s propulsion system.',
       spirit:'Store the positive energy.',
@@ -932,9 +932,9 @@
           <line class="relay-hop-line" data-hop="4" x1="25" y1="125" x2="75" y2="125"></line>
         </svg>
         ${Array.from({length:5},(_,i)=>`<span class="relay-carrier-packet" data-carrier="${i}" aria-hidden="true"></span>`).join('')}
-        <div class="relay-cell relay-endpoint relay-origin"><span class="relay-radio-icon"><i></i><i></i><i></i></span><small>TRANSMITTER</small></div>
+        <div class="relay-cell relay-endpoint relay-origin"><span class="relay-radio-icon"><img src="./assets/relay-transmitter-icon.svg" alt="" aria-hidden="true"></span><small>TRANSMITTER</small></div>
         ${[0,1,2,3].map(i=>`<div class="relay-cell relay-capture"><button class="relay-node ${i===0?'active':''}" data-relay="${i}" aria-label="Relay ${i+1}"><span class="relay-target"></span><span class="relay-pulse"></span><span class="relay-core">0${i+1}</span></button><small>RELAY 0${i+1}</small></div>`).join('')}
-        <div class="relay-cell relay-endpoint relay-destination"><span class="relay-receiver-icon"></span><small>RECEIVER</small></div>
+        <div class="relay-cell relay-endpoint relay-destination"><span class="relay-receiver-icon"><img src="./assets/relay-receiver-hi-spec.svg" alt="" aria-hidden="true"></span><small>RECEIVER</small></div>
       </div>
       <div class="visually-hidden" id="relayState" aria-live="polite">Relay 01 armed</div>
     </div>`;
@@ -988,7 +988,7 @@
       <span class="spirit-tank-grid" aria-hidden="true"></span>
       <span class="spirit-tank-plate" aria-hidden="true"><span class="spirit-tank-plate-face">${bhpIcon}</span></span>
       <span class="spirit-tank-vent" aria-hidden="true"><i></i><i></i><i></i></span>
-      <button type="button" class="spirit-tank-power" data-spirit-charge="${tank.side}-${tank.index}" aria-label="Charge ${tank.name} tank"><span class="spirit-power-bolt" aria-hidden="true"></span></button>
+      <button type="button" class="spirit-tank-power" data-spirit-charge="${tank.side}-${tank.index}" aria-label="Charge ${tank.name} tank"><span class="spirit-power-bolt" aria-hidden="true"><svg viewBox="66 0 78 126" focusable="false"><path d="M83.34,125.93,98.42,75.57h-32L127.44,0,112.37,50.35h32ZM79,69.55H106.5L97.88,98.34l33.88-42H104.29l8.62-28.78Z"></path></svg></span></button>
     </div>`).join('');
     const stageDots=Array.from({length:8},(_,i)=>`<i data-spirit-stage-dot="${i}"></i>`).join('');
     return `<div class="mission-instrument panel spirit-panel" id="spiritRig" data-stage="0">
@@ -1042,14 +1042,14 @@
     return `<div class="mission-instrument panel jingle-panel" id="jinglePanel">
       <div class="jingle-progress-head"><span>GUIDANCE LOCK</span><strong id="jingleLockCount">0 / 3</strong></div>
       <div class="jingle-lock-track" aria-label="Guidance lock progress">${[1,2,3].map(i=>`<i class="${i===1?'is-next':''}" data-jingle-beam="${i}"></i>`).join('')}</div>
-      <div class="jingle-arena" id="jingleArena" tabindex="0" role="application" aria-label="Jingle Beams guidance game. Tap or slide horizontally to steer the paddle and direct the charge into each receiver.">
+      <div class="jingle-arena is-awaiting-start" id="jingleArena" tabindex="0" role="application" aria-label="Jingle Beams guidance game. Start the puck, then tap or slide horizontally to steer the paddle and direct the charge into each receiver.">
         <div class="jingle-grid" aria-hidden="true"><img class="jingle-centre-mark" src="./assets/silverstone-s-mark.webp" alt=""></div>
         <div class="jingle-energy-rail rail-left" aria-hidden="true"><i></i></div>
         <div class="jingle-energy-rail rail-right" aria-hidden="true"><i></i></div>
         <div class="jingle-receiver" id="jingleReceiver" aria-hidden="true"><span></span><i></i></div>
         <div class="jingle-goal-flare" id="jingleGoalFlare" aria-hidden="true"></div>
         <div class="jingle-puck-trail" id="jinglePuckTrail" aria-hidden="true"></div>
-        <div class="jingle-puck is-countdown" id="jinglePuck" aria-hidden="true"><i></i><strong class="jingle-puck-countdown" id="jingleCountdown">3</strong></div>
+        <button type="button" class="jingle-puck is-ready" id="jinglePuck" aria-label="Start Jingle Beams"><i></i><img class="jingle-play-icon" src="./assets/video-play.svg" alt="" aria-hidden="true"><strong class="jingle-puck-countdown" id="jingleCountdown"></strong></button>
         <div class="jingle-paddle" id="jinglePaddle" aria-hidden="true"><i></i></div>
         <div class="jingle-drag-prompt" id="jinglePrompt"><strong>TAP TO STEER</strong></div>
       </div>
@@ -1109,6 +1109,10 @@
     ];
     return `<div class="mission-instrument panel lapland-panel" id="laplandPanel" style="--lapland-charge:0">
       <section class="lapland-stage lapland-verification-stage" id="laplandVerificationStage">
+        <div class="lapland-online-progress" id="laplandOnlineProgress">
+          <div class="lapland-online-head"><span>SYSTEMS ONLINE</span><strong id="laplandOnlineCount">0 / 20</strong></div>
+          <div class="lapland-online-track" aria-label="Launch system verification progress">${Array.from({length:20},(_,i)=>`<i data-lapland-progress="${i}"></i>`).join('')}</div>
+        </div>
         ${systemStatusBank(systems,'lapland-system-bank','verify')}
         <div class="lapland-launch-slot">
           <button class="btn primary wide lapland-test-btn" id="initiateTest">Initialise Launch</button>
@@ -1127,7 +1131,7 @@
           <i class="lapland-party-wash"></i>
           <i class="lapland-party-beam party-beam-a"></i><i class="lapland-party-beam party-beam-b"></i><i class="lapland-party-beam party-beam-c"></i><i class="lapland-party-reflections"></i>
         </div>
-        <div class="lapland-disco-rig" aria-hidden="true"><img class="lapland-disco-video" id="laplandDiscoVisual" src="./assets/disco-ball-alpha-static.webp" alt="" decoding="async"></div>
+        <div class="lapland-disco-rig" aria-hidden="true"><div class="lapland-disco-video" id="laplandDiscoVisual"></div></div>
         <div class="lapland-party-message">
           <span>SANTA-1</span>
           <i class="lapland-clearance-divider" aria-hidden="true"></i>
@@ -1362,7 +1366,8 @@
     const lastStates = new Map();
 
     const setSystemState = (key,nextState)=>{
-      if(lastStates.get(key)===nextState) return;
+      const previous=lastStates.get(key);
+      if(previous===nextState) return;
       lastStates.set(key,nextState);
       const item=document.querySelector(`[data-mc00-system="${key}"]`);
       const status=document.querySelector(`[data-mc00-status="${key}"]`);
@@ -1370,6 +1375,8 @@
       item.classList.remove('is-standby','is-checking','is-offline','is-online');
       item.classList.add(`is-${nextState}`);
       status.textContent=nextState==='checking'?'Checking':nextState==='offline'?'Offline':nextState==='online'?'Online':'Standby';
+      // Exactly one diagnostic pop for each of the ten system checks.
+      if(previous&&nextState==='checking') ping(560 + (scanSystems.findIndex(system=>system.key===key)*34),.048,.018);
     };
 
     const paint = ()=>{
@@ -1404,8 +1411,6 @@
       if(progressValue === 100){
         ping(860,.12,.05);
         haptic([20,35,65]);
-      } else if(progressValue % 13 === 0){
-        ping(620 + (progressValue * 2), .05, .02);
       }
     }, 45);
   }
@@ -2267,13 +2272,13 @@
       let stopDuck=()=>{};
       // Narrative transmissions take priority over ELF FM. Keep a trace of the
       // station underneath rather than stopping/restarting the live stream.
-      if(radioWasOn) stopDuck=rampElementVolume(elfAudioEl,.025,420);
+      if(radioWasOn) stopDuck=rampElementVolume(elfAudioEl,0,420);
       if(state.audio) startStatic(.05);
       let introStatic=null,santaDelay=null,fallback=null,tailTimer=null,finished=false;
       const finish=()=>{
         if(finished)return;finished=true;
         clearTimeout(introStatic);clearTimeout(santaDelay);clearTimeout(fallback);clearTimeout(tailTimer);stopStatic();
-        if(radioWasOn&&elfAudioEl){elfAudioEl.volume=Math.min(elfAudioEl.volume,.025);rampElementVolume(elfAudioEl,previousRadioVolume,520);}
+        if(radioWasOn&&elfAudioEl){elfAudioEl.volume=0;rampElementVolume(elfAudioEl,previousRadioVolume,520);}
         setTimeout(()=>showCompletion('Comms Link Restored','Communications have been established and Mission Control is now connected to Santa-1.'),260);
       };
       const playSanta=()=>{
@@ -2748,8 +2753,12 @@
       event.preventDefault();
       onCharge(event);
     }
+    const blockTankGesture=event=>{event.preventDefault();event.stopPropagation();};
     buttons.forEach(button=>{
+      button.addEventListener('pointerdown',blockTankGesture,{passive:false});
       button.addEventListener('pointerup',onCharge,{passive:false});
+      button.addEventListener('touchend',blockTankGesture,{passive:false});
+      button.addEventListener('dblclick',blockTankGesture,{passive:false});
       button.addEventListener('keydown',onChargeKey);
     });
     tanks.forEach(renderTank);
@@ -2760,7 +2769,10 @@
       clearTimeout(finishTimer);
       reactionTimers.forEach(clearTimeout);
       buttons.forEach(button=>{
+        button.removeEventListener('pointerdown',blockTankGesture);
         button.removeEventListener('pointerup',onCharge);
+        button.removeEventListener('touchend',blockTankGesture);
+        button.removeEventListener('dblclick',blockTankGesture);
         button.removeEventListener('keydown',onChargeKey);
       });
       stopBubbles();
@@ -3447,7 +3459,7 @@
     let vy=0;
     let previousPuck={x:0,y:0};
     const speeds=[0,0.245,0.285,0.325];
-    const goalWidths=[null,'clamp(180px,58%,220px)','clamp(150px,47%,185px)','clamp(124px,36%,142px)'];
+    const goalWidths=[null,'clamp(240px,78%,300px)','clamp(210px,68%,260px)','clamp(180px,58%,220px)'];
 
     const strikePool=Array.from({length:3},()=>{
       const a=new Audio('./assets/jingle-puck-strike.mp3');
@@ -3731,8 +3743,11 @@
       started=true;
       running=false;
       prompt?.classList.add('is-hidden');
+      arena.classList.remove('is-awaiting-start');
       arena.classList.add('is-counting');
+      puck.classList.remove('is-ready');
       puck.classList.add('is-countdown');
+      puck.setAttribute('aria-label','Jingle Beams countdown');
       trail.style.opacity='0';
       updateBounds(false);
       puckX=bounds.w/2;
@@ -3753,6 +3768,7 @@
       countdownTimers.push(setTimeout(()=>{
         if(countdownEl)countdownEl.textContent='';
         puck.classList.remove('is-countdown');
+        puck.setAttribute('aria-label','Jingle Beams puck');
         arena.classList.remove('is-counting');
         arena.classList.add('is-live');
         updateBounds(false);
@@ -3791,11 +3807,19 @@
       if(!running&&!panel.classList.contains('is-complete')&&!arena.classList.contains('is-counting')) resetPuckAtReceiver();
     }
 
-    // Start the countdown synchronously while the mission-open tap still counts
-    // as a user gesture on iOS. This keeps the countdown audio reliable and in
-    // phase with the 3-2-1 shown on the puck.
+    // Hold on a visible play control. The user's tap starts the 3-2-1 sequence
+    // synchronously, keeping the attached countdown audio reliable on iOS.
     setReceiverForBeam(1);
-    startCountdown();
+    updateBounds(false);
+    puckX=bounds.w/2;
+    puckY=bounds.h/2;
+    previousPuck={x:puckX,y:puckY};
+    setPuckPosition();
+    trail.style.opacity='0';
+    const stopStartBubble=event=>event.stopPropagation();
+    const startFromPuck=event=>{event.preventDefault();event.stopPropagation();startCountdown();};
+    puck.addEventListener('pointerdown',stopStartBubble);
+    puck.addEventListener('click',startFromPuck);
     arena.addEventListener('pointerdown',onPointerDown,{passive:false});
     arena.addEventListener('pointermove',onPointerMove,{passive:false});
     arena.addEventListener('pointerup',onPointerUp);
@@ -3815,6 +3839,8 @@
       arena.removeEventListener('pointerup',onPointerUp);
       arena.removeEventListener('pointercancel',onPointerUp);
       arena.removeEventListener('keydown',onKeyDown);
+      puck.removeEventListener('pointerdown',stopStartBubble);
+      puck.removeEventListener('click',startFromPuck);
       window.removeEventListener('resize',onResize);
       [...strikePool,...postPool,goalAudio,buzzerAudio,countdownAudio].forEach(a=>{try{a.pause();a.currentTime=0;}catch{}});
     };
@@ -3993,6 +4019,7 @@
 
     function startAmbient(){
       if(!state.audio||finished||!ambientAudio.paused)return;
+      beginMissionAudioRadioOverride('aurora');
       ambientAudio.volume=.17;
       try{
         const play=ambientAudio.play();
@@ -4012,6 +4039,7 @@
         else{
           ambientFadeRaf=0;
           try{ambientAudio.pause();ambientAudio.currentTime=0;ambientAudio.volume=.17;}catch{}
+          endMissionAudioRadioOverride('aurora');
         }
       };
       ambientFadeRaf=requestAnimationFrame(step);
@@ -4183,6 +4211,7 @@
       order.forEach(key=>ringEls[key]?.removeEventListener('click',captureRing));
       try{lockAudio.pause();lockAudio.currentTime=0;}catch{}
       try{ambientAudio.pause();ambientAudio.currentTime=0;ambientAudio.volume=.17;}catch{}
+      endMissionAudioRadioOverride('aurora');
     };
   }
   let laplandMusic=null;
@@ -4374,17 +4403,29 @@
     const transmissionStage=document.getElementById('laplandTransmissionStage');
     const partyStage=document.getElementById('laplandPartyStage');
     const discoVisual=document.getElementById('laplandDiscoVisual');
+    const onlineCount=document.getElementById('laplandOnlineCount');
+    const onlineSegments=[...document.querySelectorAll('[data-lapland-progress]')];
     const head=document.querySelector('.lapland-head');
     if(!btn||!panel||!verificationStage||!transmissionStage||!partyStage) return;
 
     startLaplandMusic();
-    if(discoVisual) discoVisual.setAttribute('draggable','false');
 
     // MC01–MC10 each restore one named system. Checks run down column 1 first,
     // then column 2, matching the visible mission-order layout.
     const checks=['entry','velocity','luffield','power','spirit','escapade','jingle','comet','lando','aurora'];
     const systemKeys=['circuitry','diagnostic','comms','power','core','propulsion','guidance','control','response','navigation'];
     const setCharge=value=>panel.style.setProperty('--lapland-charge',String(Math.max(0,Math.min(1,value))));
+    const setOnlineProgress=(onlineSystems,complete=false)=>{
+      const ticks=Math.max(0,Math.min(20,onlineSystems*2));
+      if(onlineCount){
+        onlineCount.textContent=`${ticks} / 20`;
+        onlineCount.classList.toggle('complete',complete&&ticks===20);
+      }
+      onlineSegments.forEach((segment,i)=>{
+        segment.classList.toggle('on',i<ticks);
+        segment.classList.toggle('complete',complete&&ticks===20);
+      });
+    };
     const setRowState=(key,nextState,label)=>{
       const row=document.querySelector(`[data-verify-system="${key}"]`);
       const status=document.querySelector(`[data-verify-status="${key}"]`);
@@ -4455,6 +4496,7 @@
     };
 
     setButtonState('idle');
+    setOnlineProgress(0,false);
 
     btn.onclick=()=>{
       if(btn.dataset.review==='true'){stopLaplandAudio();set({missionOpen:null,nav:'missions'});return;}
@@ -4471,6 +4513,8 @@
       partyStage.hidden=true;
       verificationStage.hidden=false;
       setCharge(0);
+      setOnlineProgress(0,false);
+      let onlineSystems=0;
       const missing=[];
 
       startLaplandMusic();
@@ -4486,7 +4530,9 @@
           const ready=state.completed.includes(checkpointId);
           setRowState(key,ready?'online':'offline',ready?'Online':'Offline');
           if(!ready) missing.push(checkpointId);
+          if(ready) onlineSystems++;
           setCharge((i+1)/checks.length);
+          setOnlineProgress(onlineSystems,false);
           ping(ready?540+i*38:220,.05,.016);
 
           if(i===checks.length-1){
@@ -4496,6 +4542,7 @@
               panel.classList.remove('is-verifying');
 
               if(clear){
+                setOnlineProgress(10,true);
                 setLaunchComplete();
                 // Let COMPLETE register before the narrative hand-off.
                 laplandLater(showTransmission,1550);
@@ -4568,6 +4615,7 @@
       try{audio.pause();audio.currentTime=0;audio.onended=null;audio.onerror=null;audio.muted=false;}catch{}
     });
     stopStatic();
+    endMissionAudioRadioOverride('northern-transmission');
   }
 
   function primeNorthernFinalAudio(){
@@ -4585,6 +4633,7 @@
 
   function showNorthernTransmission(){
     const mc=document.getElementById('missionContent'); if(!mc)return;
+    if(state.audio) beginMissionAudioRadioOverride('northern-transmission');
     mc.innerHTML=`<div class="mission-instrument panel incoming-transmission">
       <div class="transmission-wave">${'<b></b>'.repeat(24)}</div>
       <div class="kicker">Incoming Transmission</div>
@@ -4602,6 +4651,7 @@
     const finish=()=>{
       if(finished)return;finished=true;
       clearTimeout(fallbackTimer);stopStatic();
+      endMissionAudioRadioOverride('northern-transmission');
       try{santa.onended=null;santa.onerror=null;}catch{}
       const elapsed=performance.now()-opened;
       const wait=Math.max(0,900-elapsed);
@@ -4658,9 +4708,11 @@
     el.setAttribute('aria-live','polite');
     el.innerHTML=`<div class="mc01-bloom-field" aria-hidden="true"><i></i><i></i><i></i></div><div class="mc01-bloom-copy"><img class="mc01-bloom-mark" src="./assets/silverstone-s-mark.webp" alt=""><div class="kicker">SANTA-1</div><h1>AIRBORNE</h1></div>`;
     document.body.appendChild(el);northernTakeoverEl=el;
+    // Put the transmission behind the takeover before its fade begins so
+    // the authorisation screen never flashes back between states.
+    northernLater(()=>showNorthernTransmission(),3500);
     northernLater(()=>el.classList.add('is-exiting'),3820);
     northernLater(()=>{
-      showNorthernTransmission();
       if(el.isConnected)el.remove();
       if(northernTakeoverEl===el)northernTakeoverEl=null;
     },4260);

@@ -40,7 +40,8 @@
     const lastStates = new Map();
 
     const setSystemState = (key,nextState)=>{
-      if(lastStates.get(key)===nextState) return;
+      const previous=lastStates.get(key);
+      if(previous===nextState) return;
       lastStates.set(key,nextState);
       const item=document.querySelector(`[data-mc00-system="${key}"]`);
       const status=document.querySelector(`[data-mc00-status="${key}"]`);
@@ -48,6 +49,8 @@
       item.classList.remove('is-standby','is-checking','is-offline','is-online');
       item.classList.add(`is-${nextState}`);
       status.textContent=nextState==='checking'?'Checking':nextState==='offline'?'Offline':nextState==='online'?'Online':'Standby';
+      // Exactly one diagnostic pop for each of the ten system checks.
+      if(previous&&nextState==='checking') ping(560 + (scanSystems.findIndex(system=>system.key===key)*34),.048,.018);
     };
 
     const paint = ()=>{
@@ -82,8 +85,6 @@
       if(progressValue === 100){
         ping(860,.12,.05);
         haptic([20,35,65]);
-      } else if(progressValue % 13 === 0){
-        ping(620 + (progressValue * 2), .05, .02);
       }
     }, 45);
   }

@@ -187,17 +187,29 @@
     const transmissionStage=document.getElementById('laplandTransmissionStage');
     const partyStage=document.getElementById('laplandPartyStage');
     const discoVisual=document.getElementById('laplandDiscoVisual');
+    const onlineCount=document.getElementById('laplandOnlineCount');
+    const onlineSegments=[...document.querySelectorAll('[data-lapland-progress]')];
     const head=document.querySelector('.lapland-head');
     if(!btn||!panel||!verificationStage||!transmissionStage||!partyStage) return;
 
     startLaplandMusic();
-    if(discoVisual) discoVisual.setAttribute('draggable','false');
 
     // MC01–MC10 each restore one named system. Checks run down column 1 first,
     // then column 2, matching the visible mission-order layout.
     const checks=['entry','velocity','luffield','power','spirit','escapade','jingle','comet','lando','aurora'];
     const systemKeys=['circuitry','diagnostic','comms','power','core','propulsion','guidance','control','response','navigation'];
     const setCharge=value=>panel.style.setProperty('--lapland-charge',String(Math.max(0,Math.min(1,value))));
+    const setOnlineProgress=(onlineSystems,complete=false)=>{
+      const ticks=Math.max(0,Math.min(20,onlineSystems*2));
+      if(onlineCount){
+        onlineCount.textContent=`${ticks} / 20`;
+        onlineCount.classList.toggle('complete',complete&&ticks===20);
+      }
+      onlineSegments.forEach((segment,i)=>{
+        segment.classList.toggle('on',i<ticks);
+        segment.classList.toggle('complete',complete&&ticks===20);
+      });
+    };
     const setRowState=(key,nextState,label)=>{
       const row=document.querySelector(`[data-verify-system="${key}"]`);
       const status=document.querySelector(`[data-verify-status="${key}"]`);
@@ -268,6 +280,7 @@
     };
 
     setButtonState('idle');
+    setOnlineProgress(0,false);
 
     btn.onclick=()=>{
       if(btn.dataset.review==='true'){stopLaplandAudio();set({missionOpen:null,nav:'missions'});return;}
@@ -284,6 +297,8 @@
       partyStage.hidden=true;
       verificationStage.hidden=false;
       setCharge(0);
+      setOnlineProgress(0,false);
+      let onlineSystems=0;
       const missing=[];
 
       startLaplandMusic();
@@ -299,7 +314,9 @@
           const ready=state.completed.includes(checkpointId);
           setRowState(key,ready?'online':'offline',ready?'Online':'Offline');
           if(!ready) missing.push(checkpointId);
+          if(ready) onlineSystems++;
           setCharge((i+1)/checks.length);
+          setOnlineProgress(onlineSystems,false);
           ping(ready?540+i*38:220,.05,.016);
 
           if(i===checks.length-1){
@@ -309,6 +326,7 @@
               panel.classList.remove('is-verifying');
 
               if(clear){
+                setOnlineProgress(10,true);
                 setLaunchComplete();
                 // Let COMPLETE register before the narrative hand-off.
                 laplandLater(showTransmission,1550);

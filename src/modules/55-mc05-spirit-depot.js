@@ -153,8 +153,12 @@
       event.preventDefault();
       onCharge(event);
     }
+    const blockTankGesture=event=>{event.preventDefault();event.stopPropagation();};
     buttons.forEach(button=>{
+      button.addEventListener('pointerdown',blockTankGesture,{passive:false});
       button.addEventListener('pointerup',onCharge,{passive:false});
+      button.addEventListener('touchend',blockTankGesture,{passive:false});
+      button.addEventListener('dblclick',blockTankGesture,{passive:false});
       button.addEventListener('keydown',onChargeKey);
     });
     tanks.forEach(renderTank);
@@ -165,7 +169,10 @@
       clearTimeout(finishTimer);
       reactionTimers.forEach(clearTimeout);
       buttons.forEach(button=>{
+        button.removeEventListener('pointerdown',blockTankGesture);
         button.removeEventListener('pointerup',onCharge);
+        button.removeEventListener('touchend',blockTankGesture);
+        button.removeEventListener('dblclick',blockTankGesture);
         button.removeEventListener('keydown',onChargeKey);
       });
       stopBubbles();

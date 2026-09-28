@@ -100,13 +100,13 @@
       let stopDuck=()=>{};
       // Narrative transmissions take priority over ELF FM. Keep a trace of the
       // station underneath rather than stopping/restarting the live stream.
-      if(radioWasOn) stopDuck=rampElementVolume(elfAudioEl,.025,420);
+      if(radioWasOn) stopDuck=rampElementVolume(elfAudioEl,0,420);
       if(state.audio) startStatic(.05);
       let introStatic=null,santaDelay=null,fallback=null,tailTimer=null,finished=false;
       const finish=()=>{
         if(finished)return;finished=true;
         clearTimeout(introStatic);clearTimeout(santaDelay);clearTimeout(fallback);clearTimeout(tailTimer);stopStatic();
-        if(radioWasOn&&elfAudioEl){elfAudioEl.volume=Math.min(elfAudioEl.volume,.025);rampElementVolume(elfAudioEl,previousRadioVolume,520);}
+        if(radioWasOn&&elfAudioEl){elfAudioEl.volume=0;rampElementVolume(elfAudioEl,previousRadioVolume,520);}
         setTimeout(()=>showCompletion('Comms Link Restored','Communications have been established and Mission Control is now connected to Santa-1.'),260);
       };
       const playSanta=()=>{

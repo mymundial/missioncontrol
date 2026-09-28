@@ -48,6 +48,7 @@
       try{audio.pause();audio.currentTime=0;audio.onended=null;audio.onerror=null;audio.muted=false;}catch{}
     });
     stopStatic();
+    endMissionAudioRadioOverride('northern-transmission');
   }
 
   function primeNorthernFinalAudio(){
@@ -65,6 +66,7 @@
 
   function showNorthernTransmission(){
     const mc=document.getElementById('missionContent'); if(!mc)return;
+    if(state.audio) beginMissionAudioRadioOverride('northern-transmission');
     mc.innerHTML=`<div class="mission-instrument panel incoming-transmission">
       <div class="transmission-wave">${'<b></b>'.repeat(24)}</div>
       <div class="kicker">Incoming Transmission</div>
@@ -82,6 +84,7 @@
     const finish=()=>{
       if(finished)return;finished=true;
       clearTimeout(fallbackTimer);stopStatic();
+      endMissionAudioRadioOverride('northern-transmission');
       try{santa.onended=null;santa.onerror=null;}catch{}
       const elapsed=performance.now()-opened;
       const wait=Math.max(0,900-elapsed);
@@ -138,9 +141,11 @@
     el.setAttribute('aria-live','polite');
     el.innerHTML=`<div class="mc01-bloom-field" aria-hidden="true"><i></i><i></i><i></i></div><div class="mc01-bloom-copy"><img class="mc01-bloom-mark" src="./assets/silverstone-s-mark.webp" alt=""><div class="kicker">SANTA-1</div><h1>AIRBORNE</h1></div>`;
     document.body.appendChild(el);northernTakeoverEl=el;
+    // Put the transmission behind the takeover before its fade begins so
+    // the authorisation screen never flashes back between states.
+    northernLater(()=>showNorthernTransmission(),3500);
     northernLater(()=>el.classList.add('is-exiting'),3820);
     northernLater(()=>{
-      showNorthernTransmission();
       if(el.isConnected)el.remove();
       if(northernTakeoverEl===el)northernTakeoverEl=null;
     },4260);

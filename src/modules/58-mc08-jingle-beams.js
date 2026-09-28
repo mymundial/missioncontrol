@@ -32,7 +32,7 @@
     let vy=0;
     let previousPuck={x:0,y:0};
     const speeds=[0,0.245,0.285,0.325];
-    const goalWidths=[null,'clamp(180px,58%,220px)','clamp(150px,47%,185px)','clamp(124px,36%,142px)'];
+    const goalWidths=[null,'clamp(240px,78%,300px)','clamp(210px,68%,260px)','clamp(180px,58%,220px)'];
 
     const strikePool=Array.from({length:3},()=>{
       const a=new Audio('./assets/jingle-puck-strike.mp3');
@@ -316,8 +316,11 @@
       started=true;
       running=false;
       prompt?.classList.add('is-hidden');
+      arena.classList.remove('is-awaiting-start');
       arena.classList.add('is-counting');
+      puck.classList.remove('is-ready');
       puck.classList.add('is-countdown');
+      puck.setAttribute('aria-label','Jingle Beams countdown');
       trail.style.opacity='0';
       updateBounds(false);
       puckX=bounds.w/2;
@@ -338,6 +341,7 @@
       countdownTimers.push(setTimeout(()=>{
         if(countdownEl)countdownEl.textContent='';
         puck.classList.remove('is-countdown');
+        puck.setAttribute('aria-label','Jingle Beams puck');
         arena.classList.remove('is-counting');
         arena.classList.add('is-live');
         updateBounds(false);
@@ -376,11 +380,19 @@
       if(!running&&!panel.classList.contains('is-complete')&&!arena.classList.contains('is-counting')) resetPuckAtReceiver();
     }
 
-    // Start the countdown synchronously while the mission-open tap still counts
-    // as a user gesture on iOS. This keeps the countdown audio reliable and in
-    // phase with the 3-2-1 shown on the puck.
+    // Hold on a visible play control. The user's tap starts the 3-2-1 sequence
+    // synchronously, keeping the attached countdown audio reliable on iOS.
     setReceiverForBeam(1);
-    startCountdown();
+    updateBounds(false);
+    puckX=bounds.w/2;
+    puckY=bounds.h/2;
+    previousPuck={x:puckX,y:puckY};
+    setPuckPosition();
+    trail.style.opacity='0';
+    const stopStartBubble=event=>event.stopPropagation();
+    const startFromPuck=event=>{event.preventDefault();event.stopPropagation();startCountdown();};
+    puck.addEventListener('pointerdown',stopStartBubble);
+    puck.addEventListener('click',startFromPuck);
     arena.addEventListener('pointerdown',onPointerDown,{passive:false});
     arena.addEventListener('pointermove',onPointerMove,{passive:false});
     arena.addEventListener('pointerup',onPointerUp);
@@ -400,6 +412,8 @@
       arena.removeEventListener('pointerup',onPointerUp);
       arena.removeEventListener('pointercancel',onPointerUp);
       arena.removeEventListener('keydown',onKeyDown);
+      puck.removeEventListener('pointerdown',stopStartBubble);
+      puck.removeEventListener('click',startFromPuck);
       window.removeEventListener('resize',onResize);
       [...strikePool,...postPool,goalAudio,buzzerAudio,countdownAudio].forEach(a=>{try{a.pause();a.currentTime=0;}catch{}});
     };

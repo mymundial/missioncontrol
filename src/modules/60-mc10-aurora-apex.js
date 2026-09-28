@@ -52,6 +52,7 @@
 
     function startAmbient(){
       if(!state.audio||finished||!ambientAudio.paused)return;
+      beginMissionAudioRadioOverride('aurora');
       ambientAudio.volume=.17;
       try{
         const play=ambientAudio.play();
@@ -71,6 +72,7 @@
         else{
           ambientFadeRaf=0;
           try{ambientAudio.pause();ambientAudio.currentTime=0;ambientAudio.volume=.17;}catch{}
+          endMissionAudioRadioOverride('aurora');
         }
       };
       ambientFadeRaf=requestAnimationFrame(step);
@@ -242,5 +244,6 @@
       order.forEach(key=>ringEls[key]?.removeEventListener('click',captureRing));
       try{lockAudio.pause();lockAudio.currentTime=0;}catch{}
       try{ambientAudio.pause();ambientAudio.currentTime=0;ambientAudio.volume=.17;}catch{}
+      endMissionAudioRadioOverride('aurora');
     };
   }

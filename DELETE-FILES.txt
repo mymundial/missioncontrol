@@ -1,2 +1,2 @@
-assets/disco-ball-alpha-loop-540.webp
-assets/disco-ball-alpha-loop-720.webm
+assets/disco-ball-alpha-static.webp
+dist/assets/disco-ball-alpha-static.webp
