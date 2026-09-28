@@ -685,6 +685,7 @@
       return;
     }
     if(state.missionOpen){ app.innerHTML=shell(renderMission(state.missionOpen),false); bindGlobal(); bindMission(state.missionOpen); return; }
+    if(state.nav==='radar'&&!state.elfPromptSeen&&!state.elfUnlocked){ app.innerHTML=shell(renderElfOnboarding(),false); bindGlobal(); return; }
     if(state.nav==='comms') markAllMessagesRead();
     renderNavShell();
     bindGlobal();
@@ -723,6 +724,10 @@
     if(step==='brief') return `<section class="onboard with-masthead setup-page briefing-page">${setupHeader}<div class="onboard-card panel setup-card"><div class="onboard-icon setup-icon"><span class="setup-icon-glyph"><img src="./assets/mission-briefing-icon.svg" alt=""></span></div><h1>Mission Briefing</h1><div class="support-copy briefing-copy"><p><strong>Santa needs your help.</strong></p><p>Santa-1 has made an unscheduled pit stop at Silverstone and the recovery is underway.</p><p>Follow the signals around the circuit and help bring each system back online to get the sleigh race-ready again.</p></div><div class="setup-actions"><button class="btn primary wide" data-onboard="location">Continue</button></div></div></section>`;
     return `<section class="onboard with-masthead setup-page radar-setup-page">${setupHeader}<div class="onboard-card panel setup-card"><div class="onboard-icon setup-icon"><span class="setup-icon-glyph"><img src="./assets/radar-setup-icon.svg" alt=""></span></div><h1>Mission Radar</h1><p class="support-copy">Mission Control uses your location to detect each installation as you move around the circuit.</p><div class="setup-actions stack"><button class="btn primary wide" data-location="request">Enable GPS Location</button><button class="btn secondary wide" data-location="demo">Demo Mode</button></div></div></section>`;
   }
+  function renderElfOnboarding(){
+    return `<section class="onboard with-masthead setup-page elf-setup-page">${topBar()}<div class="onboard-card panel setup-card"><div class="onboard-icon setup-icon"><span class="setup-icon-glyph"><img src="./assets/radio-setting-icon.svg" alt=""></span></div><h1>ELF FM</h1><p class="support-copy">Connect to ELF FM through Mission Control?</p><div class="setup-actions stack"><button class="btn primary wide" data-elf-onboard="tune">Tune In</button><button class="btn secondary wide" data-elf-onboard="continue">Continue Mission</button></div></div></section>`;
+  }
+
   function renderRadar(){
     const cp=current();
     const modeClass=state.mode==='demo'?' demo-radar-page':'';
@@ -735,8 +740,7 @@
         : '';
     const userMarker=finalCircuitOverview?'':'<div class="user-dot"></div>';
     const targetMarker=!finalCircuitOverview&&cp?'<div class="target-dot hidden"></div>':'';
-    const elfPrompt=(!state.elfPromptSeen&&!state.elfUnlocked)?`<div class="elf-onboard-backdrop"><div class="panel elf-onboard-prompt" role="dialog" aria-modal="true" aria-label="ELF FM"><div class="onboard-icon elf-onboard-icon"><img src="./assets/radio-setting-icon.svg" alt=""></div><h2>ELF FM</h2><p>Connect to ELF FM through Mission Control?</p><div class="elf-onboard-actions"><button class="btn primary wide" data-elf-onboard="tune">Tune In</button><button class="btn secondary wide" data-elf-onboard="continue">Continue Mission</button></div></div></div>`:'';
-    return `<section class="radar-page${modeClass}">${statusStrip()}<section class="radar-zone" aria-label="Live checkpoint radar"><section class="radar-wrap"><div class="radar${circuitMode?' circuit-radar':''}${finalCircuitOverview?' circuit-overview-radar':''}">${circuitLayer}<div class="sweep"></div>${userMarker}${targetMarker}</div></section></section>${radarMessage(cp)}</section>${elfPrompt}`;
+    return `<section class="radar-page${modeClass}">${statusStrip()}<section class="radar-zone" aria-label="Live checkpoint radar"><section class="radar-wrap"><div class="radar${circuitMode?' circuit-radar':''}${finalCircuitOverview?' circuit-overview-radar':''}">${circuitLayer}<div class="sweep"></div>${userMarker}${targetMarker}</div></section></section>${radarMessage(cp)}</section>`;
   }
   function missionStatus(cp){
     const idx=checkpointIndex(cp.id);
@@ -1235,9 +1239,10 @@
   }
   function showRadioCompletion(){
     const mc=document.getElementById('missionContent'); if(!mc) return;
-    mc.innerHTML=`<div class="completion panel"><div class="check" aria-hidden="true"><span class="checkmark-icon checkmark-icon--large"></span></div><div class="kicker">Signal Locked</div><h2>ELF FM Locked</h2><p>Signal acquired at 87.7. ELF FM is now available from Communications.</p><button class="btn primary wide" id="returnComms">Return to Comms</button></div>`;
-    document.getElementById('returnComms').onclick=()=>{
-      state={...state,elfUnlocked:true,missionOpen:null,missionReturnNav:'radar',nav:'comms'};
+    const returnNav=state.missionReturnNav==='comms'?'comms':'radar';
+    mc.innerHTML=`<div class="completion panel"><div class="check" aria-hidden="true"><span class="checkmark-icon checkmark-icon--large"></span></div><div class="kicker">Signal Locked</div><h2>ELF FM Locked</h2><p>Signal acquired at 87.7. ELF FM is now available from Communications.</p><button class="btn primary wide" id="returnElf">Continue</button></div>`;
+    document.getElementById('returnElf').onclick=()=>{
+      state={...state,elfUnlocked:true,elfPromptSeen:true,missionOpen:null,missionReturnNav:returnNav,nav:returnNav};
       save();render();
     };
     ping(880,.14,.05);haptic([30,35,70]);
@@ -1923,7 +1928,7 @@
     demoTimer=setTimeout(()=>{demoTimer=null;beginDemoApproach();},Math.max(0,Number(delay)||0));
   }
   function canRunDemoTarget(){
-    return state.mode==='demo'&&state.nav==='radar'&&!state.missionOpen&&!!current()&&!state.targetInRange;
+    return state.mode==='demo'&&state.nav==='radar'&&(state.elfPromptSeen||state.elfUnlocked)&&!state.missionOpen&&!!current()&&!state.targetInRange;
   }
   function maybeStartDemoTarget(delay=500){
     if(!canRunDemoTarget()||demoTimer!==null||demoInterval!==null) return;

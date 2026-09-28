@@ -77,9 +77,10 @@
   }
   function showRadioCompletion(){
     const mc=document.getElementById('missionContent'); if(!mc) return;
-    mc.innerHTML=`<div class="completion panel"><div class="check" aria-hidden="true"><span class="checkmark-icon checkmark-icon--large"></span></div><div class="kicker">Signal Locked</div><h2>ELF FM Locked</h2><p>Signal acquired at 87.7. ELF FM is now available from Communications.</p><button class="btn primary wide" id="returnComms">Return to Comms</button></div>`;
-    document.getElementById('returnComms').onclick=()=>{
-      state={...state,elfUnlocked:true,missionOpen:null,missionReturnNav:'radar',nav:'comms'};
+    const returnNav=state.missionReturnNav==='comms'?'comms':'radar';
+    mc.innerHTML=`<div class="completion panel"><div class="check" aria-hidden="true"><span class="checkmark-icon checkmark-icon--large"></span></div><div class="kicker">Signal Locked</div><h2>ELF FM Locked</h2><p>Signal acquired at 87.7. ELF FM is now available from Communications.</p><button class="btn primary wide" id="returnElf">Continue</button></div>`;
+    document.getElementById('returnElf').onclick=()=>{
+      state={...state,elfUnlocked:true,elfPromptSeen:true,missionOpen:null,missionReturnNav:returnNav,nav:returnNav};
       save();render();
     };
     ping(880,.14,.05);haptic([30,35,70]);

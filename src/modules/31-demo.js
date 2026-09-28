@@ -171,7 +171,7 @@
     demoTimer=setTimeout(()=>{demoTimer=null;beginDemoApproach();},Math.max(0,Number(delay)||0));
   }
   function canRunDemoTarget(){
-    return state.mode==='demo'&&state.nav==='radar'&&!state.missionOpen&&!!current()&&!state.targetInRange;
+    return state.mode==='demo'&&state.nav==='radar'&&(state.elfPromptSeen||state.elfUnlocked)&&!state.missionOpen&&!!current()&&!state.targetInRange;
   }
   function maybeStartDemoTarget(delay=500){
     if(!canRunDemoTarget()||demoTimer!==null||demoInterval!==null) return;
