@@ -9710,3 +9710,106 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 }
 #radarMessage.complete-message h3{color:var(--green)!important;text-shadow:0 0 9px rgba(87,239,145,.20)!important;}
 #radarMessage.complete-message .kicker,#radarMessage.complete-message p{color:#8fb6c4!important;}
+
+/* === Mobile viewport balance pass 2026-09-28 ============================
+   Use the available mobile viewport rather than hard-capping the sleigh
+   artwork. The instrument content should comfortably fill the screen without
+   extending beneath the browser/nav chrome. */
+@media(max-width:520px){
+  /* MC00 System Diagnostics: the card owns the remaining no-nav viewport and
+     the sleigh bay expands into spare height instead of leaving dead space. */
+  .setup-page.mc00-page{
+    padding-bottom:max(10px,env(safe-area-inset-bottom,0px))!important;
+  }
+  .setup-page.mc00-page .mc00-card{
+    flex:1 1 auto!important;
+    min-height:0!important;
+    margin:10px var(--page-gutter) 12px!important;
+    padding:14px 12px 14px!important;
+    row-gap:8px!important;
+    grid-template-rows:auto minmax(148px,1fr) auto auto!important;
+    align-content:stretch!important;
+  }
+  .mc00-visual-wrap{
+    min-height:0!important;
+    height:100%!important;
+    align-items:stretch!important;
+  }
+  .mc00-sleigh-frame{
+    width:min(100%,440px)!important;
+    min-height:0!important;
+    height:100%!important;
+    padding:4px 7px 1px!important;
+  }
+  .mc00-sleigh-visual{
+    min-height:0!important;
+    height:100%!important;
+    max-height:none!important;
+  }
+  .mc00-sleigh-visual .sleigh-art{
+    inset:6% 5% 7%!important;
+    width:90%!important;
+    height:87%!important;
+  }
+  .mc00-system-bank .system-status-name,
+  .mc00-system-bank .system-status-value{
+    min-height:20px!important;
+    font-size:6.8px!important;
+  }
+  .mc00-progress{height:20px!important;min-height:20px!important;}
+
+  /* Sleigh view: preserve the fixed information hierarchy, then allow the
+     visual bay to take the rest of the card. This keeps the page full without
+     pushing the system bank beneath the bottom navigation. */
+  .nav-view>.sleigh-card{
+    margin:10px var(--page-gutter) 10px!important;
+    padding:12px 10px 10px!important;
+  }
+  .nav-view>.sleigh-card .sleigh-visual{
+    flex:1 1 0!important;
+    min-height:165px!important;
+    height:auto!important;
+    max-height:none!important;
+  }
+  .nav-view>.sleigh-card .sleigh-visual .sleigh-art{
+    inset:6% 5% 7%!important;
+    width:90%!important;
+    height:87%!important;
+  }
+  .nav-view>.sleigh-card .sleigh-systems{
+    flex:0 0 auto!important;
+    margin-top:8px!important;
+    padding:9px 9px 8px!important;
+  }
+  .nav-view>.sleigh-card .sleigh-system-bank{row-gap:3px!important;column-gap:5px!important;}
+  .nav-view>.sleigh-card .sleigh-systems .system-status-name,
+  .nav-view>.sleigh-card .sleigh-systems .system-status-value{
+    min-height:20px!important;
+    font-size:6.7px!important;
+  }
+}
+
+/* Shorter mobile viewports still use all available space, but reduce only the
+   flexible illustration bay rather than compressing every element. */
+@media(max-width:390px) and (max-height:760px){
+  .setup-page.mc00-page .mc00-card{
+    margin-top:8px!important;
+    margin-bottom:8px!important;
+    padding:11px 11px 11px!important;
+    row-gap:6px!important;
+    grid-template-rows:auto minmax(125px,1fr) auto auto!important;
+  }
+  .mc00-system-bank .system-status-name,
+  .mc00-system-bank .system-status-value{min-height:18px!important;font-size:6.4px!important;}
+
+  .nav-view>.sleigh-card .sleigh-visual{
+    min-height:130px!important;
+    height:auto!important;
+    max-height:none!important;
+  }
+  .nav-view>.sleigh-card .sleigh-systems .system-status-name,
+  .nav-view>.sleigh-card .sleigh-systems .system-status-value{
+    min-height:18px!important;
+    font-size:6.3px!important;
+  }
+}
