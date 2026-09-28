@@ -9413,3 +9413,12 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .mission-diagnostics .sensor-aero.active .mc02-aero-blades-path{fill:#63e895!important;filter:drop-shadow(0 0 3px rgba(87,239,145,.26))!important;}
 .mission-diagnostics .sensor-aero.done .mc02-aero-blades-path{fill:#63e895!important;filter:drop-shadow(0 0 2px rgba(87,239,145,.18))!important;}
 .mission-diagnostics .sensor-aero.active .mc02-aero-ring-path,.mission-diagnostics .sensor-aero.done .mc02-aero-ring-path{fill:#78dfff!important;filter:none!important;}
+
+
+/* MC02 final scan timing: visuals stay active for their full natural SFX duration. */
+.mission-diagnostics .sensor-control.active .mc02-icon-control{animation:mc02ControlRightReturn 1.2s ease-in-out 1 both!important;}
+.mission-diagnostics .sensor-control.active .mc02-control-wheel{animation:none!important;}
+@keyframes mc02ControlRightReturn{
+  0%,100%{transform:translate(-50%,-50%) rotate(0deg)}
+  50%{transform:translate(-50%,-50%) rotate(54deg)}
+}
