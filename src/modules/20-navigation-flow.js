@@ -73,7 +73,23 @@
     const mc=document.getElementById('missionContent'); if(!mc) return;
     const outcome=copy||title||'';
     mc.innerHTML=`<div class="completion panel"><div class="check" aria-hidden="true"><span class="checkmark-icon checkmark-icon--large"></span></div><h2>Mission Complete</h2>${outcome?`<p>${outcome}</p>`:''}<button class="btn primary wide" id="returnRadar">Continue</button></div>`;
-    document.getElementById('returnRadar').onclick=()=>completeCurrent(); ping(880,.14,.05);haptic([30,35,70]);
+    const continueBtn=document.getElementById('returnRadar');
+    let continueCommitted=false;
+    const commitContinue=event=>{
+      if(continueCommitted)return;
+      // Touch/pen commits on pointer-up so iOS cannot swallow the first tap,
+      // without re-rendering the page while the finger is still held down.
+      // Mouse + keyboard continue to use the normal click path.
+      if(event?.type==='pointerup'&&event.pointerType==='mouse')return;
+      event?.preventDefault?.();
+      event?.stopPropagation?.();
+      continueCommitted=true;
+      if(continueBtn)continueBtn.disabled=true;
+      completeCurrent();
+    };
+    continueBtn?.addEventListener('pointerup',commitContinue,{passive:false});
+    continueBtn?.addEventListener('click',commitContinue);
+    ping(880,.14,.05);haptic([30,35,70]);
   }
   function showRadioCompletion(){
     const mc=document.getElementById('missionContent'); if(!mc) return;

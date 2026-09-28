@@ -831,7 +831,7 @@
       return `<div class="mission-head spirit-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><div class="spirit-sponsor"><img src="./assets/care-bears-logo.png?v=7.38.44" alt="Care Bears"></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
     }
     if(cp.type==='power'&&cp.id==='escapade'){
-      return `<div class="mission-head raceway-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><div class="raceway-sponsor"><img src="./assets/escapade-logo.png?v=1" alt="Escapade"></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
+      return `<div class="mission-head raceway-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><div class="raceway-sponsor"><img src="./assets/escapade-logo.png?v=1" alt="Escapade" width="1350" height="386" fetchpriority="high"></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
     }
     if(cp.type==='lapland'){
       return `<div class="mission-head lapland-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><div class="lapland-sponsor"><img src="./assets/las-vegas-logo-white.svg" alt="Las Vegas"></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
@@ -988,7 +988,7 @@
       <span class="spirit-tank-grid" aria-hidden="true"></span>
       <span class="spirit-tank-plate" aria-hidden="true"><span class="spirit-tank-plate-face">${bhpIcon}</span></span>
       <span class="spirit-tank-vent" aria-hidden="true"><i></i><i></i><i></i></span>
-      <button class="spirit-tank-power" data-spirit-charge="${tank.side}-${tank.index}" aria-label="Charge ${tank.name} tank"><img src="./assets/system-power.svg" alt="" aria-hidden="true"></button>
+      <button type="button" class="spirit-tank-power" data-spirit-charge="${tank.side}-${tank.index}" aria-label="Charge ${tank.name} tank"><span class="spirit-power-bolt" aria-hidden="true"></span></button>
     </div>`).join('');
     const stageDots=Array.from({length:8},(_,i)=>`<i data-spirit-stage-dot="${i}"></i>`).join('');
     return `<div class="mission-instrument panel spirit-panel" id="spiritRig" data-stage="0">
@@ -1078,16 +1078,15 @@
       <div class="aurora-progress-head"><span>Navigation Lock</span><strong id="auroraLockCount">0 / 3</strong></div>
       <div class="aurora-lock-track" id="auroraLockTrack" aria-label="Navigation lock progress">${Array.from({length:3},()=>'<i></i>').join('')}</div>
       <div class="aurora-north" aria-hidden="true"><span class="aurora-north-star">✦</span><i></i></div>
-      <div class="aurora-dial" id="auroraDial" role="img" aria-label="Aurora Apex navigation alignment instrument">
+      <div class="aurora-dial" id="auroraDial" role="group" aria-label="Aurora Apex navigation alignment instrument">
         <div class="aurora-field" aria-hidden="true"></div>
         <div class="aurora-target-line" aria-hidden="true"></div>
         <div class="aurora-capture-gate" aria-hidden="true"><i></i></div>
-        ${rings.map(key=>`<div class="aurora-ring aurora-ring-${key}" data-aurora-ring="${key}" aria-hidden="true"><img src="./assets/aurora-ring-${key}.webp" alt=""><span class="aurora-lock-notch"></span></div>`).join('')}
+        ${rings.map(key=>`<button type="button" class="aurora-ring aurora-ring-${key}" data-aurora-ring="${key}" aria-label="Lock ${key} navigation ring"><img src="./assets/aurora-ring-${key}.webp" alt="" aria-hidden="true"><span class="aurora-lock-notch" aria-hidden="true"></span></button>`).join('')}
         <div class="aurora-charge-pulse" aria-hidden="true"></div>
         <div class="aurora-final-wave" aria-hidden="true"></div>
         <div class="aurora-compass" aria-hidden="true"><span><img class="aurora-compass-mark" src="./assets/silverstone-s-mark.webp" alt=""></span></div>
       </div>
-      <button class="btn primary wide aurora-capture-btn" id="auroraCaptureBtn">CAPTURE</button>
       <div class="visually-hidden" id="auroraState" aria-live="polite">Align the active navigation ring with the North Pole axis.</div>
     </div>`;
   }
@@ -1231,7 +1230,23 @@
     const mc=document.getElementById('missionContent'); if(!mc) return;
     const outcome=copy||title||'';
     mc.innerHTML=`<div class="completion panel"><div class="check" aria-hidden="true"><span class="checkmark-icon checkmark-icon--large"></span></div><h2>Mission Complete</h2>${outcome?`<p>${outcome}</p>`:''}<button class="btn primary wide" id="returnRadar">Continue</button></div>`;
-    document.getElementById('returnRadar').onclick=()=>completeCurrent(); ping(880,.14,.05);haptic([30,35,70]);
+    const continueBtn=document.getElementById('returnRadar');
+    let continueCommitted=false;
+    const commitContinue=event=>{
+      if(continueCommitted)return;
+      // Touch/pen commits on pointer-up so iOS cannot swallow the first tap,
+      // without re-rendering the page while the finger is still held down.
+      // Mouse + keyboard continue to use the normal click path.
+      if(event?.type==='pointerup'&&event.pointerType==='mouse')return;
+      event?.preventDefault?.();
+      event?.stopPropagation?.();
+      continueCommitted=true;
+      if(continueBtn)continueBtn.disabled=true;
+      completeCurrent();
+    };
+    continueBtn?.addEventListener('pointerup',commitContinue,{passive:false});
+    continueBtn?.addEventListener('click',commitContinue);
+    ping(880,.14,.05);haptic([30,35,70]);
   }
   function showRadioCompletion(){
     const mc=document.getElementById('missionContent'); if(!mc) return;
@@ -2645,9 +2660,11 @@
       tank.classList.toggle('is-full',hits>=tapsPerTank);
       const button=tank.querySelector('[data-spirit-charge]');
       if(button){
-        button.disabled=completed||hits>=tapsPerTank;
-        button.classList.toggle('is-charging',hits<tapsPerTank);
-        button.classList.toggle('is-full',hits>=tapsPerTank);
+        const isFull=hits>=tapsPerTank;
+        button.disabled=false;
+        button.setAttribute('aria-disabled',String(completed||isFull));
+        button.classList.toggle('is-charging',!completed&&!isFull);
+        button.classList.toggle('is-full',isFull);
       }
     }
 
@@ -2694,7 +2711,7 @@
       stopBubbles();
       rig.classList.add('is-complete');
       stageNumber.textContent='8';
-      buttons.forEach(button=>{button.disabled=true;button.classList.remove('is-charging');});
+      buttons.forEach(button=>{button.disabled=false;button.setAttribute('aria-disabled','true');button.classList.remove('is-charging');});
       haptic([30,28,64]);
       finishTimer=setTimeout(()=>{
         if(state.missionOpen==='spirit')showCompletion('Spirit Core Charged','The positive energy signatures have been safely stored and the Spirit Core is now fully charged.');
@@ -2702,6 +2719,8 @@
     }
 
     function onCharge(event){
+      event?.preventDefault?.();
+      event?.stopPropagation?.();
       if(completed)return;
       const button=event.currentTarget;
       const id=button.dataset.spiritCharge;
@@ -2724,7 +2743,15 @@
       }
     }
 
-    buttons.forEach(button=>button.addEventListener('click',onCharge));
+    function onChargeKey(event){
+      if(event.key!=='Enter'&&event.key!==' ')return;
+      event.preventDefault();
+      onCharge(event);
+    }
+    buttons.forEach(button=>{
+      button.addEventListener('pointerup',onCharge,{passive:false});
+      button.addEventListener('keydown',onChargeKey);
+    });
     tanks.forEach(renderTank);
     updateMeters();
     updateStage();
@@ -2732,7 +2759,10 @@
     cleanupMission=()=>{
       clearTimeout(finishTimer);
       reactionTimers.forEach(clearTimeout);
-      buttons.forEach(button=>button.removeEventListener('click',onCharge));
+      buttons.forEach(button=>{
+        button.removeEventListener('pointerup',onCharge);
+        button.removeEventListener('keydown',onChargeKey);
+      });
       stopBubbles();
       try{payoffAudio.pause();payoffAudio.currentTime=0;}catch{}
     };
@@ -3417,7 +3447,7 @@
     let vy=0;
     let previousPuck={x:0,y:0};
     const speeds=[0,0.245,0.285,0.325];
-    const goalWidths=[null,'48%','39%',null];
+    const goalWidths=[null,'clamp(180px,58%,220px)','clamp(150px,47%,185px)','clamp(124px,36%,142px)'];
 
     const strikePool=Array.from({length:3},()=>{
       const a=new Audio('./assets/jingle-puck-strike.mp3');
@@ -3810,16 +3840,10 @@
     function primeCountdownAudio(){
       if(countdownAudioPrimed||!state.audio)return;
       countdownAudioPrimed=true;
-      [...redLightAudio,goAudio].forEach(audio=>{
-        const target=audio===goAudio?.82:.72;
-        try{
-          audio.volume=0;audio.currentTime=0;
-          const play=audio.play();
-          if(play&&typeof play.then==='function'){
-            play.then(()=>{try{audio.pause();audio.currentTime=0;audio.volume=target;}catch{}}).catch(()=>{audio.volume=target;});
-          }else{audio.pause();audio.currentTime=0;audio.volume=target;}
-        }catch{audio.volume=target;}
-      });
+      // Do not call play() here. iOS can leak an audible frame even at volume 0,
+      // which created a stray beep on the first START TEST press. Loading is
+      // sufficient; the first intended red-light cue is the first playback.
+      [...redLightAudio,goAudio].forEach(audio=>{try{audio.load();}catch{}});
     }
     function playCountdownFx(audio,volume){
       if(!state.audio)return;
@@ -3918,14 +3942,13 @@
   function bindAurora(){
     const panel=document.querySelector('.aurora-panel');
     const dial=document.getElementById('auroraDial');
-    const captureBtn=document.getElementById('auroraCaptureBtn');
     const lockCount=document.getElementById('auroraLockCount');
     const lockTrack=[...document.querySelectorAll('#auroraLockTrack i')];
     const stateEl=document.getElementById('auroraState');
     const north=document.querySelector('.aurora-north');
     const pulseEl=document.querySelector('.aurora-charge-pulse');
     const finalWave=document.querySelector('.aurora-final-wave');
-    if(!dial||!captureBtn||!lockCount||lockTrack.length!==3||!stateEl)return;
+    if(!dial||!lockCount||lockTrack.length!==3||!stateEl)return;
 
     const ringEls={
       outer:document.querySelector('[data-aurora-ring="outer"]'),
@@ -4050,9 +4073,6 @@
         finalWave.classList.add('fire');
       }
       updateProgress();
-      captureBtn.textContent='LOCKED';
-      captureBtn.classList.add('locked');
-      captureBtn.disabled=true;
       stateEl.textContent='Navigation route locked to the North Pole.';
       fadeAmbientOut();
       ping(1090,.13,.04);
@@ -4137,14 +4157,17 @@
       if(!finished)raf=requestAnimationFrame(frame);
     }
 
-    captureBtn.addEventListener('click',()=>{
+    function captureRing(event){
+      event?.preventDefault?.();
+      const requested=event?.currentTarget?.dataset?.auroraRing;
       const key=activeKey();
-      if(!key||finished)return;
+      if(!key||finished||requested!==key)return;
       startAmbient();
       const offset=Math.abs(signed(angles[key]));
       if(offset<=captureWindows[key]) lockRing(key);
       else missCapture(key);
-    });
+    }
+    order.forEach(key=>ringEls[key]?.addEventListener('click',captureRing));
 
     order.forEach(renderRing);
     updateStage();
@@ -4157,6 +4180,7 @@
       cancelAnimationFrame(ambientFadeRaf);
       clearTimeout(completionTimer);
       feedbackTimers.forEach(clearTimeout);
+      order.forEach(key=>ringEls[key]?.removeEventListener('click',captureRing));
       try{lockAudio.pause();lockAudio.currentTime=0;}catch{}
       try{ambientAudio.pause();ambientAudio.currentTime=0;ambientAudio.volume=.17;}catch{}
     };

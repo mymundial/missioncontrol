@@ -19,16 +19,10 @@
     function primeCountdownAudio(){
       if(countdownAudioPrimed||!state.audio)return;
       countdownAudioPrimed=true;
-      [...redLightAudio,goAudio].forEach(audio=>{
-        const target=audio===goAudio?.82:.72;
-        try{
-          audio.volume=0;audio.currentTime=0;
-          const play=audio.play();
-          if(play&&typeof play.then==='function'){
-            play.then(()=>{try{audio.pause();audio.currentTime=0;audio.volume=target;}catch{}}).catch(()=>{audio.volume=target;});
-          }else{audio.pause();audio.currentTime=0;audio.volume=target;}
-        }catch{audio.volume=target;}
-      });
+      // Do not call play() here. iOS can leak an audible frame even at volume 0,
+      // which created a stray beep on the first START TEST press. Loading is
+      // sufficient; the first intended red-light cue is the first playback.
+      [...redLightAudio,goAudio].forEach(audio=>{try{audio.load();}catch{}});
     }
     function playCountdownFx(audio,volume){
       if(!state.audio)return;

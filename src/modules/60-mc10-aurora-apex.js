@@ -1,14 +1,13 @@
   function bindAurora(){
     const panel=document.querySelector('.aurora-panel');
     const dial=document.getElementById('auroraDial');
-    const captureBtn=document.getElementById('auroraCaptureBtn');
     const lockCount=document.getElementById('auroraLockCount');
     const lockTrack=[...document.querySelectorAll('#auroraLockTrack i')];
     const stateEl=document.getElementById('auroraState');
     const north=document.querySelector('.aurora-north');
     const pulseEl=document.querySelector('.aurora-charge-pulse');
     const finalWave=document.querySelector('.aurora-final-wave');
-    if(!dial||!captureBtn||!lockCount||lockTrack.length!==3||!stateEl)return;
+    if(!dial||!lockCount||lockTrack.length!==3||!stateEl)return;
 
     const ringEls={
       outer:document.querySelector('[data-aurora-ring="outer"]'),
@@ -133,9 +132,6 @@
         finalWave.classList.add('fire');
       }
       updateProgress();
-      captureBtn.textContent='LOCKED';
-      captureBtn.classList.add('locked');
-      captureBtn.disabled=true;
       stateEl.textContent='Navigation route locked to the North Pole.';
       fadeAmbientOut();
       ping(1090,.13,.04);
@@ -220,14 +216,17 @@
       if(!finished)raf=requestAnimationFrame(frame);
     }
 
-    captureBtn.addEventListener('click',()=>{
+    function captureRing(event){
+      event?.preventDefault?.();
+      const requested=event?.currentTarget?.dataset?.auroraRing;
       const key=activeKey();
-      if(!key||finished)return;
+      if(!key||finished||requested!==key)return;
       startAmbient();
       const offset=Math.abs(signed(angles[key]));
       if(offset<=captureWindows[key]) lockRing(key);
       else missCapture(key);
-    });
+    }
+    order.forEach(key=>ringEls[key]?.addEventListener('click',captureRing));
 
     order.forEach(renderRing);
     updateStage();
@@ -240,6 +239,7 @@
       cancelAnimationFrame(ambientFadeRaf);
       clearTimeout(completionTimer);
       feedbackTimers.forEach(clearTimeout);
+      order.forEach(key=>ringEls[key]?.removeEventListener('click',captureRing));
       try{lockAudio.pause();lockAudio.currentTime=0;}catch{}
       try{ambientAudio.pause();ambientAudio.currentTime=0;ambientAudio.volume=.17;}catch{}
     };

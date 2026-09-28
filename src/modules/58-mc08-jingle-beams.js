@@ -32,7 +32,7 @@
     let vy=0;
     let previousPuck={x:0,y:0};
     const speeds=[0,0.245,0.285,0.325];
-    const goalWidths=[null,'48%','39%',null];
+    const goalWidths=[null,'clamp(180px,58%,220px)','clamp(150px,47%,185px)','clamp(124px,36%,142px)'];
 
     const strikePool=Array.from({length:3},()=>{
       const a=new Audio('./assets/jingle-puck-strike.mp3');

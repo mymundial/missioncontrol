@@ -65,9 +65,11 @@
       tank.classList.toggle('is-full',hits>=tapsPerTank);
       const button=tank.querySelector('[data-spirit-charge]');
       if(button){
-        button.disabled=completed||hits>=tapsPerTank;
-        button.classList.toggle('is-charging',hits<tapsPerTank);
-        button.classList.toggle('is-full',hits>=tapsPerTank);
+        const isFull=hits>=tapsPerTank;
+        button.disabled=false;
+        button.setAttribute('aria-disabled',String(completed||isFull));
+        button.classList.toggle('is-charging',!completed&&!isFull);
+        button.classList.toggle('is-full',isFull);
       }
     }
 
@@ -114,7 +116,7 @@
       stopBubbles();
       rig.classList.add('is-complete');
       stageNumber.textContent='8';
-      buttons.forEach(button=>{button.disabled=true;button.classList.remove('is-charging');});
+      buttons.forEach(button=>{button.disabled=false;button.setAttribute('aria-disabled','true');button.classList.remove('is-charging');});
       haptic([30,28,64]);
       finishTimer=setTimeout(()=>{
         if(state.missionOpen==='spirit')showCompletion('Spirit Core Charged','The positive energy signatures have been safely stored and the Spirit Core is now fully charged.');
@@ -122,6 +124,8 @@
     }
 
     function onCharge(event){
+      event?.preventDefault?.();
+      event?.stopPropagation?.();
       if(completed)return;
       const button=event.currentTarget;
       const id=button.dataset.spiritCharge;
@@ -144,7 +148,15 @@
       }
     }
 
-    buttons.forEach(button=>button.addEventListener('click',onCharge));
+    function onChargeKey(event){
+      if(event.key!=='Enter'&&event.key!==' ')return;
+      event.preventDefault();
+      onCharge(event);
+    }
+    buttons.forEach(button=>{
+      button.addEventListener('pointerup',onCharge,{passive:false});
+      button.addEventListener('keydown',onChargeKey);
+    });
     tanks.forEach(renderTank);
     updateMeters();
     updateStage();
@@ -152,7 +164,10 @@
     cleanupMission=()=>{
       clearTimeout(finishTimer);
       reactionTimers.forEach(clearTimeout);
-      buttons.forEach(button=>button.removeEventListener('click',onCharge));
+      buttons.forEach(button=>{
+        button.removeEventListener('pointerup',onCharge);
+        button.removeEventListener('keydown',onChargeKey);
+      });
       stopBubbles();
       try{payoffAudio.pause();payoffAudio.currentTime=0;}catch{}
     };

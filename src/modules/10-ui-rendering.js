@@ -256,7 +256,7 @@
       return `<div class="mission-head spirit-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><div class="spirit-sponsor"><img src="./assets/care-bears-logo.png?v=7.38.44" alt="Care Bears"></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
     }
     if(cp.type==='power'&&cp.id==='escapade'){
-      return `<div class="mission-head raceway-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><div class="raceway-sponsor"><img src="./assets/escapade-logo.png?v=1" alt="Escapade"></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
+      return `<div class="mission-head raceway-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><div class="raceway-sponsor"><img src="./assets/escapade-logo.png?v=1" alt="Escapade" width="1350" height="386" fetchpriority="high"></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
     }
     if(cp.type==='lapland'){
       return `<div class="mission-head lapland-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><div class="lapland-sponsor"><img src="./assets/las-vegas-logo-white.svg" alt="Las Vegas"></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
@@ -413,7 +413,7 @@
       <span class="spirit-tank-grid" aria-hidden="true"></span>
       <span class="spirit-tank-plate" aria-hidden="true"><span class="spirit-tank-plate-face">${bhpIcon}</span></span>
       <span class="spirit-tank-vent" aria-hidden="true"><i></i><i></i><i></i></span>
-      <button class="spirit-tank-power" data-spirit-charge="${tank.side}-${tank.index}" aria-label="Charge ${tank.name} tank"><img src="./assets/system-power.svg" alt="" aria-hidden="true"></button>
+      <button type="button" class="spirit-tank-power" data-spirit-charge="${tank.side}-${tank.index}" aria-label="Charge ${tank.name} tank"><span class="spirit-power-bolt" aria-hidden="true"></span></button>
     </div>`).join('');
     const stageDots=Array.from({length:8},(_,i)=>`<i data-spirit-stage-dot="${i}"></i>`).join('');
     return `<div class="mission-instrument panel spirit-panel" id="spiritRig" data-stage="0">
@@ -503,16 +503,15 @@
       <div class="aurora-progress-head"><span>Navigation Lock</span><strong id="auroraLockCount">0 / 3</strong></div>
       <div class="aurora-lock-track" id="auroraLockTrack" aria-label="Navigation lock progress">${Array.from({length:3},()=>'<i></i>').join('')}</div>
       <div class="aurora-north" aria-hidden="true"><span class="aurora-north-star">✦</span><i></i></div>
-      <div class="aurora-dial" id="auroraDial" role="img" aria-label="Aurora Apex navigation alignment instrument">
+      <div class="aurora-dial" id="auroraDial" role="group" aria-label="Aurora Apex navigation alignment instrument">
         <div class="aurora-field" aria-hidden="true"></div>
         <div class="aurora-target-line" aria-hidden="true"></div>
         <div class="aurora-capture-gate" aria-hidden="true"><i></i></div>
-        ${rings.map(key=>`<div class="aurora-ring aurora-ring-${key}" data-aurora-ring="${key}" aria-hidden="true"><img src="./assets/aurora-ring-${key}.webp" alt=""><span class="aurora-lock-notch"></span></div>`).join('')}
+        ${rings.map(key=>`<button type="button" class="aurora-ring aurora-ring-${key}" data-aurora-ring="${key}" aria-label="Lock ${key} navigation ring"><img src="./assets/aurora-ring-${key}.webp" alt="" aria-hidden="true"><span class="aurora-lock-notch" aria-hidden="true"></span></button>`).join('')}
         <div class="aurora-charge-pulse" aria-hidden="true"></div>
         <div class="aurora-final-wave" aria-hidden="true"></div>
         <div class="aurora-compass" aria-hidden="true"><span><img class="aurora-compass-mark" src="./assets/silverstone-s-mark.webp" alt=""></span></div>
       </div>
-      <button class="btn primary wide aurora-capture-btn" id="auroraCaptureBtn">CAPTURE</button>
       <div class="visually-hidden" id="auroraState" aria-live="polite">Align the active navigation ring with the North Pole axis.</div>
     </div>`;
   }
