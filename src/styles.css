@@ -9389,20 +9389,15 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .northern-airborne-status,.northern-airborne-field{display:none!important;}
 
 @media(prefers-reduced-motion:reduce){.spirit-panel .spirit-charge-btn.is-next{animation:none!important;}.northern-airborne-takeover::before,.northern-airborne-takeover::after,.northern-airborne-copy{animation:none!important;opacity:1!important;transform:none!important;}}
-/* MC02 CONTROL correction: the supplied steering wheel assembly itself performs two right/left sweeps. */
-.mission-diagnostics .sensor-control.active .mc02-icon-control{animation:mc02ControlExtraSweepAssembly 2.25s ease-in-out 1 both!important;}
+/* MC02 CONTROL correction: restore the approved single right/left steering motion. */
+.mission-diagnostics .sensor-control.active .mc02-icon-control{animation:mc02ControlRightLeft 2s ease-in-out 1 both!important;}
 .mission-diagnostics .sensor-control.active .mc02-control-wheel{animation:none!important;}
-@keyframes mc02ControlExtraSweepAssembly{
-  0%{transform:translate(-50%,-50%) rotate(0deg)}
-  20%{transform:translate(-50%,-50%) rotate(54deg)}
-  40%{transform:translate(-50%,-50%) rotate(-54deg)}
-  60%{transform:translate(-50%,-50%) rotate(54deg)}
-  80%{transform:translate(-50%,-50%) rotate(-54deg)}
-  100%{transform:translate(-50%,-50%) rotate(0deg)}
+@keyframes mc02ControlRightLeft{
+  0%,100%{transform:translate(-50%,-50%) rotate(0deg)}
+  34%{transform:translate(-50%,-50%) rotate(54deg)}
+  68%{transform:translate(-50%,-50%) rotate(-54deg)}
 }
 /* Final QA micro-corrections. */
-.mission-diagnostics .mc02-aero-fan-ring{fill:none!important;stroke:#78dfff!important;stroke-width:7!important;vector-effect:non-scaling-stroke;filter:none!important;}
-.mission-diagnostics .sensor-aero.active .mc02-aero-fan-ring,.mission-diagnostics .sensor-aero.done .mc02-aero-fan-ring{stroke:#78dfff!important;filter:none!important;}
 .spirit-panel .spirit-charge-btn::before,.spirit-panel .spirit-charge-btn::after{display:none!important;content:none!important;}
 /* Aurora north marker already spans the dial width; centre its contents without relative-position offset. */
 .aurora-north{left:auto!important;width:100%!important;transform:none!important;margin-left:0!important;margin-right:0!important;}
@@ -9410,3 +9405,11 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 
 /* ELF FM onboarding now uses the same setup-page language as Mission Briefing / Mission Radar. */
 .elf-setup-page .setup-icon-glyph img{display:block;width:100%;height:100%;object-fit:contain;filter:brightness(0) saturate(100%) invert(79%) sepia(49%) saturate(1524%) hue-rotate(160deg) brightness(102%) contrast(101%);}
+
+
+/* MC02 Velocity Vault corrective pass: original Aero ring stays static; only the isolated fan blades rotate/highlight. */
+.mission-diagnostics .mc02-aero-ring-path{fill:#78dfff!important;filter:none!important;opacity:.88;}
+.mission-diagnostics .mc02-aero-blades-path{fill:#78dfff!important;filter:none!important;}
+.mission-diagnostics .sensor-aero.active .mc02-aero-blades-path{fill:#63e895!important;filter:drop-shadow(0 0 3px rgba(87,239,145,.26))!important;}
+.mission-diagnostics .sensor-aero.done .mc02-aero-blades-path{fill:#63e895!important;filter:drop-shadow(0 0 2px rgba(87,239,145,.18))!important;}
+.mission-diagnostics .sensor-aero.active .mc02-aero-ring-path,.mission-diagnostics .sensor-aero.done .mc02-aero-ring-path{fill:#78dfff!important;filter:none!important;}
