@@ -9430,3 +9430,13 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   0%,100%{transform:translate(-50%,-50%) rotate(0deg)}
   50%{transform:translate(-50%,-50%) rotate(54deg)}
 }
+
+
+/* MC03 Comms Relay guidance/status pass: live progress stays cyan; full lock resolves green. */
+.relay-progress-head{color:var(--cyan)!important;}
+.relay-progress-head span,.relay-progress-head strong{color:var(--cyan)!important;transition:color .22s ease,text-shadow .22s ease;}
+.relay-progress-track i.on{border-color:var(--cyan)!important;background:var(--cyan)!important;box-shadow:0 0 8px rgba(91,214,250,.25)!important;}
+.relay-progress-head.is-complete span,.relay-progress-head.is-complete strong{color:var(--green)!important;text-shadow:0 0 9px rgba(87,239,145,.22);}
+.relay-progress-head.is-complete + .relay-progress-track i.on,.relay-progress-track i.complete{border-color:var(--green)!important;background:var(--green)!important;box-shadow:0 0 8px rgba(87,239,145,.28)!important;}
+.comms-relay-panel .relay-instruction{display:block;margin:12px auto 0!important;padding:0 10px!important;max-width:360px;text-align:center!important;color:#a9d8e8!important;font-size:9px!important;line-height:1.45!important;letter-spacing:.025em!important;text-shadow:none!important;}
+@media(max-width:390px){.comms-relay-panel .relay-instruction{margin-top:10px!important;font-size:8.5px!important;}}

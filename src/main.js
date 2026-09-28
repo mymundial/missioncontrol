@@ -936,6 +936,7 @@
         ${[0,1,2,3].map(i=>`<div class="relay-cell relay-capture"><button class="relay-node ${i===0?'active':''}" data-relay="${i}" aria-label="Relay ${i+1}"><span class="relay-target"></span><span class="relay-pulse"></span><span class="relay-core">0${i+1}</span></button><small>RELAY 0${i+1}</small></div>`).join('')}
         <div class="relay-cell relay-endpoint relay-destination"><span class="relay-receiver-icon"></span><small>RECEIVER</small></div>
       </div>
+      <div class="relay-instruction" id="relayInstruction">Tap each relay node in time with the signal pulse.</div>
       <div class="visually-hidden" id="relayState" aria-live="polite">Relay 01 armed</div>
     </div>`;
   }
@@ -2007,7 +2008,7 @@
   }
   function bindDiagnostics(){
     const done=new Set();
-    const durations=[1600,1900,1700,1200,1800,2200];
+    const durations=[1600,1900,1700,1200,1680,2050];
     const scanAudioPaths=[
       './assets/mc02-scan-aero.mp3',
       './assets/mc02-scan-stability.mp3',
@@ -2022,10 +2023,10 @@
       audio.volume=.72;
       return audio;
     });
-    const captureAudio=new Audio('./assets/mc02-scan-hit.mp3');
+    const captureAudio=new Audio('./assets/mc02-scan-capture.mp3');
     captureAudio.preload='auto';
     captureAudio.volume=.82;
-    const submitAudio=new Audio('./assets/mc02-scan-complete.mp3');
+    const submitAudio=new Audio('./assets/mc02-mission-complete.mp3');
     submitAudio.preload='auto';
     submitAudio.volume=.82;
     let busy=false;
@@ -2159,6 +2160,7 @@
     const hops=[...document.querySelectorAll('[data-hop]')];
     const stateEl=document.getElementById('relayState');
     const progressCount=document.getElementById('relayLockedCount');
+    const progressHead=document.querySelector('.relay-progress-head');
     const progressBars=[...document.querySelectorAll('[data-relay-progress]')];
         const cycles=[1900,1650,1450,1300];
     const relayFxShort=new Audio('./assets/mc03-relay-success-short.mp3');
@@ -2240,7 +2242,11 @@
       requestAnimationFrame(alignRelayRoute);
       stateEl.textContent=`Relay 0${stage+1} armed`;
       if(progressCount)progressCount.textContent=`${stage} / 4`;
-      progressBars.forEach((bar,i)=>bar.classList.toggle('on',i<stage));
+      progressHead?.classList.remove('is-complete');
+      progressBars.forEach((bar,i)=>{
+        bar.classList.toggle('on',i<stage);
+        bar.classList.remove('complete');
+      });
     }
     function showIncomingTransmission(){
       finishing=true;cancelAnimationFrame(raf);
@@ -2301,6 +2307,10 @@
       carrierPackets.forEach(packet=>packet.style.opacity='0');
       if(progressCount)progressCount.textContent=`${stage+1} / 4`;
       progressBars.forEach((bar,i)=>bar.classList.toggle('on',i<=stage));
+      if(stage===3){
+        progressHead?.classList.add('is-complete');
+        progressBars.forEach(bar=>bar.classList.add('complete'));
+      }
       stateEl.textContent=stage===3?'Transmission path locked.':'Relay locked · signal strengthened.';
       playRelayFx(stage===3?relayFxFull:relayFxShort,stage===3?.95:.9);haptic([20,25,38]);
       if(stage===3){

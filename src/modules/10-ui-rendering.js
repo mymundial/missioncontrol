@@ -361,6 +361,7 @@
         ${[0,1,2,3].map(i=>`<div class="relay-cell relay-capture"><button class="relay-node ${i===0?'active':''}" data-relay="${i}" aria-label="Relay ${i+1}"><span class="relay-target"></span><span class="relay-pulse"></span><span class="relay-core">0${i+1}</span></button><small>RELAY 0${i+1}</small></div>`).join('')}
         <div class="relay-cell relay-endpoint relay-destination"><span class="relay-receiver-icon"></span><small>RECEIVER</small></div>
       </div>
+      <div class="relay-instruction" id="relayInstruction">Tap each relay node in time with the signal pulse.</div>
       <div class="visually-hidden" id="relayState" aria-live="polite">Relay 01 armed</div>
     </div>`;
   }

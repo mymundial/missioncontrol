@@ -3,6 +3,7 @@
     const hops=[...document.querySelectorAll('[data-hop]')];
     const stateEl=document.getElementById('relayState');
     const progressCount=document.getElementById('relayLockedCount');
+    const progressHead=document.querySelector('.relay-progress-head');
     const progressBars=[...document.querySelectorAll('[data-relay-progress]')];
         const cycles=[1900,1650,1450,1300];
     const relayFxShort=new Audio('./assets/mc03-relay-success-short.mp3');
@@ -84,7 +85,11 @@
       requestAnimationFrame(alignRelayRoute);
       stateEl.textContent=`Relay 0${stage+1} armed`;
       if(progressCount)progressCount.textContent=`${stage} / 4`;
-      progressBars.forEach((bar,i)=>bar.classList.toggle('on',i<stage));
+      progressHead?.classList.remove('is-complete');
+      progressBars.forEach((bar,i)=>{
+        bar.classList.toggle('on',i<stage);
+        bar.classList.remove('complete');
+      });
     }
     function showIncomingTransmission(){
       finishing=true;cancelAnimationFrame(raf);
@@ -145,6 +150,10 @@
       carrierPackets.forEach(packet=>packet.style.opacity='0');
       if(progressCount)progressCount.textContent=`${stage+1} / 4`;
       progressBars.forEach((bar,i)=>bar.classList.toggle('on',i<=stage));
+      if(stage===3){
+        progressHead?.classList.add('is-complete');
+        progressBars.forEach(bar=>bar.classList.add('complete'));
+      }
       stateEl.textContent=stage===3?'Transmission path locked.':'Relay locked · signal strengthened.';
       playRelayFx(stage===3?relayFxFull:relayFxShort,stage===3?.95:.9);haptic([20,25,38]);
       if(stage===3){
