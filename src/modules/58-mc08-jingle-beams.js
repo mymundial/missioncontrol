@@ -9,6 +9,7 @@
     const prompt=document.getElementById('jinglePrompt');
     const stateEl=document.getElementById('jingleState');
     const lockCount=document.getElementById('jingleLockCount');
+    const countdownEl=document.getElementById('jingleCountdown');
     if(!panel||!arena||!puck||!trail||!paddle||!receiver||!stateEl) return;
 
     let beam=1;
@@ -19,6 +20,7 @@
     let launchTimer=0;
     let finishTimer=0;
     let buzzerTimer=0;
+    let countdownTimers=[];
     let last=performance.now();
     let lastStrikeAt=0;
     let lastPostAt=0;
@@ -46,6 +48,9 @@
     goalAudio.preload='auto';
     const buzzerAudio=new Audio('./assets/jingle-buzzer.mp3');
     buzzerAudio.preload='auto';
+    const countdownAudio=new Audio('./assets/arena-game-countdown.mp3');
+    countdownAudio.preload='auto';
+    countdownAudio.volume=.86;
     let strikeIndex=0;
     let postIndex=0;
 
@@ -140,11 +145,11 @@
       previousPuck={x:puckX,y:puckY};
       setPuckPosition();
     }
-    function launchPuck(fromReceiver=false){
+    function launchPuck(fromReceiver=false,keepPosition=false){
       clearTimeout(launchTimer);
       updateBounds();
       if(fromReceiver) resetPuckAtReceiver();
-      else {
+      else if(!keepPosition){
         puckX=bounds.w/2;
         puckY=Math.min(bounds.h*.35,bounds.paddleY-90);
         previousPuck={x:puckX,y:puckY};
@@ -217,6 +222,7 @@
       arena.classList.add('is-complete');
       stateEl.textContent='GUIDANCE LOCKED';
       clearTimeout(buzzerTimer);
+      countdownTimers.forEach(clearTimeout);countdownTimers=[];
       buzzerTimer=setTimeout(()=>{
         playAudio(buzzerAudio,.78,1);
         haptic([30,28,70]);
@@ -290,12 +296,43 @@
       const rect=arena.getBoundingClientRect();
       setPaddleX(e.clientX-rect.left);
     }
-    function startFromInteraction(){
-      if(started) return;
+    function startCountdown(){
+      if(started)return;
       started=true;
+      running=false;
       prompt?.classList.add('is-hidden');
-      arena.classList.add('is-live');
-      scheduleLaunch(false,220);
+      arena.classList.add('is-counting');
+      puck.classList.add('is-countdown');
+      trail.style.opacity='0';
+      updateBounds(false);
+      puckX=bounds.w/2;
+      puckY=bounds.h/2;
+      previousPuck={x:puckX,y:puckY};
+      setPuckPosition();
+      if(countdownEl)countdownEl.textContent='3';
+      stateEl.textContent='Guidance start sequence';
+      if(state.audio){
+        try{
+          countdownAudio.currentTime=0;
+          const play=countdownAudio.play();
+          if(play&&typeof play.catch==='function')play.catch(()=>{});
+        }catch{}
+      }
+      countdownTimers.push(setTimeout(()=>{if(countdownEl)countdownEl.textContent='2';},1000));
+      countdownTimers.push(setTimeout(()=>{if(countdownEl)countdownEl.textContent='1';},2000));
+      countdownTimers.push(setTimeout(()=>{
+        if(countdownEl)countdownEl.textContent='';
+        puck.classList.remove('is-countdown');
+        arena.classList.remove('is-counting');
+        arena.classList.add('is-live');
+        updateBounds(false);
+        puckX=bounds.w/2;
+        puckY=bounds.h/2;
+        previousPuck={x:puckX,y:puckY};
+        setPuckPosition();
+        trail.style.opacity='';
+        launchPuck(false,true);
+      },3000));
     }
     function onPointerDown(e){
       dragging=true;
@@ -303,7 +340,6 @@
       e.preventDefault();
       try{arena.focus({preventScroll:true});}catch{arena.focus();}
       pointerToPaddle(e);
-      startFromInteraction();
     }
     function onPointerMove(e){
       if(!dragging) return;
@@ -319,21 +355,17 @@
       e.preventDefault();
       updateBounds();
       setPaddleX(paddleX+(['ArrowLeft','a','A'].includes(e.key)?-28:28));
-      startFromInteraction();
     }
     function onResize(){
       updateBounds();
-      if(!running&&!panel.classList.contains('is-complete')) resetPuckAtReceiver();
+      if(!running&&!panel.classList.contains('is-complete')&&!arena.classList.contains('is-counting')) resetPuckAtReceiver();
     }
 
+    // Start the countdown synchronously while the mission-open tap still counts
+    // as a user gesture on iOS. This keeps the countdown audio reliable and in
+    // phase with the 3-2-1 shown on the puck.
     setReceiverForBeam(1);
-    requestAnimationFrame(()=>{
-      updateBounds(false);
-      puckX=bounds.w/2;
-      puckY=Math.min(bounds.h*.33,bounds.paddleY-84);
-      previousPuck={x:puckX,y:puckY};
-      setPuckPosition();
-    });
+    startCountdown();
     arena.addEventListener('pointerdown',onPointerDown,{passive:false});
     arena.addEventListener('pointermove',onPointerMove,{passive:false});
     arena.addEventListener('pointerup',onPointerUp);
@@ -347,12 +379,13 @@
       clearTimeout(launchTimer);
       clearTimeout(finishTimer);
       clearTimeout(buzzerTimer);
+      countdownTimers.forEach(clearTimeout);countdownTimers=[];
       arena.removeEventListener('pointerdown',onPointerDown);
       arena.removeEventListener('pointermove',onPointerMove);
       arena.removeEventListener('pointerup',onPointerUp);
       arena.removeEventListener('pointercancel',onPointerUp);
       arena.removeEventListener('keydown',onKeyDown);
       window.removeEventListener('resize',onResize);
-      [...strikePool,...postPool,goalAudio,buzzerAudio].forEach(a=>{try{a.pause();a.currentTime=0;}catch{}});
+      [...strikePool,...postPool,goalAudio,buzzerAudio,countdownAudio].forEach(a=>{try{a.pause();a.currentTime=0;}catch{}});
     };
   }

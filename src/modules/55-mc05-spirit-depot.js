@@ -2,28 +2,17 @@
     const rig=document.getElementById('spiritRig');
     const stageNumber=document.getElementById('spiritStageNumber');
     const stageDots=[...document.querySelectorAll('[data-spirit-stage-dot]')];
-    const buttons=[...document.querySelectorAll('[data-charge]')];
-    const tankMap={
-      A:[...document.querySelectorAll('[data-spirit-tank^="left-"]')],
-      B:[...document.querySelectorAll('[data-spirit-tank^="right-"]')]
-    };
+    const tanks=[...document.querySelectorAll('[data-spirit-tank]')];
+    const buttons=[...document.querySelectorAll('[data-spirit-charge]')];
     const meterMap={
-      A:document.querySelector('.spirit-meter-left'),
-      B:document.querySelector('.spirit-meter-right')
+      left:document.querySelector('.spirit-meter-left'),
+      right:document.querySelector('.spirit-meter-right')
     };
-    const bankMap={
-      A:document.querySelector('.spirit-bank-left'),
-      B:document.querySelector('.spirit-bank-right')
-    };
-    if(!rig||!stageNumber||stageDots.length!==8||buttons.length!==2||tankMap.A.length!==4||tankMap.B.length!==4) return;
+    if(!rig||!stageNumber||stageDots.length!==8||tanks.length!==8||buttons.length!==8) return;
 
     const tapsPerTank=4;
-    const tanksPerBank=4;
-    const tapsPerBank=tapsPerTank*tanksPerBank;
-    const totalTaps=tapsPerBank*2;
-    const sideHits={A:0,B:0};
-    let expected='A';
-    let hits=0;
+    const tankHits=new Map(tanks.map(tank=>[tank.dataset.spiritTank,0]));
+    let completedTanks=0;
     let completed=false;
     let finishTimer=0;
     const reactionTimers=[];
@@ -36,72 +25,81 @@
     bubblesAudio.volume=.42;
 
     function playTankPayoff(){
-      if(!state.audio) return;
+      if(!state.audio)return;
       try{
         payoffAudio.currentTime=0;
         const play=payoffAudio.play();
-        if(play&&typeof play.catch==='function') play.catch(()=>{});
+        if(play&&typeof play.catch==='function')play.catch(()=>{});
       }catch{}
     }
 
-
     function startBubbles(){
-      if(!state.audio||completed||!bubblesAudio.paused) return;
+      if(!state.audio||completed||!bubblesAudio.paused)return;
       try{
         const play=bubblesAudio.play();
-        if(play&&typeof play.catch==='function') play.catch(()=>{});
+        if(play&&typeof play.catch==='function')play.catch(()=>{});
       }catch{}
     }
 
     function stopBubbles(){
-      try{
-        bubblesAudio.pause();
-        bubblesAudio.currentTime=0;
-      }catch{}
+      try{bubblesAudio.pause();bubblesAudio.currentTime=0;}catch{}
     }
 
-    function completedTanks(){
-      return Math.min(8,Math.floor(hits/tapsPerTank));
+    function tankFor(id){return tanks.find(tank=>tank.dataset.spiritTank===id);}
+
+    function updateMeters(){
+      ['left','right'].forEach(side=>{
+        const sideTanks=tanks.filter(tank=>tank.dataset.spiritTank.startsWith(`${side}-`));
+        const total=sideTanks.reduce((sum,tank)=>sum+(tankHits.get(tank.dataset.spiritTank)||0),0);
+        const level=Math.max(0,Math.min(1,total/(sideTanks.length*tapsPerTank)));
+        meterMap[side]?.style.setProperty('--meter-level',String(level));
+      });
+    }
+
+    function renderTank(tank){
+      const id=tank.dataset.spiritTank;
+      const hits=tankHits.get(id)||0;
+      const fill=Math.max(0,Math.min(1,hits/tapsPerTank));
+      tank.style.setProperty('--tank-fill',String(fill));
+      tank.classList.toggle('is-active',hits>0&&hits<tapsPerTank);
+      tank.classList.toggle('is-full',hits>=tapsPerTank);
+      const button=tank.querySelector('[data-spirit-charge]');
+      if(button){
+        button.disabled=completed||hits>=tapsPerTank;
+        button.classList.toggle('is-charging',hits>0&&hits<tapsPerTank);
+        button.classList.toggle('is-full',hits>=tapsPerTank);
+      }
     }
 
     function updateStage(){
-      const progressUnits=Math.max(0,Math.min(8,hits/tapsPerTank));
-      const done=completedTanks();
-      rig.dataset.stage=String(done);
-      stageNumber.textContent=String(done).padStart(2,'0');
-      stageDots.forEach((dot,i)=>{
-        const progress=Math.max(0,Math.min(1,progressUnits-i));
-        dot.classList.toggle('complete',progress>=1);
-        dot.classList.toggle('active',progress>0&&progress<1);
-        dot.classList.toggle('on',progress>0);
-        dot.style.setProperty('--stage-progress',String(progress));
-      });
+      rig.dataset.stage=String(completedTanks);
+      stageNumber.textContent=String(completedTanks);
     }
 
-    function updateBank(side){
-      const sideTotal=sideHits[side];
-      const bankProgress=Math.max(0,Math.min(1,sideTotal/tapsPerBank));
-      const meter=meterMap[side];
-      if(meter) meter.style.setProperty('--meter-level',String(bankProgress));
-      const bank=bankMap[side];
-      bank?.classList.toggle('is-next',!completed&&expected===side);
-      const tanks=tankMap[side];
-      tanks.forEach((tank,displayIndex)=>{
-        const fillOrder=(tanks.length-1)-displayIndex;
-        const local=Math.max(0,Math.min(1,(sideTotal-(fillOrder*tapsPerTank))/tapsPerTank));
-        tank.style.setProperty('--tank-fill',String(local));
-        tank.classList.toggle('is-active',local>0&&local<1);
-        tank.classList.toggle('is-full',local>=1);
-      });
+    function registerTankComplete(tank){
+      completedTanks++;
+      const dot=stageDots[completedTanks-1];
+      if(dot){
+        const rgb=tank.dataset.spiritRgb||'76,219,255';
+        const hex=tank.dataset.spiritHex||'#4cdbff';
+        dot.style.setProperty('--tank-rgb',rgb);
+        dot.style.setProperty('--tank-color',hex);
+        dot.dataset.spiritProgressColor=tank.dataset.spiritColor||'';
+        dot.classList.add('complete','on');
+      }
+      tank.classList.remove('is-locking');
+      void tank.offsetWidth;
+      tank.classList.add('is-locking');
+      const timer=setTimeout(()=>tank.classList.remove('is-locking'),900);
+      reactionTimers.push(timer);
+      playTankPayoff();
+      haptic([24,18,42]);
+      updateStage();
     }
 
-    function pulseCharge(side,button){
-      const bank=bankMap[side];
-      const meter=meterMap[side];
-      const tanks=tankMap[side];
-      const active=tanks.find(tank=>tank.classList.contains('is-active')) || [...tanks].reverse().find(tank=>tank.classList.contains('is-full'));
-      [bank,meter,button,active].forEach(el=>{
-        if(!el) return;
+    function pulseTank(tank,button){
+      [tank,button].forEach(el=>{
+        if(!el)return;
         el.classList.remove('is-pumping');
         void el.offsetWidth;
         el.classList.add('is-pumping');
@@ -110,89 +108,46 @@
       });
     }
 
-    function tankJustFilled(side){
-      if(sideHits[side]===0||sideHits[side]%tapsPerTank!==0) return;
-      const completedFromBottom=(sideHits[side]/tapsPerTank)-1;
-      const displayIndex=(tanksPerBank-1)-completedFromBottom;
-      const tank=tankMap[side][displayIndex];
-      if(!tank) return;
-      tank.classList.remove('is-locking');
-      void tank.offsetWidth;
-      tank.classList.add('is-locking');
-      setTimeout(()=>tank.classList.remove('is-locking'),900);
-      if(hits>=totalTaps) stopBubbles();
-      playTankPayoff();
-      haptic([24,18,42]);
-    }
-
-    function nextExpected(fromSide){
-      const other=fromSide==='A'?'B':'A';
-      if(sideHits[other] < tapsPerBank) return other;
-      if(sideHits[fromSide] < tapsPerBank) return fromSide;
-      return other;
-    }
-
-    function updateExpected(){
-      buttons.forEach(button=>{
-        const isNext=!completed&&button.dataset.charge===expected;
-        button.classList.toggle('is-next',isNext);
-        button.disabled=completed||!isNext;
-        const label=button.querySelector('strong');
-        if(label) label.textContent=isNext?'TAP':'';
-      });
-      updateBank('A');
-      updateBank('B');
-    }
-
     function completeSpirit(){
+      if(completed)return;
       completed=true;
       stopBubbles();
       rig.classList.add('is-complete');
-      stageNumber.textContent='08';
-      stageDots.forEach(dot=>{
-        dot.classList.add('complete','on');
-        dot.classList.remove('active');
-        dot.style.setProperty('--stage-progress','1');
-      });
-      updateExpected();
-      buttons.forEach(button=>{button.disabled=true;button.classList.remove('is-next');});
+      stageNumber.textContent='8';
+      buttons.forEach(button=>{button.disabled=true;button.classList.remove('is-charging');});
       haptic([30,28,64]);
       finishTimer=setTimeout(()=>{
-        if(state.missionOpen==='spirit') showCompletion('Spirit Core Charged','The positive energy signatures have been safely stored and the Spirit Core is now fully charged.');
+        if(state.missionOpen==='spirit')showCompletion('Spirit Core Charged','The positive energy signatures have been safely stored and the Spirit Core is now fully charged.');
       },950);
     }
 
-    function flashWrong(button){
-      button.classList.remove('is-wrong');
-      void button.offsetWidth;
-      button.classList.add('is-wrong');
-      setTimeout(()=>button.classList.remove('is-wrong'),280);
-      haptic([12,22,12]);
-    }
-
     function onCharge(event){
-      if(completed) return;
+      if(completed)return;
       const button=event.currentTarget;
-      const side=button.dataset.charge;
-      if(side!==expected){flashWrong(button);return;}
+      const id=button.dataset.spiritCharge;
+      const tank=tankFor(id);
+      if(!tank)return;
+      const hits=tankHits.get(id)||0;
+      if(hits>=tapsPerTank)return;
+
       startBubbles();
-      hits++;
-      sideHits[side]++;
-      updateBank(side);
-      pulseCharge(side,button);
-      tankJustFilled(side);
-      expected=nextExpected(side);
-      updateStage();
-      updateExpected();
+      const nextHits=hits+1;
+      tankHits.set(id,nextHits);
+      renderTank(tank);
+      updateMeters();
+      pulseTank(tank,button);
       haptic(10);
-      if(hits>=totalTaps) completeSpirit();
+
+      if(nextHits===tapsPerTank){
+        registerTankComplete(tank);
+        if(completedTanks>=8)completeSpirit();
+      }
     }
 
     buttons.forEach(button=>button.addEventListener('click',onCharge));
-    updateBank('A');
-    updateBank('B');
+    tanks.forEach(renderTank);
+    updateMeters();
     updateStage();
-    updateExpected();
 
     cleanupMission=()=>{
       clearTimeout(finishTimer);

@@ -108,7 +108,7 @@
       }else{
         pausePowerAudio();
         startIdleAudio(speed>1?.24:.2);
-        stateEl.textContent=speed>1?'Press again to build speed':'Hold to accelerate';
+        stateEl.textContent=speed>1?'Press again to build speed':'Accelerate';
       }
     }
 
@@ -176,7 +176,8 @@
       maxState.classList.remove('is-capturing');
       maxState.classList.add('is-locked');
       stateEl.textContent='Maximum raceway speed confirmed';
-      button.textContent='MAX SPEED CONFIRMED';
+      button.textContent='LOCKED';
+      button.classList.add('is-locked');
       button.disabled=true;
       arcade.classList.add('captured');
       outputEl.classList.add('is-complete');

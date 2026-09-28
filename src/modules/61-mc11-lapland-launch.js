@@ -31,9 +31,19 @@
     }
     return laplandVoice;
   }
+  function primeLaplandVoiceSilently(){
+    if(!state.audio)return;
+    const voice=getLaplandVoice();
+    try{
+      voice.pause();voice.currentTime=0;voice.volume=1;voice.muted=true;
+      const prime=voice.play();
+      if(prime&&typeof prime.then==='function') prime.then(()=>{try{voice.pause();voice.currentTime=0;}catch{}}).catch(()=>{});
+      else{voice.pause();voice.currentTime=0;}
+    }catch{}
+  }
   function getLaplandExitSfx(){
     if(!laplandExitSfx){
-      laplandExitSfx=new Audio('./assets/lapland-exit-celebration.mp3');
+      laplandExitSfx=new Audio('./assets/quest-complete.mp3');
       laplandExitSfx.preload='auto';
       laplandExitSfx.volume=.9;
     }
@@ -83,7 +93,7 @@
     stopStatic();
     if(laplandVoice){
       laplandVoice.onended=null;laplandVoice.onerror=null;
-      try{laplandVoice.pause();if(reset)laplandVoice.currentTime=0;laplandVoice.volume=1;}catch{}
+      try{laplandVoice.pause();if(reset)laplandVoice.currentTime=0;laplandVoice.volume=1;laplandVoice.muted=false;}catch{}
     }
     if(laplandMusic){try{laplandMusic.pause();if(reset)laplandMusic.currentTime=0;laplandMusic.volume=.34;}catch{}}
     if(restoreRadio) endMissionAudioRadioOverride('lapland');
@@ -114,7 +124,7 @@
       stopStatic();
       if(!state.audio){finish();return;}
       try{
-        voice.currentTime=0;voice.volume=1;
+        voice.currentTime=0;voice.volume=1;voice.muted=false;
         const play=voice.play();
         if(play&&typeof play.catch==='function') play.catch(finish);
         voice.onended=()=>{
@@ -128,7 +138,7 @@
     return ()=>{
       clearTimeout(introStatic);clearTimeout(voiceDelay);clearTimeout(fallback);clearTimeout(tailTimer);clearTimeout(finishTimer);
       voice.onended=null;voice.onerror=null;
-      try{voice.pause();voice.currentTime=0;voice.volume=1;}catch{}
+      try{voice.pause();voice.currentTime=0;voice.volume=1;voice.muted=false;}catch{}
       stopStatic();
     };
   }
@@ -139,16 +149,12 @@
     const verificationStage=document.getElementById('laplandVerificationStage');
     const transmissionStage=document.getElementById('laplandTransmissionStage');
     const partyStage=document.getElementById('laplandPartyStage');
-    const discoVideo=document.getElementById('laplandDiscoVideo');
+    const discoVisual=document.getElementById('laplandDiscoVisual');
     const head=document.querySelector('.lapland-head');
     if(!btn||!panel||!verificationStage||!transmissionStage||!partyStage) return;
 
     startLaplandMusic();
-    if(discoVideo){
-      discoVideo.muted=true;
-      discoVideo.preload='auto';
-      try{discoVideo.load();}catch{}
-    }
+    if(discoVisual) discoVisual.setAttribute('draggable','false');
 
     // MC01–MC10 each restore one named system. Checks run down column 1 first,
     // then column 2, matching the visible mission-order layout.
@@ -188,25 +194,7 @@
       haptic([20,24,62]);
     };
     let stopTransmission=()=>{};
-    let discoRevealTimer=0;
-    let discoPlayingHandler=null;
 
-    const clearDiscoReadyWait=()=>{
-      clearTimeout(discoRevealTimer);discoRevealTimer=0;
-      if(discoVideo&&discoPlayingHandler){
-        discoVideo.removeEventListener('playing',discoPlayingHandler);
-        discoPlayingHandler=null;
-      }
-    };
-    const startDiscoHidden=()=>{
-      if(!discoVideo)return;
-      discoVideo.muted=true;
-      try{
-        if(discoVideo.ended||discoVideo.currentTime>=discoVideo.duration-.15)discoVideo.currentTime=0;
-        const p=discoVideo.play();
-        if(p&&typeof p.catch==='function')p.catch(()=>{});
-      }catch{}
-    };
     const showTransmission=()=>{
       if(state.missionOpen!=='lapland') return;
       verificationStage.hidden=true;
@@ -216,14 +204,10 @@
       panel.classList.add('is-transmission');
       head?.classList.remove('is-celebrating');
       if(laplandMusic&&!laplandMusic.paused) fadeLaplandMusic(.055,420);
-      // Begin decoding/playing the muted disco render behind the transmission so
-      // the party reveal never lands on a frozen first frame on mobile.
-      startDiscoHidden();
       stopTransmission=playLaplandClearance(showParty);
     };
     const revealParty=()=>{
       if(state.missionOpen!=='lapland') return;
-      clearDiscoReadyWait();
       stopTransmission();stopTransmission=()=>{};
       transmissionStage.hidden=true;
       verificationStage.hidden=true;
@@ -231,7 +215,6 @@
       panel.classList.remove('is-transmission');
       panel.classList.add('is-party','is-celebrating');
       head?.classList.add('is-celebrating');
-      startDiscoHidden();
       fadeLaplandMusic(.9,780);
       ping(1040,.14,.045);
       laplandLater(()=>ping(1320,.18,.045),210);
@@ -243,26 +226,8 @@
       },10000);
     };
     const showParty=()=>{
-      if(state.missionOpen!=='lapland') return;
-      if(!discoVideo){revealParty();return;}
-
-      // Keep the transmission visible until the hidden video confirms it is
-      // actually playing. An 850ms fallback prevents a rare decoder failure
-      // from blocking the mission flow.
-      let revealed=false;
-      const finish=()=>{
-        if(revealed)return;
-        revealed=true;
-        revealParty();
-      };
-      clearDiscoReadyWait();
-      discoPlayingHandler=finish;
-      discoVideo.addEventListener('playing',discoPlayingHandler,{once:true});
-      startDiscoHidden();
-      if(!discoVideo.paused&&discoVideo.readyState>=2&&discoVideo.currentTime>0){
-        requestAnimationFrame(finish);
-      }
-      discoRevealTimer=laplandLater(finish,850);
+      if(state.missionOpen!=='lapland')return;
+      revealParty();
     };
 
     setButtonState('idle');
@@ -270,30 +235,7 @@
     btn.onclick=()=>{
       if(btn.dataset.review==='true'){stopLaplandAudio();set({missionOpen:null,nav:'missions'});return;}
 
-      // Prime ELF ENGINEERING audio inside the user gesture, exactly like the
-      // reliable Santa transmission at Luffield. This unlocks later playback on mobile.
-      if(state.audio){
-        const voice=getLaplandVoice();
-        try{
-          voice.currentTime=0;voice.volume=0;
-          const prime=voice.play();
-          if(prime&&typeof prime.then==='function') prime.then(()=>{
-            try{voice.pause();voice.currentTime=0;voice.volume=1;}catch{}
-          }).catch(()=>{try{voice.volume=1;}catch{}});
-        }catch{try{voice.volume=1;}catch{}}
-      }
-      // Prime the muted alpha-video inside the same user gesture. This gives
-      // mobile Safari/Chrome permission and an early decode opportunity.
-      if(discoVideo){
-        discoVideo.muted=true;
-        try{
-          discoVideo.currentTime=0;
-          const primeVideo=discoVideo.play();
-          if(primeVideo&&typeof primeVideo.then==='function') primeVideo.then(()=>{
-            try{discoVideo.pause();discoVideo.currentTime=0;}catch{}
-          }).catch(()=>{});
-        }catch{}
-      }
+      primeLaplandVoiceSilently();
 
       setButtonState('initialising');
       clearLaplandTimers();
@@ -348,9 +290,7 @@
     };
 
     cleanupMission=()=>{
-      clearDiscoReadyWait();
       stopTransmission();
-      if(discoVideo){try{discoVideo.pause();discoVideo.currentTime=0;}catch{}}
       stopLaplandAudio();
     };
   }

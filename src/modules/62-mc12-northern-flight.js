@@ -45,7 +45,7 @@
     if(northernTakeoverEl){northernTakeoverEl.remove();northernTakeoverEl=null;}
     [northernSantaAudio,northernMagicAudio].forEach(audio=>{
       if(!audio)return;
-      try{audio.pause();audio.currentTime=0;audio.onended=null;audio.onerror=null;}catch{}
+      try{audio.pause();audio.currentTime=0;audio.onended=null;audio.onerror=null;audio.muted=false;}catch{}
     });
     stopStatic();
   }
@@ -54,19 +54,18 @@
     if(!state.audio)return;
     [getNorthernMagicAudio(),getNorthernSantaAudio()].forEach(audio=>{
       try{
-        audio.load();
-        audio.muted=true;
+        audio.load();audio.pause();audio.currentTime=0;audio.muted=true;
         const play=audio.play();
         if(play&&typeof play.then==='function'){
-          play.then(()=>{try{audio.pause();audio.currentTime=0;audio.muted=false;}catch{}}).catch(()=>{audio.muted=false;});
-        }else{audio.pause();audio.currentTime=0;audio.muted=false;}
-      }catch{audio.muted=false;}
+          play.then(()=>{try{audio.pause();audio.currentTime=0;}catch{}}).catch(()=>{});
+        }else{audio.pause();audio.currentTime=0;}
+      }catch{}
     });
   }
 
   function showNorthernTransmission(){
     const mc=document.getElementById('missionContent'); if(!mc)return;
-    mc.innerHTML=`<div class="mission-instrument panel incoming-transmission northern-incoming">
+    mc.innerHTML=`<div class="mission-instrument panel incoming-transmission">
       <div class="transmission-wave">${'<b></b>'.repeat(24)}</div>
       <div class="kicker">Incoming Transmission</div>
       <h2>SANTA-1</h2>
@@ -134,12 +133,11 @@
     playNorthernAirborneMagic();
     ping(980,.18,.05);haptic([35,30,85,35,110]);
     const el=document.createElement('div');
-    el.className='northern-airborne-takeover';
+    el.className='mc01-energy-bloom';
     el.setAttribute('role','status');
     el.setAttribute('aria-live','polite');
-    el.innerHTML=`<div class="northern-airborne-sweep" aria-hidden="true"></div><div class="northern-airborne-copy"><img class="northern-airborne-mark" src="./assets/silverstone-s-mark.webp" alt=""><div class="northern-airborne-santa">SANTA-1</div><h1>AIRBORNE</h1></div>`;
+    el.innerHTML=`<div class="mc01-bloom-field" aria-hidden="true"><i></i><i></i><i></i></div><div class="mc01-bloom-copy"><img class="mc01-bloom-mark" src="./assets/silverstone-s-mark.webp" alt=""><div class="kicker">SANTA-1</div><h1>AIRBORNE</h1></div>`;
     document.body.appendChild(el);northernTakeoverEl=el;
-    northernLater(()=>el.classList.add('is-settled'),180);
     northernLater(()=>el.classList.add('is-exiting'),3820);
     northernLater(()=>{
       showNorthernTransmission();

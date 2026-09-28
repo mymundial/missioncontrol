@@ -2,6 +2,7 @@
     const dirClass={L:'left',D:'down',U:'up',R:'right'};
     const keys=['L','D','U','R'];
     const game=document.getElementById('cometGame');
+    const panel=game?.closest('.comet-panel');
     const notesLayer=document.getElementById('cometNotes');
     const progress=document.getElementById('cometProgress');
     const stateEl=document.getElementById('cometState');
@@ -238,6 +239,7 @@
         clearTimeout(spawnTimer);
         notes.forEach(n=>n.el.remove());notes=[];
         game.classList.add('complete');
+        panel?.classList.add('is-complete');
         document.querySelectorAll('.comet-btn').forEach(b=>b.disabled=true);
         comboEl.classList.remove('show');
         judgement.textContent='LOCKED';

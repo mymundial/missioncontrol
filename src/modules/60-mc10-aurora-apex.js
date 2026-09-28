@@ -1,4 +1,5 @@
   function bindAurora(){
+    const panel=document.querySelector('.aurora-panel');
     const dial=document.getElementById('auroraDial');
     const captureBtn=document.getElementById('auroraCaptureBtn');
     const lockCount=document.getElementById('auroraLockCount');
@@ -123,6 +124,7 @@
       finished=true;
       dial.classList.remove('capture-ready','miss','desync');
       dial.classList.add('complete');
+      panel?.classList.add('is-complete');
       if(north) north.classList.add('complete');
       order.forEach(key=>ringEls[key].classList.add('final-surge'));
       if(finalWave){

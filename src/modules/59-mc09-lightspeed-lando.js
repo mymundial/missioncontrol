@@ -57,6 +57,7 @@
       clear(); resetLights(); armed=false; running=true; goTime=0;
       primeCountdownAudio();
       roundEl.textContent=`${round} / 4`;
+      roundEl.classList.remove('is-complete');
       btn.textContent='STANDBY'; btn.disabled=false; btn.classList.remove('success','is-measured'); btn.classList.add('is-standby');
       setResultState(round,'active');
       for(let col=0;col<5;col++){
@@ -71,7 +72,7 @@
         lamps.forEach(l=>l.classList.remove('red'));
         armed=true; running=true; goTime=performance.now();
         btn.classList.remove('is-standby');
-        btn.textContent='GO';
+        btn.textContent='REACT';
         playCountdownFx(goAudio,.82); haptic(18);
       },wait));
     }
@@ -85,6 +86,7 @@
       btn.textContent='REACTION MEASURED';btn.disabled=true;
       haptic([20,20,45]); ping(760,.075,.03);
       if(round===4){
+        roundEl.classList.add('is-complete');
         const scored=results.map(el=>({el,ms:Number(el.dataset.ms)})).filter(x=>Number.isFinite(x.ms));
         const best=scored.sort((a,b)=>a.ms-b.ms)[0];
         timers.push(setTimeout(()=>{best?.el.classList.add('best');haptic([18,20,52]);},520));
@@ -94,6 +96,7 @@
           round++;
           roundEl.textContent=`${round} / 4`;
           setResultState(round,'active');
+          resetLights();
           btn.classList.remove('success','is-measured');
           btn.textContent='START TEST';btn.disabled=false;
         },760));

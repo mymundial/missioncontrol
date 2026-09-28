@@ -782,7 +782,7 @@
       systemStatusEntry('core',state.completed.includes('spirit')?'Online':'Offline',state.completed.includes('spirit')?'online':'offline'),
       systemStatusEntry('navigation',state.completed.includes('aurora')?'Online':'Offline',state.completed.includes('aurora')?'online':'offline')
     ];
-    return `<div class="sleigh-card panel"><div class="sleigh-title-row"><div><div class="kicker sleigh-pretitle">Sleigh Rebuild</div><h1>Santa-1</h1></div><strong class="sleigh-percent">${r}%</strong></div><div class="sleigh-development-bar" role="progressbar" aria-label="Santa-1 rebuild progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${r}"><div class="sleigh-development-spectrum" aria-hidden="true"></div><div class="sleigh-development-mask" style="left:${r}%" aria-hidden="true"></div></div><div class="sleigh-visual sleigh-stage-${stage}"><div class="sleigh-glow" aria-hidden="true"></div><img class="sleigh-art" src="${info.asset}" alt="Santa-1 ${postStatus.name} rebuild stage"></div><div class="sleigh-systems panel soft"><div class="kicker sleigh-systems-title">System Status</div>${systemStatusBank(systems,'sleigh-system-bank')}</div></div>`;
+    return `<div class="sleigh-card panel"><div class="sleigh-title-row"><div><div class="kicker sleigh-pretitle">Sleigh Rebuild</div><h1>Santa-1</h1></div><strong class="sleigh-percent ${r>=100?'is-complete':''}">${r}%</strong></div><div class="sleigh-development-bar ${r>=100?'is-complete':''}" style="--sleigh-progress:${r}%" role="progressbar" aria-label="Santa-1 rebuild progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${r}"><div class="sleigh-development-spectrum" aria-hidden="true"></div><div class="sleigh-development-mask" style="left:${r}%" aria-hidden="true"></div><i class="sleigh-development-marker" aria-hidden="true"></i></div><div class="sleigh-visual sleigh-stage-${stage}"><div class="sleigh-glow" aria-hidden="true"></div><img class="sleigh-art" src="${info.asset}" alt="Santa-1 ${postStatus.name} rebuild stage"></div><div class="sleigh-systems panel soft"><div class="kicker sleigh-systems-title">System Status</div>${systemStatusBank(systems,'sleigh-system-bank')}</div></div>`;
   }
 
   function systemStatusBank(systems,extraClass='',dataPrefix=''){
@@ -936,7 +936,6 @@
         ${[0,1,2,3].map(i=>`<div class="relay-cell relay-capture"><button class="relay-node ${i===0?'active':''}" data-relay="${i}" aria-label="Relay ${i+1}"><span class="relay-target"></span><span class="relay-pulse"></span><span class="relay-core">0${i+1}</span></button><small>RELAY 0${i+1}</small></div>`).join('')}
         <div class="relay-cell relay-endpoint relay-destination"><span class="relay-receiver-icon"></span><small>RECEIVER</small></div>
       </div>
-      <div class="relay-instruction" id="relayInstruction">Tap each relay node in time with the signal pulse.</div>
       <div class="visually-hidden" id="relayState" aria-live="polite">Relay 01 armed</div>
     </div>`;
   }
@@ -968,7 +967,7 @@
         <div class="power-max-hold"><span>SPEED LOCK</span><div><i id="powerMaxFill"></i></div><strong id="powerMaxState">STANDBY</strong></div>
       </div>
       <div class="visually-hidden" id="powerState" aria-live="polite">Ready</div>
-      <button class="btn primary wide power-accelerator" id="powerAccelerator">Hold to Accelerate</button>
+      <button class="btn primary wide power-accelerator" id="powerAccelerator">ACCELERATE</button>
     </div>`;
   }
   function spiritBody(){
@@ -982,28 +981,24 @@
       {side:'right',index:2,key:'white',rgb:'247,250,255',color:'#f7faff',name:'White energy'},
       {side:'right',index:3,key:'orange',rgb:'255,122,28',color:'#ff7a1c',name:'Orange energy'}
     ];
-    const progressDefs=['blue','orange','red','white','green','pink','purple','yellow'].map(key=>tankDefs.find(t=>t.key===key));
     const bhpIcon=`<svg class="spirit-bhp-icon" viewBox="66 0 66 126" focusable="false" aria-hidden="true"><path d="M83.34,125.93,98.42,75.57h-32L127.44,0,112.37,50.35h32ZM79,69.55H106.5L97.88,98.34l33.88-42H104.29l8.62-28.78Z"></path></svg>`;
-    const tankCells=side=>tankDefs.filter(tank=>tank.side===side).map(tank=>`<div class="spirit-tank-cell spirit-tank-${tank.key}" data-spirit-tank="${tank.side}-${tank.index}" data-spirit-color="${tank.key}" style="--tank-rgb:${tank.rgb};--tank-color:${tank.color};" aria-label="${tank.name} storage tank">
+    const tankCells=side=>tankDefs.filter(tank=>tank.side===side).map(tank=>`<div class="spirit-tank-cell spirit-tank-${tank.key}" data-spirit-tank="${tank.side}-${tank.index}" data-spirit-color="${tank.key}" data-spirit-rgb="${tank.rgb}" data-spirit-hex="${tank.color}" style="--tank-rgb:${tank.rgb};--tank-color:${tank.color};" aria-label="${tank.name} storage tank">
       <span class="spirit-tank-energy"></span>
       <span class="spirit-tank-shimmer"></span>
       <span class="spirit-tank-grid" aria-hidden="true"></span>
       <span class="spirit-tank-plate" aria-hidden="true"><span class="spirit-tank-plate-face">${bhpIcon}</span></span>
       <span class="spirit-tank-vent" aria-hidden="true"><i></i><i></i><i></i></span>
+      <button class="spirit-tank-power" data-spirit-charge="${tank.side}-${tank.index}" aria-label="Charge ${tank.name} tank"><img src="./assets/system-power.svg" alt="" aria-hidden="true"></button>
     </div>`).join('');
-    const stageDots=progressDefs.map((tank,i)=>`<i data-spirit-stage-dot="${i}" data-spirit-progress-color="${tank.key}" style="--tank-rgb:${tank.rgb};--tank-color:${tank.color};"></i>`).join('');
+    const stageDots=Array.from({length:8},(_,i)=>`<i data-spirit-stage-dot="${i}"></i>`).join('');
     return `<div class="mission-instrument panel spirit-panel" id="spiritRig" data-stage="0">
-      <div class="spirit-score"><span>CORE CHARGE</span><strong><b id="spiritStageNumber">00</b> / 08</strong></div>
+      <div class="spirit-score"><span>CORE CHARGE</span><strong><b id="spiritStageNumber">0</b> / 8</strong></div>
       <div class="spirit-stage-progress" id="spiritStageProgress" aria-hidden="true">${stageDots}</div>
       <div class="spirit-apparatus" aria-label="Spirit energy storage tanks">
         <div class="spirit-meter spirit-meter-left" aria-hidden="true"><span class="spirit-meter-fill"></span><b class="spirit-meter-marker"></b></div>
         <div class="spirit-bank spirit-bank-left"><div class="spirit-tank-stack">${tankCells('left')}</div></div>
         <div class="spirit-bank spirit-bank-right"><div class="spirit-tank-stack">${tankCells('right')}</div></div>
         <div class="spirit-meter spirit-meter-right" aria-hidden="true"><span class="spirit-meter-fill"></span><b class="spirit-meter-marker"></b></div>
-      </div>
-      <div class="spirit-charge-controls" aria-label="Storage tank charging controls">
-        <button class="spirit-charge-btn is-next" data-charge="A" aria-label="Charge left tank bank"><strong>TAP</strong></button>
-        <button class="spirit-charge-btn" data-charge="B" aria-label="Charge right tank bank"><strong></strong></button>
       </div>
     </div>`;
   }
@@ -1054,7 +1049,7 @@
         <div class="jingle-receiver" id="jingleReceiver" aria-hidden="true"><span></span><i></i></div>
         <div class="jingle-goal-flare" id="jingleGoalFlare" aria-hidden="true"></div>
         <div class="jingle-puck-trail" id="jinglePuckTrail" aria-hidden="true"></div>
-        <div class="jingle-puck" id="jinglePuck" aria-hidden="true"><i></i></div>
+        <div class="jingle-puck is-countdown" id="jinglePuck" aria-hidden="true"><i></i><strong class="jingle-puck-countdown" id="jingleCountdown">3</strong></div>
         <div class="jingle-paddle" id="jinglePaddle" aria-hidden="true"><i></i></div>
         <div class="jingle-drag-prompt" id="jinglePrompt"><strong>TAP TO STEER</strong></div>
       </div>
@@ -1133,7 +1128,7 @@
           <i class="lapland-party-wash"></i>
           <i class="lapland-party-beam party-beam-a"></i><i class="lapland-party-beam party-beam-b"></i><i class="lapland-party-beam party-beam-c"></i><i class="lapland-party-reflections"></i>
         </div>
-        <div class="lapland-disco-rig" aria-hidden="true"><video class="lapland-disco-video" id="laplandDiscoVideo" muted loop playsinline preload="auto"><source src="./assets/disco-ball-alpha-loop-720.webm" type="video/webm"></video></div>
+        <div class="lapland-disco-rig" aria-hidden="true"><img class="lapland-disco-video" id="laplandDiscoVisual" src="./assets/disco-ball-alpha-loop-540.webp" alt="" decoding="async"></div>
         <div class="lapland-party-message">
           <span>SANTA-1</span>
           <i class="lapland-clearance-divider" aria-hidden="true"></i>
@@ -2445,7 +2440,7 @@
       }else{
         pausePowerAudio();
         startIdleAudio(speed>1?.24:.2);
-        stateEl.textContent=speed>1?'Press again to build speed':'Hold to accelerate';
+        stateEl.textContent=speed>1?'Press again to build speed':'Accelerate';
       }
     }
 
@@ -2513,7 +2508,8 @@
       maxState.classList.remove('is-capturing');
       maxState.classList.add('is-locked');
       stateEl.textContent='Maximum raceway speed confirmed';
-      button.textContent='MAX SPEED CONFIRMED';
+      button.textContent='LOCKED';
+      button.classList.add('is-locked');
       button.disabled=true;
       arcade.classList.add('captured');
       outputEl.classList.add('is-complete');
@@ -2586,28 +2582,17 @@
     const rig=document.getElementById('spiritRig');
     const stageNumber=document.getElementById('spiritStageNumber');
     const stageDots=[...document.querySelectorAll('[data-spirit-stage-dot]')];
-    const buttons=[...document.querySelectorAll('[data-charge]')];
-    const tankMap={
-      A:[...document.querySelectorAll('[data-spirit-tank^="left-"]')],
-      B:[...document.querySelectorAll('[data-spirit-tank^="right-"]')]
-    };
+    const tanks=[...document.querySelectorAll('[data-spirit-tank]')];
+    const buttons=[...document.querySelectorAll('[data-spirit-charge]')];
     const meterMap={
-      A:document.querySelector('.spirit-meter-left'),
-      B:document.querySelector('.spirit-meter-right')
+      left:document.querySelector('.spirit-meter-left'),
+      right:document.querySelector('.spirit-meter-right')
     };
-    const bankMap={
-      A:document.querySelector('.spirit-bank-left'),
-      B:document.querySelector('.spirit-bank-right')
-    };
-    if(!rig||!stageNumber||stageDots.length!==8||buttons.length!==2||tankMap.A.length!==4||tankMap.B.length!==4) return;
+    if(!rig||!stageNumber||stageDots.length!==8||tanks.length!==8||buttons.length!==8) return;
 
     const tapsPerTank=4;
-    const tanksPerBank=4;
-    const tapsPerBank=tapsPerTank*tanksPerBank;
-    const totalTaps=tapsPerBank*2;
-    const sideHits={A:0,B:0};
-    let expected='A';
-    let hits=0;
+    const tankHits=new Map(tanks.map(tank=>[tank.dataset.spiritTank,0]));
+    let completedTanks=0;
     let completed=false;
     let finishTimer=0;
     const reactionTimers=[];
@@ -2620,72 +2605,81 @@
     bubblesAudio.volume=.42;
 
     function playTankPayoff(){
-      if(!state.audio) return;
+      if(!state.audio)return;
       try{
         payoffAudio.currentTime=0;
         const play=payoffAudio.play();
-        if(play&&typeof play.catch==='function') play.catch(()=>{});
+        if(play&&typeof play.catch==='function')play.catch(()=>{});
       }catch{}
     }
 
-
     function startBubbles(){
-      if(!state.audio||completed||!bubblesAudio.paused) return;
+      if(!state.audio||completed||!bubblesAudio.paused)return;
       try{
         const play=bubblesAudio.play();
-        if(play&&typeof play.catch==='function') play.catch(()=>{});
+        if(play&&typeof play.catch==='function')play.catch(()=>{});
       }catch{}
     }
 
     function stopBubbles(){
-      try{
-        bubblesAudio.pause();
-        bubblesAudio.currentTime=0;
-      }catch{}
+      try{bubblesAudio.pause();bubblesAudio.currentTime=0;}catch{}
     }
 
-    function completedTanks(){
-      return Math.min(8,Math.floor(hits/tapsPerTank));
+    function tankFor(id){return tanks.find(tank=>tank.dataset.spiritTank===id);}
+
+    function updateMeters(){
+      ['left','right'].forEach(side=>{
+        const sideTanks=tanks.filter(tank=>tank.dataset.spiritTank.startsWith(`${side}-`));
+        const total=sideTanks.reduce((sum,tank)=>sum+(tankHits.get(tank.dataset.spiritTank)||0),0);
+        const level=Math.max(0,Math.min(1,total/(sideTanks.length*tapsPerTank)));
+        meterMap[side]?.style.setProperty('--meter-level',String(level));
+      });
+    }
+
+    function renderTank(tank){
+      const id=tank.dataset.spiritTank;
+      const hits=tankHits.get(id)||0;
+      const fill=Math.max(0,Math.min(1,hits/tapsPerTank));
+      tank.style.setProperty('--tank-fill',String(fill));
+      tank.classList.toggle('is-active',hits>0&&hits<tapsPerTank);
+      tank.classList.toggle('is-full',hits>=tapsPerTank);
+      const button=tank.querySelector('[data-spirit-charge]');
+      if(button){
+        button.disabled=completed||hits>=tapsPerTank;
+        button.classList.toggle('is-charging',hits>0&&hits<tapsPerTank);
+        button.classList.toggle('is-full',hits>=tapsPerTank);
+      }
     }
 
     function updateStage(){
-      const progressUnits=Math.max(0,Math.min(8,hits/tapsPerTank));
-      const done=completedTanks();
-      rig.dataset.stage=String(done);
-      stageNumber.textContent=String(done).padStart(2,'0');
-      stageDots.forEach((dot,i)=>{
-        const progress=Math.max(0,Math.min(1,progressUnits-i));
-        dot.classList.toggle('complete',progress>=1);
-        dot.classList.toggle('active',progress>0&&progress<1);
-        dot.classList.toggle('on',progress>0);
-        dot.style.setProperty('--stage-progress',String(progress));
-      });
+      rig.dataset.stage=String(completedTanks);
+      stageNumber.textContent=String(completedTanks);
     }
 
-    function updateBank(side){
-      const sideTotal=sideHits[side];
-      const bankProgress=Math.max(0,Math.min(1,sideTotal/tapsPerBank));
-      const meter=meterMap[side];
-      if(meter) meter.style.setProperty('--meter-level',String(bankProgress));
-      const bank=bankMap[side];
-      bank?.classList.toggle('is-next',!completed&&expected===side);
-      const tanks=tankMap[side];
-      tanks.forEach((tank,displayIndex)=>{
-        const fillOrder=(tanks.length-1)-displayIndex;
-        const local=Math.max(0,Math.min(1,(sideTotal-(fillOrder*tapsPerTank))/tapsPerTank));
-        tank.style.setProperty('--tank-fill',String(local));
-        tank.classList.toggle('is-active',local>0&&local<1);
-        tank.classList.toggle('is-full',local>=1);
-      });
+    function registerTankComplete(tank){
+      completedTanks++;
+      const dot=stageDots[completedTanks-1];
+      if(dot){
+        const rgb=tank.dataset.spiritRgb||'76,219,255';
+        const hex=tank.dataset.spiritHex||'#4cdbff';
+        dot.style.setProperty('--tank-rgb',rgb);
+        dot.style.setProperty('--tank-color',hex);
+        dot.dataset.spiritProgressColor=tank.dataset.spiritColor||'';
+        dot.classList.add('complete','on');
+      }
+      tank.classList.remove('is-locking');
+      void tank.offsetWidth;
+      tank.classList.add('is-locking');
+      const timer=setTimeout(()=>tank.classList.remove('is-locking'),900);
+      reactionTimers.push(timer);
+      playTankPayoff();
+      haptic([24,18,42]);
+      updateStage();
     }
 
-    function pulseCharge(side,button){
-      const bank=bankMap[side];
-      const meter=meterMap[side];
-      const tanks=tankMap[side];
-      const active=tanks.find(tank=>tank.classList.contains('is-active')) || [...tanks].reverse().find(tank=>tank.classList.contains('is-full'));
-      [bank,meter,button,active].forEach(el=>{
-        if(!el) return;
+    function pulseTank(tank,button){
+      [tank,button].forEach(el=>{
+        if(!el)return;
         el.classList.remove('is-pumping');
         void el.offsetWidth;
         el.classList.add('is-pumping');
@@ -2694,89 +2688,46 @@
       });
     }
 
-    function tankJustFilled(side){
-      if(sideHits[side]===0||sideHits[side]%tapsPerTank!==0) return;
-      const completedFromBottom=(sideHits[side]/tapsPerTank)-1;
-      const displayIndex=(tanksPerBank-1)-completedFromBottom;
-      const tank=tankMap[side][displayIndex];
-      if(!tank) return;
-      tank.classList.remove('is-locking');
-      void tank.offsetWidth;
-      tank.classList.add('is-locking');
-      setTimeout(()=>tank.classList.remove('is-locking'),900);
-      if(hits>=totalTaps) stopBubbles();
-      playTankPayoff();
-      haptic([24,18,42]);
-    }
-
-    function nextExpected(fromSide){
-      const other=fromSide==='A'?'B':'A';
-      if(sideHits[other] < tapsPerBank) return other;
-      if(sideHits[fromSide] < tapsPerBank) return fromSide;
-      return other;
-    }
-
-    function updateExpected(){
-      buttons.forEach(button=>{
-        const isNext=!completed&&button.dataset.charge===expected;
-        button.classList.toggle('is-next',isNext);
-        button.disabled=completed||!isNext;
-        const label=button.querySelector('strong');
-        if(label) label.textContent=isNext?'TAP':'';
-      });
-      updateBank('A');
-      updateBank('B');
-    }
-
     function completeSpirit(){
+      if(completed)return;
       completed=true;
       stopBubbles();
       rig.classList.add('is-complete');
-      stageNumber.textContent='08';
-      stageDots.forEach(dot=>{
-        dot.classList.add('complete','on');
-        dot.classList.remove('active');
-        dot.style.setProperty('--stage-progress','1');
-      });
-      updateExpected();
-      buttons.forEach(button=>{button.disabled=true;button.classList.remove('is-next');});
+      stageNumber.textContent='8';
+      buttons.forEach(button=>{button.disabled=true;button.classList.remove('is-charging');});
       haptic([30,28,64]);
       finishTimer=setTimeout(()=>{
-        if(state.missionOpen==='spirit') showCompletion('Spirit Core Charged','The positive energy signatures have been safely stored and the Spirit Core is now fully charged.');
+        if(state.missionOpen==='spirit')showCompletion('Spirit Core Charged','The positive energy signatures have been safely stored and the Spirit Core is now fully charged.');
       },950);
     }
 
-    function flashWrong(button){
-      button.classList.remove('is-wrong');
-      void button.offsetWidth;
-      button.classList.add('is-wrong');
-      setTimeout(()=>button.classList.remove('is-wrong'),280);
-      haptic([12,22,12]);
-    }
-
     function onCharge(event){
-      if(completed) return;
+      if(completed)return;
       const button=event.currentTarget;
-      const side=button.dataset.charge;
-      if(side!==expected){flashWrong(button);return;}
+      const id=button.dataset.spiritCharge;
+      const tank=tankFor(id);
+      if(!tank)return;
+      const hits=tankHits.get(id)||0;
+      if(hits>=tapsPerTank)return;
+
       startBubbles();
-      hits++;
-      sideHits[side]++;
-      updateBank(side);
-      pulseCharge(side,button);
-      tankJustFilled(side);
-      expected=nextExpected(side);
-      updateStage();
-      updateExpected();
+      const nextHits=hits+1;
+      tankHits.set(id,nextHits);
+      renderTank(tank);
+      updateMeters();
+      pulseTank(tank,button);
       haptic(10);
-      if(hits>=totalTaps) completeSpirit();
+
+      if(nextHits===tapsPerTank){
+        registerTankComplete(tank);
+        if(completedTanks>=8)completeSpirit();
+      }
     }
 
     buttons.forEach(button=>button.addEventListener('click',onCharge));
-    updateBank('A');
-    updateBank('B');
+    tanks.forEach(renderTank);
+    updateMeters();
     updateStage();
-    updateExpected();
 
     cleanupMission=()=>{
       clearTimeout(finishTimer);
@@ -2785,7 +2736,8 @@
       stopBubbles();
       try{payoffAudio.pause();payoffAudio.currentTime=0;}catch{}
     };
-  }  function bindArtifacts(){
+  }
+  function bindArtifacts(){
     const field=document.getElementById('artifactField');
     const layer=document.getElementById('artifactLayer');
     const burstLayer=document.getElementById('artifactBurstLayer');
@@ -3113,6 +3065,7 @@
     const dirClass={L:'left',D:'down',U:'up',R:'right'};
     const keys=['L','D','U','R'];
     const game=document.getElementById('cometGame');
+    const panel=game?.closest('.comet-panel');
     const notesLayer=document.getElementById('cometNotes');
     const progress=document.getElementById('cometProgress');
     const stateEl=document.getElementById('cometState');
@@ -3349,6 +3302,7 @@
         clearTimeout(spawnTimer);
         notes.forEach(n=>n.el.remove());notes=[];
         game.classList.add('complete');
+        panel?.classList.add('is-complete');
         document.querySelectorAll('.comet-btn').forEach(b=>b.disabled=true);
         comboEl.classList.remove('show');
         judgement.textContent='LOCKED';
@@ -3440,6 +3394,7 @@
     const prompt=document.getElementById('jinglePrompt');
     const stateEl=document.getElementById('jingleState');
     const lockCount=document.getElementById('jingleLockCount');
+    const countdownEl=document.getElementById('jingleCountdown');
     if(!panel||!arena||!puck||!trail||!paddle||!receiver||!stateEl) return;
 
     let beam=1;
@@ -3450,6 +3405,7 @@
     let launchTimer=0;
     let finishTimer=0;
     let buzzerTimer=0;
+    let countdownTimers=[];
     let last=performance.now();
     let lastStrikeAt=0;
     let lastPostAt=0;
@@ -3477,6 +3433,9 @@
     goalAudio.preload='auto';
     const buzzerAudio=new Audio('./assets/jingle-buzzer.mp3');
     buzzerAudio.preload='auto';
+    const countdownAudio=new Audio('./assets/arena-game-countdown.mp3');
+    countdownAudio.preload='auto';
+    countdownAudio.volume=.86;
     let strikeIndex=0;
     let postIndex=0;
 
@@ -3571,11 +3530,11 @@
       previousPuck={x:puckX,y:puckY};
       setPuckPosition();
     }
-    function launchPuck(fromReceiver=false){
+    function launchPuck(fromReceiver=false,keepPosition=false){
       clearTimeout(launchTimer);
       updateBounds();
       if(fromReceiver) resetPuckAtReceiver();
-      else {
+      else if(!keepPosition){
         puckX=bounds.w/2;
         puckY=Math.min(bounds.h*.35,bounds.paddleY-90);
         previousPuck={x:puckX,y:puckY};
@@ -3648,6 +3607,7 @@
       arena.classList.add('is-complete');
       stateEl.textContent='GUIDANCE LOCKED';
       clearTimeout(buzzerTimer);
+      countdownTimers.forEach(clearTimeout);countdownTimers=[];
       buzzerTimer=setTimeout(()=>{
         playAudio(buzzerAudio,.78,1);
         haptic([30,28,70]);
@@ -3721,12 +3681,43 @@
       const rect=arena.getBoundingClientRect();
       setPaddleX(e.clientX-rect.left);
     }
-    function startFromInteraction(){
-      if(started) return;
+    function startCountdown(){
+      if(started)return;
       started=true;
+      running=false;
       prompt?.classList.add('is-hidden');
-      arena.classList.add('is-live');
-      scheduleLaunch(false,220);
+      arena.classList.add('is-counting');
+      puck.classList.add('is-countdown');
+      trail.style.opacity='0';
+      updateBounds(false);
+      puckX=bounds.w/2;
+      puckY=bounds.h/2;
+      previousPuck={x:puckX,y:puckY};
+      setPuckPosition();
+      if(countdownEl)countdownEl.textContent='3';
+      stateEl.textContent='Guidance start sequence';
+      if(state.audio){
+        try{
+          countdownAudio.currentTime=0;
+          const play=countdownAudio.play();
+          if(play&&typeof play.catch==='function')play.catch(()=>{});
+        }catch{}
+      }
+      countdownTimers.push(setTimeout(()=>{if(countdownEl)countdownEl.textContent='2';},1000));
+      countdownTimers.push(setTimeout(()=>{if(countdownEl)countdownEl.textContent='1';},2000));
+      countdownTimers.push(setTimeout(()=>{
+        if(countdownEl)countdownEl.textContent='';
+        puck.classList.remove('is-countdown');
+        arena.classList.remove('is-counting');
+        arena.classList.add('is-live');
+        updateBounds(false);
+        puckX=bounds.w/2;
+        puckY=bounds.h/2;
+        previousPuck={x:puckX,y:puckY};
+        setPuckPosition();
+        trail.style.opacity='';
+        launchPuck(false,true);
+      },3000));
     }
     function onPointerDown(e){
       dragging=true;
@@ -3734,7 +3725,6 @@
       e.preventDefault();
       try{arena.focus({preventScroll:true});}catch{arena.focus();}
       pointerToPaddle(e);
-      startFromInteraction();
     }
     function onPointerMove(e){
       if(!dragging) return;
@@ -3750,21 +3740,17 @@
       e.preventDefault();
       updateBounds();
       setPaddleX(paddleX+(['ArrowLeft','a','A'].includes(e.key)?-28:28));
-      startFromInteraction();
     }
     function onResize(){
       updateBounds();
-      if(!running&&!panel.classList.contains('is-complete')) resetPuckAtReceiver();
+      if(!running&&!panel.classList.contains('is-complete')&&!arena.classList.contains('is-counting')) resetPuckAtReceiver();
     }
 
+    // Start the countdown synchronously while the mission-open tap still counts
+    // as a user gesture on iOS. This keeps the countdown audio reliable and in
+    // phase with the 3-2-1 shown on the puck.
     setReceiverForBeam(1);
-    requestAnimationFrame(()=>{
-      updateBounds(false);
-      puckX=bounds.w/2;
-      puckY=Math.min(bounds.h*.33,bounds.paddleY-84);
-      previousPuck={x:puckX,y:puckY};
-      setPuckPosition();
-    });
+    startCountdown();
     arena.addEventListener('pointerdown',onPointerDown,{passive:false});
     arena.addEventListener('pointermove',onPointerMove,{passive:false});
     arena.addEventListener('pointerup',onPointerUp);
@@ -3778,13 +3764,14 @@
       clearTimeout(launchTimer);
       clearTimeout(finishTimer);
       clearTimeout(buzzerTimer);
+      countdownTimers.forEach(clearTimeout);countdownTimers=[];
       arena.removeEventListener('pointerdown',onPointerDown);
       arena.removeEventListener('pointermove',onPointerMove);
       arena.removeEventListener('pointerup',onPointerUp);
       arena.removeEventListener('pointercancel',onPointerUp);
       arena.removeEventListener('keydown',onKeyDown);
       window.removeEventListener('resize',onResize);
-      [...strikePool,...postPool,goalAudio,buzzerAudio].forEach(a=>{try{a.pause();a.currentTime=0;}catch{}});
+      [...strikePool,...postPool,goalAudio,buzzerAudio,countdownAudio].forEach(a=>{try{a.pause();a.currentTime=0;}catch{}});
     };
   }
   function bindLando(){
@@ -3846,6 +3833,7 @@
       clear(); resetLights(); armed=false; running=true; goTime=0;
       primeCountdownAudio();
       roundEl.textContent=`${round} / 4`;
+      roundEl.classList.remove('is-complete');
       btn.textContent='STANDBY'; btn.disabled=false; btn.classList.remove('success','is-measured'); btn.classList.add('is-standby');
       setResultState(round,'active');
       for(let col=0;col<5;col++){
@@ -3860,7 +3848,7 @@
         lamps.forEach(l=>l.classList.remove('red'));
         armed=true; running=true; goTime=performance.now();
         btn.classList.remove('is-standby');
-        btn.textContent='GO';
+        btn.textContent='REACT';
         playCountdownFx(goAudio,.82); haptic(18);
       },wait));
     }
@@ -3874,6 +3862,7 @@
       btn.textContent='REACTION MEASURED';btn.disabled=true;
       haptic([20,20,45]); ping(760,.075,.03);
       if(round===4){
+        roundEl.classList.add('is-complete');
         const scored=results.map(el=>({el,ms:Number(el.dataset.ms)})).filter(x=>Number.isFinite(x.ms));
         const best=scored.sort((a,b)=>a.ms-b.ms)[0];
         timers.push(setTimeout(()=>{best?.el.classList.add('best');haptic([18,20,52]);},520));
@@ -3883,6 +3872,7 @@
           round++;
           roundEl.textContent=`${round} / 4`;
           setResultState(round,'active');
+          resetLights();
           btn.classList.remove('success','is-measured');
           btn.textContent='START TEST';btn.disabled=false;
         },760));
@@ -3902,6 +3892,7 @@
     };
   }
   function bindAurora(){
+    const panel=document.querySelector('.aurora-panel');
     const dial=document.getElementById('auroraDial');
     const captureBtn=document.getElementById('auroraCaptureBtn');
     const lockCount=document.getElementById('auroraLockCount');
@@ -4026,6 +4017,7 @@
       finished=true;
       dial.classList.remove('capture-ready','miss','desync');
       dial.classList.add('complete');
+      panel?.classList.add('is-complete');
       if(north) north.classList.add('complete');
       order.forEach(key=>ringEls[key].classList.add('final-surge'));
       if(finalWave){
@@ -4178,9 +4170,19 @@
     }
     return laplandVoice;
   }
+  function primeLaplandVoiceSilently(){
+    if(!state.audio)return;
+    const voice=getLaplandVoice();
+    try{
+      voice.pause();voice.currentTime=0;voice.volume=1;voice.muted=true;
+      const prime=voice.play();
+      if(prime&&typeof prime.then==='function') prime.then(()=>{try{voice.pause();voice.currentTime=0;}catch{}}).catch(()=>{});
+      else{voice.pause();voice.currentTime=0;}
+    }catch{}
+  }
   function getLaplandExitSfx(){
     if(!laplandExitSfx){
-      laplandExitSfx=new Audio('./assets/lapland-exit-celebration.mp3');
+      laplandExitSfx=new Audio('./assets/quest-complete.mp3');
       laplandExitSfx.preload='auto';
       laplandExitSfx.volume=.9;
     }
@@ -4230,7 +4232,7 @@
     stopStatic();
     if(laplandVoice){
       laplandVoice.onended=null;laplandVoice.onerror=null;
-      try{laplandVoice.pause();if(reset)laplandVoice.currentTime=0;laplandVoice.volume=1;}catch{}
+      try{laplandVoice.pause();if(reset)laplandVoice.currentTime=0;laplandVoice.volume=1;laplandVoice.muted=false;}catch{}
     }
     if(laplandMusic){try{laplandMusic.pause();if(reset)laplandMusic.currentTime=0;laplandMusic.volume=.34;}catch{}}
     if(restoreRadio) endMissionAudioRadioOverride('lapland');
@@ -4261,7 +4263,7 @@
       stopStatic();
       if(!state.audio){finish();return;}
       try{
-        voice.currentTime=0;voice.volume=1;
+        voice.currentTime=0;voice.volume=1;voice.muted=false;
         const play=voice.play();
         if(play&&typeof play.catch==='function') play.catch(finish);
         voice.onended=()=>{
@@ -4275,7 +4277,7 @@
     return ()=>{
       clearTimeout(introStatic);clearTimeout(voiceDelay);clearTimeout(fallback);clearTimeout(tailTimer);clearTimeout(finishTimer);
       voice.onended=null;voice.onerror=null;
-      try{voice.pause();voice.currentTime=0;voice.volume=1;}catch{}
+      try{voice.pause();voice.currentTime=0;voice.volume=1;voice.muted=false;}catch{}
       stopStatic();
     };
   }
@@ -4286,16 +4288,12 @@
     const verificationStage=document.getElementById('laplandVerificationStage');
     const transmissionStage=document.getElementById('laplandTransmissionStage');
     const partyStage=document.getElementById('laplandPartyStage');
-    const discoVideo=document.getElementById('laplandDiscoVideo');
+    const discoVisual=document.getElementById('laplandDiscoVisual');
     const head=document.querySelector('.lapland-head');
     if(!btn||!panel||!verificationStage||!transmissionStage||!partyStage) return;
 
     startLaplandMusic();
-    if(discoVideo){
-      discoVideo.muted=true;
-      discoVideo.preload='auto';
-      try{discoVideo.load();}catch{}
-    }
+    if(discoVisual) discoVisual.setAttribute('draggable','false');
 
     // MC01–MC10 each restore one named system. Checks run down column 1 first,
     // then column 2, matching the visible mission-order layout.
@@ -4335,25 +4333,7 @@
       haptic([20,24,62]);
     };
     let stopTransmission=()=>{};
-    let discoRevealTimer=0;
-    let discoPlayingHandler=null;
 
-    const clearDiscoReadyWait=()=>{
-      clearTimeout(discoRevealTimer);discoRevealTimer=0;
-      if(discoVideo&&discoPlayingHandler){
-        discoVideo.removeEventListener('playing',discoPlayingHandler);
-        discoPlayingHandler=null;
-      }
-    };
-    const startDiscoHidden=()=>{
-      if(!discoVideo)return;
-      discoVideo.muted=true;
-      try{
-        if(discoVideo.ended||discoVideo.currentTime>=discoVideo.duration-.15)discoVideo.currentTime=0;
-        const p=discoVideo.play();
-        if(p&&typeof p.catch==='function')p.catch(()=>{});
-      }catch{}
-    };
     const showTransmission=()=>{
       if(state.missionOpen!=='lapland') return;
       verificationStage.hidden=true;
@@ -4363,14 +4343,10 @@
       panel.classList.add('is-transmission');
       head?.classList.remove('is-celebrating');
       if(laplandMusic&&!laplandMusic.paused) fadeLaplandMusic(.055,420);
-      // Begin decoding/playing the muted disco render behind the transmission so
-      // the party reveal never lands on a frozen first frame on mobile.
-      startDiscoHidden();
       stopTransmission=playLaplandClearance(showParty);
     };
     const revealParty=()=>{
       if(state.missionOpen!=='lapland') return;
-      clearDiscoReadyWait();
       stopTransmission();stopTransmission=()=>{};
       transmissionStage.hidden=true;
       verificationStage.hidden=true;
@@ -4378,7 +4354,6 @@
       panel.classList.remove('is-transmission');
       panel.classList.add('is-party','is-celebrating');
       head?.classList.add('is-celebrating');
-      startDiscoHidden();
       fadeLaplandMusic(.9,780);
       ping(1040,.14,.045);
       laplandLater(()=>ping(1320,.18,.045),210);
@@ -4390,26 +4365,8 @@
       },10000);
     };
     const showParty=()=>{
-      if(state.missionOpen!=='lapland') return;
-      if(!discoVideo){revealParty();return;}
-
-      // Keep the transmission visible until the hidden video confirms it is
-      // actually playing. An 850ms fallback prevents a rare decoder failure
-      // from blocking the mission flow.
-      let revealed=false;
-      const finish=()=>{
-        if(revealed)return;
-        revealed=true;
-        revealParty();
-      };
-      clearDiscoReadyWait();
-      discoPlayingHandler=finish;
-      discoVideo.addEventListener('playing',discoPlayingHandler,{once:true});
-      startDiscoHidden();
-      if(!discoVideo.paused&&discoVideo.readyState>=2&&discoVideo.currentTime>0){
-        requestAnimationFrame(finish);
-      }
-      discoRevealTimer=laplandLater(finish,850);
+      if(state.missionOpen!=='lapland')return;
+      revealParty();
     };
 
     setButtonState('idle');
@@ -4417,30 +4374,7 @@
     btn.onclick=()=>{
       if(btn.dataset.review==='true'){stopLaplandAudio();set({missionOpen:null,nav:'missions'});return;}
 
-      // Prime ELF ENGINEERING audio inside the user gesture, exactly like the
-      // reliable Santa transmission at Luffield. This unlocks later playback on mobile.
-      if(state.audio){
-        const voice=getLaplandVoice();
-        try{
-          voice.currentTime=0;voice.volume=0;
-          const prime=voice.play();
-          if(prime&&typeof prime.then==='function') prime.then(()=>{
-            try{voice.pause();voice.currentTime=0;voice.volume=1;}catch{}
-          }).catch(()=>{try{voice.volume=1;}catch{}});
-        }catch{try{voice.volume=1;}catch{}}
-      }
-      // Prime the muted alpha-video inside the same user gesture. This gives
-      // mobile Safari/Chrome permission and an early decode opportunity.
-      if(discoVideo){
-        discoVideo.muted=true;
-        try{
-          discoVideo.currentTime=0;
-          const primeVideo=discoVideo.play();
-          if(primeVideo&&typeof primeVideo.then==='function') primeVideo.then(()=>{
-            try{discoVideo.pause();discoVideo.currentTime=0;}catch{}
-          }).catch(()=>{});
-        }catch{}
-      }
+      primeLaplandVoiceSilently();
 
       setButtonState('initialising');
       clearLaplandTimers();
@@ -4495,9 +4429,7 @@
     };
 
     cleanupMission=()=>{
-      clearDiscoReadyWait();
       stopTransmission();
-      if(discoVideo){try{discoVideo.pause();discoVideo.currentTime=0;}catch{}}
       stopLaplandAudio();
     };
   }
@@ -4548,7 +4480,7 @@
     if(northernTakeoverEl){northernTakeoverEl.remove();northernTakeoverEl=null;}
     [northernSantaAudio,northernMagicAudio].forEach(audio=>{
       if(!audio)return;
-      try{audio.pause();audio.currentTime=0;audio.onended=null;audio.onerror=null;}catch{}
+      try{audio.pause();audio.currentTime=0;audio.onended=null;audio.onerror=null;audio.muted=false;}catch{}
     });
     stopStatic();
   }
@@ -4557,19 +4489,18 @@
     if(!state.audio)return;
     [getNorthernMagicAudio(),getNorthernSantaAudio()].forEach(audio=>{
       try{
-        audio.load();
-        audio.muted=true;
+        audio.load();audio.pause();audio.currentTime=0;audio.muted=true;
         const play=audio.play();
         if(play&&typeof play.then==='function'){
-          play.then(()=>{try{audio.pause();audio.currentTime=0;audio.muted=false;}catch{}}).catch(()=>{audio.muted=false;});
-        }else{audio.pause();audio.currentTime=0;audio.muted=false;}
-      }catch{audio.muted=false;}
+          play.then(()=>{try{audio.pause();audio.currentTime=0;}catch{}}).catch(()=>{});
+        }else{audio.pause();audio.currentTime=0;}
+      }catch{}
     });
   }
 
   function showNorthernTransmission(){
     const mc=document.getElementById('missionContent'); if(!mc)return;
-    mc.innerHTML=`<div class="mission-instrument panel incoming-transmission northern-incoming">
+    mc.innerHTML=`<div class="mission-instrument panel incoming-transmission">
       <div class="transmission-wave">${'<b></b>'.repeat(24)}</div>
       <div class="kicker">Incoming Transmission</div>
       <h2>SANTA-1</h2>
@@ -4637,12 +4568,11 @@
     playNorthernAirborneMagic();
     ping(980,.18,.05);haptic([35,30,85,35,110]);
     const el=document.createElement('div');
-    el.className='northern-airborne-takeover';
+    el.className='mc01-energy-bloom';
     el.setAttribute('role','status');
     el.setAttribute('aria-live','polite');
-    el.innerHTML=`<div class="northern-airborne-sweep" aria-hidden="true"></div><div class="northern-airborne-copy"><img class="northern-airborne-mark" src="./assets/silverstone-s-mark.webp" alt=""><div class="northern-airborne-santa">SANTA-1</div><h1>AIRBORNE</h1></div>`;
+    el.innerHTML=`<div class="mc01-bloom-field" aria-hidden="true"><i></i><i></i><i></i></div><div class="mc01-bloom-copy"><img class="mc01-bloom-mark" src="./assets/silverstone-s-mark.webp" alt=""><div class="kicker">SANTA-1</div><h1>AIRBORNE</h1></div>`;
     document.body.appendChild(el);northernTakeoverEl=el;
-    northernLater(()=>el.classList.add('is-settled'),180);
     northernLater(()=>el.classList.add('is-exiting'),3820);
     northernLater(()=>{
       showNorthernTransmission();
