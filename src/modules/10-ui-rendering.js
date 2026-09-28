@@ -557,7 +557,8 @@
       </section>
     </div>`;
   }
-  function northernBody(){return `<div class="mission-instrument panel northern-panel" id="northernPanel" style="--northern-hold:0">
+  function northernBody(){return `<div class="mission-instrument panel northern-panel" id="northernPanel">
+      <div class="northern-control-title">Flight Control</div>
       <div class="northern-conditions" aria-label="Final flight conditions">
         <div class="northern-condition" data-flight-check="0"><span>Flight Path</span><strong>Checking</strong><i></i></div>
         <div class="northern-condition" data-flight-check="1"><span>Airspace</span><strong>Checking</strong><i></i></div>
@@ -570,7 +571,7 @@
         <div class="northern-vector-readout"><span>Santa-1</span><strong id="northernState">Standby</strong></div>
       </div>
       <button class="btn primary wide northern-authorise-btn" id="authoriseFlight" disabled>
-        <span class="northern-authorise-label">Hold to Authorise Flight</span>
+        <span class="northern-authorise-label">Authorise Flight</span>
       </button>
       <div class="visually-hidden" id="northernHint" aria-live="polite">Final flight checks in progress.</div>
     </div>`}

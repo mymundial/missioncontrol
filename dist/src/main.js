@@ -1130,7 +1130,8 @@
       </section>
     </div>`;
   }
-  function northernBody(){return `<div class="mission-instrument panel northern-panel" id="northernPanel" style="--northern-hold:0">
+  function northernBody(){return `<div class="mission-instrument panel northern-panel" id="northernPanel">
+      <div class="northern-control-title">Flight Control</div>
       <div class="northern-conditions" aria-label="Final flight conditions">
         <div class="northern-condition" data-flight-check="0"><span>Flight Path</span><strong>Checking</strong><i></i></div>
         <div class="northern-condition" data-flight-check="1"><span>Airspace</span><strong>Checking</strong><i></i></div>
@@ -1143,7 +1144,7 @@
         <div class="northern-vector-readout"><span>Santa-1</span><strong id="northernState">Standby</strong></div>
       </div>
       <button class="btn primary wide northern-authorise-btn" id="authoriseFlight" disabled>
-        <span class="northern-authorise-label">Hold to Authorise Flight</span>
+        <span class="northern-authorise-label">Authorise Flight</span>
       </button>
       <div class="visually-hidden" id="northernHint" aria-live="polite">Final flight checks in progress.</div>
     </div>`}
@@ -4380,8 +4381,9 @@
     };
   }
   let northernTimers=[];
-  let northernHoldRaf=0;
   let northernFlybyAudio=null;
+  let northernSantaAudio=null;
+  let northernMagicAudio=null;
   let northernTakeoverEl=null;
 
   function northernLater(fn,delay){
@@ -4402,17 +4404,47 @@
     return northernFlybyAudio;
   }
 
-  // Final Santa transmission audio and the isolated second Christmas Magic hit
-  // are intentionally left unwired until their approved production files arrive.
+  function getNorthernSantaAudio(){
+    if(!northernSantaAudio){
+      northernSantaAudio=new Audio('./assets/northern-santa-final.mp3');
+      northernSantaAudio.preload='auto';
+      northernSantaAudio.volume=.92;
+    }
+    return northernSantaAudio;
+  }
+
+  function getNorthernMagicAudio(){
+    if(!northernMagicAudio){
+      northernMagicAudio=new Audio('./assets/christmas-magic-02.mp3');
+      northernMagicAudio.preload='auto';
+      northernMagicAudio.volume=.88;
+    }
+    return northernMagicAudio;
+  }
 
   function stopNorthernSequence(){
     northernTimers.forEach(clearTimeout); northernTimers=[];
-    if(northernHoldRaf){cancelAnimationFrame(northernHoldRaf);northernHoldRaf=0;}
     if(northernTakeoverEl){northernTakeoverEl.remove();northernTakeoverEl=null;}
+    [northernSantaAudio,northernMagicAudio].forEach(audio=>{
+      if(!audio)return;
+      try{audio.pause();audio.currentTime=0;audio.onended=null;audio.onerror=null;}catch{}
+    });
     stopStatic();
   }
 
-  function primeNorthernFinalAudio(){ /* Awaiting approved Santa-1 final transmission asset. */ }
+  function primeNorthernFinalAudio(){
+    if(!state.audio)return;
+    [getNorthernMagicAudio(),getNorthernSantaAudio()].forEach(audio=>{
+      try{
+        audio.load();
+        audio.muted=true;
+        const play=audio.play();
+        if(play&&typeof play.then==='function'){
+          play.then(()=>{try{audio.pause();audio.currentTime=0;audio.muted=false;}catch{}}).catch(()=>{audio.muted=false;});
+        }else{audio.pause();audio.currentTime=0;audio.muted=false;}
+      }catch{audio.muted=false;}
+    });
+  }
 
   function showNorthernTransmission(){
     const mc=document.getElementById('missionContent'); if(!mc)return;
@@ -4425,25 +4457,37 @@
     </div>`;
 
     let finished=false;
-    let minDwellTimer=null;
     let fallbackTimer=null;
     const opened=performance.now();
+    const santa=getNorthernSantaAudio();
     if(state.audio)startStatic(.04);
     northernLater(()=>stopStatic(),420);
 
     const finish=()=>{
       if(finished)return;finished=true;
-      clearTimeout(minDwellTimer);clearTimeout(fallbackTimer);stopStatic();
+      clearTimeout(fallbackTimer);stopStatic();
+      try{santa.onended=null;santa.onerror=null;}catch{}
       const elapsed=performance.now()-opened;
-      const wait=Math.max(0,6200-elapsed);
-      northernLater(showNorthernMissionComplete,wait+180);
+      const wait=Math.max(0,900-elapsed);
+      northernLater(showNorthernMissionComplete,wait+220);
     };
 
-    // Audio intentionally pending: preserve the final-transmission beat visually
-    // without substituting the older Santa recording. The approved file will be
-    // bound here in the dedicated audio pass.
-    minDwellTimer=setTimeout(finish,6200);
-    northernTimers.push(minDwellTimer);
+    if(state.audio){
+      try{
+        santa.currentTime=0;santa.volume=.92;santa.muted=false;
+        santa.onended=finish;
+        santa.onerror=()=>{fallbackTimer=setTimeout(finish,6200);northernTimers.push(fallbackTimer);};
+        northernLater(()=>{
+          try{
+            const play=santa.play();
+            if(play&&typeof play.catch==='function')play.catch(()=>{fallbackTimer=setTimeout(finish,6200);northernTimers.push(fallbackTimer);});
+          }catch{fallbackTimer=setTimeout(finish,6200);northernTimers.push(fallbackTimer);}
+        },260);
+        fallbackTimer=setTimeout(finish,17000);northernTimers.push(fallbackTimer);
+      }catch{fallbackTimer=setTimeout(finish,6200);northernTimers.push(fallbackTimer);}
+    }else{
+      fallbackTimer=setTimeout(finish,6200);northernTimers.push(fallbackTimer);
+    }
   }
 
   function showNorthernMissionComplete(){
@@ -4458,7 +4502,15 @@
     showCompletion('Santa-1 Airborne','Santa-1 is airborne. Recovery complete. The Northern Flight is underway.');
   }
 
-  function playNorthernAirborneMagic(){ /* Awaiting isolated Christmas Magic second-hit asset. */ }
+  function playNorthernAirborneMagic(){
+    if(!state.audio)return;
+    const magic=getNorthernMagicAudio();
+    try{
+      magic.onended=null;magic.onerror=null;magic.currentTime=0;magic.volume=.88;magic.muted=false;
+      const play=magic.play();
+      if(play&&typeof play.catch==='function')play.catch(()=>{});
+    }catch{}
+  }
 
   function showNorthernAirborneTakeover(){
     if(northernTakeoverEl)return;
@@ -4472,7 +4524,6 @@
       <div class="northern-airborne-copy">
         <img class="northern-airborne-mark" src="./assets/silverstone-s-mark.webp" alt="">
         <div class="kicker">Northern Flight</div>
-        <span>SANTA-1</span>
         <h1>AIRBORNE</h1>
         <div class="northern-airborne-status">
           <div><small>Systems</small><strong>100%</strong></div>
@@ -4480,13 +4531,13 @@
         </div>
       </div>`;
     document.body.appendChild(el);northernTakeoverEl=el;
-    northernLater(()=>el.classList.add('is-settled'),250);
-    northernLater(()=>el.classList.add('is-exiting'),2850);
+    northernLater(()=>el.classList.add('is-settled'),180);
+    northernLater(()=>el.classList.add('is-exiting'),3820);
     northernLater(()=>{
       showNorthernTransmission();
       if(el.isConnected)el.remove();
       if(northernTakeoverEl===el)northernTakeoverEl=null;
-    },3300);
+    },4260);
   }
 
   function bindNorthern(){
@@ -4500,8 +4551,13 @@
 
     stopNorthernSequence();
     cleanupMission=stopNorthernSequence;
-    const flyby=getNorthernFlybyAudio();
-    try{flyby.load();}catch{}
+    [getNorthernFlybyAudio(),getNorthernSantaAudio(),getNorthernMagicAudio()].forEach(audio=>{try{audio.load();}catch{}});
+
+    label.textContent='Authorise Flight';
+    button.disabled=true;
+    button.classList.remove('success','is-authorising','is-authorised');
+    panel.classList.remove('is-ready','is-authorising','is-authorised');
+    stateEl.textContent='Standby';
 
     const checkValues=['Locked','Clear','Open'];
     checks.forEach((check,i)=>{
@@ -4518,76 +4574,36 @@
       panel.classList.add('is-ready');
       stateEl.textContent='Ready';
       hint.textContent='Santa-1 ready for final authorisation.';
+      haptic(18);
     },1850);
 
-    let holding=false;
     let authorised=false;
-    let started=0;
-    const HOLD_MS=2800;
-
-    const setProgress=value=>{
-      const p=Math.max(0,Math.min(1,value));
-      panel.style.setProperty('--northern-hold',String(p));
-      button.setAttribute('aria-valuenow',String(Math.round(p*100)));
-      if(holding&&!authorised){
-        stateEl.textContent=p<.34?'Standby':p<.72?'Clearance':'Authorising';
-        hint.textContent=`Flight authorisation ${Math.round(p*100)}%`;
-      }
-    };
-
-    const resetHold=()=>{
-      if(!holding||authorised)return;
-      holding=false;
-      if(northernHoldRaf){cancelAnimationFrame(northernHoldRaf);northernHoldRaf=0;}
-      button.classList.remove('is-holding');
-      setProgress(0);
-      stateEl.textContent='Ready';
-      hint.textContent='Santa-1 ready for final authorisation.';
-    };
-
-    const authorise=()=>{
-      if(authorised)return;
-      authorised=true;holding=false;
-      if(northernHoldRaf){cancelAnimationFrame(northernHoldRaf);northernHoldRaf=0;}
-      setProgress(1);
-      button.classList.remove('is-holding');button.classList.add('success','is-authorised');button.disabled=true;
-      label.textContent='Flight Authorised';
-      panel.classList.add('is-authorised');
-      stateEl.textContent='Authorised';
-      hint.textContent='Santa-1 cleared for departure.';
-      ping(920,.16,.05);haptic([30,30,85]);
-      northernLater(showNorthernAirborneTakeover,900);
-    };
-
-    const tick=now=>{
-      if(!holding||authorised)return;
-      const progress=(now-started)/HOLD_MS;
-      setProgress(progress);
-      if(progress>=1){authorise();return;}
-      northernHoldRaf=requestAnimationFrame(tick);
-    };
-
-    const startHold=event=>{
-      if(button.disabled||holding||authorised)return;
-      if(event?.type==='pointerdown'&&typeof button.setPointerCapture==='function'){
-        try{button.setPointerCapture(event.pointerId);}catch{}
-      }
-      holding=true;started=performance.now();button.classList.add('is-holding');haptic(16);
+    button.addEventListener('click',()=>{
+      if(button.disabled||authorised)return;
+      authorised=true;
       primeNorthernFinalAudio();
-      northernHoldRaf=requestAnimationFrame(tick);
-    };
+      button.disabled=true;
+      button.classList.add('is-authorising');
+      panel.classList.add('is-authorising');
+      label.textContent='Authorising';
+      stateEl.textContent='Authorising';
+      hint.textContent='Final flight authorisation in progress.';
+      ping(690,.08,.025);haptic(22);
 
-    button.addEventListener('pointerdown',startHold);
-    button.addEventListener('pointerup',resetHold);
-    button.addEventListener('pointercancel',resetHold);
-    button.addEventListener('lostpointercapture',resetHold);
-    button.addEventListener('keydown',event=>{
-      if((event.key===' '||event.key==='Enter')&&!holding){event.preventDefault();startHold(event);}
-    });
-    button.addEventListener('keyup',event=>{
-      if(event.key===' '||event.key==='Enter'){event.preventDefault();resetHold();}
+      northernLater(()=>{
+        button.classList.remove('is-authorising');
+        panel.classList.remove('is-authorising');
+        button.classList.add('success','is-authorised');
+        panel.classList.add('is-authorised');
+        label.textContent='Authorised';
+        stateEl.textContent='Authorised';
+        hint.textContent='Santa-1 cleared for departure.';
+        ping(920,.16,.05);haptic([30,30,85]);
+        northernLater(showNorthernAirborneTakeover,620);
+      },720);
     });
   }
+
 
   if(IS_ADMIN){renderAdmin();}
   else {
