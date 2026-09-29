@@ -10589,3 +10589,40 @@ button,[role="button"]{touch-action:manipulation;}
   transform:translateX(-50%)!important;
   filter:drop-shadow(0 0 10px rgba(231,247,255,.32)) drop-shadow(0 0 30px rgba(183,74,255,.20))!important;
 }
+
+
+/* === Mobile correction: Power Pulse SFX + Jingle puck scale/alignment === */
+/* PLAY/countdown keeps the readable 46px puck; live gameplay uses a smaller 30px puck. */
+.jingle-puck.is-ready,
+.jingle-puck.is-countdown{
+  width:46px!important;
+  height:46px!important;
+  min-width:46px!important;
+  min-height:46px!important;
+}
+.jingle-arena.is-live .jingle-puck:not(.is-ready):not(.is-countdown){
+  width:30px!important;
+  height:30px!important;
+  min-width:30px!important;
+  min-height:30px!important;
+  box-shadow:0 0 5px #fff,0 0 12px #6ce7ff,0 0 22px rgba(50,204,242,.56)!important;
+}
+.jingle-play-icon{
+  display:none;
+  position:absolute!important;
+  left:50%!important;
+  top:50%!important;
+  width:36px!important;
+  height:36px!important;
+  max-width:none!important;
+  inset:auto!important;
+  transform:translate(-50%,-50%)!important;
+  object-fit:contain!important;
+  object-position:50% 50%!important;
+  opacity:1!important;
+  filter:none!important;
+  pointer-events:none!important;
+}
+.jingle-puck.is-ready .jingle-play-icon{display:block!important;}
+.jingle-puck.is-countdown .jingle-play-icon{display:none!important;}
+.jingle-puck-countdown{font-size:18px!important;}

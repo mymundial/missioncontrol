@@ -2814,6 +2814,42 @@
     let signatureBag=[];
     let liveItems=new Set();
     let capturedSignatures=[];
+    const energyHitAudio=[
+      './assets/power-pulse-energy-hit-1.mp3',
+      './assets/power-pulse-energy-hit-2.mp3',
+      './assets/power-pulse-energy-hit-3.mp3'
+    ].map(src=>{
+      const audio=new Audio(src);
+      audio.preload='auto';
+      audio.volume=.9;
+      return audio;
+    });
+    const energyBoostAudio=new Audio('./assets/power-pulse-energy-boost.wav');
+    energyBoostAudio.preload='auto';
+    energyBoostAudio.volume=.92;
+    let energyHitIndex=0;
+
+    function playEnergyHit(){
+      if(!state.audio)return;
+      const audio=energyHitAudio[energyHitIndex++%energyHitAudio.length];
+      try{
+        audio.pause();
+        audio.currentTime=0;
+        audio.volume=.9;
+        const play=audio.play();
+        if(play&&typeof play.catch==='function')play.catch(()=>{});
+      }catch{}
+    }
+    function playEnergyBoost(){
+      if(!state.audio)return;
+      try{
+        energyBoostAudio.pause();
+        energyBoostAudio.currentTime=0;
+        energyBoostAudio.volume=.92;
+        const play=energyBoostAudio.play();
+        if(play&&typeof play.catch==='function')play.catch(()=>{});
+      }catch{}
+    }
 
     function clearTimers(){timers.forEach(clearTimeout);timers=[];}
     function later(fn,delay){const t=setTimeout(()=>{timers=timers.filter(id=>id!==t);fn();},delay);timers.push(t);return t;}
@@ -3013,7 +3049,8 @@
       cleared=Math.min(10,cleared+1);
       capturedSignatures[cleared-1]=item.signature.rgb;
       renderStability();
-      ping(630+cleared*20,.045,.018);haptic(18);
+      playEnergyHit();
+      haptic(18);
       if(stateEl) stateEl.textContent=cleared===10?'Power stabilised':'';
       if(cleared>=10){finish();return;}
       later(()=>{
@@ -3088,7 +3125,9 @@
       field.classList.add('stabilised');
       beam.classList.add('active');
       progress.textContent='10 / 10';
-      ping(920,.12,.045);haptic([28,24,58]);
+      haptic([28,24,58]);
+      // Let the final capture hit land, then resolve into the dedicated Power Pulse boost.
+      later(playEnergyBoost,140);
       setTimeout(()=>showCompletion('Power Stabilised','The positive energy signatures have been captured and stabilised, ready to be stored in the Spirit Core.'),900);
     }
 
@@ -3111,6 +3150,7 @@
       resizeObserver?.disconnect?.();
       for(const item of liveItems){item.el.remove();}
       liveItems.clear();
+      [...energyHitAudio,energyBoostAudio].forEach(audio=>{try{audio.pause();audio.currentTime=0;}catch{}});
       field.removeEventListener('touchmove',blockFieldGesture);
       field.removeEventListener('gesturestart',blockFieldGesture);
     };
