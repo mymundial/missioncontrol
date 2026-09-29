@@ -10626,3 +10626,43 @@ button,[role="button"]{touch-action:manipulation;}
 .jingle-puck.is-ready .jingle-play-icon{display:block!important;}
 .jingle-puck.is-countdown .jingle-play-icon{display:none!important;}
 .jingle-puck-countdown{font-size:18px!important;}
+
+/* === Jingle Beams: hard-centre the play glyph inside the puck ===
+   Use the supplied SVG as part of the puck's own background so it cannot
+   drift as a separately positioned child on mobile Safari. */
+.jingle-puck.is-ready{
+  width:46px!important;
+  height:46px!important;
+  min-width:46px!important;
+  min-height:46px!important;
+  background-image:url("../assets/video-play.svg"),radial-gradient(circle at 42% 38%,#f7feff 0 20%,#d8fbff 48%,#77e8ff 72%,#38b9dd 100%)!important;
+  background-repeat:no-repeat,no-repeat!important;
+  background-position:50% 50%,50% 50%!important;
+  background-size:34px 34px,100% 100%!important;
+}
+.jingle-puck.is-ready .jingle-play-icon{display:none!important;}
+.jingle-puck.is-countdown{
+  width:46px!important;
+  height:46px!important;
+  min-width:46px!important;
+  min-height:46px!important;
+  background-image:radial-gradient(circle at 42% 38%,#f7feff 0 20%,#d8fbff 48%,#77e8ff 72%,#38b9dd 100%)!important;
+}
+.jingle-puck.is-countdown>i{
+  display:block!important;
+  inset:6px!important;
+  border:2px solid #120531!important;
+  border-radius:50%!important;
+  box-shadow:none!important;
+}
+.jingle-puck-countdown{
+  font-size:16px!important;
+  font-weight:800!important;
+}
+.jingle-arena.is-live .jingle-puck:not(.is-ready):not(.is-countdown){
+  width:30px!important;
+  height:30px!important;
+  min-width:30px!important;
+  min-height:30px!important;
+  background-image:radial-gradient(circle at 42% 38%,#fff 0 15%,#d7fbff 24%,#78eaff 46%,#169cc5 74%,#075f7d 100%)!important;
+}
