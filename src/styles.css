@@ -9483,3 +9483,80 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   .northern-condition span{font-size:7px;}
   .northern-condition strong{font-size:15px;}
 }
+
+
+/* Northern Flight HUD refinement pass */
+.northern-panel{padding:14px 10px 12px;}
+.northern-vector{position:relative;z-index:1;height:clamp(320px,42dvh,430px);margin:0 0 12px;border:1px solid rgba(83,166,194,.2);border-radius:20px;overflow:hidden;background:
+ radial-gradient(circle at 18% 20%,rgba(150,240,255,.7) 0 1.2px,transparent 1.5px),
+ radial-gradient(circle at 28% 46%,rgba(150,240,255,.55) 0 1.2px,transparent 1.5px),
+ radial-gradient(circle at 34% 30%,rgba(150,240,255,.6) 0 1px,transparent 1.3px),
+ radial-gradient(circle at 43% 18%,rgba(150,240,255,.55) 0 1px,transparent 1.3px),
+ radial-gradient(circle at 57% 24%,rgba(150,240,255,.55) 0 1px,transparent 1.3px),
+ radial-gradient(circle at 70% 28%,rgba(150,240,255,.55) 0 1px,transparent 1.3px),
+ radial-gradient(circle at 79% 18%,rgba(150,240,255,.65) 0 1.2px,transparent 1.5px),
+ radial-gradient(circle at 84% 42%,rgba(150,240,255,.55) 0 1px,transparent 1.3px),
+ radial-gradient(circle at 24% 64%,rgba(150,240,255,.55) 0 1px,transparent 1.3px),
+ radial-gradient(circle at 38% 72%,rgba(150,240,255,.55) 0 1px,transparent 1.3px),
+ radial-gradient(circle at 49% 66%,rgba(150,240,255,.6) 0 1.2px,transparent 1.5px),
+ radial-gradient(circle at 62% 74%,rgba(150,240,255,.55) 0 1px,transparent 1.3px),
+ radial-gradient(circle at 76% 68%,rgba(150,240,255,.55) 0 1px,transparent 1.3px),
+ radial-gradient(circle at 88% 56%,rgba(150,240,255,.55) 0 1px,transparent 1.3px),
+ radial-gradient(circle at 12% 52%,rgba(150,240,255,.45) 0 1px,transparent 1.3px),
+ radial-gradient(circle at 14% 78%,rgba(150,240,255,.55) 0 1px,transparent 1.3px),
+ radial-gradient(circle at 86% 80%,rgba(150,240,255,.55) 0 1px,transparent 1.3px),
+ radial-gradient(circle at 55% 52%,rgba(64,197,238,.12),transparent 20%),
+ linear-gradient(180deg,rgba(3,20,31,.96),rgba(2,14,24,.98));}
+.northern-vector::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,rgba(55,196,240,.07),transparent 46%);pointer-events:none;}
+.northern-vector-heading{position:absolute;top:24px;left:0;right:0;display:flex;justify-content:center;z-index:4;}
+.northern-vector-heading span{display:inline-block;color:#9eeaff;font-size:10px;line-height:1;letter-spacing:.18em;text-indent:.18em;text-transform:uppercase;font-weight:800;}
+.northern-hud-arc,.northern-hud-crosshair,.northern-hud-core,.northern-hud-brace{position:absolute;left:50%;top:53%;transform:translate(-50%,-50%);pointer-events:none;}
+.northern-hud-arc{border-radius:50%;filter:drop-shadow(0 0 10px rgba(91,225,255,.12));}
+.northern-hud-arc.arc-outer-left{width:88%;height:88%;border:5px solid rgba(69,217,247,.86);border-color:transparent transparent transparent rgba(69,217,247,.86);transform:translate(-50%,-50%) rotate(-8deg);}
+.northern-hud-arc.arc-outer-right{width:88%;height:88%;border:5px solid rgba(69,217,247,.86);border-color:transparent rgba(69,217,247,.86) transparent transparent;transform:translate(-50%,-50%) rotate(8deg);}
+.northern-hud-arc.arc-mid-left{width:62%;height:62%;border:4px solid rgba(69,217,247,.84);border-color:transparent transparent transparent rgba(69,217,247,.84);transform:translate(-50%,-50%) rotate(-12deg);}
+.northern-hud-arc.arc-mid-right{width:62%;height:62%;border:4px solid rgba(69,217,247,.84);border-color:transparent rgba(69,217,247,.84) transparent transparent;transform:translate(-50%,-50%) rotate(12deg);}
+.northern-hud-arc.arc-inner-left{width:34%;height:34%;border:4px solid rgba(69,217,247,.88);border-color:transparent transparent transparent rgba(69,217,247,.88);transform:translate(-50%,-50%) rotate(-8deg);}
+.northern-hud-arc.arc-inner-right{width:34%;height:34%;border:4px solid rgba(69,217,247,.88);border-color:transparent rgba(69,217,247,.88) transparent transparent;transform:translate(-50%,-50%) rotate(8deg);}
+.northern-hud-crosshair{background:rgba(158,238,255,.9);z-index:2;box-shadow:0 0 10px rgba(119,231,255,.18);}
+.northern-hud-crosshair.crosshair-h{width:78px;height:2px;}
+.northern-hud-crosshair.crosshair-v{width:2px;height:78px;}
+.northern-hud-core{width:26px;height:26px;border:4px solid rgba(108,230,255,.85);border-radius:50%;z-index:3;box-shadow:0 0 0 8px rgba(73,211,246,.06),0 0 16px rgba(73,211,246,.16);}
+.northern-hud-brace{width:112px;height:18px;border:3px solid rgba(83,226,255,.76);border-left-color:transparent;border-right-color:transparent;border-radius:0 0 12px 12px;z-index:2;}
+.northern-hud-brace.brace-top{top:22%;border-top:0;}
+.northern-hud-brace.brace-bottom{top:84%;border-bottom:0;border-top:3px solid rgba(83,226,255,.76);border-left-color:transparent;border-right-color:transparent;border-radius:12px 12px 0 0;}
+.northern-flight-path{position:absolute;left:50%;top:53%;width:68px;height:60%;transform:translate(-50%,-50%);z-index:4;}
+.northern-progress-line{position:absolute;left:50%;top:18%;bottom:18%;width:2px;transform:translateX(-50%);background:linear-gradient(180deg,rgba(89,226,255,.18),rgba(129,238,255,.95) 14%,rgba(129,238,255,.95) 86%,rgba(89,226,255,.18));box-shadow:0 0 8px rgba(79,216,247,.16);}
+.northern-progress-node{position:absolute;left:50%;width:14px;height:14px;border:2px solid rgba(91,224,255,.45);background:rgba(4,22,34,.96);border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 0 5px rgba(62,192,226,.04);transition:border-color .25s ease,background .25s ease,box-shadow .25s ease;}
+.northern-progress-node.node-ready{top:82%;}
+.northern-progress-node.node-authorising{top:50%;}
+.northern-progress-node.node-airborne{top:18%;}
+.northern-progress-marker{position:absolute;left:50%;top:90%;width:22px;height:22px;transform:translate(-50%,-50%);border-radius:50%;background:#effcff;border:2px solid rgba(103,230,255,.95);box-shadow:0 0 0 8px rgba(78,209,243,.08),0 0 18px rgba(103,230,255,.34);transition:top .72s cubic-bezier(.2,.76,.22,1),box-shadow .25s ease,border-color .25s ease;}
+.northern-progress-marker::before,.northern-progress-marker::after{content:"";position:absolute;left:50%;top:50%;background:rgba(44,145,179,.55);transform:translate(-50%,-50%);}
+.northern-progress-marker::before{width:2px;height:12px;}
+.northern-progress-marker::after{width:12px;height:2px;}
+.northern-panel.is-ready .northern-progress-marker{top:82%;}
+.northern-panel.is-authorising .northern-progress-marker{top:50%;}
+.northern-panel.is-authorised .northern-progress-marker,.northern-panel.is-airborne .northern-progress-marker{top:18%;}
+.northern-panel.is-ready .node-ready,.northern-panel.is-authorising .node-ready,.northern-panel.is-authorising .node-authorising,.northern-panel.is-authorised .node-ready,.northern-panel.is-authorised .node-authorising,.northern-panel.is-authorised .node-airborne,.northern-panel.is-airborne .node-ready,.northern-panel.is-airborne .node-authorising,.northern-panel.is-airborne .node-airborne{border-color:rgba(130,238,255,.9);background:rgba(134,240,255,.22);box-shadow:0 0 0 6px rgba(70,205,240,.05),0 0 13px rgba(98,230,255,.16);}
+.northern-conditions{position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 12px;}
+.northern-condition{position:relative;min-width:0;padding:11px 8px 10px;border:1px solid rgba(83,166,194,.24);border-radius:10px;background:rgba(3,23,35,.56);text-align:center;overflow:hidden;transition:border-color .28s ease,background .28s ease,box-shadow .28s ease;}
+.northern-condition span{display:block;color:#7ea9bb;font-size:9px;line-height:1.1;font-weight:800;letter-spacing:.14em;text-transform:uppercase;}
+.northern-condition strong{display:block;margin-top:8px;font-family:var(--display);font-size:18px;line-height:1;text-transform:uppercase;color:#7ea9bb;letter-spacing:.03em;transition:color .28s ease;}
+.northern-condition::after{display:none!important;content:none!important;}
+.northern-condition.ready{border-color:rgba(83,166,194,.34);background:rgba(6,29,43,.8);box-shadow:0 0 0 1px rgba(61,167,205,.06) inset;}
+.northern-condition.ready strong{color:#d6f8ff;}
+@media (max-width: 768px){
+  .northern-vector{height:clamp(290px,40dvh,380px);border-radius:18px;}
+  .northern-vector-heading{top:20px;}
+  .northern-hud-arc.arc-outer-left,.northern-hud-arc.arc-outer-right{width:92%;height:92%;border-width:4px;}
+  .northern-hud-arc.arc-mid-left,.northern-hud-arc.arc-mid-right{width:68%;height:68%;border-width:4px;}
+  .northern-hud-arc.arc-inner-left,.northern-hud-arc.arc-inner-right{width:38%;height:38%;border-width:4px;}
+  .northern-hud-brace{width:92px;height:16px;}
+  .northern-hud-crosshair.crosshair-h{width:68px;}
+  .northern-hud-crosshair.crosshair-v{height:68px;}
+  .northern-flight-path{height:58%;}
+  .northern-condition{padding:10px 6px 9px;}
+  .northern-condition span{font-size:7px;}
+  .northern-condition strong{font-size:15px;}
+}

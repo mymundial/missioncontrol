@@ -1144,16 +1144,18 @@
   function northernBody(){return `<div class="mission-instrument panel northern-panel" id="northernPanel">
       <div class="northern-vector" aria-hidden="true">
         <div class="northern-vector-heading"><span>SANTA-1</span></div>
-        <i class="northern-hud-bracket hud-tl"></i><i class="northern-hud-bracket hud-tr"></i><i class="northern-hud-bracket hud-bl"></i><i class="northern-hud-bracket hud-br"></i>
-        <i class="northern-hud-ring ring-outer"></i><i class="northern-hud-ring ring-mid"></i><i class="northern-hud-ring ring-inner"></i>
+        <i class="northern-hud-arc arc-outer-left"></i><i class="northern-hud-arc arc-outer-right"></i>
+        <i class="northern-hud-arc arc-mid-left"></i><i class="northern-hud-arc arc-mid-right"></i>
+        <i class="northern-hud-arc arc-inner-left"></i><i class="northern-hud-arc arc-inner-right"></i>
         <i class="northern-hud-crosshair crosshair-h"></i><i class="northern-hud-crosshair crosshair-v"></i>
+        <i class="northern-hud-core"></i>
+        <i class="northern-hud-brace brace-top"></i><i class="northern-hud-brace brace-bottom"></i>
         <div class="northern-flight-path">
-          <i class="northern-flight-line"></i>
-          <span class="northern-flight-node node-airborne"></span>
-          <span class="northern-flight-node node-authorised"></span>
-          <span class="northern-flight-node node-authorising"></span>
-          <span class="northern-flight-node node-ready"></span>
-          <span class="northern-flight-marker"></span>
+          <i class="northern-progress-line"></i>
+          <span class="northern-progress-node node-ready"></span>
+          <span class="northern-progress-node node-authorising"></span>
+          <span class="northern-progress-node node-airborne"></span>
+          <span class="northern-progress-marker"></span>
         </div>
       </div>
       <div class="northern-conditions" aria-label="Final flight conditions">
