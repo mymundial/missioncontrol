@@ -9560,3 +9560,63 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   .northern-condition span{font-size:7px;}
   .northern-condition strong{font-size:15px;}
 }
+
+
+/* === Northern Flight locked HUD implementation === */
+.northern-hud-panel{padding:0 12px 12px!important;background:radial-gradient(circle at 50% 25%,rgba(68,194,234,.08),transparent 36%),linear-gradient(180deg,rgba(7,39,58,.97),rgba(4,25,39,.97))!important;}
+.northern-santa-label{height:42px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px;padding:0 18px;color:#9eeaff;position:relative;z-index:3;}
+.northern-santa-label span{font-size:10px;line-height:1;font-weight:800;letter-spacing:.19em;text-indent:.19em;text-transform:uppercase;white-space:nowrap;}
+.northern-santa-label i{display:block;height:1px;background:linear-gradient(90deg,transparent,rgba(89,216,247,.46));}
+.northern-santa-label i:last-child{transform:scaleX(-1);}
+.northern-hud-window{position:relative;width:100%;aspect-ratio:1.5/1;border:1px solid rgba(95,191,220,.28);border-radius:18px;overflow:hidden;background:#03131f;box-shadow:inset 0 0 0 1px rgba(96,206,238,.025),inset 0 0 34px rgba(49,167,203,.05);z-index:2;}
+.northern-hud-svg{display:block;width:100%;height:100%;overflow:hidden;}
+.nf-hud-static,.nf-reticle,.nf-flight-progress{transform-box:view-box;transform-origin:500px 325px;}
+.nf-ring-drift-a{transform-box:fill-box;transform-origin:center;animation:nfHudDriftA 16s linear infinite;}
+.nf-ring-drift-b{transform-box:fill-box;transform-origin:center;animation:nfHudDriftB 22s linear infinite reverse;}
+.nf-stars circle:nth-child(3n){animation:nfHudTwinkle 4.8s ease-in-out infinite alternate;}
+.nf-stars circle:nth-child(4n){animation:nfHudTwinkle 6.4s ease-in-out -2s infinite alternate;}
+.nf-progress-node-svg{fill:#041724;stroke:rgba(107,222,247,.52);stroke-width:3;transition:fill .28s ease,stroke .28s ease,filter .28s ease,opacity .28s ease;}
+.nf-progress-marker-svg{transform-box:view-box;transform-origin:500px 445px;transform:translateY(0);transition:transform .72s cubic-bezier(.2,.75,.2,1);}
+.northern-panel.is-ready .nf-progress-marker-svg{transform:translateY(0);}
+.northern-panel.is-authorising .nf-progress-marker-svg{transform:translateY(-18.4615%);}
+.northern-panel.is-authorised .nf-progress-marker-svg,.northern-panel.is-airborne .nf-progress-marker-svg{transform:translateY(-36.9231%);}
+.northern-panel.is-ready .nf-node-ready,
+.northern-panel.is-authorising .nf-node-ready,
+.northern-panel.is-authorising .nf-node-authorising,
+.northern-panel.is-authorised .nf-node-ready,
+.northern-panel.is-authorised .nf-node-authorising,
+.northern-panel.is-authorised .nf-node-airborne,
+.northern-panel.is-airborne .nf-node-ready,
+.northern-panel.is-airborne .nf-node-authorising,
+.northern-panel.is-airborne .nf-node-airborne{fill:rgba(106,226,250,.18);stroke:#7ceaff;filter:url(#nfSoftGlow);}
+.northern-conditions{position:relative!important;z-index:3!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;margin:12px 0!important;}
+.northern-condition{min-width:0!important;padding:10px 6px 9px!important;border:1px solid rgba(75,171,204,.34)!important;border-radius:8px!important;background:rgba(3,22,34,.62)!important;text-align:center!important;transform:none!important;box-shadow:none!important;}
+.northern-condition span{display:block!important;min-height:0!important;color:#789dab!important;font-size:7px!important;line-height:1.15!important;font-weight:800!important;letter-spacing:.13em!important;text-transform:uppercase!important;}
+.northern-condition strong{display:block!important;margin-top:6px!important;color:#7694a1!important;font-family:var(--display)!important;font-size:15px!important;line-height:1!important;text-transform:uppercase!important;letter-spacing:.025em!important;}
+.northern-condition.ready{border-color:rgba(83,181,214,.46)!important;background:rgba(4,27,41,.76)!important;transform:none!important;box-shadow:inset 0 0 0 1px rgba(85,193,226,.04)!important;}
+.northern-condition.ready strong{color:#d9f8ff!important;}
+.northern-condition::after,.northern-condition i{display:none!important;content:none!important;}
+.northern-authorise-btn{margin:0!important;min-height:50px!important;}
+.northern-authorise-label{font-size:inherit!important;}
+@keyframes nfHudDriftA{to{transform:rotate(360deg)}}
+@keyframes nfHudDriftB{to{transform:rotate(360deg)}}
+@keyframes nfHudTwinkle{0%{opacity:.32}100%{opacity:.78}}
+@media(max-width:520px){
+  .northern-hud-panel{padding:0 10px 11px!important;}
+  .northern-santa-label{height:36px;gap:12px;padding:0 12px;}
+  .northern-santa-label span{font-size:9px;}
+  .northern-hud-window{aspect-ratio:1.42/1;border-radius:16px;}
+  .northern-conditions{gap:5px!important;margin:9px 0!important;}
+  .northern-condition{padding:8px 3px 7px!important;}
+  .northern-condition span{font-size:6.4px!important;letter-spacing:.09em!important;}
+  .northern-condition strong{margin-top:5px!important;font-size:12.5px!important;}
+}
+@media(max-width:360px){
+  .northern-santa-label{height:32px;}
+  .northern-hud-window{aspect-ratio:1.38/1;}
+  .northern-condition strong{font-size:11.5px!important;}
+}
+@media(prefers-reduced-motion:reduce){
+  .nf-ring-drift-a,.nf-ring-drift-b,.nf-stars circle{animation:none!important;}
+  .nf-progress-marker-svg{transition-duration:.1s!important;}
+}
