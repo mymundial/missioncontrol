@@ -80,7 +80,7 @@
     if(state.messageAlert&&unreadCount()>0){
       return `<div class="mission-card message-card panel comms-alert" id="radarMessage"><div class="comms-alert-copy"><div class="kicker">Mission Control</div><h3>New Message</h3></div><div class="comms-alert-actions"><button class="linkbtn comms-action" data-read-messages>Read</button><button class="linkbtn comms-action" data-dismiss-messages>Dismiss</button></div></div>`;
     }
-    if(!cp) return `<div class="mission-card message-card panel complete-message compact-message" id="radarMessage"><div><h3>Mission Complete</h3></div></div>`;
+    if(!cp) return `<div class="mission-card message-card panel complete-message compact-message" id="radarMessage"><div><div class="kicker">Mission Complete</div><h3>MEET SANTA AT HIS GROTTO</h3></div></div>`;
     const activationGap=distanceToActivation(cp,state.distance);
     const acquired=state.targetVisible&&Number.isFinite(activationGap)&&activationGap<=60;
     if(cp.type==='activation'){
@@ -207,7 +207,7 @@
       systemStatusEntry('core',state.completed.includes('spirit')?'Online':'Offline',state.completed.includes('spirit')?'online':'offline'),
       systemStatusEntry('navigation',state.completed.includes('aurora')?'Online':'Offline',state.completed.includes('aurora')?'online':'offline')
     ];
-    return `<div class="sleigh-card panel"><div class="sleigh-title-row"><div><div class="kicker sleigh-pretitle">Sleigh Rebuild</div><h1>Santa-1</h1></div><strong class="sleigh-percent">${r}%</strong></div><div class="sleigh-development-bar" role="progressbar" aria-label="Santa-1 rebuild progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${r}"><div class="sleigh-development-spectrum" aria-hidden="true"></div><div class="sleigh-development-mask" style="left:${r}%" aria-hidden="true"></div></div><div class="sleigh-visual sleigh-stage-${stage}"><div class="sleigh-glow" aria-hidden="true"></div><img class="sleigh-art" src="${info.asset}" alt="Santa-1 ${postStatus.name} rebuild stage"></div><div class="sleigh-systems panel soft"><div class="kicker sleigh-systems-title">System Status</div>${systemStatusBank(systems,'sleigh-system-bank')}</div></div>`;
+    return `<div class="sleigh-card panel"><div class="sleigh-title-row"><div><div class="kicker sleigh-pretitle">Sleigh Rebuild</div><h1>Santa-1</h1></div><strong class="sleigh-percent ${r>=100?'is-complete':''}">${r}%</strong></div><div class="sleigh-development-bar ${r>=100?'is-complete':''}" style="--sleigh-progress:${r}%" role="progressbar" aria-label="Santa-1 rebuild progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${r}"><div class="sleigh-development-spectrum" aria-hidden="true"></div><div class="sleigh-development-mask" style="left:${r}%" aria-hidden="true"></div><i class="sleigh-development-marker" aria-hidden="true"></i></div><div class="sleigh-visual sleigh-stage-${stage}"><div class="sleigh-glow" aria-hidden="true"></div><img class="sleigh-art" src="${info.asset}" alt="Santa-1 ${postStatus.name} rebuild stage"></div><div class="sleigh-systems panel soft"><div class="kicker sleigh-systems-title">System Status</div>${systemStatusBank(systems,'sleigh-system-bank')}</div></div>`;
   }
 
   function systemStatusBank(systems,extraClass='',dataPrefix=''){
@@ -256,7 +256,7 @@
       return `<div class="mission-head spirit-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><div class="spirit-sponsor"><img src="./assets/care-bears-logo.png?v=7.38.44" alt="Care Bears"></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
     }
     if(cp.type==='power'&&cp.id==='escapade'){
-      return `<div class="mission-head raceway-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><div class="raceway-sponsor"><img src="./assets/escapade-logo.png?v=1" alt="Escapade"></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
+      return `<div class="mission-head raceway-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><div class="raceway-sponsor"><img src="./assets/escapade-logo.png?v=1" alt="Escapade" width="1350" height="386" fetchpriority="high"></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
     }
     if(cp.type==='lapland'){
       return `<div class="mission-head lapland-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><div class="lapland-sponsor"><img src="./assets/las-vegas-logo-white.svg" alt="Las Vegas"></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
@@ -267,7 +267,7 @@
     return ({
       activation:'You have now entered the live circuit zone.',
       diagnostics:'Capture the racing data needed to rebuild Santa-1.',
-      radio:'Tune the receiver to 87.7 and establish a link with ELF FM.',
+      radio:'Tune the receiver to 87.7 Elf FM.',
       commsrelay:'Establish communications with Santa-1.',
       power:'Test Santa-1’s propulsion system.',
       spirit:'Store the positive energy.',
@@ -309,9 +309,10 @@
     const node=geoToCircuitPoint(cp?.lat,cp?.lng)||{x:88.88,y:31.11};
     const nodeX=node.x.toFixed(2),nodeY=node.y.toFixed(2);
     return `<div class="mission-instrument panel mc01-panel" id="mc01Activation" data-stage="detected">
-      <div class="mc01-transfer" aria-label="Circuit Link energy transfer progress">
-        <div class="mc01-transfer-meta"><span>Energy Transfer</span><strong id="mc01TransferValue">0%</strong></div>
-        <div class="mc01-transfer-track"><i id="mc01TransferFill"></i></div>
+      <div class="mc01-readout mc01-readout-top">
+        <span class="mc01-bolt" aria-hidden="true"><img src="./assets/system-power.svg" alt=""></span>
+        <div class="mc01-readout-copy"><span id="mc01StateLabel">Circuit Link</span><strong id="mc01State">Signal Detected</strong></div>
+        <div class="mc01-signal-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
       </div>
       <div class="mc01-track-stage" aria-hidden="true">
         <div class="mc01-track-shadow"></div>
@@ -323,10 +324,9 @@
           <circle class="mc01-energy-node" cx="${nodeX}" cy="${nodeY}" r="3.5"></circle>
         </svg>
       </div>
-      <div class="mc01-readout">
-        <span class="mc01-bolt" aria-hidden="true"><img src="./assets/system-power.svg" alt=""></span>
-        <div class="mc01-readout-copy"><span id="mc01StateLabel">Circuit Link</span><strong id="mc01State">Signal Detected</strong></div>
-        <div class="mc01-signal-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <div class="mc01-transfer mc01-transfer-bottom" aria-label="Circuit Link energy transfer progress">
+        <div class="mc01-transfer-meta"><span>Energy Transfer</span><strong id="mc01TransferValue">0%</strong></div>
+        <div class="mc01-transfer-track"><i id="mc01TransferFill"></i></div>
       </div>
     </div>`;
   }
@@ -357,9 +357,9 @@
           <line class="relay-hop-line" data-hop="4" x1="25" y1="125" x2="75" y2="125"></line>
         </svg>
         ${Array.from({length:5},(_,i)=>`<span class="relay-carrier-packet" data-carrier="${i}" aria-hidden="true"></span>`).join('')}
-        <div class="relay-cell relay-endpoint relay-origin"><span class="relay-radio-icon"><i></i><i></i><i></i></span><small>TRANSMITTER</small></div>
+        <div class="relay-cell relay-endpoint relay-origin"><span class="relay-radio-icon"><img src="./assets/relay-transmitter-icon.svg" alt="" aria-hidden="true"></span><small>TRANSMITTER</small></div>
         ${[0,1,2,3].map(i=>`<div class="relay-cell relay-capture"><button class="relay-node ${i===0?'active':''}" data-relay="${i}" aria-label="Relay ${i+1}"><span class="relay-target"></span><span class="relay-pulse"></span><span class="relay-core">0${i+1}</span></button><small>RELAY 0${i+1}</small></div>`).join('')}
-        <div class="relay-cell relay-endpoint relay-destination"><span class="relay-receiver-icon"></span><small>RECEIVER</small></div>
+        <div class="relay-cell relay-endpoint relay-destination"><span class="relay-receiver-icon"><img src="./assets/relay-receiver-hi-spec.svg" alt="" aria-hidden="true"></span><small>RECEIVER</small></div>
       </div>
       <div class="visually-hidden" id="relayState" aria-live="polite">Relay 01 armed</div>
     </div>`;
@@ -392,7 +392,7 @@
         <div class="power-max-hold"><span>SPEED LOCK</span><div><i id="powerMaxFill"></i></div><strong id="powerMaxState">STANDBY</strong></div>
       </div>
       <div class="visually-hidden" id="powerState" aria-live="polite">Ready</div>
-      <button class="btn primary wide power-accelerator" id="powerAccelerator">Hold to Accelerate</button>
+      <button class="btn primary wide power-accelerator" id="powerAccelerator">ACCELERATE</button>
     </div>`;
   }
   function spiritBody(){
@@ -406,28 +406,24 @@
       {side:'right',index:2,key:'white',rgb:'247,250,255',color:'#f7faff',name:'White energy'},
       {side:'right',index:3,key:'orange',rgb:'255,122,28',color:'#ff7a1c',name:'Orange energy'}
     ];
-    const progressDefs=['blue','orange','red','white','green','pink','purple','yellow'].map(key=>tankDefs.find(t=>t.key===key));
     const bhpIcon=`<svg class="spirit-bhp-icon" viewBox="66 0 66 126" focusable="false" aria-hidden="true"><path d="M83.34,125.93,98.42,75.57h-32L127.44,0,112.37,50.35h32ZM79,69.55H106.5L97.88,98.34l33.88-42H104.29l8.62-28.78Z"></path></svg>`;
-    const tankCells=side=>tankDefs.filter(tank=>tank.side===side).map(tank=>`<div class="spirit-tank-cell spirit-tank-${tank.key}" data-spirit-tank="${tank.side}-${tank.index}" data-spirit-color="${tank.key}" style="--tank-rgb:${tank.rgb};--tank-color:${tank.color};" aria-label="${tank.name} storage tank">
+    const tankCells=side=>tankDefs.filter(tank=>tank.side===side).map(tank=>`<div class="spirit-tank-cell spirit-tank-${tank.key}" data-spirit-tank="${tank.side}-${tank.index}" data-spirit-color="${tank.key}" data-spirit-rgb="${tank.rgb}" data-spirit-hex="${tank.color}" style="--tank-rgb:${tank.rgb};--tank-color:${tank.color};" aria-label="${tank.name} storage tank">
       <span class="spirit-tank-energy"></span>
       <span class="spirit-tank-shimmer"></span>
       <span class="spirit-tank-grid" aria-hidden="true"></span>
       <span class="spirit-tank-plate" aria-hidden="true"><span class="spirit-tank-plate-face">${bhpIcon}</span></span>
       <span class="spirit-tank-vent" aria-hidden="true"><i></i><i></i><i></i></span>
+      <button type="button" class="spirit-tank-power" data-spirit-charge="${tank.side}-${tank.index}" aria-label="Charge ${tank.name} tank"><span class="spirit-power-bolt" aria-hidden="true"><svg viewBox="66 0 78 126" focusable="false"><path d="M83.34,125.93,98.42,75.57h-32L127.44,0,112.37,50.35h32ZM79,69.55H106.5L97.88,98.34l33.88-42H104.29l8.62-28.78Z"></path></svg></span></button>
     </div>`).join('');
-    const stageDots=progressDefs.map((tank,i)=>`<i data-spirit-stage-dot="${i}" data-spirit-progress-color="${tank.key}" style="--tank-rgb:${tank.rgb};--tank-color:${tank.color};"></i>`).join('');
+    const stageDots=Array.from({length:8},(_,i)=>`<i data-spirit-stage-dot="${i}"></i>`).join('');
     return `<div class="mission-instrument panel spirit-panel" id="spiritRig" data-stage="0">
-      <div class="spirit-score"><span>CORE CHARGE</span><strong><b id="spiritStageNumber">00</b> / 08</strong></div>
+      <div class="spirit-score"><span>CORE CHARGE</span><strong><b id="spiritStageNumber">0</b> / 8</strong></div>
       <div class="spirit-stage-progress" id="spiritStageProgress" aria-hidden="true">${stageDots}</div>
       <div class="spirit-apparatus" aria-label="Spirit energy storage tanks">
         <div class="spirit-meter spirit-meter-left" aria-hidden="true"><span class="spirit-meter-fill"></span><b class="spirit-meter-marker"></b></div>
         <div class="spirit-bank spirit-bank-left"><div class="spirit-tank-stack">${tankCells('left')}</div></div>
         <div class="spirit-bank spirit-bank-right"><div class="spirit-tank-stack">${tankCells('right')}</div></div>
         <div class="spirit-meter spirit-meter-right" aria-hidden="true"><span class="spirit-meter-fill"></span><b class="spirit-meter-marker"></b></div>
-      </div>
-      <div class="spirit-charge-controls" aria-label="Storage tank charging controls">
-        <button class="spirit-charge-btn is-next" data-charge="A" aria-label="Charge left tank bank"><strong>TAP</strong></button>
-        <button class="spirit-charge-btn" data-charge="B" aria-label="Charge right tank bank"><strong></strong></button>
       </div>
     </div>`;
   }
@@ -471,14 +467,14 @@
     return `<div class="mission-instrument panel jingle-panel" id="jinglePanel">
       <div class="jingle-progress-head"><span>GUIDANCE LOCK</span><strong id="jingleLockCount">0 / 3</strong></div>
       <div class="jingle-lock-track" aria-label="Guidance lock progress">${[1,2,3].map(i=>`<i class="${i===1?'is-next':''}" data-jingle-beam="${i}"></i>`).join('')}</div>
-      <div class="jingle-arena" id="jingleArena" tabindex="0" role="application" aria-label="Jingle Beams guidance game. Tap or slide horizontally to steer the paddle and direct the charge into each receiver.">
+      <div class="jingle-arena is-awaiting-start" id="jingleArena" tabindex="0" role="application" aria-label="Jingle Beams guidance game. Start the puck, then tap or slide horizontally to steer the paddle and direct the charge into each receiver.">
         <div class="jingle-grid" aria-hidden="true"><img class="jingle-centre-mark" src="./assets/silverstone-s-mark.webp" alt=""></div>
         <div class="jingle-energy-rail rail-left" aria-hidden="true"><i></i></div>
         <div class="jingle-energy-rail rail-right" aria-hidden="true"><i></i></div>
         <div class="jingle-receiver" id="jingleReceiver" aria-hidden="true"><span></span><i></i></div>
         <div class="jingle-goal-flare" id="jingleGoalFlare" aria-hidden="true"></div>
         <div class="jingle-puck-trail" id="jinglePuckTrail" aria-hidden="true"></div>
-        <div class="jingle-puck" id="jinglePuck" aria-hidden="true"><i></i></div>
+        <button type="button" class="jingle-puck is-ready" id="jinglePuck" aria-label="Start Jingle Beams"><i></i><img class="jingle-play-icon" src="./assets/video-play.svg" alt="" aria-hidden="true"><strong class="jingle-puck-countdown" id="jingleCountdown"></strong></button>
         <div class="jingle-paddle" id="jinglePaddle" aria-hidden="true"><i></i></div>
         <div class="jingle-drag-prompt" id="jinglePrompt"><strong>TAP TO STEER</strong></div>
       </div>
@@ -507,16 +503,15 @@
       <div class="aurora-progress-head"><span>Navigation Lock</span><strong id="auroraLockCount">0 / 3</strong></div>
       <div class="aurora-lock-track" id="auroraLockTrack" aria-label="Navigation lock progress">${Array.from({length:3},()=>'<i></i>').join('')}</div>
       <div class="aurora-north" aria-hidden="true"><span class="aurora-north-star">✦</span><i></i></div>
-      <div class="aurora-dial" id="auroraDial" role="img" aria-label="Aurora Apex navigation alignment instrument">
+      <div class="aurora-dial" id="auroraDial" role="group" aria-label="Aurora Apex navigation alignment instrument">
         <div class="aurora-field" aria-hidden="true"></div>
         <div class="aurora-target-line" aria-hidden="true"></div>
         <div class="aurora-capture-gate" aria-hidden="true"><i></i></div>
-        ${rings.map(key=>`<div class="aurora-ring aurora-ring-${key}" data-aurora-ring="${key}" aria-hidden="true"><img src="./assets/aurora-ring-${key}.webp" alt=""><span class="aurora-lock-notch"></span></div>`).join('')}
+        ${rings.map(key=>`<button type="button" class="aurora-ring aurora-ring-${key}" data-aurora-ring="${key}" aria-label="Lock ${key} navigation ring"><img src="./assets/aurora-ring-${key}.webp" alt="" aria-hidden="true"><span class="aurora-lock-notch" aria-hidden="true"></span></button>`).join('')}
         <div class="aurora-charge-pulse" aria-hidden="true"></div>
         <div class="aurora-final-wave" aria-hidden="true"></div>
         <div class="aurora-compass" aria-hidden="true"><span><img class="aurora-compass-mark" src="./assets/silverstone-s-mark.webp" alt=""></span></div>
       </div>
-      <button class="btn primary wide aurora-capture-btn" id="auroraCaptureBtn">CAPTURE</button>
       <div class="visually-hidden" id="auroraState" aria-live="polite">Align the active navigation ring with the North Pole axis.</div>
     </div>`;
   }
@@ -539,6 +534,10 @@
     ];
     return `<div class="mission-instrument panel lapland-panel" id="laplandPanel" style="--lapland-charge:0">
       <section class="lapland-stage lapland-verification-stage" id="laplandVerificationStage">
+        <div class="lapland-online-progress" id="laplandOnlineProgress">
+          <div class="lapland-online-head"><span>SYSTEMS ONLINE</span><strong id="laplandOnlineCount">0 / 10</strong></div>
+          <div class="lapland-online-track" aria-label="Launch system verification progress">${Array.from({length:10},(_,i)=>`<i data-lapland-progress="${i}"></i>`).join('')}</div>
+        </div>
         ${systemStatusBank(systems,'lapland-system-bank','verify')}
         <div class="lapland-launch-slot">
           <button class="btn primary wide lapland-test-btn" id="initiateTest">Initialise Launch</button>
@@ -557,7 +556,7 @@
           <i class="lapland-party-wash"></i>
           <i class="lapland-party-beam party-beam-a"></i><i class="lapland-party-beam party-beam-b"></i><i class="lapland-party-beam party-beam-c"></i><i class="lapland-party-reflections"></i>
         </div>
-        <div class="lapland-disco-rig" aria-hidden="true"><video class="lapland-disco-video" id="laplandDiscoVideo" muted loop playsinline preload="auto"><source src="./assets/disco-ball-alpha-loop-720.webm" type="video/webm"></video></div>
+        <div class="lapland-disco-rig" aria-hidden="true"><canvas class="lapland-disco-video" id="laplandDiscoVisual" width="180" height="180"></canvas></div>
         <div class="lapland-party-message">
           <span>SANTA-1</span>
           <i class="lapland-clearance-divider" aria-hidden="true"></i>

@@ -3239,10 +3239,10 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
 .mission-diagnostics .viz-control .control-path{fill:none;stroke:#77dcfb;stroke-width:1.3;stroke-dasharray:6 5;opacity:.45;}
 .mission-diagnostics .viz-control .control-angle{fill:none;stroke:rgba(116,223,255,.38);stroke-width:1;stroke-dasharray:3 4;}
 .mission-diagnostics .viz-control .control-marker{fill:#d9f9ff;opacity:.55;}
-.mission-diagnostics .sensor-control.active .control-wheel{animation:mc02Steer 1.15s ease-in-out infinite;}
+.mission-diagnostics .sensor-control.active .control-wheel{animation:mc02Steer 1.2s ease-in-out 1 both;}
 .mission-diagnostics .sensor-control.active .control-path-left{animation:mc02ControlPath .6s linear infinite;}
 .mission-diagnostics .sensor-control.active .control-path-right{animation:mc02ControlPath .6s linear infinite reverse;}
-.mission-diagnostics .sensor-control.active .control-marker{animation:mc02ControlMarker 1.15s ease-in-out infinite;}
+.mission-diagnostics .sensor-control.active .control-marker{animation:mc02ControlMarker 1.2s ease-in-out 1 both;}
 .mission-diagnostics .sensor-control.done .control-wheel circle,.mission-diagnostics .sensor-control.done .control-wheel line,.mission-diagnostics .sensor-control.done .control-path{stroke:var(--green);}
 @keyframes mc02Steer{0%,100%{transform:rotate(-18deg)}50%{transform:rotate(18deg)}}
 @keyframes mc02ControlPath{to{stroke-dashoffset:-22}}
@@ -9423,142 +9423,1453 @@ body.admin-page,.admin-page .app-shell{height:auto;min-height:100%;overflow:visi
   50%{transform:translate(-50%,-50%) rotate(54deg)}
 }
 
-
-/* Northern Flight corrective pass */
-.northern-panel{padding:14px 10px 12px;}
-.northern-vector{position:relative;z-index:1;height:clamp(320px,42dvh,430px);margin:0 0 12px;border:1px solid rgba(83,166,194,.2);border-radius:20px;overflow:hidden;background:radial-gradient(circle at 50% 44%,rgba(44,180,220,.10),transparent 24%),linear-gradient(180deg,rgba(4,22,34,.92),rgba(2,15,24,.96));}
-.northern-vector::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,rgba(55,196,240,.06),transparent 46%),radial-gradient(circle at 50% 50%,rgba(117,228,255,.03),transparent 70%);pointer-events:none;}
-.northern-vector-heading{position:absolute;top:14px;left:0;right:0;display:flex;justify-content:center;z-index:2;}
-.northern-vector-heading span{display:inline-block;color:#9eeaff;font-size:10px;line-height:1;letter-spacing:.18em;text-indent:.18em;text-transform:uppercase;font-weight:800;}
-.northern-hud-bracket{position:absolute;width:56px;height:4px;background:rgba(92,220,255,.88);box-shadow:0 0 14px rgba(92,220,255,.22);z-index:1;}
-.northern-hud-bracket.hud-tl{left:26px;top:68px;}
-.northern-hud-bracket.hud-tr{right:26px;top:68px;}
-.northern-hud-bracket.hud-bl{left:26px;bottom:68px;}
-.northern-hud-bracket.hud-br{right:26px;bottom:68px;}
-.northern-hud-ring{position:absolute;left:50%;top:52%;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;}
-.northern-hud-ring.ring-outer{width:min(62vw,540px);height:min(62vw,540px);border:10px solid rgba(72,217,247,.88);border-color:rgba(72,217,247,.88) transparent rgba(72,217,247,.88) transparent;box-shadow:0 0 22px rgba(72,217,247,.12);}
-.northern-hud-ring.ring-mid{width:min(42vw,360px);height:min(42vw,360px);border:8px solid rgba(72,217,247,.72);border-color:rgba(72,217,247,.72) transparent rgba(72,217,247,.72) transparent;transform:translate(-50%,-50%) rotate(18deg);}
-.northern-hud-ring.ring-inner{width:min(22vw,180px);height:min(22vw,180px);border:7px solid rgba(72,217,247,.78);border-color:rgba(72,217,247,.78) transparent rgba(72,217,247,.78) transparent;transform:translate(-50%,-50%) rotate(-14deg);}
-.northern-hud-crosshair{position:absolute;left:50%;top:52%;background:rgba(145,237,255,.86);transform:translate(-50%,-50%);z-index:1;}
-.northern-hud-crosshair.crosshair-h{width:80px;height:2px;}
-.northern-hud-crosshair.crosshair-v{width:2px;height:80px;}
-.northern-flight-path{position:absolute;left:50%;top:53%;width:120px;height:68%;transform:translate(-50%,-50%);z-index:2;}
-.northern-flight-line{position:absolute;left:50%;top:10%;bottom:10%;width:2px;transform:translateX(-50%);background:linear-gradient(180deg,rgba(74,214,248,.22),rgba(117,236,255,.92) 18%,rgba(117,236,255,.95) 82%,rgba(74,214,248,.22));box-shadow:0 0 12px rgba(72,217,247,.16);}
-.northern-flight-node{position:absolute;left:50%;width:14px;height:14px;border:2px solid rgba(96,224,255,.42);background:rgba(5,25,38,.95);border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 0 5px rgba(70,205,240,.04);transition:border-color .28s ease,box-shadow .28s ease,background .28s ease;}
-.northern-flight-node.node-airborne{top:14%;}
-.northern-flight-node.node-authorised{top:36%;}
-.northern-flight-node.node-authorising{top:58%;}
-.northern-flight-node.node-ready{top:80%;}
-.northern-flight-marker{position:absolute;left:50%;top:88%;width:24px;height:24px;transform:translate(-50%,-50%);border-radius:50%;background:#effcff;border:2px solid rgba(103,230,255,.96);box-shadow:0 0 0 8px rgba(78,209,243,.08),0 0 18px rgba(103,230,255,.36);transition:top .72s cubic-bezier(.2,.76,.22,1),box-shadow .28s ease,border-color .28s ease;}
-.northern-flight-marker::before,.northern-flight-marker::after{content:"";position:absolute;left:50%;top:50%;background:rgba(44,145,179,.55);transform:translate(-50%,-50%);}
-.northern-flight-marker::before{width:2px;height:12px;}
-.northern-flight-marker::after{width:12px;height:2px;}
-.northern-panel.is-ready .northern-flight-marker{top:80%;}
-.northern-panel.is-authorising .northern-flight-marker{top:58%;}
-.northern-panel.is-authorised .northern-flight-marker{top:36%;}
-.northern-panel.is-airborne .northern-flight-marker{top:14%;}
-.northern-panel.is-ready .node-ready,.northern-panel.is-authorising .node-ready,.northern-panel.is-authorised .node-ready,.northern-panel.is-airborne .node-ready,.northern-panel.is-authorising .node-authorising,.northern-panel.is-authorised .node-authorising,.northern-panel.is-airborne .node-authorising,.northern-panel.is-authorised .node-authorised,.northern-panel.is-airborne .node-authorised,.northern-panel.is-airborne .node-airborne{border-color:rgba(128,236,255,.9);background:rgba(134,240,255,.22);box-shadow:0 0 0 6px rgba(70,205,240,.06),0 0 14px rgba(98,230,255,.18);}
-.northern-conditions{position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 12px;}
-.northern-condition{position:relative;min-width:0;padding:11px 8px 10px;border:1px solid rgba(83,166,194,.24);border-radius:10px;background:rgba(3,23,35,.56);text-align:center;overflow:hidden;transition:border-color .28s ease,background .28s ease,box-shadow .28s ease;}
-.northern-condition span{display:block;color:#7ea9bb;font-size:9px;line-height:1.1;font-weight:800;letter-spacing:.14em;text-transform:uppercase;}
-.northern-condition strong{display:block;margin-top:8px;font-family:var(--display);font-size:18px;line-height:1;text-transform:uppercase;color:#c3eef7;letter-spacing:.03em;transition:color .28s ease;}
-.northern-condition::after{content:"";position:absolute;right:14px;top:14px;width:10px;height:10px;border-radius:50%;background:rgba(87,239,145,.16);opacity:0;box-shadow:none;transition:opacity .28s ease,background .28s ease,box-shadow .28s ease;}
-.northern-condition.ready{border-color:rgba(83,166,194,.34);background:rgba(6,29,43,.8);box-shadow:0 0 0 1px rgba(61,167,205,.06) inset;}
-.northern-condition.ready strong{color:#d6f8ff;}
-.northern-condition.ready::after{opacity:1;background:var(--green);box-shadow:0 0 10px rgba(87,239,145,.24);}
-.northern-authorise-btn{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;overflow:hidden;user-select:none;-webkit-user-select:none;transition:filter .2s ease,box-shadow .2s ease,border-color .2s ease,background .2s ease,opacity .2s ease;}
-.northern-panel.is-ready .northern-authorise-btn:not(:disabled){box-shadow:0 0 20px rgba(73,196,239,.10);}
-.northern-authorise-btn.is-authorising{filter:saturate(.72);opacity:.72;}
-.northern-authorise-btn.is-authorised{box-shadow:0 0 18px rgba(87,239,145,.12);}
-@media (max-width: 768px){
-  .northern-panel{padding:13px 10px 12px;}
-  .northern-vector{height:clamp(290px,40dvh,380px);border-radius:18px;}
-  .northern-hud-ring.ring-outer{width:min(66vw,430px);height:min(66vw,430px);border-width:8px;}
-  .northern-hud-ring.ring-mid{width:min(46vw,285px);height:min(46vw,285px);border-width:7px;}
-  .northern-hud-ring.ring-inner{width:min(24vw,150px);height:min(24vw,150px);border-width:6px;}
-  .northern-hud-bracket{width:46px;}
-  .northern-hud-bracket.hud-tl,.northern-hud-bracket.hud-tr{top:60px;}
-  .northern-hud-bracket.hud-bl,.northern-hud-bracket.hud-br{bottom:60px;}
-  .northern-condition{padding:10px 6px 9px;}
-  .northern-condition span{font-size:7px;}
-  .northern-condition strong{font-size:15px;}
+/* MC02 CONTROL final sync: one natural out-and-back motion within the 1.2s control scan. */
+.mission-diagnostics .sensor-control.active .mc02-icon-control{animation:mc02ControlRightReturnSynced 1.2s cubic-bezier(.42,0,.58,1) 1 both!important;}
+.mission-diagnostics .sensor-control.active .mc02-control-wheel{animation:none!important;}
+@keyframes mc02ControlRightReturnSynced{
+  0%,100%{transform:translate(-50%,-50%) rotate(0deg)}
+  50%{transform:translate(-50%,-50%) rotate(54deg)}
 }
 
 
-/* Northern Flight HUD refinement pass */
-.northern-panel{padding:14px 10px 12px;}
-.northern-vector{position:relative;z-index:1;height:clamp(320px,42dvh,430px);margin:0 0 12px;border:1px solid rgba(83,166,194,.2);border-radius:20px;overflow:hidden;background:
- radial-gradient(circle at 18% 20%,rgba(150,240,255,.7) 0 1.2px,transparent 1.5px),
- radial-gradient(circle at 28% 46%,rgba(150,240,255,.55) 0 1.2px,transparent 1.5px),
- radial-gradient(circle at 34% 30%,rgba(150,240,255,.6) 0 1px,transparent 1.3px),
- radial-gradient(circle at 43% 18%,rgba(150,240,255,.55) 0 1px,transparent 1.3px),
- radial-gradient(circle at 57% 24%,rgba(150,240,255,.55) 0 1px,transparent 1.3px),
- radial-gradient(circle at 70% 28%,rgba(150,240,255,.55) 0 1px,transparent 1.3px),
- radial-gradient(circle at 79% 18%,rgba(150,240,255,.65) 0 1.2px,transparent 1.5px),
- radial-gradient(circle at 84% 42%,rgba(150,240,255,.55) 0 1px,transparent 1.3px),
- radial-gradient(circle at 24% 64%,rgba(150,240,255,.55) 0 1px,transparent 1.3px),
- radial-gradient(circle at 38% 72%,rgba(150,240,255,.55) 0 1px,transparent 1.3px),
- radial-gradient(circle at 49% 66%,rgba(150,240,255,.6) 0 1.2px,transparent 1.5px),
- radial-gradient(circle at 62% 74%,rgba(150,240,255,.55) 0 1px,transparent 1.3px),
- radial-gradient(circle at 76% 68%,rgba(150,240,255,.55) 0 1px,transparent 1.3px),
- radial-gradient(circle at 88% 56%,rgba(150,240,255,.55) 0 1px,transparent 1.3px),
- radial-gradient(circle at 12% 52%,rgba(150,240,255,.45) 0 1px,transparent 1.3px),
- radial-gradient(circle at 14% 78%,rgba(150,240,255,.55) 0 1px,transparent 1.3px),
- radial-gradient(circle at 86% 80%,rgba(150,240,255,.55) 0 1px,transparent 1.3px),
- radial-gradient(circle at 55% 52%,rgba(64,197,238,.12),transparent 20%),
- linear-gradient(180deg,rgba(3,20,31,.96),rgba(2,14,24,.98));}
-.northern-vector::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,rgba(55,196,240,.07),transparent 46%);pointer-events:none;}
-.northern-vector-heading{position:absolute;top:24px;left:0;right:0;display:flex;justify-content:center;z-index:4;}
-.northern-vector-heading span{display:inline-block;color:#9eeaff;font-size:10px;line-height:1;letter-spacing:.18em;text-indent:.18em;text-transform:uppercase;font-weight:800;}
-.northern-hud-arc,.northern-hud-crosshair,.northern-hud-core,.northern-hud-brace{position:absolute;left:50%;top:53%;transform:translate(-50%,-50%);pointer-events:none;}
-.northern-hud-arc{border-radius:50%;filter:drop-shadow(0 0 10px rgba(91,225,255,.12));}
-.northern-hud-arc.arc-outer-left{width:88%;height:88%;border:5px solid rgba(69,217,247,.86);border-color:transparent transparent transparent rgba(69,217,247,.86);transform:translate(-50%,-50%) rotate(-8deg);}
-.northern-hud-arc.arc-outer-right{width:88%;height:88%;border:5px solid rgba(69,217,247,.86);border-color:transparent rgba(69,217,247,.86) transparent transparent;transform:translate(-50%,-50%) rotate(8deg);}
-.northern-hud-arc.arc-mid-left{width:62%;height:62%;border:4px solid rgba(69,217,247,.84);border-color:transparent transparent transparent rgba(69,217,247,.84);transform:translate(-50%,-50%) rotate(-12deg);}
-.northern-hud-arc.arc-mid-right{width:62%;height:62%;border:4px solid rgba(69,217,247,.84);border-color:transparent rgba(69,217,247,.84) transparent transparent;transform:translate(-50%,-50%) rotate(12deg);}
-.northern-hud-arc.arc-inner-left{width:34%;height:34%;border:4px solid rgba(69,217,247,.88);border-color:transparent transparent transparent rgba(69,217,247,.88);transform:translate(-50%,-50%) rotate(-8deg);}
-.northern-hud-arc.arc-inner-right{width:34%;height:34%;border:4px solid rgba(69,217,247,.88);border-color:transparent rgba(69,217,247,.88) transparent transparent;transform:translate(-50%,-50%) rotate(8deg);}
-.northern-hud-crosshair{background:rgba(158,238,255,.9);z-index:2;box-shadow:0 0 10px rgba(119,231,255,.18);}
-.northern-hud-crosshair.crosshair-h{width:78px;height:2px;}
-.northern-hud-crosshair.crosshair-v{width:2px;height:78px;}
-.northern-hud-core{width:26px;height:26px;border:4px solid rgba(108,230,255,.85);border-radius:50%;z-index:3;box-shadow:0 0 0 8px rgba(73,211,246,.06),0 0 16px rgba(73,211,246,.16);}
-.northern-hud-brace{width:112px;height:18px;border:3px solid rgba(83,226,255,.76);border-left-color:transparent;border-right-color:transparent;border-radius:0 0 12px 12px;z-index:2;}
-.northern-hud-brace.brace-top{top:22%;border-top:0;}
-.northern-hud-brace.brace-bottom{top:84%;border-bottom:0;border-top:3px solid rgba(83,226,255,.76);border-left-color:transparent;border-right-color:transparent;border-radius:12px 12px 0 0;}
-.northern-flight-path{position:absolute;left:50%;top:53%;width:68px;height:60%;transform:translate(-50%,-50%);z-index:4;}
-.northern-progress-line{position:absolute;left:50%;top:18%;bottom:18%;width:2px;transform:translateX(-50%);background:linear-gradient(180deg,rgba(89,226,255,.18),rgba(129,238,255,.95) 14%,rgba(129,238,255,.95) 86%,rgba(89,226,255,.18));box-shadow:0 0 8px rgba(79,216,247,.16);}
-.northern-progress-node{position:absolute;left:50%;width:14px;height:14px;border:2px solid rgba(91,224,255,.45);background:rgba(4,22,34,.96);border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 0 5px rgba(62,192,226,.04);transition:border-color .25s ease,background .25s ease,box-shadow .25s ease;}
-.northern-progress-node.node-ready{top:82%;}
-.northern-progress-node.node-authorising{top:50%;}
-.northern-progress-node.node-airborne{top:18%;}
-.northern-progress-marker{position:absolute;left:50%;top:90%;width:22px;height:22px;transform:translate(-50%,-50%);border-radius:50%;background:#effcff;border:2px solid rgba(103,230,255,.95);box-shadow:0 0 0 8px rgba(78,209,243,.08),0 0 18px rgba(103,230,255,.34);transition:top .72s cubic-bezier(.2,.76,.22,1),box-shadow .25s ease,border-color .25s ease;}
-.northern-progress-marker::before,.northern-progress-marker::after{content:"";position:absolute;left:50%;top:50%;background:rgba(44,145,179,.55);transform:translate(-50%,-50%);}
-.northern-progress-marker::before{width:2px;height:12px;}
-.northern-progress-marker::after{width:12px;height:2px;}
-.northern-panel.is-ready .northern-progress-marker{top:82%;}
-.northern-panel.is-authorising .northern-progress-marker{top:50%;}
-.northern-panel.is-authorised .northern-progress-marker,.northern-panel.is-airborne .northern-progress-marker{top:18%;}
-.northern-panel.is-ready .node-ready,.northern-panel.is-authorising .node-ready,.northern-panel.is-authorising .node-authorising,.northern-panel.is-authorised .node-ready,.northern-panel.is-authorised .node-authorising,.northern-panel.is-authorised .node-airborne,.northern-panel.is-airborne .node-ready,.northern-panel.is-airborne .node-authorising,.northern-panel.is-airborne .node-airborne{border-color:rgba(130,238,255,.9);background:rgba(134,240,255,.22);box-shadow:0 0 0 6px rgba(70,205,240,.05),0 0 13px rgba(98,230,255,.16);}
-.northern-conditions{position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 12px;}
-.northern-condition{position:relative;min-width:0;padding:11px 8px 10px;border:1px solid rgba(83,166,194,.24);border-radius:10px;background:rgba(3,23,35,.56);text-align:center;overflow:hidden;transition:border-color .28s ease,background .28s ease,box-shadow .28s ease;}
-.northern-condition span{display:block;color:#7ea9bb;font-size:9px;line-height:1.1;font-weight:800;letter-spacing:.14em;text-transform:uppercase;}
-.northern-condition strong{display:block;margin-top:8px;font-family:var(--display);font-size:18px;line-height:1;text-transform:uppercase;color:#7ea9bb;letter-spacing:.03em;transition:color .28s ease;}
-.northern-condition::after{display:none!important;content:none!important;}
-.northern-condition.ready{border-color:rgba(83,166,194,.34);background:rgba(6,29,43,.8);box-shadow:0 0 0 1px rgba(61,167,205,.06) inset;}
-.northern-condition.ready strong{color:#d6f8ff;}
-@media (max-width: 768px){
-  .northern-vector{height:clamp(290px,40dvh,380px);border-radius:18px;}
-  .northern-vector-heading{top:20px;}
-  .northern-hud-arc.arc-outer-left,.northern-hud-arc.arc-outer-right{width:92%;height:92%;border-width:4px;}
-  .northern-hud-arc.arc-mid-left,.northern-hud-arc.arc-mid-right{width:68%;height:68%;border-width:4px;}
-  .northern-hud-arc.arc-inner-left,.northern-hud-arc.arc-inner-right{width:38%;height:38%;border-width:4px;}
-  .northern-hud-brace{width:92px;height:16px;}
-  .northern-hud-crosshair.crosshair-h{width:68px;}
-  .northern-hud-crosshair.crosshair-v{height:68px;}
-  .northern-flight-path{height:58%;}
-  .northern-condition{padding:10px 6px 9px;}
-  .northern-condition span{font-size:7px;}
-  .northern-condition strong{font-size:15px;}
+/* MC03 Comms Relay guidance/status pass: live progress stays cyan; full lock resolves green. */
+.relay-progress-head{color:var(--cyan)!important;}
+.relay-progress-head span,.relay-progress-head strong{color:var(--cyan)!important;transition:color .22s ease,text-shadow .22s ease;}
+.relay-progress-track i.on{border-color:var(--cyan)!important;background:var(--cyan)!important;box-shadow:0 0 8px rgba(91,214,250,.25)!important;}
+.relay-progress-head.is-complete span,.relay-progress-head.is-complete strong{color:var(--green)!important;text-shadow:0 0 9px rgba(87,239,145,.22);}
+.relay-progress-head.is-complete + .relay-progress-track i.on,.relay-progress-track i.complete{border-color:var(--green)!important;background:var(--green)!important;box-shadow:0 0 8px rgba(87,239,145,.28)!important;}
+.comms-relay-panel .relay-instruction{display:block;margin:12px auto 0!important;padding:0 10px!important;max-width:360px;text-align:center!important;color:#a9d8e8!important;font-size:9px!important;line-height:1.45!important;letter-spacing:.025em!important;text-shadow:none!important;}
+@media(max-width:390px){.comms-relay-panel .relay-instruction{margin-top:10px!important;font-size:8.5px!important;}}
+
+/* === Mobile QA pass 2026-09-28 ========================================== */
+
+/* MC00 / System Scan: keep the scan progress readout inside the mobile viewport. */
+@media(max-width:520px){
+  .setup-page.mc00-page .mc00-card{
+    margin-top:10px!important;
+    padding:12px 12px 14px!important;
+    row-gap:7px!important;
+  }
+  .mc00-copy h1{margin-bottom:4px!important;}
+  .mc00-copy .support-copy{font-size:13px!important;line-height:17px!important;}
+  .mc00-sleigh-frame{padding:5px 7px 1px!important;}
+  .mc00-sleigh-visual{
+    min-height:126px!important;
+    height:clamp(126px,18dvh,150px)!important;
+    max-height:150px!important;
+  }
+  .mc00-sleigh-visual .sleigh-art{inset:2% 2% 4%!important;width:96%!important;height:94%!important;}
+  .mc00-system-bank{padding:0 2px!important;}
+  .mc00-system-bank.system-status-bank{row-gap:2px!important;column-gap:5px!important;}
+  .mc00-system-bank .system-status-name,.mc00-system-bank .system-status-value{min-height:18px!important;font-size:6.6px!important;}
+  .mc00-progress-row{position:relative;z-index:8;flex:0 0 auto;margin-top:1px!important;}
+  .mc00-progress{height:18px!important;min-height:18px!important;}
+}
+@media(max-width:390px) and (max-height:760px){
+  .setup-page.mc00-page .mc00-card{padding-top:9px!important;padding-bottom:10px!important;row-gap:5px!important;}
+  .mc00-sleigh-visual{min-height:108px!important;height:108px!important;}
+  .mc00-system-bank .system-status-name,.mc00-system-bank .system-status-value{min-height:16px!important;font-size:6.2px!important;}
+}
+
+/* Standard progress language: cyan while active, green only once the whole task is complete. */
+.relay-progress-head span{color:#83aebb!important;}
+.relay-progress-head strong{color:var(--cyan)!important;}
+.relay-progress-head.is-complete span{color:#83aebb!important;}
+.relay-progress-head.is-complete strong{color:var(--green)!important;text-shadow:0 0 8px rgba(87,239,145,.24);}
+.relay-progress-track i.on,.relay-progress-track i.locked{
+  border-color:var(--cyan)!important;
+  background:var(--cyan)!important;
+  box-shadow:0 0 8px rgba(83,218,255,.25)!important;
+}
+.relay-progress-head.is-complete + .relay-progress-track i.on,
+.relay-progress-head.is-complete + .relay-progress-track i.locked,
+.relay-progress-track i.complete{
+  border-color:var(--green)!important;
+  background:var(--green)!important;
+  box-shadow:0 0 8px rgba(87,239,145,.28)!important;
+}
+.comms-relay-panel .relay-instruction{display:none!important;}
+
+/* Comet Curve follows the same standard progress behaviour. */
+.comet-progress-track i.on{border-color:var(--cyan)!important;background:var(--cyan)!important;box-shadow:0 0 9px rgba(83,218,255,.26)!important;}
+.comet-panel.is-complete .comet-progress-track i.on{border-color:var(--green)!important;background:var(--green)!important;box-shadow:0 0 9px rgba(87,239,145,.28)!important;}
+.comet-panel.is-complete .comet-score strong{color:var(--green)!important;text-shadow:0 0 8px rgba(87,239,145,.22);}
+
+/* Spirit Depot: each tank owns its own charge button; progress only registers completed tanks. */
+.spirit-panel .spirit-stage-progress i{
+  --tank-rgb:76,219,255;
+  --stage-progress:0;
+  border-color:#24536a!important;
+  background:#071d2a!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.035)!important;
+}
+.spirit-panel .spirit-stage-progress i::after{
+  transform:scaleX(0)!important;
+  background:rgb(var(--tank-rgb))!important;
+  box-shadow:0 0 9px rgba(var(--tank-rgb),.36)!important;
+}
+.spirit-panel .spirit-stage-progress i.complete,
+.spirit-panel .spirit-stage-progress i.on{
+  border-color:rgb(var(--tank-rgb))!important;
+  background:rgba(var(--tank-rgb),.20)!important;
+  box-shadow:0 0 8px rgba(var(--tank-rgb),.24)!important;
+}
+.spirit-panel .spirit-stage-progress i.complete::after,
+.spirit-panel .spirit-stage-progress i.on::after{transform:scaleX(1)!important;}
+.spirit-panel .spirit-charge-controls{display:none!important;}
+.spirit-panel .spirit-tank-plate .spirit-bhp-icon{opacity:0!important;}
+.spirit-tank-power{
+  position:absolute;
+  z-index:14;
+  left:50%;top:50%;
+  width:42px;height:42px;
+  min-width:42px;min-height:42px;
+  padding:0;
+  transform:translate(-50%,-50%);
+  display:grid;place-items:center;
+  border:1px solid rgba(var(--tank-rgb),.68);
+  border-radius:11px;
+  background:radial-gradient(circle,rgba(var(--tank-rgb),.16),rgba(4,15,23,.96) 70%);
+  box-shadow:0 0 0 2px rgba(3,12,18,.72),0 0 12px rgba(var(--tank-rgb),.15),inset 0 0 10px rgba(var(--tank-rgb),.08);
+  cursor:pointer;
+  touch-action:manipulation;
+  animation:spiritTankPowerPulse 1.25s ease-in-out infinite;
+}
+.spirit-tank-power img{display:block;width:17px;height:24px;object-fit:contain;filter:drop-shadow(0 0 4px rgba(106,226,255,.42));pointer-events:none;}
+.spirit-tank-power.is-pumping{animation:spiritTankPowerTap .22s ease-out!important;}
+.spirit-tank-power:disabled{opacity:1;cursor:default;}
+.spirit-tank-power.is-full,.spirit-tank-cell.is-full .spirit-tank-power{
+  animation:none!important;
+  border-color:rgba(var(--tank-rgb),.95);
+  background:radial-gradient(circle,rgba(var(--tank-rgb),.34),rgba(var(--tank-rgb),.12) 38%,rgba(4,15,23,.96) 74%);
+  box-shadow:0 0 14px rgba(var(--tank-rgb),.34),inset 0 0 11px rgba(var(--tank-rgb),.12);
+}
+@keyframes spiritTankPowerPulse{0%,100%{filter:brightness(.86);transform:translate(-50%,-50%) scale(.96)}50%{filter:brightness(1.18);transform:translate(-50%,-50%) scale(1.045)}}
+@keyframes spiritTankPowerTap{0%{transform:translate(-50%,-50%) scale(1)}45%{transform:translate(-50%,-50%) scale(.9)}100%{transform:translate(-50%,-50%) scale(1)}}
+@media(max-width:390px){
+  .spirit-tank-power{width:38px;height:38px;min-width:38px;min-height:38px;border-radius:10px;}
+  .spirit-tank-power img{width:15px;height:22px;}
+}
+
+/* Reindeer Raceway: Silverstone Display values, no MPH collision, and a locked payoff. */
+.power-hud .power-time-hud strong,
+.power-hud .power-speed-hud strong,
+.power-hud .power-speed-hud strong b,
+.power-hud .power-propulsion-hud strong{
+  font-family:var(--display)!important;
+  font-size:clamp(15px,4.4vw,18px)!important;
+  font-weight:400!important;
+  line-height:1!important;
+  letter-spacing:.01em!important;
+}
+.power-speed-hud strong{display:inline-flex!important;align-items:baseline!important;justify-content:center!important;gap:3px!important;white-space:nowrap!important;}
+.power-speed-hud small{position:static!important;right:auto!important;top:auto!important;transform:none!important;margin:0!important;font-size:6.5px!important;line-height:1!important;}
+.power-accelerator.is-locked{
+  background:var(--green)!important;
+  border-color:var(--green)!important;
+  color:#04150e!important;
+  box-shadow:0 0 15px rgba(87,239,145,.16)!important;
+  opacity:1!important;
+  filter:none!important;
+}
+
+/* Jingle Beams: full-height mobile rink, standard progress and automatic puck countdown. */
+.jingle-lock-track i.is-charged,.jingle-lock-track i.on{
+  border-color:var(--cyan)!important;
+  background:var(--cyan)!important;
+  box-shadow:0 0 8px rgba(83,218,255,.26)!important;
+}
+.jingle-panel.is-complete .jingle-lock-track i.is-charged,
+.jingle-panel.is-complete .jingle-lock-track i.on,
+.jingle-panel.is-complete .jingle-lock-track i.complete{
+  border-color:var(--green)!important;
+  background:var(--green)!important;
+  box-shadow:0 0 8px rgba(87,239,145,.28)!important;
+}
+.jingle-panel.is-complete .jingle-progress-head strong{color:var(--green)!important;text-shadow:0 0 8px rgba(87,239,145,.22);}
+.jingle-centre-mark{width:58px!important;opacity:.88!important;}
+.jingle-puck-countdown{
+  position:absolute;z-index:3;inset:0;
+  display:grid;place-items:center;
+  font-family:var(--display);font-size:21px;line-height:1;
+  color:#03131e;text-shadow:0 1px rgba(255,255,255,.28);
+  pointer-events:none;
+}
+.jingle-puck.is-countdown{
+  width:46px!important;height:46px!important;
+  background:radial-gradient(circle at 40% 34%,#fff 0 12%,#d9fbff 23%,#7beaff 49%,#169cc5 75%,#07536e 100%)!important;
+  box-shadow:0 0 7px #fff,0 0 18px #6ce7ff,0 0 34px rgba(50,204,242,.62)!important;
+}
+.jingle-puck.is-countdown i{inset:5px!important;border-color:rgba(255,255,255,.68)!important;}
+.jingle-arena.is-counting .jingle-puck-trail{opacity:0!important;}
+@media(max-width:520px){
+  .mission-jingle .mission-content{align-content:stretch!important;}
+  .mission-jingle .jingle-panel{
+    height:100%!important;
+    min-height:0!important;
+    display:grid!important;
+    grid-template-rows:auto auto minmax(0,1fr) auto!important;
+  }
+  .mission-jingle .jingle-arena{height:auto!important;min-height:285px!important;}
+}
+@media(max-width:390px) and (max-height:720px){.mission-jingle .jingle-arena{min-height:235px!important;}}
+
+/* Lightspeed Lando: compact Display readouts and explicit completion state. */
+.lando-panel .lando-result-value{
+  position:static!important;
+  display:inline-flex!important;
+  width:auto!important;
+  min-height:0!important;
+  align-items:baseline!important;
+  justify-content:center!important;
+  gap:2px!important;
+  white-space:nowrap!important;
+}
+.lando-panel .lando-result-value b{
+  display:inline!important;
+  width:auto!important;
+  font-family:var(--display)!important;
+  font-size:15px!important;
+  font-weight:400!important;
+  line-height:1!important;
+}
+.lando-panel .lando-result-value small{
+  position:static!important;
+  right:auto!important;top:auto!important;
+  transform:none!important;
+  margin:0!important;
+  font-size:6px!important;
+  line-height:1!important;
+}
+.lando-round-head strong.is-complete{color:var(--green)!important;text-shadow:0 0 8px rgba(87,239,145,.22);}
+
+/* Aurora Apex: navigation segments stay cyan until all three locks are complete. */
+.aurora-lock-track i.locked{
+  border-color:var(--cyan)!important;
+  background:var(--cyan)!important;
+  box-shadow:0 0 8px rgba(83,218,255,.25)!important;
+}
+.aurora-panel.is-complete .aurora-lock-track i.locked{
+  border-color:var(--green)!important;
+  background:var(--green)!important;
+  box-shadow:0 0 8px rgba(87,239,145,.28)!important;
+}
+.aurora-panel.is-complete .aurora-progress-head strong{color:var(--green)!important;text-shadow:0 0 8px rgba(87,239,145,.22);}
+
+/* Lapland Launch: animated-alpha image is used instead of mobile-inconsistent WebM alpha. */
+.lapland-disco-video{display:block!important;background:transparent!important;}
+
+/* Sleigh: technical blue progress through 90%, resolving green only at 100%. */
+.sleigh-percent{color:var(--cyan)!important;}
+.sleigh-percent.is-complete{color:var(--green)!important;text-shadow:0 0 8px rgba(87,239,145,.22);}
+.sleigh-development-spectrum{
+  background:linear-gradient(90deg,#2ebde8 0%,#64ddff 58%,#7be8ff 100%)!important;
+  box-shadow:0 0 12px rgba(67,205,246,.28)!important;
+}
+.sleigh-development-bar.is-complete .sleigh-development-spectrum{
+  background:linear-gradient(90deg,#39cf78 0%,#65ef9d 58%,#8bffb8 100%)!important;
+  box-shadow:0 0 12px rgba(87,239,145,.30)!important;
+}
+.sleigh-development-marker{
+  position:absolute;z-index:4;top:50%;
+  left:clamp(4px,var(--sleigh-progress),calc(100% - 4px));
+  width:8px;height:8px;border-radius:50%;
+  transform:translate(-50%,-50%);
+  background:var(--cyan);
+  border:1px solid #dffaff;
+  box-shadow:0 0 8px rgba(83,218,255,.55);
+  pointer-events:none;
+}
+.sleigh-development-bar.is-complete .sleigh-development-marker{background:var(--green);border-color:#e9fff0;box-shadow:0 0 8px rgba(87,239,145,.58);}
+@media(max-width:520px){
+  .nav-view>.sleigh-card{margin-top:8px!important;margin-bottom:8px!important;padding:10px 10px 8px!important;}
+  .sleigh-title-row{padding-bottom:4px!important;}
+  .sleigh-development-bar{margin-bottom:6px!important;}
+  .sleigh-visual{
+    flex:0 1 150px!important;
+    min-height:118px!important;
+    height:clamp(118px,20dvh,160px)!important;
+    max-height:160px!important;
+  }
+  .sleigh-visual .sleigh-art{inset:2% 2% 4%!important;width:96%!important;height:94%!important;}
+  .sleigh-systems{margin-top:6px!important;padding:7px 8px 6px!important;}
+  .sleigh-systems .sleigh-systems-title{margin-bottom:4px!important;}
+  .sleigh-system-bank{row-gap:2px!important;column-gap:4px!important;}
+  .sleigh-systems .system-status-name,.sleigh-systems .system-status-value{min-height:18px!important;font-size:6.3px!important;}
+}
+@media(max-width:390px) and (max-height:740px){
+  .sleigh-visual{min-height:100px!important;height:110px!important;max-height:110px!important;}
+  .sleigh-systems .system-status-name,.sleigh-systems .system-status-value{min-height:16px!important;font-size:6px!important;}
+}
+
+/* Radar final state: interface chrome stays cyan; only the success copy turns green. */
+#radarMessage.complete-message{
+  border-color:rgba(91,214,250,.68)!important;
+  background:linear-gradient(180deg,rgba(6,36,50,.94),rgba(3,24,36,.97))!important;
+  box-shadow:0 0 16px rgba(68,196,236,.10),inset 0 0 18px rgba(68,196,236,.035)!important;
+}
+#radarMessage.complete-message h3{color:var(--green)!important;text-shadow:0 0 9px rgba(87,239,145,.20)!important;}
+#radarMessage.complete-message .kicker,#radarMessage.complete-message p{color:#8fb6c4!important;}
+
+/* === Mobile viewport balance pass 2026-09-28 ============================
+   Use the available mobile viewport rather than hard-capping the sleigh
+   artwork. The instrument content should comfortably fill the screen without
+   extending beneath the browser/nav chrome. */
+@media(max-width:520px){
+  /* MC00 System Diagnostics: the card owns the remaining no-nav viewport and
+     the sleigh bay expands into spare height instead of leaving dead space. */
+  .setup-page.mc00-page{
+    padding-bottom:max(10px,env(safe-area-inset-bottom,0px))!important;
+  }
+  .setup-page.mc00-page .mc00-card{
+    flex:1 1 auto!important;
+    min-height:0!important;
+    margin:10px var(--page-gutter) 12px!important;
+    padding:14px 12px 14px!important;
+    row-gap:8px!important;
+    grid-template-rows:auto minmax(148px,1fr) auto auto!important;
+    align-content:stretch!important;
+  }
+  .mc00-visual-wrap{
+    min-height:0!important;
+    height:100%!important;
+    align-items:stretch!important;
+  }
+  .mc00-sleigh-frame{
+    width:min(100%,440px)!important;
+    min-height:0!important;
+    height:100%!important;
+    padding:4px 7px 1px!important;
+  }
+  .mc00-sleigh-visual{
+    min-height:0!important;
+    height:100%!important;
+    max-height:none!important;
+  }
+  .mc00-sleigh-visual .sleigh-art{
+    inset:6% 5% 7%!important;
+    width:90%!important;
+    height:87%!important;
+  }
+  .mc00-system-bank .system-status-name,
+  .mc00-system-bank .system-status-value{
+    min-height:20px!important;
+    font-size:6.8px!important;
+  }
+  .mc00-progress{height:20px!important;min-height:20px!important;}
+
+  /* Sleigh view: preserve the fixed information hierarchy, then allow the
+     visual bay to take the rest of the card. This keeps the page full without
+     pushing the system bank beneath the bottom navigation. */
+  .nav-view>.sleigh-card{
+    margin:10px var(--page-gutter) 10px!important;
+    padding:12px 10px 10px!important;
+  }
+  .nav-view>.sleigh-card .sleigh-visual{
+    flex:1 1 0!important;
+    min-height:165px!important;
+    height:auto!important;
+    max-height:none!important;
+  }
+  .nav-view>.sleigh-card .sleigh-visual .sleigh-art{
+    inset:6% 5% 7%!important;
+    width:90%!important;
+    height:87%!important;
+  }
+  .nav-view>.sleigh-card .sleigh-systems{
+    flex:0 0 auto!important;
+    margin-top:8px!important;
+    padding:9px 9px 8px!important;
+  }
+  .nav-view>.sleigh-card .sleigh-system-bank{row-gap:3px!important;column-gap:5px!important;}
+  .nav-view>.sleigh-card .sleigh-systems .system-status-name,
+  .nav-view>.sleigh-card .sleigh-systems .system-status-value{
+    min-height:20px!important;
+    font-size:6.7px!important;
+  }
+}
+
+/* Shorter mobile viewports still use all available space, but reduce only the
+   flexible illustration bay rather than compressing every element. */
+@media(max-width:390px) and (max-height:760px){
+  .setup-page.mc00-page .mc00-card{
+    margin-top:8px!important;
+    margin-bottom:8px!important;
+    padding:11px 11px 11px!important;
+    row-gap:6px!important;
+    grid-template-rows:auto minmax(125px,1fr) auto auto!important;
+  }
+  .mc00-system-bank .system-status-name,
+  .mc00-system-bank .system-status-value{min-height:18px!important;font-size:6.4px!important;}
+
+  .nav-view>.sleigh-card .sleigh-visual{
+    min-height:130px!important;
+    height:auto!important;
+    max-height:none!important;
+  }
+  .nav-view>.sleigh-card .sleigh-systems .system-status-name,
+  .nav-view>.sleigh-card .sleigh-systems .system-status-value{
+    min-height:18px!important;
+    font-size:6.3px!important;
+  }
+}
+
+/* === Mobile polish pass 2026-09-28 =====================================
+   Prevent accidental double-tap zoom while preserving pan/pinch gestures,
+   strengthen Spirit Depot interaction feedback, smooth Jingle/Lapland mobile
+   motion, and resolve the final radar state. */
+html,body,.app-shell{touch-action:manipulation;}
+button,[role="button"],.mission-instrument{-webkit-tap-highlight-color:transparent;}
+
+/* Spirit Depot: larger power control, live pulse/glow until the tank locks. */
+.spirit-tank-power{
+  width:52px!important;height:52px!important;
+  min-width:52px!important;min-height:52px!important;
+  border-radius:13px!important;
+  animation:none!important;
+  box-shadow:0 0 0 2px rgba(3,12,18,.72),0 0 16px rgba(var(--tank-rgb),.22),inset 0 0 14px rgba(var(--tank-rgb),.11)!important;
+}
+.spirit-tank-power img{
+  width:23px!important;height:31px!important;
+  filter:drop-shadow(0 0 5px rgba(167,239,255,.55)) drop-shadow(0 0 10px rgba(var(--tank-rgb),.34))!important;
+}
+.spirit-tank-power.is-charging{
+  animation:spiritTankPowerLive 1.15s ease-in-out infinite!important;
+}
+.spirit-tank-power.is-full,.spirit-tank-cell.is-full .spirit-tank-power{
+  animation:none!important;
+  filter:brightness(1.12)!important;
+  box-shadow:0 0 0 2px rgba(3,12,18,.72),0 0 13px rgba(var(--tank-rgb),.56),0 0 26px rgba(var(--tank-rgb),.28),inset 0 0 15px rgba(var(--tank-rgb),.18)!important;
+}
+.spirit-tank-power.is-full img,.spirit-tank-cell.is-full .spirit-tank-power img{
+  filter:brightness(1.18) drop-shadow(0 0 5px rgba(255,255,255,.48)) drop-shadow(0 0 11px rgba(var(--tank-rgb),.82))!important;
+}
+@keyframes spiritTankPowerLive{
+  0%,100%{transform:translate(-50%,-50%) scale(.96);filter:brightness(.9);box-shadow:0 0 0 2px rgba(3,12,18,.72),0 0 11px rgba(var(--tank-rgb),.20),inset 0 0 12px rgba(var(--tank-rgb),.08)}
+  50%{transform:translate(-50%,-50%) scale(1.075);filter:brightness(1.25);box-shadow:0 0 0 2px rgba(3,12,18,.72),0 0 19px rgba(var(--tank-rgb),.50),0 0 31px rgba(var(--tank-rgb),.20),inset 0 0 16px rgba(var(--tank-rgb),.18)}
+}
+@media(max-width:390px){
+  .spirit-tank-power{width:48px!important;height:48px!important;min-width:48px!important;min-height:48px!important;border-radius:12px!important;}
+  .spirit-tank-power img{width:21px!important;height:29px!important;}
+}
+
+/* Jingle Beams: one centred target that gets progressively tighter. */
+.jingle-receiver{left:50%!important;transition:width .34s cubic-bezier(.22,.8,.22,1),filter .2s ease!important;}
+.jingle-receiver[data-beam="1"]{min-width:0!important;}
+.jingle-receiver[data-beam="2"]{min-width:0!important;}
+.mission-jingle .mission-content>.completion{align-self:start!important;height:auto!important;min-height:0!important;padding:22px 20px!important;}
+.mission-jingle .mission-content:has(>.completion){align-content:start!important;}
+
+/* Lapland: use a single lightweight alpha frame and let the GPU animate it. */
+.lapland-disco-video{
+  transform:translateX(-50%) rotate(0deg)!important;
+  transform-origin:50% 50%!important;
+  animation:laplandDiscoSmoothSpin 8.5s linear infinite!important;
+  will-change:transform;
+  backface-visibility:hidden;
+}
+@keyframes laplandDiscoSmoothSpin{
+  from{transform:translateX(-50%) rotate(0deg)}
+  to{transform:translateX(-50%) rotate(360deg)}
+}
+@media(prefers-reduced-motion:reduce){.lapland-disco-video{animation:none!important;}}
+
+/* Final radar: circuit confirms green, while the box remains cyan system chrome. */
+.track-radar-map.final-overview .track-radar-art{
+  background:var(--green)!important;
+  filter:drop-shadow(0 0 5px rgba(87,239,145,.28))!important;
+}
+#radarMessage.complete-message{
+  text-align:left!important;
+  align-content:center!important;
+}
+#radarMessage.complete-message .kicker{
+  color:var(--green)!important;
+  text-align:left!important;
+  text-shadow:0 0 8px rgba(87,239,145,.18)!important;
+}
+#radarMessage.complete-message h3{
+  color:#eefbff!important;
+  text-align:left!important;
+  font-size:16px!important;
+  line-height:1.12!important;
+  white-space:normal!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  text-shadow:none!important;
+}
+
+
+/* === Mobile interaction + hierarchy pass 2026-09-28 ====================
+   Rebalance sleigh/system hierarchy, endpoint iconography, robust touch
+   controls, easier Jingle targets, and ring-direct Aurora capture. */
+
+/* System Diagnostics: give the system bank more authority than the sleigh art. */
+@media(max-width:520px){
+  .setup-page.mc00-page .mc00-card{
+    grid-template-rows:auto clamp(190px,31dvh,270px) minmax(150px,1fr) auto!important;
+    row-gap:9px!important;
+  }
+  .mc00-visual-wrap,.mc00-sleigh-frame,.mc00-sleigh-visual{height:100%!important;min-height:0!important;}
+  .mc00-sleigh-frame{padding:3px 7px 2px!important;}
+  .mc00-sleigh-visual .sleigh-art{inset:9% 8% 10%!important;width:84%!important;height:81%!important;}
+  .mc00-system-bank{
+    height:100%!important;
+    align-content:space-evenly!important;
+    padding:2px 5px!important;
+  }
+  .mc00-system-bank .system-status-name,
+  .mc00-system-bank .system-status-value{
+    min-height:24px!important;
+    font-size:7.5px!important;
+    letter-spacing:.085em!important;
+  }
+  .mc00-system-bank .system-glyph{width:14px!important;height:14px!important;}
+}
+@media(max-width:390px) and (max-height:760px){
+  .setup-page.mc00-page .mc00-card{
+    grid-template-rows:auto clamp(160px,28dvh,215px) minmax(128px,1fr) auto!important;
+  }
+  .mc00-system-bank .system-status-name,
+  .mc00-system-bank .system-status-value{min-height:21px!important;font-size:7px!important;}
+}
+
+/* Sleigh page: the rebuild illustration is a component, not the whole page.
+   The systems panel expands into the remaining viewport and spaces its rows. */
+@media(max-width:520px){
+  .nav-view>.sleigh-card .sleigh-visual{
+    flex:0 0 clamp(155px,24dvh,210px)!important;
+    min-height:155px!important;
+    height:clamp(155px,24dvh,210px)!important;
+    max-height:210px!important;
+  }
+  .nav-view>.sleigh-card .sleigh-visual .sleigh-art{inset:8% 7% 9%!important;width:86%!important;height:83%!important;}
+  .nav-view>.sleigh-card .sleigh-systems{
+    flex:1 1 auto!important;
+    min-height:150px!important;
+    display:flex!important;
+    flex-direction:column!important;
+    padding:10px 10px 9px!important;
+  }
+  .nav-view>.sleigh-card .sleigh-system-bank{
+    flex:1 1 auto!important;
+    align-content:space-evenly!important;
+    row-gap:4px!important;
+  }
+  .nav-view>.sleigh-card .sleigh-systems .system-status-name,
+  .nav-view>.sleigh-card .sleigh-systems .system-status-value{
+    min-height:23px!important;
+    font-size:7.4px!important;
+    letter-spacing:.08em!important;
+  }
+}
+@media(max-width:390px) and (max-height:760px){
+  .nav-view>.sleigh-card .sleigh-visual{
+    flex-basis:135px!important;min-height:135px!important;height:135px!important;max-height:150px!important;
+  }
+  .nav-view>.sleigh-card .sleigh-systems{min-height:130px!important;}
+  .nav-view>.sleigh-card .sleigh-systems .system-status-name,
+  .nav-view>.sleigh-card .sleigh-systems .system-status-value{min-height:20px!important;font-size:6.8px!important;}
+}
+
+/* Comms Relay endpoints: approved Mission Radar icon -> Hi-Spec design icon. */
+.relay-radio-icon,.relay-receiver-icon{
+  display:grid!important;
+  place-items:center!important;
+  color:#75dcfb!important;
+  background:radial-gradient(circle,rgba(53,179,220,.16),rgba(5,28,43,.92) 67%)!important;
+}
+.relay-radio-icon::before,.relay-receiver-icon::before{
+  content:""!important;
+  position:static!important;
+  display:block!important;
+  width:49px!important;
+  height:31px!important;
+  border-radius:0!important;
+  transform:none!important;
+  background:currentColor!important;
+  box-shadow:none!important;
+  -webkit-mask-repeat:no-repeat!important;
+  mask-repeat:no-repeat!important;
+  -webkit-mask-position:center!important;
+  mask-position:center!important;
+  -webkit-mask-size:contain!important;
+  mask-size:contain!important;
+}
+.relay-radio-icon::before{-webkit-mask-image:url("./assets/radar-setup-icon.svg")!important;mask-image:url("./assets/radar-setup-icon.svg")!important;}
+.relay-receiver-icon::before{-webkit-mask-image:url("./assets/hi-spec-design.svg")!important;mask-image:url("./assets/hi-spec-design.svg")!important;}
+.relay-radio-icon::after,.relay-receiver-icon::after{content:none!important;display:none!important;}
+.relay-radio-icon i{display:none!important;}
+.relay-destination.locked .relay-receiver-icon{color:var(--green)!important;}
+@media(max-width:390px){
+  .relay-radio-icon::before,.relay-receiver-icon::before{width:44px!important;height:28px!important;}
+}
+
+/* Spirit Depot: preserve button geometry; enlarge and colour only the bolt.
+   Full tanks remain real pointer targets so repeated taps cannot fall through
+   to Safari's page-level double-tap zoom gesture. */
+.spirit-tank-power{
+  width:42px!important;height:42px!important;min-width:42px!important;min-height:42px!important;
+  border-radius:11px!important;
+  touch-action:none!important;
+  user-select:none!important;
+  -webkit-user-select:none!important;
+  -webkit-touch-callout:none!important;
+}
+.spirit-power-bolt{
+  display:block;
+  width:25px;
+  height:34px;
+  background:var(--tank-color);
+  -webkit-mask:url("./assets/system-power.svg") center/contain no-repeat;
+  mask:url("./assets/system-power.svg") center/contain no-repeat;
+  filter:drop-shadow(0 0 4px rgba(var(--tank-rgb),.72)) drop-shadow(0 0 9px rgba(var(--tank-rgb),.38));
+  pointer-events:none;
+  transition:filter .15s ease,transform .15s ease;
+}
+.spirit-tank-power.is-charging .spirit-power-bolt{
+  animation:spiritBoltLive 1.05s ease-in-out infinite;
+}
+.spirit-tank-power.is-full .spirit-power-bolt,
+.spirit-tank-cell.is-full .spirit-power-bolt{
+  animation:none!important;
+  transform:scale(1.06);
+  filter:brightness(1.28) drop-shadow(0 0 5px rgba(255,255,255,.55)) drop-shadow(0 0 11px rgba(var(--tank-rgb),.96)) drop-shadow(0 0 20px rgba(var(--tank-rgb),.46));
+}
+@keyframes spiritBoltLive{
+  0%,100%{transform:scale(.92);filter:brightness(.88) drop-shadow(0 0 4px rgba(var(--tank-rgb),.52)) drop-shadow(0 0 8px rgba(var(--tank-rgb),.28));}
+  50%{transform:scale(1.12);filter:brightness(1.38) drop-shadow(0 0 6px rgba(255,255,255,.40)) drop-shadow(0 0 13px rgba(var(--tank-rgb),.94)) drop-shadow(0 0 21px rgba(var(--tank-rgb),.38));}
+}
+@media(max-width:390px){
+  .spirit-tank-power{width:38px!important;height:38px!important;min-width:38px!important;min-height:38px!important;border-radius:10px!important;}
+  .spirit-power-bolt{width:23px;height:31px;}
+}
+
+/* Keep the tank chassis completely stable: only the coloured bolt breathes. */
+.spirit-tank-power.is-charging,.spirit-tank-power.is-pumping{animation:none!important;}
+
+/* Reserve sponsor-logo height as well as preloading the image to prevent header shift. */
+.raceway-sponsor{min-height:34px;}
+.raceway-sponsor img{aspect-ratio:1350/386;}
+
+/* All standard Mission Complete cards: one touch must always continue. */
+.completion .btn{touch-action:none!important;-webkit-tap-highlight-color:transparent!important;}
+
+/* Jingle Beams: the three centred goals step down from generous to playable,
+   with Beam 03 approximately the size of the former Beam 01 target. */
+.jingle-receiver{max-width:none!important;min-width:0!important;}
+.jingle-receiver[data-beam="1"]{width:clamp(180px,58%,220px)!important;}
+.jingle-receiver[data-beam="2"]{width:clamp(150px,47%,185px)!important;}
+.jingle-receiver[data-beam="3"]{width:clamp(124px,36%,142px)!important;}
+
+/* Aurora Apex: remove the separate capture button. The highlighted active ring
+   is the touch target, leaving more vertical room for the celestial instrument. */
+.aurora-capture-btn{display:none!important;}
+.aurora-ring{
+  border:0!important;
+  padding:0!important;
+  background:transparent!important;
+  appearance:none!important;
+  -webkit-appearance:none!important;
+  pointer-events:none!important;
+}
+.aurora-ring.active{
+  pointer-events:auto!important;
+  cursor:pointer!important;
+  touch-action:manipulation!important;
+  -webkit-tap-highlight-color:transparent!important;
+}
+.aurora-ring:focus-visible{outline:2px solid rgba(116,231,255,.82)!important;outline-offset:3px!important;}
+@media(max-width:520px){
+  .aurora-panel{padding:11px 10px 12px!important;}
+  .aurora-dial{width:min(100%,40dvh,355px)!important;margin-top:2px!important;margin-bottom:2px!important;}
+  .aurora-progress-head{margin-bottom:7px!important;}
+  .aurora-lock-track{margin-bottom:8px!important;}
+}
+@media(max-width:390px) and (max-height:720px){
+  .aurora-dial{width:min(100%,36dvh,300px)!important;}
+}
+
+
+/* === Mobile QA pass 2026-09-28 — balance, controls, audio priority ===== */
+
+/* MC00 + Sleigh: settle between image-dominant and status-dominant layouts. */
+@media(max-width:520px){
+  .setup-page.mc00-page .mc00-card{
+    grid-template-rows:auto clamp(210px,35dvh,285px) auto auto!important;
+    row-gap:8px!important;
+  }
+  .mc00-system-bank{
+    height:auto!important;
+    align-content:start!important;
+    padding:1px 5px!important;
+    row-gap:4px!important;
+  }
+  .mc00-system-bank .system-status-name,
+  .mc00-system-bank .system-status-value{
+    min-height:21px!important;
+    font-size:7px!important;
+    letter-spacing:.08em!important;
+  }
+  .mc00-sleigh-visual .sleigh-art{
+    inset:7% 6% 8%!important;
+    width:88%!important;
+    height:85%!important;
+  }
+
+  .nav-view>.sleigh-card .sleigh-visual{
+    flex:0 0 clamp(180px,28dvh,235px)!important;
+    min-height:180px!important;
+    height:clamp(180px,28dvh,235px)!important;
+    max-height:235px!important;
+  }
+  .nav-view>.sleigh-card .sleigh-visual .sleigh-art{
+    inset:7% 6% 8%!important;
+    width:88%!important;
+    height:85%!important;
+  }
+  .nav-view>.sleigh-card .sleigh-systems{
+    flex:0 0 auto!important;
+    min-height:0!important;
+    padding:9px 9px 8px!important;
+  }
+  .nav-view>.sleigh-card .sleigh-system-bank{
+    flex:0 0 auto!important;
+    align-content:start!important;
+    row-gap:3px!important;
+  }
+  .nav-view>.sleigh-card .sleigh-systems .system-status-name,
+  .nav-view>.sleigh-card .sleigh-systems .system-status-value{
+    min-height:20px!important;
+    font-size:6.8px!important;
+  }
+}
+@media(max-width:390px) and (max-height:760px){
+  .setup-page.mc00-page .mc00-card{
+    grid-template-rows:auto clamp(180px,32dvh,230px) auto auto!important;
+  }
+  .mc00-system-bank .system-status-name,
+  .mc00-system-bank .system-status-value{min-height:19px!important;font-size:6.6px!important;}
+  .nav-view>.sleigh-card .sleigh-visual{
+    flex-basis:155px!important;min-height:155px!important;height:155px!important;max-height:175px!important;
+  }
+  .nav-view>.sleigh-card .sleigh-systems .system-status-name,
+  .nav-view>.sleigh-card .sleigh-systems .system-status-value{min-height:18px!important;font-size:6.4px!important;}
+}
+
+/* Comms Relay: render real SVG assets rather than CSS masks. */
+.relay-radio-icon::before,.relay-receiver-icon::before,
+.relay-radio-icon::after,.relay-receiver-icon::after{display:none!important;content:none!important;}
+.relay-radio-icon img,.relay-receiver-icon img{
+  display:block!important;
+  width:54px!important;
+  height:38px!important;
+  object-fit:contain!important;
+  filter:drop-shadow(0 0 7px rgba(117,220,251,.30));
+  pointer-events:none;
+}
+.relay-destination.locked .relay-receiver-icon img{
+  filter:hue-rotate(82deg) saturate(1.18) brightness(1.08) drop-shadow(0 0 8px rgba(87,239,145,.42));
+}
+@media(max-width:390px){
+  .relay-radio-icon img,.relay-receiver-icon img{width:48px!important;height:34px!important;}
+}
+
+/* Spirit Depot: the bolt itself is the visual cue; the control chassis stays fixed. */
+.spirit-power-bolt{
+  display:grid!important;
+  place-items:center!important;
+  width:29px!important;
+  height:37px!important;
+  background:none!important;
+  -webkit-mask:none!important;
+  mask:none!important;
+  color:var(--tank-color)!important;
+  filter:none!important;
+}
+.spirit-power-bolt svg{display:block;width:100%;height:100%;overflow:visible;}
+.spirit-power-bolt path{fill:currentColor!important;}
+.spirit-tank-power.is-charging .spirit-power-bolt{
+  animation:spiritBoltLiveSvg 1.02s ease-in-out infinite!important;
+}
+.spirit-tank-power.is-full .spirit-power-bolt,
+.spirit-tank-cell.is-full .spirit-power-bolt{
+  animation:none!important;
+  transform:scale(1.07)!important;
+  filter:brightness(1.34) drop-shadow(0 0 5px rgba(255,255,255,.52)) drop-shadow(0 0 12px rgba(var(--tank-rgb),.98)) drop-shadow(0 0 20px rgba(var(--tank-rgb),.52))!important;
+}
+@keyframes spiritBoltLiveSvg{
+  0%,100%{transform:scale(.92);filter:brightness(.92) drop-shadow(0 0 5px rgba(var(--tank-rgb),.55)) drop-shadow(0 0 10px rgba(var(--tank-rgb),.25));}
+  50%{transform:scale(1.14);filter:brightness(1.44) drop-shadow(0 0 5px rgba(255,255,255,.45)) drop-shadow(0 0 14px rgba(var(--tank-rgb),.98)) drop-shadow(0 0 23px rgba(var(--tank-rgb),.42));}
+}
+.spirit-tank-power{touch-action:manipulation!important;}
+button,[role="button"]{touch-action:manipulation;}
+@media(max-width:390px){
+  .spirit-power-bolt{width:27px!important;height:35px!important;}
+}
+
+/* Jingle Beams: user-started puck, then 3-2-1 inside the same outer ring. */
+.jingle-puck{
+  border:0!important;
+  padding:0!important;
+  appearance:none!important;
+  -webkit-appearance:none!important;
+}
+.jingle-puck.is-ready,.jingle-puck.is-countdown{
+  width:64px!important;
+  height:64px!important;
+  background:radial-gradient(circle at 42% 38%,#f7feff 0 20%,#d8fbff 48%,#77e8ff 72%,#38b9dd 100%)!important;
+  box-shadow:0 0 8px rgba(255,255,255,.75),0 0 20px rgba(108,231,255,.72),0 0 34px rgba(50,204,242,.42)!important;
+}
+.jingle-puck.is-ready{pointer-events:auto!important;cursor:pointer!important;}
+.jingle-puck.is-ready>i{display:none!important;}
+.jingle-play-icon{
+  display:none;
+  position:absolute;
+  inset:5px;
+  width:54px;
+  height:54px;
+  object-fit:contain;
+  pointer-events:none;
+}
+.jingle-puck.is-ready .jingle-play-icon{display:block;}
+.jingle-puck.is-countdown .jingle-play-icon{display:none!important;}
+.jingle-puck.is-countdown>i{
+  display:block!important;
+  inset:6px!important;
+  border:3px solid #120531!important;
+  box-shadow:none!important;
+}
+.jingle-puck-countdown{
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  font-family:var(--display);
+  font-size:29px;
+  line-height:1;
+  color:#120531;
+  letter-spacing:0;
+  text-shadow:none;
+}
+.jingle-puck:not(.is-countdown) .jingle-puck-countdown{display:none;}
+.jingle-arena.is-awaiting-start .jingle-drag-prompt{opacity:0!important;pointer-events:none!important;}
+.jingle-receiver[data-beam="1"]{width:clamp(240px,78%,300px)!important;}
+.jingle-receiver[data-beam="2"]{width:clamp(210px,68%,260px)!important;}
+.jingle-receiver[data-beam="3"]{width:clamp(180px,58%,220px)!important;}
+
+/* Aurora Apex: give the ring instrument the mobile canvas it needs. */
+@media(max-width:520px){
+  .aurora-panel{padding:10px 8px 10px!important;}
+  .aurora-dial{width:min(100%,46dvh,390px)!important;margin:1px auto!important;}
+  .aurora-progress-head{margin-bottom:5px!important;}
+  .aurora-lock-track{margin-bottom:5px!important;}
+}
+@media(max-width:390px) and (max-height:720px){
+  .aurora-dial{width:min(100%,41dvh,330px)!important;}
+}
+
+/* Lapland Launch: system verification progress. */
+.lapland-online-progress{position:relative;z-index:2;margin:2px 0 9px;}
+.lapland-online-head{
+  display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+  margin-bottom:7px;
+  color:#74dfff;
+  text-transform:uppercase;
+  letter-spacing:.14em;
+  font-size:8px;
+  font-weight:800;
+}
+.lapland-online-head strong{font-family:var(--display);font-size:15px;letter-spacing:.05em;color:#69dfff;}
+.lapland-online-head strong.complete{color:var(--green);text-shadow:0 0 9px rgba(87,239,145,.25);}
+.lapland-online-track{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:3px;}
+.lapland-online-track i{
+  display:block;height:7px;border:1px solid rgba(79,190,225,.48);border-radius:4px;background:rgba(5,30,43,.72);
+  box-shadow:inset 0 0 6px rgba(59,190,225,.06);
+}
+.lapland-online-track i.on{
+  border-color:#65dfff;background:#58d7fa;box-shadow:0 0 6px rgba(88,215,250,.30);
+}
+.lapland-online-track i.complete{
+  border-color:#6bf0a0;background:var(--green);box-shadow:0 0 6px rgba(87,239,145,.34);
+}
+@media(max-width:390px){
+  .lapland-online-track{gap:2px;}
+  .lapland-online-track i{height:6px;}
+  .lapland-online-head{font-size:7px;margin-bottom:6px;}
+  .lapland-online-head strong{font-size:14px;}
+  .lapland-panel .lapland-system-bank{margin-top:3px!important;}
+}
+
+/* Lapland disco: predecoded 8x8 alpha sprite, 8 fps, GPU-friendly on iOS. */
+.lapland-disco-video{
+  display:block!important;
+  background-image:url("./assets/disco-ball-sprite.webp")!important;
+  background-repeat:no-repeat!important;
+  background-size:800% 800%!important;
+  background-position:0% 0%;
+  transform:translateX(-50%)!important;
+  transform-origin:50% 50%!important;
+  animation:laplandDiscoSprite 8s steps(1,end) infinite!important;
+  will-change:background-position;
+  backface-visibility:hidden;
+}
+@keyframes laplandDiscoSprite{
+  0.0000%{background-position:0.0000% 0.0000%}
+  1.5625%{background-position:14.2857% 0.0000%}
+  3.1250%{background-position:28.5714% 0.0000%}
+  4.6875%{background-position:42.8571% 0.0000%}
+  6.2500%{background-position:57.1429% 0.0000%}
+  7.8125%{background-position:71.4286% 0.0000%}
+  9.3750%{background-position:85.7143% 0.0000%}
+  10.9375%{background-position:100.0000% 0.0000%}
+  12.5000%{background-position:0.0000% 14.2857%}
+  14.0625%{background-position:14.2857% 14.2857%}
+  15.6250%{background-position:28.5714% 14.2857%}
+  17.1875%{background-position:42.8571% 14.2857%}
+  18.7500%{background-position:57.1429% 14.2857%}
+  20.3125%{background-position:71.4286% 14.2857%}
+  21.8750%{background-position:85.7143% 14.2857%}
+  23.4375%{background-position:100.0000% 14.2857%}
+  25.0000%{background-position:0.0000% 28.5714%}
+  26.5625%{background-position:14.2857% 28.5714%}
+  28.1250%{background-position:28.5714% 28.5714%}
+  29.6875%{background-position:42.8571% 28.5714%}
+  31.2500%{background-position:57.1429% 28.5714%}
+  32.8125%{background-position:71.4286% 28.5714%}
+  34.3750%{background-position:85.7143% 28.5714%}
+  35.9375%{background-position:100.0000% 28.5714%}
+  37.5000%{background-position:0.0000% 42.8571%}
+  39.0625%{background-position:14.2857% 42.8571%}
+  40.6250%{background-position:28.5714% 42.8571%}
+  42.1875%{background-position:42.8571% 42.8571%}
+  43.7500%{background-position:57.1429% 42.8571%}
+  45.3125%{background-position:71.4286% 42.8571%}
+  46.8750%{background-position:85.7143% 42.8571%}
+  48.4375%{background-position:100.0000% 42.8571%}
+  50.0000%{background-position:0.0000% 57.1429%}
+  51.5625%{background-position:14.2857% 57.1429%}
+  53.1250%{background-position:28.5714% 57.1429%}
+  54.6875%{background-position:42.8571% 57.1429%}
+  56.2500%{background-position:57.1429% 57.1429%}
+  57.8125%{background-position:71.4286% 57.1429%}
+  59.3750%{background-position:85.7143% 57.1429%}
+  60.9375%{background-position:100.0000% 57.1429%}
+  62.5000%{background-position:0.0000% 71.4286%}
+  64.0625%{background-position:14.2857% 71.4286%}
+  65.6250%{background-position:28.5714% 71.4286%}
+  67.1875%{background-position:42.8571% 71.4286%}
+  68.7500%{background-position:57.1429% 71.4286%}
+  70.3125%{background-position:71.4286% 71.4286%}
+  71.8750%{background-position:85.7143% 71.4286%}
+  73.4375%{background-position:100.0000% 71.4286%}
+  75.0000%{background-position:0.0000% 85.7143%}
+  76.5625%{background-position:14.2857% 85.7143%}
+  78.1250%{background-position:28.5714% 85.7143%}
+  79.6875%{background-position:42.8571% 85.7143%}
+  81.2500%{background-position:57.1429% 85.7143%}
+  82.8125%{background-position:71.4286% 85.7143%}
+  84.3750%{background-position:85.7143% 85.7143%}
+  85.9375%{background-position:100.0000% 85.7143%}
+  87.5000%{background-position:0.0000% 100.0000%}
+  89.0625%{background-position:14.2857% 100.0000%}
+  90.6250%{background-position:28.5714% 100.0000%}
+  92.1875%{background-position:42.8571% 100.0000%}
+  93.7500%{background-position:57.1429% 100.0000%}
+  95.3125%{background-position:71.4286% 100.0000%}
+  96.8750%{background-position:85.7143% 100.0000%}
+  98.4375%{background-position:100.0000% 100.0000%}
+  100%{background-position:0% 0%}
+}
+@media(prefers-reduced-motion:reduce){.lapland-disco-video{animation:none!important;background-position:0% 0%!important;}}
+
+/* Northern Flight: shared button type scale and no undersized authorisation copy. */
+.northern-authorise-btn .northern-authorise-label{
+  font-family:var(--text)!important;
+  font-size:inherit!important;
+  font-weight:900!important;
+  letter-spacing:.08em!important;
+}
+@media(max-width:390px){.northern-authorise-label{font-size:inherit!important;}}
+
+/* Final radar: completed circuit remains Mission Control cyan; success is in copy. */
+.track-radar-map.final-overview .track-radar-art{
+  background:var(--cyan)!important;
+  filter:drop-shadow(0 0 5px rgba(83,218,255,.30))!important;
+}
+#radarMessage.complete-message h3{text-transform:uppercase!important;}
+
+
+
+/* === Mobile correction pass 2026-09-28 — endpoint masking, touch, puck, Lapland === */
+
+/* Comms Relay: connector geometry stays behind an opaque endpoint instrument face. */
+.relay-radio-icon,.relay-receiver-icon{
+  background:#061d2a!important;
+  box-shadow:0 0 0 7px #061d2a,inset 0 0 18px rgba(67,201,243,.10),0 0 16px rgba(37,152,194,.08)!important;
+  overflow:hidden!important;
+}
+.relay-radio-icon img,.relay-receiver-icon img{position:relative;z-index:2;}
+.relay-destination.locked .relay-receiver-icon{
+  border-color:rgba(87,239,145,.82)!important;
+  box-shadow:0 0 0 7px #061d2a,0 0 18px rgba(87,239,145,.16),inset 0 0 18px rgba(87,239,145,.08)!important;
+}
+.relay-destination.locked .relay-receiver-icon img{
+  filter:drop-shadow(0 0 8px rgba(87,239,145,.48))!important;
+}
+
+/* Power Pulse: this is a tap-only field; do not let Safari pan or double-tap zoom it. */
+.artifact-field,.artifact-field .artifact-layer,.starstream-signature{
+  touch-action:none!important;
+  -webkit-user-select:none!important;
+  user-select:none!important;
+  -webkit-touch-callout:none!important;
+  overscroll-behavior:contain;
+}
+
+/* Spirit Depot: the chassis remains unchanged; the bolt sits comfortably inside it. */
+.spirit-tank-power{touch-action:none!important;}
+.spirit-power-bolt{width:19px!important;height:26px!important;}
+.spirit-tank-power.is-full .spirit-power-bolt,.spirit-tank-cell.is-full .spirit-power-bolt{transform:scale(1.05)!important;}
+@media(max-width:390px){.spirit-power-bolt{width:18px!important;height:25px!important;}}
+
+/* Reindeer Raceway completion uses the canonical Mission Control success green. */
+.power-hud #powerOutput.is-complete{
+  color:var(--green)!important;
+  text-shadow:0 0 8px rgba(87,239,145,.24)!important;
+}
+
+/* Jingle Beams: one stable puck size from PLAY through countdown and live game. */
+.jingle-puck{
+  width:64px!important;
+  height:64px!important;
+  min-width:64px!important;
+  min-height:64px!important;
+}
+.jingle-puck.is-ready,.jingle-puck.is-countdown{
+  width:64px!important;height:64px!important;
+}
+.jingle-play-icon{
+  width:54px!important;height:54px!important;inset:5px!important;
+  opacity:1!important;
+  filter:none!important;
+}
+.jingle-puck.is-countdown>i{
+  display:block!important;
+  inset:5px!important;
+  border:3px solid #120531!important;
+  border-radius:50%!important;
+  box-shadow:none!important;
+}
+.jingle-puck-countdown{
+  color:#120531!important;
+  font-size:29px!important;
+  font-weight:900!important;
+  text-shadow:none!important;
+}
+
+/* Lapland Launch: ten restored systems, ten indicators. */
+.lapland-online-track{grid-template-columns:repeat(10,minmax(0,1fr))!important;gap:4px!important;}
+@media(max-width:390px){.lapland-online-track{gap:3px!important;}}
+
+/* Lapland disco: visible, clipped alpha sprite with a real frame-by-frame loop. */
+.lapland-disco-video{
+  display:block!important;
+  opacity:1!important;
+  visibility:visible!important;
+  overflow:hidden!important;
+  border-radius:50%!important;
+  background-color:transparent!important;
+  background-image:url("./assets/disco-ball-sprite.webp")!important;
+  background-repeat:no-repeat!important;
+  background-size:800% 500%!important;
+  background-position:0% 0%!important;
+  transform:translateX(-50%)!important;
+  animation:laplandDiscoSprite40 8s steps(1,end) infinite!important;
+  will-change:background-position!important;
+}
+@keyframes laplandDiscoSprite40{
+  0%{background-position:0% 0%}
+  2.5%{background-position:14.2857% 0%}
+  5%{background-position:28.5714% 0%}
+  7.5%{background-position:42.8571% 0%}
+  10%{background-position:57.1429% 0%}
+  12.5%{background-position:71.4286% 0%}
+  15%{background-position:85.7143% 0%}
+  17.5%{background-position:100% 0%}
+  20%{background-position:0% 25%}
+  22.5%{background-position:14.2857% 25%}
+  25%{background-position:28.5714% 25%}
+  27.5%{background-position:42.8571% 25%}
+  30%{background-position:57.1429% 25%}
+  32.5%{background-position:71.4286% 25%}
+  35%{background-position:85.7143% 25%}
+  37.5%{background-position:100% 25%}
+  40%{background-position:0% 50%}
+  42.5%{background-position:14.2857% 50%}
+  45%{background-position:28.5714% 50%}
+  47.5%{background-position:42.8571% 50%}
+  50%{background-position:57.1429% 50%}
+  52.5%{background-position:71.4286% 50%}
+  55%{background-position:85.7143% 50%}
+  57.5%{background-position:100% 50%}
+  60%{background-position:0% 75%}
+  62.5%{background-position:14.2857% 75%}
+  65%{background-position:28.5714% 75%}
+  67.5%{background-position:42.8571% 75%}
+  70%{background-position:57.1429% 75%}
+  72.5%{background-position:71.4286% 75%}
+  75%{background-position:85.7143% 75%}
+  77.5%{background-position:100% 75%}
+  80%{background-position:0% 100%}
+  82.5%{background-position:14.2857% 100%}
+  85%{background-position:28.5714% 100%}
+  87.5%{background-position:42.8571% 100%}
+  90%{background-position:57.1429% 100%}
+  92.5%{background-position:71.4286% 100%}
+  95%{background-position:85.7143% 100%}
+  97.5%{background-position:100% 100%}
+  100%{background-position:0% 0%}
+}
+@media(prefers-reduced-motion:reduce){.lapland-disco-video{animation:none!important;background-position:0% 0%!important;}}
+
+
+/* === Mobile correction: Lapland transmission, Spirit bolt alignment, Jingle puck === */
+/* Spirit Depot: keep the bolt fully inside the existing square and optically centre it. */
+.spirit-power-bolt svg{
+  transform:translateY(-1.5px)!important;
+  transform-origin:50% 50%!important;
+}
+
+/* Jingle Beams: one sensible puck size for PLAY, countdown and live gameplay. */
+.jingle-puck,
+.jingle-puck.is-ready,
+.jingle-puck.is-countdown{
+  width:46px!important;
+  height:46px!important;
+  min-width:46px!important;
+  min-height:46px!important;
+}
+.jingle-play-icon{
+  display:none;
+  position:absolute!important;
+  left:50%!important;
+  top:50%!important;
+  width:72px!important;
+  height:auto!important;
+  max-width:none!important;
+  inset:auto!important;
+  transform:translate(-50%,-50%)!important;
+  object-fit:contain!important;
+  opacity:1!important;
+  filter:none!important;
+  pointer-events:none!important;
+}
+.jingle-puck.is-ready .jingle-play-icon{display:block!important;}
+.jingle-puck.is-countdown .jingle-play-icon{display:none!important;}
+.jingle-puck.is-countdown>i{
+  inset:4px!important;
+  border-width:2px!important;
+}
+.jingle-puck-countdown{
+  font-size:18px!important;
+  font-weight:800!important;
+  line-height:1!important;
+}
+
+/* Lapland Launch: the disco is painted by JS from the sprite sheet. */
+.lapland-disco-video{
+  display:block!important;
+  opacity:1!important;
+  visibility:visible!important;
+  background:none!important;
+  animation:none!important;
+  overflow:visible!important;
+  border-radius:0!important;
+  transform:translateX(-50%)!important;
+  filter:drop-shadow(0 0 10px rgba(231,247,255,.32)) drop-shadow(0 0 30px rgba(183,74,255,.20))!important;
+}
+
+
+/* === Mobile correction: Power Pulse SFX + Jingle puck scale/alignment === */
+/* PLAY/countdown keeps the readable 46px puck; live gameplay uses a smaller 30px puck. */
+.jingle-puck.is-ready,
+.jingle-puck.is-countdown{
+  width:46px!important;
+  height:46px!important;
+  min-width:46px!important;
+  min-height:46px!important;
+}
+.jingle-arena.is-live .jingle-puck:not(.is-ready):not(.is-countdown){
+  width:30px!important;
+  height:30px!important;
+  min-width:30px!important;
+  min-height:30px!important;
+  box-shadow:0 0 5px #fff,0 0 12px #6ce7ff,0 0 22px rgba(50,204,242,.56)!important;
+}
+.jingle-play-icon{
+  display:none;
+  position:absolute!important;
+  left:50%!important;
+  top:50%!important;
+  width:36px!important;
+  height:36px!important;
+  max-width:none!important;
+  inset:auto!important;
+  transform:translate(-50%,-50%)!important;
+  object-fit:contain!important;
+  object-position:50% 50%!important;
+  opacity:1!important;
+  filter:none!important;
+  pointer-events:none!important;
+}
+.jingle-puck.is-ready .jingle-play-icon{display:block!important;}
+.jingle-puck.is-countdown .jingle-play-icon{display:none!important;}
+.jingle-puck-countdown{font-size:18px!important;}
+
+/* === Jingle Beams: hard-centre the play glyph inside the puck ===
+   Use the supplied SVG as part of the puck's own background so it cannot
+   drift as a separately positioned child on mobile Safari. */
+.jingle-puck.is-ready{
+  width:46px!important;
+  height:46px!important;
+  min-width:46px!important;
+  min-height:46px!important;
+  background-image:url("../assets/video-play.svg"),radial-gradient(circle at 42% 38%,#f7feff 0 20%,#d8fbff 48%,#77e8ff 72%,#38b9dd 100%)!important;
+  background-repeat:no-repeat,no-repeat!important;
+  background-position:50% 50%,50% 50%!important;
+  background-size:34px 34px,100% 100%!important;
+}
+.jingle-puck.is-ready .jingle-play-icon{display:none!important;}
+.jingle-puck.is-countdown{
+  width:46px!important;
+  height:46px!important;
+  min-width:46px!important;
+  min-height:46px!important;
+  background-image:radial-gradient(circle at 42% 38%,#f7feff 0 20%,#d8fbff 48%,#77e8ff 72%,#38b9dd 100%)!important;
+}
+.jingle-puck.is-countdown>i{
+  display:block!important;
+  inset:6px!important;
+  border:2px solid #120531!important;
+  border-radius:50%!important;
+  box-shadow:none!important;
+}
+.jingle-puck-countdown{
+  font-size:16px!important;
+  font-weight:800!important;
+}
+.jingle-arena.is-live .jingle-puck:not(.is-ready):not(.is-countdown){
+  width:30px!important;
+  height:30px!important;
+  min-width:30px!important;
+  min-height:30px!important;
+  background-image:radial-gradient(circle at 42% 38%,#fff 0 15%,#d7fbff 24%,#78eaff 46%,#169cc5 74%,#075f7d 100%)!important;
+}
+
+
+/* === Amend pass 2026-09-30: Circuit Link hierarchy, Power Pulse glow, Jingle goals, Northern HUD === */
+/* 1. Circuit Link: status/control strip above the circuit; transfer progress anchors the bottom. */
+.mc01-readout-top{order:0;}
+.mc01-track-stage{order:1;}
+.mc01-transfer-bottom{order:2;padding:2px 2px 0;}
+.mc01-transfer-bottom .mc01-transfer-meta{margin-bottom:1px;}
+
+/* 2. Power Pulse: flatter warm signatures get a stronger luminous halo without changing size. */
+.starstream-signature.emotion-signature.energy-pink,
+.starstream-signature.emotion-signature.energy-purple,
+.starstream-signature.emotion-signature.energy-red{
+  filter:saturate(1.16) brightness(1.08)!important;
+  box-shadow:
+    0 0 12px rgba(255,255,255,.18),
+    0 0 18px rgba(var(--emotion-rgb),.54),
+    0 0 38px rgba(var(--emotion-rgb),.34),
+    0 0 66px rgba(var(--emotion-rgb),.18),
+    inset 0 0 15px rgba(var(--emotion-rgb),.17)!important;
+}
+.starstream-signature.emotion-signature.energy-pink::before,
+.starstream-signature.emotion-signature.energy-purple::before,
+.starstream-signature.emotion-signature.energy-red::before{
+  box-shadow:
+    0 0 7px rgba(255,255,255,.32),
+    0 0 17px rgba(var(--emotion-rgb),.66),
+    0 0 31px rgba(var(--emotion-rgb),.30),
+    inset 0 0 13px rgba(255,255,255,.12)!important;
+}
+.starstream-signature.emotion-signature.energy-pink .power-pulse-energy-icon,
+.starstream-signature.emotion-signature.energy-purple .power-pulse-energy-icon,
+.starstream-signature.emotion-signature.energy-red .power-pulse-energy-icon{
+  filter:
+    drop-shadow(0 0 2px rgba(255,255,255,1))
+    drop-shadow(0 0 7px rgba(255,255,255,.42))
+    drop-shadow(0 0 14px rgba(var(--emotion-rgb),.78))
+    drop-shadow(0 0 25px rgba(var(--emotion-rgb),.42))!important;
+}
+
+/* 3. Jingle Beams: playable targets, still progressively tighter. The white mouth line spans the usable goal opening. */
+.jingle-receiver[data-beam="1"]{width:clamp(184px,62%,232px)!important;}
+.jingle-receiver[data-beam="2"]{width:clamp(158px,53%,202px)!important;}
+.jingle-receiver[data-beam="3"]{width:clamp(136px,45%,174px)!important;}
+.jingle-receiver>span{
+  width:calc(100% - 38px)!important;
+  max-width:none!important;
+}
+@media(max-width:390px){
+  .jingle-receiver[data-beam="1"]{width:62%!important;min-width:174px!important;max-width:222px!important;}
+  .jingle-receiver[data-beam="2"]{width:53%!important;min-width:150px!important;max-width:194px!important;}
+  .jingle-receiver[data-beam="3"]{width:45%!important;min-width:130px!important;max-width:166px!important;}
+}
+
+/* 4. Northern Flight: richer cyan flight-HUD / target-lock display inspired by the supplied reference. */
+.northern-panel{
+  background:
+    radial-gradient(circle at 50% 42%,rgba(38,189,233,.12),transparent 38%),
+    linear-gradient(180deg,rgba(5,31,47,.98),rgba(2,19,31,.99))!important;
+}
+.northern-vector{
+  height:clamp(240px,38dvh,330px)!important;
+  margin:8px 0 11px!important;
+  border:1px solid rgba(77,199,235,.22)!important;
+  border-radius:14px!important;
+  overflow:hidden!important;
+  background:
+    radial-gradient(circle at 12% 18%,rgba(132,242,255,.72) 0 1px,transparent 1.8px),
+    radial-gradient(circle at 78% 14%,rgba(105,228,255,.58) 0 1px,transparent 1.7px),
+    radial-gradient(circle at 64% 28%,rgba(137,242,255,.52) 0 1px,transparent 1.6px),
+    radial-gradient(circle at 31% 35%,rgba(94,219,250,.56) 0 1px,transparent 1.7px),
+    radial-gradient(circle at 87% 47%,rgba(137,242,255,.45) 0 1px,transparent 1.5px),
+    radial-gradient(circle at 18% 58%,rgba(117,233,255,.50) 0 1px,transparent 1.6px),
+    radial-gradient(circle at 72% 67%,rgba(116,231,255,.52) 0 1px,transparent 1.6px),
+    radial-gradient(circle at 42% 82%,rgba(124,238,255,.46) 0 1px,transparent 1.6px),
+    radial-gradient(circle at 91% 86%,rgba(91,213,246,.44) 0 1px,transparent 1.5px),
+    radial-gradient(circle at 50% 49%,rgba(16,126,165,.13),transparent 48%),
+    linear-gradient(180deg,#031321 0%,#041927 50%,#02111d 100%)!important;
+  box-shadow:inset 0 0 44px rgba(40,167,209,.08),0 0 22px rgba(15,101,135,.05)!important;
+}
+.northern-vector::before,
+.northern-vector::after{
+  content:""!important;
+  position:absolute!important;
+  z-index:1!important;
+  top:50%!important;
+  width:31%!important;
+  height:78%!important;
+  transform:translateY(-50%)!important;
+  background:transparent!important;
+  border:3px solid rgba(54,225,247,.76)!important;
+  filter:drop-shadow(0 0 7px rgba(44,215,243,.38))!important;
+  opacity:.9!important;
+}
+.northern-vector::before{left:-24%!important;border-right:0!important;border-radius:55% 0 0 55%!important;}
+.northern-vector::after{right:-24%!important;border-left:0!important;border-radius:0 55% 55% 0!important;}
+.northern-hud-stars{position:absolute;z-index:0;inset:0;pointer-events:none;opacity:.66;}
+.northern-hud-stars::before,
+.northern-hud-stars::after{
+  content:"";position:absolute;width:2px;height:2px;border-radius:50%;background:#8cefff;
+  box-shadow:36px 22px 0 rgba(118,236,255,.45),78px 48px 0 rgba(99,223,251,.7),126px 17px 0 rgba(116,232,255,.4),168px 66px 0 rgba(125,237,255,.62),221px 28px 0 rgba(102,221,250,.6),262px 78px 0 rgba(115,232,255,.38),305px 38px 0 rgba(132,242,255,.62),342px 96px 0 rgba(89,210,243,.48),18px 116px 0 rgba(111,230,255,.42),62px 154px 0 rgba(129,240,255,.64),115px 132px 0 rgba(92,215,247,.42),151px 181px 0 rgba(124,238,255,.52),205px 145px 0 rgba(126,239,255,.42),249px 196px 0 rgba(105,224,252,.62),294px 158px 0 rgba(121,235,255,.44),332px 212px 0 rgba(96,217,247,.58);
+  filter:drop-shadow(0 0 3px rgba(82,218,249,.65));
+}
+.northern-hud-stars::before{left:4px;top:7px;}
+.northern-hud-stars::after{right:14px;bottom:18px;transform:rotate(176deg) scale(.82);opacity:.62;}
+.northern-hud-ring{
+  position:absolute;z-index:2;left:50%;top:47%;aspect-ratio:1;border-radius:50%;transform:translate(-50%,-50%);
+  background:conic-gradient(from -8deg,transparent 0 24deg,rgba(42,226,248,.95) 25deg 76deg,transparent 77deg 103deg,rgba(42,226,248,.68) 104deg 145deg,transparent 146deg 214deg,rgba(42,226,248,.86) 215deg 257deg,transparent 258deg 283deg,rgba(42,226,248,.68) 284deg 336deg,transparent 337deg 360deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 5px),#000 calc(100% - 4px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 5px),#000 calc(100% - 4px));
+  filter:drop-shadow(0 0 6px rgba(44,220,245,.46));opacity:.9;pointer-events:none;
+}
+.northern-hud-ring-outer{width:min(78%,270px);animation:northernHudSpin 18s linear infinite;}
+.northern-hud-ring-mid{width:min(55%,190px);transform:translate(-50%,-50%) rotate(24deg);opacity:.72;animation:northernHudSpinReverse 14s linear infinite;}
+.northern-hud-ring-inner{width:min(34%,116px);transform:translate(-50%,-50%) rotate(-18deg);opacity:.84;animation:northernHudSpin 10s linear infinite;}
+.northern-hud-crosshair{position:absolute;z-index:4;left:50%;top:47%;width:80px;height:80px;transform:translate(-50%,-50%);pointer-events:none;}
+.northern-hud-crosshair::before,
+.northern-hud-crosshair::after{content:"";position:absolute;left:50%;top:50%;background:rgba(111,230,255,.74);box-shadow:0 0 6px rgba(81,220,250,.28);transform:translate(-50%,-50%);}
+.northern-hud-crosshair::before{width:78px;height:1px;}
+.northern-hud-crosshair::after{width:1px;height:78px;}
+.northern-hud-crosshair i{position:absolute;left:50%;top:50%;width:27px;height:27px;border:2px solid rgba(96,229,249,.88);border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 10px rgba(68,220,244,.32);}
+.northern-hud-crosshair b{position:absolute;left:50%;top:50%;width:7px;height:7px;border-radius:50%;transform:translate(-50%,-50%);background:#bdf7ff;box-shadow:0 0 9px #56e3f8;}
+.northern-hud-bracket{position:absolute;z-index:3;left:50%;width:128px;height:24px;transform:translateX(-50%);border-left:1px solid rgba(69,220,245,.72);border-right:1px solid rgba(69,220,245,.72);pointer-events:none;}
+.northern-hud-bracket::before{content:"";position:absolute;left:12px;right:12px;height:1px;background:linear-gradient(90deg,rgba(69,220,245,.7),transparent 16%,transparent 84%,rgba(69,220,245,.7));}
+.northern-hud-bracket-top{top:13px;border-top:1px solid rgba(69,220,245,.55);clip-path:polygon(10% 0,90% 0,100% 100%,0 100%);}
+.northern-hud-bracket-top::before{top:8px;}
+.northern-hud-bracket-bottom{bottom:26px;border-bottom:1px solid rgba(69,220,245,.55);clip-path:polygon(0 0,100% 0,90% 100%,10% 100%);}
+.northern-hud-bracket-bottom::before{bottom:8px;}
+.northern-hud-bracket i{position:relative;display:inline-block;width:8px;height:4px;margin:9px 2px 0;background:rgba(44,224,246,.8);box-shadow:0 0 5px rgba(44,224,246,.35);}
+.northern-vector-axis,.northern-vector-tick{display:none!important;}
+.northern-vector-node{left:50%!important;top:47%!important;width:36px!important;height:36px!important;z-index:5!important;border-color:rgba(93,230,250,.58)!important;box-shadow:0 0 0 8px rgba(52,204,235,.045),0 0 18px rgba(66,219,244,.15)!important;}
+.northern-vector-node b{inset:12px!important;background:#dffbff!important;box-shadow:0 0 11px rgba(109,232,252,.72)!important;}
+.northern-vector-readout{z-index:6!important;left:50%!important;top:auto!important;bottom:8px!important;transform:translateX(-50%)!important;text-align:center!important;gap:1px!important;}
+.northern-vector-readout span{font-size:6.5px!important;letter-spacing:.18em!important;color:#69cce5!important;}
+.northern-vector-readout strong{font-size:12px!important;letter-spacing:.08em!important;color:#a9eefa!important;}
+.northern-panel.is-ready .northern-vector-node,
+.northern-panel.is-authorising .northern-vector-node,
+.northern-panel.is-authorised .northern-vector-node{top:47%!important;}
+.northern-panel.is-ready .northern-vector-readout,
+.northern-panel.is-authorising .northern-vector-readout,
+.northern-panel.is-authorised .northern-vector-readout{top:auto!important;}
+.northern-panel.is-ready .northern-hud-ring{filter:drop-shadow(0 0 8px rgba(65,232,248,.58)) brightness(1.14);}
+.northern-panel.is-authorising .northern-hud-ring{animation-duration:3.5s;filter:drop-shadow(0 0 10px rgba(83,230,250,.7)) brightness(1.24);}
+.northern-panel.is-authorised .northern-hud-ring{background:conic-gradient(from -8deg,transparent 0 24deg,rgba(87,239,145,.98) 25deg 76deg,transparent 77deg 103deg,rgba(87,239,145,.72) 104deg 145deg,transparent 146deg 214deg,rgba(87,239,145,.9) 215deg 257deg,transparent 258deg 283deg,rgba(87,239,145,.72) 284deg 336deg,transparent 337deg 360deg);filter:drop-shadow(0 0 9px rgba(87,239,145,.48));}
+@keyframes northernHudSpin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes northernHudSpinReverse{to{transform:translate(-50%,-50%) rotate(-336deg)}}
+@media(max-width:390px){
+  .northern-vector{height:clamp(220px,35dvh,292px)!important;}
+  .northern-hud-ring-outer{width:min(82%,244px);}
+  .northern-hud-ring-mid{width:min(58%,174px);}
+  .northern-hud-ring-inner{width:min(36%,108px);}
+}
+@media(prefers-reduced-motion:reduce){.northern-hud-ring{animation:none!important;}}
+
+/* Pass 7.39.04 — Northern Flight hierarchy test: HUD first, flight checks below. */
+.northern-panel{
+  display:flex;
+  flex-direction:column;
+}
+.northern-vector{order:1;}
+.northern-conditions{
+  order:2;
+  margin:0 0 10px!important;
+  gap:6px!important;
+}
+.northern-authorise-btn{order:3;}
+.northern-panel > .visually-hidden{order:4;}
+
+/* Keep pre-flight status in the cyan/navy system language; green is a small confirmation accent only. */
+.northern-condition{
+  border-color:rgba(86,211,244,.24)!important;
+  background:rgba(3,23,35,.66)!important;
+  box-shadow:inset 0 0 0 1px rgba(65,171,207,.025)!important;
+}
+.northern-condition span{
+  color:#78aebe!important;
+}
+.northern-condition strong{
+  color:#8daebb!important;
+}
+.northern-condition.ready{
+  border-color:rgba(83,213,246,.48)!important;
+  background:linear-gradient(180deg,rgba(8,48,66,.78),rgba(4,31,46,.76))!important;
+  box-shadow:inset 0 0 18px rgba(41,179,220,.045),0 0 10px rgba(54,194,230,.035)!important;
+  transform:none!important;
+}
+.northern-condition.ready strong{
+  color:#9eeaff!important;
+  text-shadow:0 0 9px rgba(85,220,249,.18);
+}
+.northern-condition.ready::after{
+  content:"";
+  position:absolute;
+  top:8px;
+  right:8px;
+  width:5px;
+  height:5px;
+  border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 7px rgba(87,239,145,.48);
+}
+@media(max-width:390px){
+  .northern-conditions{margin:0 0 9px!important;gap:5px!important;}
+  .northern-condition.ready::after{top:6px;right:6px;width:4px;height:4px;}
 }
 
 

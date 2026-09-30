@@ -1140,24 +1140,100 @@
       </section>
     </div>`;
   }
-  function northernBody(){return `<div class="mission-instrument panel northern-panel" id="northernPanel">
+  function northernBody(){return `<div class="mission-instrument panel northern-panel northern-hud-panel" id="northernPanel">
+      <div class="northern-santa-label" aria-hidden="true"><i></i><span>SANTA-1</span><i></i></div>
+      <div class="northern-hud-window" aria-hidden="true">
+        <svg class="northern-hud-svg" viewBox="0 0 1000 650" preserveAspectRatio="xMidYMid meet" role="presentation">
+          <defs>
+            <radialGradient id="nfHudBg" cx="50%" cy="48%" r="66%">
+              <stop offset="0" stop-color="#0a3146" stop-opacity=".48"/>
+              <stop offset=".52" stop-color="#061f31" stop-opacity=".18"/>
+              <stop offset="1" stop-color="#020d17" stop-opacity="0"/>
+            </radialGradient>
+            <filter id="nfSoftGlow" x="-60%" y="-60%" width="220%" height="220%">
+              <feGaussianBlur stdDeviation="6" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <filter id="nfCoreGlow" x="-80%" y="-80%" width="260%" height="260%">
+              <feGaussianBlur stdDeviation="10" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+
+          <rect width="1000" height="650" fill="url(#nfHudBg)"/>
+
+          <g class="nf-stars" fill="#b8f4ff">
+            <circle cx="74" cy="88" r="2.2" opacity=".72"/><circle cx="122" cy="170" r="1.4" opacity=".45"/><circle cx="180" cy="108" r="1.8" opacity=".62"/>
+            <circle cx="238" cy="202" r="1.6" opacity=".5"/><circle cx="294" cy="76" r="1.2" opacity=".55"/><circle cx="350" cy="144" r="2" opacity=".72"/>
+            <circle cx="420" cy="94" r="1.3" opacity=".45"/><circle cx="470" cy="188" r="1.5" opacity=".58"/><circle cx="560" cy="112" r="1.5" opacity=".5"/>
+            <circle cx="642" cy="76" r="1.8" opacity=".68"/><circle cx="704" cy="170" r="1.2" opacity=".48"/><circle cx="770" cy="108" r="2" opacity=".66"/>
+            <circle cx="834" cy="196" r="1.5" opacity=".5"/><circle cx="906" cy="92" r="1.8" opacity=".68"/><circle cx="942" cy="228" r="1.3" opacity=".46"/>
+            <circle cx="96" cy="334" r="1.5" opacity=".5"/><circle cx="154" cy="444" r="2" opacity=".68"/><circle cx="220" cy="352" r="1.3" opacity=".48"/>
+            <circle cx="284" cy="528" r="1.8" opacity=".58"/><circle cx="344" cy="418" r="1.4" opacity=".48"/><circle cx="400" cy="566" r="2" opacity=".7"/>
+            <circle cx="606" cy="548" r="1.5" opacity=".52"/><circle cx="668" cy="438" r="1.4" opacity=".46"/><circle cx="724" cy="568" r="2" opacity=".68"/>
+            <circle cx="790" cy="420" r="1.3" opacity=".52"/><circle cx="848" cy="522" r="1.8" opacity=".62"/><circle cx="912" cy="390" r="1.5" opacity=".5"/>
+            <circle cx="952" cy="548" r="2.1" opacity=".7"/>
+          </g>
+
+          <g class="nf-hud-static" fill="none" stroke="#58ddfb" stroke-linecap="round" stroke-linejoin="round">
+            <circle class="nf-faint-ring nf-ring-drift-a" cx="500" cy="325" r="246" opacity=".14" stroke-width="1.4"/>
+            <circle class="nf-faint-ring nf-ring-drift-b" cx="500" cy="325" r="184" opacity=".12" stroke-width="1.3" stroke-dasharray="3 12"/>
+            <circle class="nf-dotted-ring nf-ring-drift-a" cx="500" cy="325" r="138" opacity=".78" stroke-width="2" stroke-dasharray="2 11"/>
+
+            <path class="nf-outer-arc" d="M178 112 A350 350 0 0 0 178 538" stroke-width="5" opacity=".92"/>
+            <path class="nf-outer-arc" d="M822 112 A350 350 0 0 1 822 538" stroke-width="5" opacity=".92"/>
+            <path d="M250 166 A270 270 0 0 0 250 484" stroke-width="3" opacity=".68"/>
+            <path d="M750 166 A270 270 0 0 1 750 484" stroke-width="3" opacity=".68"/>
+
+            <path class="nf-mid-arc" d="M320 188 A205 205 0 0 0 320 462" stroke-width="10" opacity=".95" filter="url(#nfSoftGlow)"/>
+            <path class="nf-mid-arc" d="M680 188 A205 205 0 0 1 680 462" stroke-width="10" opacity=".95" filter="url(#nfSoftGlow)"/>
+            <path d="M395 248 A114 114 0 0 0 395 402" stroke-width="5" opacity=".9"/>
+            <path d="M605 248 A114 114 0 0 1 605 402" stroke-width="5" opacity=".9"/>
+
+            <path d="M402 92 L430 120 H570 L598 92" stroke-width="3" opacity=".82"/>
+            <path d="M402 558 L430 530 H570 L598 558" stroke-width="3" opacity=".82"/>
+            <path d="M443 111 H557" stroke-width="6" stroke-dasharray="7 9" opacity=".76"/>
+            <path d="M443 539 H557" stroke-width="6" stroke-dasharray="7 9" opacity=".76"/>
+
+            <path d="M56 325 H258" stroke-width="2" opacity=".56"/><path d="M742 325 H944" stroke-width="2" opacity=".56"/>
+            <path d="M500 66 V150" stroke-width="2" opacity=".58"/><path d="M500 500 V584" stroke-width="2" opacity=".58"/>
+            <path d="M348 325 l-20 -14 v28 z" stroke-width="3" opacity=".9"/>
+            <path d="M652 325 l20 -14 v28 z" stroke-width="3" opacity=".9"/>
+
+            <g class="nf-side-ticks" opacity=".72" stroke-width="3">
+              <path d="M214 218 h18"/><path d="M202 240 h15"/><path d="M194 264 h13"/><path d="M188 290 h12"/>
+              <path d="M188 360 h12"/><path d="M194 386 h13"/><path d="M202 410 h15"/><path d="M214 432 h18"/>
+              <path d="M786 218 h-18"/><path d="M798 240 h-15"/><path d="M806 264 h-13"/><path d="M812 290 h-12"/>
+              <path d="M812 360 h-12"/><path d="M806 386 h-13"/><path d="M798 410 h-15"/><path d="M786 432 h-18"/>
+            </g>
+          </g>
+
+          <g class="nf-reticle" fill="none" stroke="#9becff" stroke-linecap="round">
+            <path d="M430 325 H570" stroke-width="2.5" opacity=".9"/>
+            <path d="M500 255 V395" stroke-width="2.5" opacity=".9"/>
+            <circle cx="500" cy="325" r="31" stroke="#5eddf9" stroke-width="4" opacity=".78" filter="url(#nfSoftGlow)"/>
+            <circle cx="500" cy="325" r="17" stroke="#9becff" stroke-width="3" opacity=".88"/>
+          </g>
+
+          <g class="nf-flight-progress">
+            <line class="nf-progress-line-svg" x1="500" y1="445" x2="500" y2="205" stroke="#70e6ff" stroke-width="3" opacity=".62"/>
+            <circle class="nf-progress-node-svg nf-node-ready" cx="500" cy="445" r="11"/>
+            <circle class="nf-progress-node-svg nf-node-authorising" cx="500" cy="325" r="11"/>
+            <circle class="nf-progress-node-svg nf-node-airborne" cx="500" cy="205" r="11"/>
+            <g class="nf-progress-marker-anchor" transform="translate(500 445)">
+              <g class="nf-progress-marker-svg">
+                <circle class="nf-marker-halo" r="31" fill="#57dffb" opacity=".10"/>
+                <circle class="nf-marker-ring" r="22" fill="#071b2b" stroke="#77e9ff" stroke-width="4" filter="url(#nfCoreGlow)"/>
+                <circle class="nf-marker-core" r="10" fill="#e9fbff"/>
+              </g>
+            </g>
+          </g>
+        </svg>
+      </div>
       <div class="northern-conditions" aria-label="Final flight conditions">
         <div class="northern-condition" data-flight-check="0"><span>Flight Path</span><strong>Checking</strong></div>
         <div class="northern-condition" data-flight-check="1"><span>Airspace</span><strong>Checking</strong></div>
         <div class="northern-condition" data-flight-check="2"><span>Launch Window</span><strong>Checking</strong></div>
-      </div>
-      <div class="northern-vector" aria-hidden="true">
-        <div class="northern-hud-stars"></div>
-        <i class="northern-hud-ring northern-hud-ring-outer"></i>
-        <i class="northern-hud-ring northern-hud-ring-mid"></i>
-        <i class="northern-hud-ring northern-hud-ring-inner"></i>
-        <div class="northern-hud-bracket northern-hud-bracket-top"><i></i><i></i><i></i><i></i><i></i><i></i></div>
-        <div class="northern-hud-bracket northern-hud-bracket-bottom"><i></i><i></i><i></i><i></i><i></i><i></i></div>
-        <div class="northern-hud-crosshair"><i></i><b></b></div>
-        <i class="northern-vector-axis"></i>
-        <i class="northern-vector-tick tick-a"></i><i class="northern-vector-tick tick-b"></i><i class="northern-vector-tick tick-c"></i>
-        <span class="northern-vector-node"><b></b></span>
-        <div class="northern-vector-readout"><span>Santa-1</span><strong id="northernState">Standby</strong></div>
       </div>
       <button class="btn primary wide northern-authorise-btn" id="authoriseFlight" disabled>
         <span class="northern-authorise-label">Authorise Flight</span>
@@ -4830,9 +4906,8 @@
     const button=document.getElementById('authoriseFlight');
     const label=button?.querySelector('.northern-authorise-label');
     const hint=document.getElementById('northernHint');
-    const stateEl=document.getElementById('northernState');
     const checks=[...document.querySelectorAll('[data-flight-check]')];
-    if(!panel||!button||!label||!hint||!stateEl||checks.length!==3)return;
+    if(!panel||!button||!label||!hint||checks.length!==3)return;
 
     stopNorthernSequence();
     cleanupMission=stopNorthernSequence;
@@ -4841,8 +4916,7 @@
     label.textContent='Authorise Flight';
     button.disabled=true;
     button.classList.remove('success','is-authorising','is-authorised');
-    panel.classList.remove('is-ready','is-authorising','is-authorised');
-    stateEl.textContent='Standby';
+    panel.classList.remove('is-ready','is-authorising','is-authorised','is-airborne');
 
     const checkValues=['Locked','Clear','Open'];
     checks.forEach((check,i)=>{
@@ -4857,7 +4931,6 @@
     northernLater(()=>{
       button.disabled=false;
       panel.classList.add('is-ready');
-      stateEl.textContent='Ready';
       hint.textContent='Santa-1 ready for final authorisation.';
       haptic(18);
     },1850);
@@ -4869,9 +4942,9 @@
       primeNorthernFinalAudio();
       button.disabled=true;
       button.classList.add('is-authorising');
+      panel.classList.remove('is-ready');
       panel.classList.add('is-authorising');
       label.textContent='Authorising';
-      stateEl.textContent='Authorising';
       hint.textContent='Final flight authorisation in progress.';
       ping(690,.08,.025);haptic(22);
 
@@ -4881,9 +4954,9 @@
         button.classList.add('success','is-authorised');
         panel.classList.add('is-authorised');
         label.textContent='Authorised';
-        stateEl.textContent='Authorised';
         hint.textContent='Santa-1 cleared for departure.';
         ping(920,.16,.05);haptic([30,30,85]);
+        northernLater(()=>panel.classList.add('is-airborne'),220);
         northernLater(showNorthernAirborneTakeover,620);
       },720);
     });

@@ -655,7 +655,7 @@
     if(state.messageAlert&&unreadCount()>0){
       return `<div class="mission-card message-card panel comms-alert" id="radarMessage"><div class="comms-alert-copy"><div class="kicker">Mission Control</div><h3>New Message</h3></div><div class="comms-alert-actions"><button class="linkbtn comms-action" data-read-messages>Read</button><button class="linkbtn comms-action" data-dismiss-messages>Dismiss</button></div></div>`;
     }
-    if(!cp) return `<div class="mission-card message-card panel complete-message compact-message" id="radarMessage"><div><h3>Mission Complete</h3></div></div>`;
+    if(!cp) return `<div class="mission-card message-card panel complete-message compact-message" id="radarMessage"><div><div class="kicker">Mission Complete</div><h3>MEET SANTA AT HIS GROTTO</h3></div></div>`;
     const activationGap=distanceToActivation(cp,state.distance);
     const acquired=state.targetVisible&&Number.isFinite(activationGap)&&activationGap<=60;
     if(cp.type==='activation'){
@@ -782,7 +782,7 @@
       systemStatusEntry('core',state.completed.includes('spirit')?'Online':'Offline',state.completed.includes('spirit')?'online':'offline'),
       systemStatusEntry('navigation',state.completed.includes('aurora')?'Online':'Offline',state.completed.includes('aurora')?'online':'offline')
     ];
-    return `<div class="sleigh-card panel"><div class="sleigh-title-row"><div><div class="kicker sleigh-pretitle">Sleigh Rebuild</div><h1>Santa-1</h1></div><strong class="sleigh-percent">${r}%</strong></div><div class="sleigh-development-bar" role="progressbar" aria-label="Santa-1 rebuild progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${r}"><div class="sleigh-development-spectrum" aria-hidden="true"></div><div class="sleigh-development-mask" style="left:${r}%" aria-hidden="true"></div></div><div class="sleigh-visual sleigh-stage-${stage}"><div class="sleigh-glow" aria-hidden="true"></div><img class="sleigh-art" src="${info.asset}" alt="Santa-1 ${postStatus.name} rebuild stage"></div><div class="sleigh-systems panel soft"><div class="kicker sleigh-systems-title">System Status</div>${systemStatusBank(systems,'sleigh-system-bank')}</div></div>`;
+    return `<div class="sleigh-card panel"><div class="sleigh-title-row"><div><div class="kicker sleigh-pretitle">Sleigh Rebuild</div><h1>Santa-1</h1></div><strong class="sleigh-percent ${r>=100?'is-complete':''}">${r}%</strong></div><div class="sleigh-development-bar ${r>=100?'is-complete':''}" style="--sleigh-progress:${r}%" role="progressbar" aria-label="Santa-1 rebuild progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${r}"><div class="sleigh-development-spectrum" aria-hidden="true"></div><div class="sleigh-development-mask" style="left:${r}%" aria-hidden="true"></div><i class="sleigh-development-marker" aria-hidden="true"></i></div><div class="sleigh-visual sleigh-stage-${stage}"><div class="sleigh-glow" aria-hidden="true"></div><img class="sleigh-art" src="${info.asset}" alt="Santa-1 ${postStatus.name} rebuild stage"></div><div class="sleigh-systems panel soft"><div class="kicker sleigh-systems-title">System Status</div>${systemStatusBank(systems,'sleigh-system-bank')}</div></div>`;
   }
 
   function systemStatusBank(systems,extraClass='',dataPrefix=''){
@@ -831,7 +831,7 @@
       return `<div class="mission-head spirit-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><div class="spirit-sponsor"><img src="./assets/care-bears-logo.png?v=7.38.44" alt="Care Bears"></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
     }
     if(cp.type==='power'&&cp.id==='escapade'){
-      return `<div class="mission-head raceway-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><div class="raceway-sponsor"><img src="./assets/escapade-logo.png?v=1" alt="Escapade"></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
+      return `<div class="mission-head raceway-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><div class="raceway-sponsor"><img src="./assets/escapade-logo.png?v=1" alt="Escapade" width="1350" height="386" fetchpriority="high"></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
     }
     if(cp.type==='lapland'){
       return `<div class="mission-head lapland-head"><div class="meta"><div class="kicker">${label}</div><button class="linkbtn" data-exit-mission>Exit Mission</button></div><div class="lapland-sponsor"><img src="./assets/las-vegas-logo-white.svg" alt="Las Vegas"></div><h1>${cp.name}</h1><p class="support-copy">${missionInstruction(cp.type)}</p></div>`;
@@ -842,7 +842,7 @@
     return ({
       activation:'You have now entered the live circuit zone.',
       diagnostics:'Capture the racing data needed to rebuild Santa-1.',
-      radio:'Tune the receiver to 87.7 and establish a link with ELF FM.',
+      radio:'Tune the receiver to 87.7 Elf FM.',
       commsrelay:'Establish communications with Santa-1.',
       power:'Test Santa-1’s propulsion system.',
       spirit:'Store the positive energy.',
@@ -884,9 +884,10 @@
     const node=geoToCircuitPoint(cp?.lat,cp?.lng)||{x:88.88,y:31.11};
     const nodeX=node.x.toFixed(2),nodeY=node.y.toFixed(2);
     return `<div class="mission-instrument panel mc01-panel" id="mc01Activation" data-stage="detected">
-      <div class="mc01-transfer" aria-label="Circuit Link energy transfer progress">
-        <div class="mc01-transfer-meta"><span>Energy Transfer</span><strong id="mc01TransferValue">0%</strong></div>
-        <div class="mc01-transfer-track"><i id="mc01TransferFill"></i></div>
+      <div class="mc01-readout mc01-readout-top">
+        <span class="mc01-bolt" aria-hidden="true"><img src="./assets/system-power.svg" alt=""></span>
+        <div class="mc01-readout-copy"><span id="mc01StateLabel">Circuit Link</span><strong id="mc01State">Signal Detected</strong></div>
+        <div class="mc01-signal-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
       </div>
       <div class="mc01-track-stage" aria-hidden="true">
         <div class="mc01-track-shadow"></div>
@@ -898,10 +899,9 @@
           <circle class="mc01-energy-node" cx="${nodeX}" cy="${nodeY}" r="3.5"></circle>
         </svg>
       </div>
-      <div class="mc01-readout">
-        <span class="mc01-bolt" aria-hidden="true"><img src="./assets/system-power.svg" alt=""></span>
-        <div class="mc01-readout-copy"><span id="mc01StateLabel">Circuit Link</span><strong id="mc01State">Signal Detected</strong></div>
-        <div class="mc01-signal-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <div class="mc01-transfer mc01-transfer-bottom" aria-label="Circuit Link energy transfer progress">
+        <div class="mc01-transfer-meta"><span>Energy Transfer</span><strong id="mc01TransferValue">0%</strong></div>
+        <div class="mc01-transfer-track"><i id="mc01TransferFill"></i></div>
       </div>
     </div>`;
   }
@@ -932,9 +932,9 @@
           <line class="relay-hop-line" data-hop="4" x1="25" y1="125" x2="75" y2="125"></line>
         </svg>
         ${Array.from({length:5},(_,i)=>`<span class="relay-carrier-packet" data-carrier="${i}" aria-hidden="true"></span>`).join('')}
-        <div class="relay-cell relay-endpoint relay-origin"><span class="relay-radio-icon"><i></i><i></i><i></i></span><small>TRANSMITTER</small></div>
+        <div class="relay-cell relay-endpoint relay-origin"><span class="relay-radio-icon"><img src="./assets/relay-transmitter-icon.svg" alt="" aria-hidden="true"></span><small>TRANSMITTER</small></div>
         ${[0,1,2,3].map(i=>`<div class="relay-cell relay-capture"><button class="relay-node ${i===0?'active':''}" data-relay="${i}" aria-label="Relay ${i+1}"><span class="relay-target"></span><span class="relay-pulse"></span><span class="relay-core">0${i+1}</span></button><small>RELAY 0${i+1}</small></div>`).join('')}
-        <div class="relay-cell relay-endpoint relay-destination"><span class="relay-receiver-icon"></span><small>RECEIVER</small></div>
+        <div class="relay-cell relay-endpoint relay-destination"><span class="relay-receiver-icon"><img src="./assets/relay-receiver-hi-spec.svg" alt="" aria-hidden="true"></span><small>RECEIVER</small></div>
       </div>
       <div class="visually-hidden" id="relayState" aria-live="polite">Relay 01 armed</div>
     </div>`;
@@ -967,7 +967,7 @@
         <div class="power-max-hold"><span>SPEED LOCK</span><div><i id="powerMaxFill"></i></div><strong id="powerMaxState">STANDBY</strong></div>
       </div>
       <div class="visually-hidden" id="powerState" aria-live="polite">Ready</div>
-      <button class="btn primary wide power-accelerator" id="powerAccelerator">Hold to Accelerate</button>
+      <button class="btn primary wide power-accelerator" id="powerAccelerator">ACCELERATE</button>
     </div>`;
   }
   function spiritBody(){
@@ -981,28 +981,24 @@
       {side:'right',index:2,key:'white',rgb:'247,250,255',color:'#f7faff',name:'White energy'},
       {side:'right',index:3,key:'orange',rgb:'255,122,28',color:'#ff7a1c',name:'Orange energy'}
     ];
-    const progressDefs=['blue','orange','red','white','green','pink','purple','yellow'].map(key=>tankDefs.find(t=>t.key===key));
     const bhpIcon=`<svg class="spirit-bhp-icon" viewBox="66 0 66 126" focusable="false" aria-hidden="true"><path d="M83.34,125.93,98.42,75.57h-32L127.44,0,112.37,50.35h32ZM79,69.55H106.5L97.88,98.34l33.88-42H104.29l8.62-28.78Z"></path></svg>`;
-    const tankCells=side=>tankDefs.filter(tank=>tank.side===side).map(tank=>`<div class="spirit-tank-cell spirit-tank-${tank.key}" data-spirit-tank="${tank.side}-${tank.index}" data-spirit-color="${tank.key}" style="--tank-rgb:${tank.rgb};--tank-color:${tank.color};" aria-label="${tank.name} storage tank">
+    const tankCells=side=>tankDefs.filter(tank=>tank.side===side).map(tank=>`<div class="spirit-tank-cell spirit-tank-${tank.key}" data-spirit-tank="${tank.side}-${tank.index}" data-spirit-color="${tank.key}" data-spirit-rgb="${tank.rgb}" data-spirit-hex="${tank.color}" style="--tank-rgb:${tank.rgb};--tank-color:${tank.color};" aria-label="${tank.name} storage tank">
       <span class="spirit-tank-energy"></span>
       <span class="spirit-tank-shimmer"></span>
       <span class="spirit-tank-grid" aria-hidden="true"></span>
       <span class="spirit-tank-plate" aria-hidden="true"><span class="spirit-tank-plate-face">${bhpIcon}</span></span>
       <span class="spirit-tank-vent" aria-hidden="true"><i></i><i></i><i></i></span>
+      <button type="button" class="spirit-tank-power" data-spirit-charge="${tank.side}-${tank.index}" aria-label="Charge ${tank.name} tank"><span class="spirit-power-bolt" aria-hidden="true"><svg viewBox="66 0 78 126" focusable="false"><path d="M83.34,125.93,98.42,75.57h-32L127.44,0,112.37,50.35h32ZM79,69.55H106.5L97.88,98.34l33.88-42H104.29l8.62-28.78Z"></path></svg></span></button>
     </div>`).join('');
-    const stageDots=progressDefs.map((tank,i)=>`<i data-spirit-stage-dot="${i}" data-spirit-progress-color="${tank.key}" style="--tank-rgb:${tank.rgb};--tank-color:${tank.color};"></i>`).join('');
+    const stageDots=Array.from({length:8},(_,i)=>`<i data-spirit-stage-dot="${i}"></i>`).join('');
     return `<div class="mission-instrument panel spirit-panel" id="spiritRig" data-stage="0">
-      <div class="spirit-score"><span>CORE CHARGE</span><strong><b id="spiritStageNumber">00</b> / 08</strong></div>
+      <div class="spirit-score"><span>CORE CHARGE</span><strong><b id="spiritStageNumber">0</b> / 8</strong></div>
       <div class="spirit-stage-progress" id="spiritStageProgress" aria-hidden="true">${stageDots}</div>
       <div class="spirit-apparatus" aria-label="Spirit energy storage tanks">
         <div class="spirit-meter spirit-meter-left" aria-hidden="true"><span class="spirit-meter-fill"></span><b class="spirit-meter-marker"></b></div>
         <div class="spirit-bank spirit-bank-left"><div class="spirit-tank-stack">${tankCells('left')}</div></div>
         <div class="spirit-bank spirit-bank-right"><div class="spirit-tank-stack">${tankCells('right')}</div></div>
         <div class="spirit-meter spirit-meter-right" aria-hidden="true"><span class="spirit-meter-fill"></span><b class="spirit-meter-marker"></b></div>
-      </div>
-      <div class="spirit-charge-controls" aria-label="Storage tank charging controls">
-        <button class="spirit-charge-btn is-next" data-charge="A" aria-label="Charge left tank bank"><strong>TAP</strong></button>
-        <button class="spirit-charge-btn" data-charge="B" aria-label="Charge right tank bank"><strong></strong></button>
       </div>
     </div>`;
   }
@@ -1046,14 +1042,14 @@
     return `<div class="mission-instrument panel jingle-panel" id="jinglePanel">
       <div class="jingle-progress-head"><span>GUIDANCE LOCK</span><strong id="jingleLockCount">0 / 3</strong></div>
       <div class="jingle-lock-track" aria-label="Guidance lock progress">${[1,2,3].map(i=>`<i class="${i===1?'is-next':''}" data-jingle-beam="${i}"></i>`).join('')}</div>
-      <div class="jingle-arena" id="jingleArena" tabindex="0" role="application" aria-label="Jingle Beams guidance game. Tap or slide horizontally to steer the paddle and direct the charge into each receiver.">
+      <div class="jingle-arena is-awaiting-start" id="jingleArena" tabindex="0" role="application" aria-label="Jingle Beams guidance game. Start the puck, then tap or slide horizontally to steer the paddle and direct the charge into each receiver.">
         <div class="jingle-grid" aria-hidden="true"><img class="jingle-centre-mark" src="./assets/silverstone-s-mark.webp" alt=""></div>
         <div class="jingle-energy-rail rail-left" aria-hidden="true"><i></i></div>
         <div class="jingle-energy-rail rail-right" aria-hidden="true"><i></i></div>
         <div class="jingle-receiver" id="jingleReceiver" aria-hidden="true"><span></span><i></i></div>
         <div class="jingle-goal-flare" id="jingleGoalFlare" aria-hidden="true"></div>
         <div class="jingle-puck-trail" id="jinglePuckTrail" aria-hidden="true"></div>
-        <div class="jingle-puck" id="jinglePuck" aria-hidden="true"><i></i></div>
+        <button type="button" class="jingle-puck is-ready" id="jinglePuck" aria-label="Start Jingle Beams"><i></i><img class="jingle-play-icon" src="./assets/video-play.svg" alt="" aria-hidden="true"><strong class="jingle-puck-countdown" id="jingleCountdown"></strong></button>
         <div class="jingle-paddle" id="jinglePaddle" aria-hidden="true"><i></i></div>
         <div class="jingle-drag-prompt" id="jinglePrompt"><strong>TAP TO STEER</strong></div>
       </div>
@@ -1082,16 +1078,15 @@
       <div class="aurora-progress-head"><span>Navigation Lock</span><strong id="auroraLockCount">0 / 3</strong></div>
       <div class="aurora-lock-track" id="auroraLockTrack" aria-label="Navigation lock progress">${Array.from({length:3},()=>'<i></i>').join('')}</div>
       <div class="aurora-north" aria-hidden="true"><span class="aurora-north-star">✦</span><i></i></div>
-      <div class="aurora-dial" id="auroraDial" role="img" aria-label="Aurora Apex navigation alignment instrument">
+      <div class="aurora-dial" id="auroraDial" role="group" aria-label="Aurora Apex navigation alignment instrument">
         <div class="aurora-field" aria-hidden="true"></div>
         <div class="aurora-target-line" aria-hidden="true"></div>
         <div class="aurora-capture-gate" aria-hidden="true"><i></i></div>
-        ${rings.map(key=>`<div class="aurora-ring aurora-ring-${key}" data-aurora-ring="${key}" aria-hidden="true"><img src="./assets/aurora-ring-${key}.webp" alt=""><span class="aurora-lock-notch"></span></div>`).join('')}
+        ${rings.map(key=>`<button type="button" class="aurora-ring aurora-ring-${key}" data-aurora-ring="${key}" aria-label="Lock ${key} navigation ring"><img src="./assets/aurora-ring-${key}.webp" alt="" aria-hidden="true"><span class="aurora-lock-notch" aria-hidden="true"></span></button>`).join('')}
         <div class="aurora-charge-pulse" aria-hidden="true"></div>
         <div class="aurora-final-wave" aria-hidden="true"></div>
         <div class="aurora-compass" aria-hidden="true"><span><img class="aurora-compass-mark" src="./assets/silverstone-s-mark.webp" alt=""></span></div>
       </div>
-      <button class="btn primary wide aurora-capture-btn" id="auroraCaptureBtn">CAPTURE</button>
       <div class="visually-hidden" id="auroraState" aria-live="polite">Align the active navigation ring with the North Pole axis.</div>
     </div>`;
   }
@@ -1114,6 +1109,10 @@
     ];
     return `<div class="mission-instrument panel lapland-panel" id="laplandPanel" style="--lapland-charge:0">
       <section class="lapland-stage lapland-verification-stage" id="laplandVerificationStage">
+        <div class="lapland-online-progress" id="laplandOnlineProgress">
+          <div class="lapland-online-head"><span>SYSTEMS ONLINE</span><strong id="laplandOnlineCount">0 / 10</strong></div>
+          <div class="lapland-online-track" aria-label="Launch system verification progress">${Array.from({length:10},(_,i)=>`<i data-lapland-progress="${i}"></i>`).join('')}</div>
+        </div>
         ${systemStatusBank(systems,'lapland-system-bank','verify')}
         <div class="lapland-launch-slot">
           <button class="btn primary wide lapland-test-btn" id="initiateTest">Initialise Launch</button>
@@ -1132,7 +1131,7 @@
           <i class="lapland-party-wash"></i>
           <i class="lapland-party-beam party-beam-a"></i><i class="lapland-party-beam party-beam-b"></i><i class="lapland-party-beam party-beam-c"></i><i class="lapland-party-reflections"></i>
         </div>
-        <div class="lapland-disco-rig" aria-hidden="true"><video class="lapland-disco-video" id="laplandDiscoVideo" muted loop playsinline preload="auto"><source src="./assets/disco-ball-alpha-loop-720.webm" type="video/webm"></video></div>
+        <div class="lapland-disco-rig" aria-hidden="true"><canvas class="lapland-disco-video" id="laplandDiscoVisual" width="180" height="180"></canvas></div>
         <div class="lapland-party-message">
           <span>SANTA-1</span>
           <i class="lapland-clearance-divider" aria-hidden="true"></i>
@@ -1318,7 +1317,23 @@
     const mc=document.getElementById('missionContent'); if(!mc) return;
     const outcome=copy||title||'';
     mc.innerHTML=`<div class="completion panel"><div class="check" aria-hidden="true"><span class="checkmark-icon checkmark-icon--large"></span></div><h2>Mission Complete</h2>${outcome?`<p>${outcome}</p>`:''}<button class="btn primary wide" id="returnRadar">Continue</button></div>`;
-    document.getElementById('returnRadar').onclick=()=>completeCurrent(); ping(880,.14,.05);haptic([30,35,70]);
+    const continueBtn=document.getElementById('returnRadar');
+    let continueCommitted=false;
+    const commitContinue=event=>{
+      if(continueCommitted)return;
+      // Touch/pen commits on pointer-up so iOS cannot swallow the first tap,
+      // without re-rendering the page while the finger is still held down.
+      // Mouse + keyboard continue to use the normal click path.
+      if(event?.type==='pointerup'&&event.pointerType==='mouse')return;
+      event?.preventDefault?.();
+      event?.stopPropagation?.();
+      continueCommitted=true;
+      if(continueBtn)continueBtn.disabled=true;
+      completeCurrent();
+    };
+    continueBtn?.addEventListener('pointerup',commitContinue,{passive:false});
+    continueBtn?.addEventListener('click',commitContinue);
+    ping(880,.14,.05);haptic([30,35,70]);
   }
   function showRadioCompletion(){
     const mc=document.getElementById('missionContent'); if(!mc) return;
@@ -1434,7 +1449,8 @@
     const lastStates = new Map();
 
     const setSystemState = (key,nextState)=>{
-      if(lastStates.get(key)===nextState) return;
+      const previous=lastStates.get(key);
+      if(previous===nextState) return;
       lastStates.set(key,nextState);
       const item=document.querySelector(`[data-mc00-system="${key}"]`);
       const status=document.querySelector(`[data-mc00-status="${key}"]`);
@@ -1442,6 +1458,8 @@
       item.classList.remove('is-standby','is-checking','is-offline','is-online');
       item.classList.add(`is-${nextState}`);
       status.textContent=nextState==='checking'?'Checking':nextState==='offline'?'Offline':nextState==='online'?'Online':'Standby';
+      // Exactly one diagnostic pop for each of the ten system checks.
+      if(previous&&nextState==='checking') ping(560 + (scanSystems.findIndex(system=>system.key===key)*34),.048,.018);
     };
 
     const paint = ()=>{
@@ -1476,8 +1494,6 @@
       if(progressValue === 100){
         ping(860,.12,.05);
         haptic([20,35,65]);
-      } else if(progressValue % 13 === 0){
-        ping(620 + (progressValue * 2), .05, .02);
       }
     }, 45);
   }
@@ -1810,7 +1826,7 @@
     if(gpsValue){const condition=state.mode==='demo'?'DEMO':state.gpsCondition;gpsValue.textContent=condition;gpsValue.className=`status-value gps-${condition.toLowerCase()}`;}
     const sleighValue=document.querySelector('.status-cell:nth-child(2) .status-value'); if(sleighValue)sleighValue.textContent=`${recovery()}%`;
     const checkpointValue=document.querySelector('.status-cell:last-child .status-value');
-    if(checkpointValue){const d=distanceToActivation(cp,state.distance);checkpointValue.textContent=!cp?'COMPLETE':state.targetVisible&&Number.isFinite(d)?`${Math.round(d)} M`:'SEARCHING';}
+    if(checkpointValue){const d=distanceToActivation(cp,state.distance);checkpointValue.textContent=!cp?'GARAGES':state.targetVisible&&Number.isFinite(d)?`${Math.round(d)} M`:'SEARCHING';}
     const target=document.querySelector('.target-dot');
     const finalCircuitOverview=state.completed.includes('northern');
     const circuitMode=state.completed.includes('entry')||finalCircuitOverview;
@@ -2090,7 +2106,7 @@
   }
   function bindDiagnostics(){
     const done=new Set();
-    const durations=[1600,1900,1700,1200,1800,2200];
+    const durations=[1600,1900,1700,1200,1680,2050];
     const scanAudioPaths=[
       './assets/mc02-scan-aero.mp3',
       './assets/mc02-scan-stability.mp3',
@@ -2105,10 +2121,10 @@
       audio.volume=.72;
       return audio;
     });
-    const captureAudio=new Audio('./assets/mc02-scan-hit.mp3');
+    const captureAudio=new Audio('./assets/mc02-scan-capture.mp3');
     captureAudio.preload='auto';
     captureAudio.volume=.82;
-    const submitAudio=new Audio('./assets/mc02-scan-complete.mp3');
+    const submitAudio=new Audio('./assets/mc02-mission-complete.mp3');
     submitAudio.preload='auto';
     submitAudio.volume=.82;
     let busy=false;
@@ -2242,6 +2258,7 @@
     const hops=[...document.querySelectorAll('[data-hop]')];
     const stateEl=document.getElementById('relayState');
     const progressCount=document.getElementById('relayLockedCount');
+    const progressHead=document.querySelector('.relay-progress-head');
     const progressBars=[...document.querySelectorAll('[data-relay-progress]')];
         const cycles=[1900,1650,1450,1300];
     const relayFxShort=new Audio('./assets/mc03-relay-success-short.mp3');
@@ -2323,7 +2340,11 @@
       requestAnimationFrame(alignRelayRoute);
       stateEl.textContent=`Relay 0${stage+1} armed`;
       if(progressCount)progressCount.textContent=`${stage} / 4`;
-      progressBars.forEach((bar,i)=>bar.classList.toggle('on',i<stage));
+      progressHead?.classList.remove('is-complete');
+      progressBars.forEach((bar,i)=>{
+        bar.classList.toggle('on',i<stage);
+        bar.classList.remove('complete');
+      });
     }
     function showIncomingTransmission(){
       finishing=true;cancelAnimationFrame(raf);
@@ -2334,13 +2355,13 @@
       let stopDuck=()=>{};
       // Narrative transmissions take priority over ELF FM. Keep a trace of the
       // station underneath rather than stopping/restarting the live stream.
-      if(radioWasOn) stopDuck=rampElementVolume(elfAudioEl,.025,420);
+      if(radioWasOn) stopDuck=rampElementVolume(elfAudioEl,0,420);
       if(state.audio) startStatic(.05);
       let introStatic=null,santaDelay=null,fallback=null,tailTimer=null,finished=false;
       const finish=()=>{
         if(finished)return;finished=true;
         clearTimeout(introStatic);clearTimeout(santaDelay);clearTimeout(fallback);clearTimeout(tailTimer);stopStatic();
-        if(radioWasOn&&elfAudioEl){elfAudioEl.volume=Math.min(elfAudioEl.volume,.025);rampElementVolume(elfAudioEl,previousRadioVolume,520);}
+        if(radioWasOn&&elfAudioEl){elfAudioEl.volume=0;rampElementVolume(elfAudioEl,previousRadioVolume,520);}
         setTimeout(()=>showCompletion('Comms Link Restored','Communications have been established and Mission Control is now connected to Santa-1.'),260);
       };
       const playSanta=()=>{
@@ -2384,11 +2405,17 @@
       carrierPackets.forEach(packet=>packet.style.opacity='0');
       if(progressCount)progressCount.textContent=`${stage+1} / 4`;
       progressBars.forEach((bar,i)=>bar.classList.toggle('on',i<=stage));
+      if(stage===3){
+        progressHead?.classList.add('is-complete');
+        progressBars.forEach(bar=>bar.classList.add('complete'));
+      }
       stateEl.textContent=stage===3?'Transmission path locked.':'Relay locked · signal strengthened.';
       playRelayFx(stage===3?relayFxFull:relayFxShort,stage===3?.95:.9);haptic([20,25,38]);
       if(stage===3){
         hops.forEach(h=>h.classList.add('locked'));
         const dest=document.querySelector('.relay-destination');dest?.classList.add('locked');
+        const receiverIcon=dest?.querySelector('.relay-receiver-icon img');
+        if(receiverIcon) receiverIcon.src='./assets/relay-receiver-hi-spec-green.svg';
         // Prime the Santa media element inside the final user gesture, but at
         // zero volume. This preserves reliable mobile playback while the
         // visible carrier/static intro and clean pause happen afterwards.
@@ -2518,7 +2545,7 @@
       }else{
         pausePowerAudio();
         startIdleAudio(speed>1?.24:.2);
-        stateEl.textContent=speed>1?'Press again to build speed':'Hold to accelerate';
+        stateEl.textContent=speed>1?'Press again to build speed':'Accelerate';
       }
     }
 
@@ -2586,7 +2613,8 @@
       maxState.classList.remove('is-capturing');
       maxState.classList.add('is-locked');
       stateEl.textContent='Maximum raceway speed confirmed';
-      button.textContent='MAX SPEED CONFIRMED';
+      button.textContent='LOCKED';
+      button.classList.add('is-locked');
       button.disabled=true;
       arcade.classList.add('captured');
       outputEl.classList.add('is-complete');
@@ -2659,28 +2687,17 @@
     const rig=document.getElementById('spiritRig');
     const stageNumber=document.getElementById('spiritStageNumber');
     const stageDots=[...document.querySelectorAll('[data-spirit-stage-dot]')];
-    const buttons=[...document.querySelectorAll('[data-charge]')];
-    const tankMap={
-      A:[...document.querySelectorAll('[data-spirit-tank^="left-"]')],
-      B:[...document.querySelectorAll('[data-spirit-tank^="right-"]')]
-    };
+    const tanks=[...document.querySelectorAll('[data-spirit-tank]')];
+    const buttons=[...document.querySelectorAll('[data-spirit-charge]')];
     const meterMap={
-      A:document.querySelector('.spirit-meter-left'),
-      B:document.querySelector('.spirit-meter-right')
+      left:document.querySelector('.spirit-meter-left'),
+      right:document.querySelector('.spirit-meter-right')
     };
-    const bankMap={
-      A:document.querySelector('.spirit-bank-left'),
-      B:document.querySelector('.spirit-bank-right')
-    };
-    if(!rig||!stageNumber||stageDots.length!==8||buttons.length!==2||tankMap.A.length!==4||tankMap.B.length!==4) return;
+    if(!rig||!stageNumber||stageDots.length!==8||tanks.length!==8||buttons.length!==8) return;
 
     const tapsPerTank=4;
-    const tanksPerBank=4;
-    const tapsPerBank=tapsPerTank*tanksPerBank;
-    const totalTaps=tapsPerBank*2;
-    const sideHits={A:0,B:0};
-    let expected='A';
-    let hits=0;
+    const tankHits=new Map(tanks.map(tank=>[tank.dataset.spiritTank,0]));
+    let completedTanks=0;
     let completed=false;
     let finishTimer=0;
     const reactionTimers=[];
@@ -2693,72 +2710,83 @@
     bubblesAudio.volume=.42;
 
     function playTankPayoff(){
-      if(!state.audio) return;
+      if(!state.audio)return;
       try{
         payoffAudio.currentTime=0;
         const play=payoffAudio.play();
-        if(play&&typeof play.catch==='function') play.catch(()=>{});
+        if(play&&typeof play.catch==='function')play.catch(()=>{});
       }catch{}
     }
 
-
     function startBubbles(){
-      if(!state.audio||completed||!bubblesAudio.paused) return;
+      if(!state.audio||completed||!bubblesAudio.paused)return;
       try{
         const play=bubblesAudio.play();
-        if(play&&typeof play.catch==='function') play.catch(()=>{});
+        if(play&&typeof play.catch==='function')play.catch(()=>{});
       }catch{}
     }
 
     function stopBubbles(){
-      try{
-        bubblesAudio.pause();
-        bubblesAudio.currentTime=0;
-      }catch{}
+      try{bubblesAudio.pause();bubblesAudio.currentTime=0;}catch{}
     }
 
-    function completedTanks(){
-      return Math.min(8,Math.floor(hits/tapsPerTank));
+    function tankFor(id){return tanks.find(tank=>tank.dataset.spiritTank===id);}
+
+    function updateMeters(){
+      ['left','right'].forEach(side=>{
+        const sideTanks=tanks.filter(tank=>tank.dataset.spiritTank.startsWith(`${side}-`));
+        const total=sideTanks.reduce((sum,tank)=>sum+(tankHits.get(tank.dataset.spiritTank)||0),0);
+        const level=Math.max(0,Math.min(1,total/(sideTanks.length*tapsPerTank)));
+        meterMap[side]?.style.setProperty('--meter-level',String(level));
+      });
+    }
+
+    function renderTank(tank){
+      const id=tank.dataset.spiritTank;
+      const hits=tankHits.get(id)||0;
+      const fill=Math.max(0,Math.min(1,hits/tapsPerTank));
+      tank.style.setProperty('--tank-fill',String(fill));
+      tank.classList.toggle('is-active',hits>0&&hits<tapsPerTank);
+      tank.classList.toggle('is-full',hits>=tapsPerTank);
+      const button=tank.querySelector('[data-spirit-charge]');
+      if(button){
+        const isFull=hits>=tapsPerTank;
+        button.disabled=false;
+        button.setAttribute('aria-disabled',String(completed||isFull));
+        button.classList.toggle('is-charging',!completed&&!isFull);
+        button.classList.toggle('is-full',isFull);
+      }
     }
 
     function updateStage(){
-      const progressUnits=Math.max(0,Math.min(8,hits/tapsPerTank));
-      const done=completedTanks();
-      rig.dataset.stage=String(done);
-      stageNumber.textContent=String(done).padStart(2,'0');
-      stageDots.forEach((dot,i)=>{
-        const progress=Math.max(0,Math.min(1,progressUnits-i));
-        dot.classList.toggle('complete',progress>=1);
-        dot.classList.toggle('active',progress>0&&progress<1);
-        dot.classList.toggle('on',progress>0);
-        dot.style.setProperty('--stage-progress',String(progress));
-      });
+      rig.dataset.stage=String(completedTanks);
+      stageNumber.textContent=String(completedTanks);
     }
 
-    function updateBank(side){
-      const sideTotal=sideHits[side];
-      const bankProgress=Math.max(0,Math.min(1,sideTotal/tapsPerBank));
-      const meter=meterMap[side];
-      if(meter) meter.style.setProperty('--meter-level',String(bankProgress));
-      const bank=bankMap[side];
-      bank?.classList.toggle('is-next',!completed&&expected===side);
-      const tanks=tankMap[side];
-      tanks.forEach((tank,displayIndex)=>{
-        const fillOrder=(tanks.length-1)-displayIndex;
-        const local=Math.max(0,Math.min(1,(sideTotal-(fillOrder*tapsPerTank))/tapsPerTank));
-        tank.style.setProperty('--tank-fill',String(local));
-        tank.classList.toggle('is-active',local>0&&local<1);
-        tank.classList.toggle('is-full',local>=1);
-      });
+    function registerTankComplete(tank){
+      completedTanks++;
+      const dot=stageDots[completedTanks-1];
+      if(dot){
+        const rgb=tank.dataset.spiritRgb||'76,219,255';
+        const hex=tank.dataset.spiritHex||'#4cdbff';
+        dot.style.setProperty('--tank-rgb',rgb);
+        dot.style.setProperty('--tank-color',hex);
+        dot.dataset.spiritProgressColor=tank.dataset.spiritColor||'';
+        dot.classList.add('complete','on');
+      }
+      tank.classList.remove('is-locking');
+      void tank.offsetWidth;
+      tank.classList.add('is-locking');
+      const timer=setTimeout(()=>tank.classList.remove('is-locking'),900);
+      reactionTimers.push(timer);
+      playTankPayoff();
+      haptic([24,18,42]);
+      updateStage();
     }
 
-    function pulseCharge(side,button){
-      const bank=bankMap[side];
-      const meter=meterMap[side];
-      const tanks=tankMap[side];
-      const active=tanks.find(tank=>tank.classList.contains('is-active')) || [...tanks].reverse().find(tank=>tank.classList.contains('is-full'));
-      [bank,meter,button,active].forEach(el=>{
-        if(!el) return;
+    function pulseTank(tank,button){
+      [tank,button].forEach(el=>{
+        if(!el)return;
         el.classList.remove('is-pumping');
         void el.offsetWidth;
         el.classList.add('is-pumping');
@@ -2767,98 +2795,78 @@
       });
     }
 
-    function tankJustFilled(side){
-      if(sideHits[side]===0||sideHits[side]%tapsPerTank!==0) return;
-      const completedFromBottom=(sideHits[side]/tapsPerTank)-1;
-      const displayIndex=(tanksPerBank-1)-completedFromBottom;
-      const tank=tankMap[side][displayIndex];
-      if(!tank) return;
-      tank.classList.remove('is-locking');
-      void tank.offsetWidth;
-      tank.classList.add('is-locking');
-      setTimeout(()=>tank.classList.remove('is-locking'),900);
-      if(hits>=totalTaps) stopBubbles();
-      playTankPayoff();
-      haptic([24,18,42]);
-    }
-
-    function nextExpected(fromSide){
-      const other=fromSide==='A'?'B':'A';
-      if(sideHits[other] < tapsPerBank) return other;
-      if(sideHits[fromSide] < tapsPerBank) return fromSide;
-      return other;
-    }
-
-    function updateExpected(){
-      buttons.forEach(button=>{
-        const isNext=!completed&&button.dataset.charge===expected;
-        button.classList.toggle('is-next',isNext);
-        button.disabled=completed||!isNext;
-        const label=button.querySelector('strong');
-        if(label) label.textContent=isNext?'TAP':'';
-      });
-      updateBank('A');
-      updateBank('B');
-    }
-
     function completeSpirit(){
+      if(completed)return;
       completed=true;
       stopBubbles();
       rig.classList.add('is-complete');
-      stageNumber.textContent='08';
-      stageDots.forEach(dot=>{
-        dot.classList.add('complete','on');
-        dot.classList.remove('active');
-        dot.style.setProperty('--stage-progress','1');
-      });
-      updateExpected();
-      buttons.forEach(button=>{button.disabled=true;button.classList.remove('is-next');});
+      stageNumber.textContent='8';
+      buttons.forEach(button=>{button.disabled=false;button.setAttribute('aria-disabled','true');button.classList.remove('is-charging');});
       haptic([30,28,64]);
       finishTimer=setTimeout(()=>{
-        if(state.missionOpen==='spirit') showCompletion('Spirit Core Charged','The positive energy signatures have been safely stored and the Spirit Core is now fully charged.');
+        if(state.missionOpen==='spirit')showCompletion('Spirit Core Charged','The positive energy signatures have been safely stored and the Spirit Core is now fully charged.');
       },950);
     }
 
-    function flashWrong(button){
-      button.classList.remove('is-wrong');
-      void button.offsetWidth;
-      button.classList.add('is-wrong');
-      setTimeout(()=>button.classList.remove('is-wrong'),280);
-      haptic([12,22,12]);
-    }
-
     function onCharge(event){
-      if(completed) return;
+      event?.preventDefault?.();
+      event?.stopPropagation?.();
+      if(completed)return;
       const button=event.currentTarget;
-      const side=button.dataset.charge;
-      if(side!==expected){flashWrong(button);return;}
+      const id=button.dataset.spiritCharge;
+      const tank=tankFor(id);
+      if(!tank)return;
+      const hits=tankHits.get(id)||0;
+      if(hits>=tapsPerTank)return;
+
       startBubbles();
-      hits++;
-      sideHits[side]++;
-      updateBank(side);
-      pulseCharge(side,button);
-      tankJustFilled(side);
-      expected=nextExpected(side);
-      updateStage();
-      updateExpected();
+      const nextHits=hits+1;
+      tankHits.set(id,nextHits);
+      renderTank(tank);
+      updateMeters();
+      pulseTank(tank,button);
       haptic(10);
-      if(hits>=totalTaps) completeSpirit();
+
+      if(nextHits===tapsPerTank){
+        registerTankComplete(tank);
+        if(completedTanks>=8)completeSpirit();
+      }
     }
 
-    buttons.forEach(button=>button.addEventListener('click',onCharge));
-    updateBank('A');
-    updateBank('B');
+    function onChargeKey(event){
+      if(event.key!=='Enter'&&event.key!==' ')return;
+      event.preventDefault();
+      onCharge(event);
+    }
+    const blockTankGesture=event=>{event.preventDefault();event.stopPropagation();};
+    buttons.forEach(button=>{
+      button.addEventListener('touchstart',blockTankGesture,{passive:false});
+      button.addEventListener('pointerdown',blockTankGesture,{passive:false});
+      button.addEventListener('pointerup',onCharge,{passive:false});
+      button.addEventListener('touchend',blockTankGesture,{passive:false});
+      button.addEventListener('dblclick',blockTankGesture,{passive:false});
+      button.addEventListener('keydown',onChargeKey);
+    });
+    tanks.forEach(renderTank);
+    updateMeters();
     updateStage();
-    updateExpected();
 
     cleanupMission=()=>{
       clearTimeout(finishTimer);
       reactionTimers.forEach(clearTimeout);
-      buttons.forEach(button=>button.removeEventListener('click',onCharge));
+      buttons.forEach(button=>{
+        button.removeEventListener('touchstart',blockTankGesture);
+        button.removeEventListener('pointerdown',blockTankGesture);
+        button.removeEventListener('pointerup',onCharge);
+        button.removeEventListener('touchend',blockTankGesture);
+        button.removeEventListener('dblclick',blockTankGesture);
+        button.removeEventListener('keydown',onChargeKey);
+      });
       stopBubbles();
       try{payoffAudio.pause();payoffAudio.currentTime=0;}catch{}
     };
-  }  function bindArtifacts(){
+  }
+  function bindArtifacts(){
     const field=document.getElementById('artifactField');
     const layer=document.getElementById('artifactLayer');
     const burstLayer=document.getElementById('artifactBurstLayer');
@@ -2889,6 +2897,42 @@
     let signatureBag=[];
     let liveItems=new Set();
     let capturedSignatures=[];
+    const energyHitAudio=[
+      './assets/power-pulse-energy-hit-1.mp3',
+      './assets/power-pulse-energy-hit-2.mp3',
+      './assets/power-pulse-energy-hit-3.mp3'
+    ].map(src=>{
+      const audio=new Audio(src);
+      audio.preload='auto';
+      audio.volume=.9;
+      return audio;
+    });
+    const energyBoostAudio=new Audio('./assets/power-pulse-energy-boost.wav');
+    energyBoostAudio.preload='auto';
+    energyBoostAudio.volume=.92;
+    let energyHitIndex=0;
+
+    function playEnergyHit(){
+      if(!state.audio)return;
+      const audio=energyHitAudio[energyHitIndex++%energyHitAudio.length];
+      try{
+        audio.pause();
+        audio.currentTime=0;
+        audio.volume=.9;
+        const play=audio.play();
+        if(play&&typeof play.catch==='function')play.catch(()=>{});
+      }catch{}
+    }
+    function playEnergyBoost(){
+      if(!state.audio)return;
+      try{
+        energyBoostAudio.pause();
+        energyBoostAudio.currentTime=0;
+        energyBoostAudio.volume=.92;
+        const play=energyBoostAudio.play();
+        if(play&&typeof play.catch==='function')play.catch(()=>{});
+      }catch{}
+    }
 
     function clearTimers(){timers.forEach(clearTimeout);timers=[];}
     function later(fn,delay){const t=setTimeout(()=>{timers=timers.filter(id=>id!==t);fn();},delay);timers.push(t);return t;}
@@ -3088,7 +3132,8 @@
       cleared=Math.min(10,cleared+1);
       capturedSignatures[cleared-1]=item.signature.rgb;
       renderStability();
-      ping(630+cleared*20,.045,.018);haptic(18);
+      playEnergyHit();
+      haptic(18);
       if(stateEl) stateEl.textContent=cleared===10?'Power stabilised':'';
       if(cleared>=10){finish();return;}
       later(()=>{
@@ -3163,9 +3208,17 @@
       field.classList.add('stabilised');
       beam.classList.add('active');
       progress.textContent='10 / 10';
-      ping(920,.12,.045);haptic([28,24,58]);
+      haptic([28,24,58]);
+      // Let the final capture hit land, then resolve into the dedicated Power Pulse boost.
+      later(playEnergyBoost,140);
       setTimeout(()=>showCompletion('Power Stabilised','The positive energy signatures have been captured and stabilised, ready to be stored in the Spirit Core.'),900);
     }
+
+    const blockFieldGesture=event=>{
+      if(event.cancelable) event.preventDefault();
+    };
+    field.addEventListener('touchmove',blockFieldGesture,{passive:false});
+    field.addEventListener('gesturestart',blockFieldGesture,{passive:false});
 
     renderStability();
     startStarstream();
@@ -3180,12 +3233,16 @@
       resizeObserver?.disconnect?.();
       for(const item of liveItems){item.el.remove();}
       liveItems.clear();
+      [...energyHitAudio,energyBoostAudio].forEach(audio=>{try{audio.pause();audio.currentTime=0;}catch{}});
+      field.removeEventListener('touchmove',blockFieldGesture);
+      field.removeEventListener('gesturestart',blockFieldGesture);
     };
   }
   function bindComet(){
     const dirClass={L:'left',D:'down',U:'up',R:'right'};
     const keys=['L','D','U','R'];
     const game=document.getElementById('cometGame');
+    const panel=game?.closest('.comet-panel');
     const notesLayer=document.getElementById('cometNotes');
     const progress=document.getElementById('cometProgress');
     const stateEl=document.getElementById('cometState');
@@ -3422,6 +3479,7 @@
         clearTimeout(spawnTimer);
         notes.forEach(n=>n.el.remove());notes=[];
         game.classList.add('complete');
+        panel?.classList.add('is-complete');
         document.querySelectorAll('.comet-btn').forEach(b=>b.disabled=true);
         comboEl.classList.remove('show');
         judgement.textContent='LOCKED';
@@ -3513,6 +3571,7 @@
     const prompt=document.getElementById('jinglePrompt');
     const stateEl=document.getElementById('jingleState');
     const lockCount=document.getElementById('jingleLockCount');
+    const countdownEl=document.getElementById('jingleCountdown');
     if(!panel||!arena||!puck||!trail||!paddle||!receiver||!stateEl) return;
 
     let beam=1;
@@ -3523,6 +3582,7 @@
     let launchTimer=0;
     let finishTimer=0;
     let buzzerTimer=0;
+    let countdownTimers=[];
     let last=performance.now();
     let lastStrikeAt=0;
     let lastPostAt=0;
@@ -3534,7 +3594,7 @@
     let vy=0;
     let previousPuck={x:0,y:0};
     const speeds=[0,0.245,0.285,0.325];
-    const goalPositions=[0,.50,.31,.69];
+    const goalWidths=[null,'clamp(240px,78%,300px)','clamp(210px,68%,260px)','clamp(180px,58%,220px)'];
 
     const strikePool=Array.from({length:3},()=>{
       const a=new Audio('./assets/jingle-puck-strike.mp3');
@@ -3550,6 +3610,9 @@
     goalAudio.preload='auto';
     const buzzerAudio=new Audio('./assets/jingle-buzzer.mp3');
     buzzerAudio.preload='auto';
+    const countdownAudio=new Audio('./assets/arena-game-countdown.mp3');
+    countdownAudio.preload='auto';
+    countdownAudio.volume=.86;
     let strikeIndex=0;
     let postIndex=0;
 
@@ -3617,9 +3680,10 @@
       else setPaddleX(paddleX);
     }
     function setReceiverForBeam(n){
-      const position=goalPositions[n]||.5;
-      receiver.style.left=`${position*100}%`;
-      requestAnimationFrame(()=>updateBounds());
+      receiver.style.left='50%';
+      receiver.style.width=goalWidths[n]||'';
+      receiver.dataset.beam=String(n);
+      requestAnimationFrame(()=>requestAnimationFrame(()=>updateBounds()));
     }
     function pulseRail(side){
       const rail=arena.querySelector(`.rail-${side}`);
@@ -3644,11 +3708,11 @@
       previousPuck={x:puckX,y:puckY};
       setPuckPosition();
     }
-    function launchPuck(fromReceiver=false){
+    function launchPuck(fromReceiver=false,keepPosition=false){
       clearTimeout(launchTimer);
       updateBounds();
       if(fromReceiver) resetPuckAtReceiver();
-      else {
+      else if(!keepPosition){
         puckX=bounds.w/2;
         puckY=Math.min(bounds.h*.35,bounds.paddleY-90);
         previousPuck={x:puckX,y:puckY};
@@ -3721,6 +3785,7 @@
       arena.classList.add('is-complete');
       stateEl.textContent='GUIDANCE LOCKED';
       clearTimeout(buzzerTimer);
+      countdownTimers.forEach(clearTimeout);countdownTimers=[];
       buzzerTimer=setTimeout(()=>{
         playAudio(buzzerAudio,.78,1);
         haptic([30,28,70]);
@@ -3766,8 +3831,20 @@
         puckX+=vx*dt;
         puckY+=vy*dt;
         const r=bounds.puckR;
-        if(puckX-r<=4&&vx<0){puckX=r+4;vx=Math.abs(vx);pulseRail('left');playStrike(.2,.93);}
-        if(puckX+r>=bounds.w-4&&vx>0){puckX=bounds.w-r-4;vx=-Math.abs(vx);pulseRail('right');playStrike(.2,1.05);}
+        const minX=r+4;
+        const maxX=bounds.w-r-4;
+        if(puckX<minX&&vx<0){
+          const overrun=minX-puckX;
+          puckX=minX+overrun;
+          vx=Math.abs(vx);
+          pulseRail('left');playStrike(.2,.93);
+        }
+        if(puckX>maxX&&vx>0){
+          const overrun=puckX-maxX;
+          puckX=maxX-overrun;
+          vx=-Math.abs(vx);
+          pulseRail('right');playStrike(.2,1.05);
+        }
 
         if(vy<0&&puckY-r<=bounds.goalBottom){
           if(puckX>=bounds.apertureLeft&&puckX<=bounds.apertureRight){
@@ -3775,7 +3852,9 @@
           }else if(puckX>=bounds.goalLeft&&puckX<=bounds.goalRight){
             postHit(puckX<((bounds.goalLeft+bounds.goalRight)/2)?'left':'right');
           }else if(puckY-r<=6){
-            puckY=r+6;
+            const minY=r+6;
+            const overrun=minY-puckY;
+            puckY=minY+Math.max(0,overrun);
             vy=Math.abs(vy);
             playStrike(.18,.97);
           }
@@ -3794,12 +3873,47 @@
       const rect=arena.getBoundingClientRect();
       setPaddleX(e.clientX-rect.left);
     }
-    function startFromInteraction(){
-      if(started) return;
+    function startCountdown(){
+      if(started)return;
       started=true;
+      running=false;
       prompt?.classList.add('is-hidden');
-      arena.classList.add('is-live');
-      scheduleLaunch(false,220);
+      arena.classList.remove('is-awaiting-start');
+      arena.classList.add('is-counting');
+      puck.classList.remove('is-ready');
+      puck.classList.add('is-countdown');
+      puck.setAttribute('aria-label','Jingle Beams countdown');
+      trail.style.opacity='0';
+      updateBounds(false);
+      puckX=bounds.w/2;
+      puckY=bounds.h/2;
+      previousPuck={x:puckX,y:puckY};
+      setPuckPosition();
+      if(countdownEl)countdownEl.textContent='3';
+      stateEl.textContent='Guidance start sequence';
+      if(state.audio){
+        try{
+          countdownAudio.currentTime=0;
+          const play=countdownAudio.play();
+          if(play&&typeof play.catch==='function')play.catch(()=>{});
+        }catch{}
+      }
+      countdownTimers.push(setTimeout(()=>{if(countdownEl)countdownEl.textContent='2';},1000));
+      countdownTimers.push(setTimeout(()=>{if(countdownEl)countdownEl.textContent='1';},2000));
+      countdownTimers.push(setTimeout(()=>{
+        if(countdownEl)countdownEl.textContent='';
+        puck.classList.remove('is-countdown');
+        puck.setAttribute('aria-label','Jingle Beams puck');
+        arena.classList.remove('is-counting');
+        arena.classList.add('is-live');
+        updateBounds(false);
+        puckX=bounds.w/2;
+        puckY=bounds.h/2;
+        previousPuck={x:puckX,y:puckY};
+        setPuckPosition();
+        trail.style.opacity='';
+        launchPuck(false,true);
+      },3000));
     }
     function onPointerDown(e){
       dragging=true;
@@ -3807,7 +3921,6 @@
       e.preventDefault();
       try{arena.focus({preventScroll:true});}catch{arena.focus();}
       pointerToPaddle(e);
-      startFromInteraction();
     }
     function onPointerMove(e){
       if(!dragging) return;
@@ -3823,21 +3936,25 @@
       e.preventDefault();
       updateBounds();
       setPaddleX(paddleX+(['ArrowLeft','a','A'].includes(e.key)?-28:28));
-      startFromInteraction();
     }
     function onResize(){
       updateBounds();
-      if(!running&&!panel.classList.contains('is-complete')) resetPuckAtReceiver();
+      if(!running&&!panel.classList.contains('is-complete')&&!arena.classList.contains('is-counting')) resetPuckAtReceiver();
     }
 
+    // Hold on a visible play control. The user's tap starts the 3-2-1 sequence
+    // synchronously, keeping the attached countdown audio reliable on iOS.
     setReceiverForBeam(1);
-    requestAnimationFrame(()=>{
-      updateBounds(false);
-      puckX=bounds.w/2;
-      puckY=Math.min(bounds.h*.33,bounds.paddleY-84);
-      previousPuck={x:puckX,y:puckY};
-      setPuckPosition();
-    });
+    updateBounds(false);
+    puckX=bounds.w/2;
+    puckY=bounds.h/2;
+    previousPuck={x:puckX,y:puckY};
+    setPuckPosition();
+    trail.style.opacity='0';
+    const stopStartBubble=event=>event.stopPropagation();
+    const startFromPuck=event=>{event.preventDefault();event.stopPropagation();startCountdown();};
+    puck.addEventListener('pointerdown',stopStartBubble);
+    puck.addEventListener('click',startFromPuck);
     arena.addEventListener('pointerdown',onPointerDown,{passive:false});
     arena.addEventListener('pointermove',onPointerMove,{passive:false});
     arena.addEventListener('pointerup',onPointerUp);
@@ -3851,13 +3968,16 @@
       clearTimeout(launchTimer);
       clearTimeout(finishTimer);
       clearTimeout(buzzerTimer);
+      countdownTimers.forEach(clearTimeout);countdownTimers=[];
       arena.removeEventListener('pointerdown',onPointerDown);
       arena.removeEventListener('pointermove',onPointerMove);
       arena.removeEventListener('pointerup',onPointerUp);
       arena.removeEventListener('pointercancel',onPointerUp);
       arena.removeEventListener('keydown',onKeyDown);
+      puck.removeEventListener('pointerdown',stopStartBubble);
+      puck.removeEventListener('click',startFromPuck);
       window.removeEventListener('resize',onResize);
-      [...strikePool,...postPool,goalAudio,buzzerAudio].forEach(a=>{try{a.pause();a.currentTime=0;}catch{}});
+      [...strikePool,...postPool,goalAudio,buzzerAudio,countdownAudio].forEach(a=>{try{a.pause();a.currentTime=0;}catch{}});
     };
   }
   function bindLando(){
@@ -3881,16 +4001,10 @@
     function primeCountdownAudio(){
       if(countdownAudioPrimed||!state.audio)return;
       countdownAudioPrimed=true;
-      [...redLightAudio,goAudio].forEach(audio=>{
-        const target=audio===goAudio?.82:.72;
-        try{
-          audio.volume=0;audio.currentTime=0;
-          const play=audio.play();
-          if(play&&typeof play.then==='function'){
-            play.then(()=>{try{audio.pause();audio.currentTime=0;audio.volume=target;}catch{}}).catch(()=>{audio.volume=target;});
-          }else{audio.pause();audio.currentTime=0;audio.volume=target;}
-        }catch{audio.volume=target;}
-      });
+      // Do not call play() here. iOS can leak an audible frame even at volume 0,
+      // which created a stray beep on the first START TEST press. Loading is
+      // sufficient; the first intended red-light cue is the first playback.
+      [...redLightAudio,goAudio].forEach(audio=>{try{audio.load();}catch{}});
     }
     function playCountdownFx(audio,volume){
       if(!state.audio)return;
@@ -3919,6 +4033,7 @@
       clear(); resetLights(); armed=false; running=true; goTime=0;
       primeCountdownAudio();
       roundEl.textContent=`${round} / 4`;
+      roundEl.classList.remove('is-complete');
       btn.textContent='STANDBY'; btn.disabled=false; btn.classList.remove('success','is-measured'); btn.classList.add('is-standby');
       setResultState(round,'active');
       for(let col=0;col<5;col++){
@@ -3933,7 +4048,7 @@
         lamps.forEach(l=>l.classList.remove('red'));
         armed=true; running=true; goTime=performance.now();
         btn.classList.remove('is-standby');
-        btn.textContent='GO';
+        btn.textContent='REACT';
         playCountdownFx(goAudio,.82); haptic(18);
       },wait));
     }
@@ -3947,6 +4062,7 @@
       btn.textContent='REACTION MEASURED';btn.disabled=true;
       haptic([20,20,45]); ping(760,.075,.03);
       if(round===4){
+        roundEl.classList.add('is-complete');
         const scored=results.map(el=>({el,ms:Number(el.dataset.ms)})).filter(x=>Number.isFinite(x.ms));
         const best=scored.sort((a,b)=>a.ms-b.ms)[0];
         timers.push(setTimeout(()=>{best?.el.classList.add('best');haptic([18,20,52]);},520));
@@ -3956,11 +4072,19 @@
           round++;
           roundEl.textContent=`${round} / 4`;
           setResultState(round,'active');
+          resetLights();
           btn.classList.remove('success','is-measured');
           btn.textContent='START TEST';btn.disabled=false;
-        },760));
+        },1250));
       }
     }
+
+    function onFastReactionPress(e){
+      if(!armed||e.pointerType==='mouse') return;
+      e.preventDefault();
+      capture();
+    }
+    btn.addEventListener('pointerdown',onFastReactionPress,{passive:false});
     btn.onclick=()=>{
       if(btn.textContent==='Start Test'||btn.textContent==='START TEST'){start();return;}
       if(armed){capture();return;}
@@ -3973,17 +4097,19 @@
         timers.push(setTimeout(()=>{btn.textContent='START TEST';},700));
       }
     };
+    const previousCleanup=cleanupMission;
+    cleanupMission=()=>{btn.removeEventListener('pointerdown',onFastReactionPress);previousCleanup?.();};
   }
   function bindAurora(){
+    const panel=document.querySelector('.aurora-panel');
     const dial=document.getElementById('auroraDial');
-    const captureBtn=document.getElementById('auroraCaptureBtn');
     const lockCount=document.getElementById('auroraLockCount');
     const lockTrack=[...document.querySelectorAll('#auroraLockTrack i')];
     const stateEl=document.getElementById('auroraState');
     const north=document.querySelector('.aurora-north');
     const pulseEl=document.querySelector('.aurora-charge-pulse');
     const finalWave=document.querySelector('.aurora-final-wave');
-    if(!dial||!captureBtn||!lockCount||lockTrack.length!==3||!stateEl)return;
+    if(!dial||!lockCount||lockTrack.length!==3||!stateEl)return;
 
     const ringEls={
       outer:document.querySelector('[data-aurora-ring="outer"]'),
@@ -4028,6 +4154,7 @@
 
     function startAmbient(){
       if(!state.audio||finished||!ambientAudio.paused)return;
+      beginMissionAudioRadioOverride('aurora');
       ambientAudio.volume=.17;
       try{
         const play=ambientAudio.play();
@@ -4047,6 +4174,7 @@
         else{
           ambientFadeRaf=0;
           try{ambientAudio.pause();ambientAudio.currentTime=0;ambientAudio.volume=.17;}catch{}
+          endMissionAudioRadioOverride('aurora');
         }
       };
       ambientFadeRaf=requestAnimationFrame(step);
@@ -4099,6 +4227,7 @@
       finished=true;
       dial.classList.remove('capture-ready','miss','desync');
       dial.classList.add('complete');
+      panel?.classList.add('is-complete');
       if(north) north.classList.add('complete');
       order.forEach(key=>ringEls[key].classList.add('final-surge'));
       if(finalWave){
@@ -4107,9 +4236,6 @@
         finalWave.classList.add('fire');
       }
       updateProgress();
-      captureBtn.textContent='LOCKED';
-      captureBtn.classList.add('locked');
-      captureBtn.disabled=true;
       stateEl.textContent='Navigation route locked to the North Pole.';
       fadeAmbientOut();
       ping(1090,.13,.04);
@@ -4194,14 +4320,17 @@
       if(!finished)raf=requestAnimationFrame(frame);
     }
 
-    captureBtn.addEventListener('click',()=>{
+    function captureRing(event){
+      event?.preventDefault?.();
+      const requested=event?.currentTarget?.dataset?.auroraRing;
       const key=activeKey();
-      if(!key||finished)return;
+      if(!key||finished||requested!==key)return;
       startAmbient();
       const offset=Math.abs(signed(angles[key]));
       if(offset<=captureWindows[key]) lockRing(key);
       else missCapture(key);
-    });
+    }
+    order.forEach(key=>ringEls[key]?.addEventListener('click',captureRing));
 
     order.forEach(renderRing);
     updateStage();
@@ -4214,14 +4343,18 @@
       cancelAnimationFrame(ambientFadeRaf);
       clearTimeout(completionTimer);
       feedbackTimers.forEach(clearTimeout);
+      order.forEach(key=>ringEls[key]?.removeEventListener('click',captureRing));
       try{lockAudio.pause();lockAudio.currentTime=0;}catch{}
       try{ambientAudio.pause();ambientAudio.currentTime=0;ambientAudio.volume=.17;}catch{}
+      endMissionAudioRadioOverride('aurora');
     };
   }
   let laplandMusic=null;
   let laplandVoice=null;
   let laplandExitSfx=null;
   let laplandVolumeRaf=0;
+  let laplandMusicSource=null;
+  let laplandMusicGain=null;
   let laplandTimers=[];
 
   function clearLaplandTimers(){
@@ -4251,9 +4384,23 @@
     }
     return laplandVoice;
   }
+  function primeLaplandVoiceSilently(){
+    if(!state.audio)return;
+    const voice=getLaplandVoice();
+    // Loading is enough. Do not call play() to prime this clip: on iOS a muted
+    // media-element prime can leak/restart and sounds like the transmission has
+    // already begun before the real playback starts.
+    try{
+      voice.pause();
+      voice.currentTime=0;
+      voice.volume=1;
+      voice.muted=false;
+      voice.load();
+    }catch{}
+  }
   function getLaplandExitSfx(){
     if(!laplandExitSfx){
-      laplandExitSfx=new Audio('./assets/lapland-exit-celebration.mp3');
+      laplandExitSfx=new Audio('./assets/quest-complete.mp3');
       laplandExitSfx.preload='auto';
       laplandExitSfx.volume=.9;
     }
@@ -4272,14 +4419,40 @@
       if(p&&typeof p.catch==='function') p.catch(finish);
     }catch{finish();}
   }
+  function ensureLaplandMusicGraph(){
+    if(laplandMusicGain) return laplandMusicGain;
+    const music=getLaplandMusic();
+    const ctx=ensureAudio();
+    if(!ctx) return null;
+    try{
+      laplandMusicSource=ctx.createMediaElementSource(music);
+      laplandMusicGain=ctx.createGain();
+      laplandMusicGain.gain.value=.34;
+      laplandMusicSource.connect(laplandMusicGain).connect(ctx.destination);
+      music.volume=1;
+      return laplandMusicGain;
+    }catch{return null;}
+  }
   function fadeLaplandMusic(target,duration=350,onDone){
     if(!laplandMusic){onDone?.();return;}
+    const level=Math.max(0,Math.min(1,target));
+    const gain=ensureLaplandMusicGraph();
+    if(gain&&audioCtx){
+      const now=audioCtx.currentTime;
+      try{
+        gain.gain.cancelScheduledValues(now);
+        gain.gain.setValueAtTime(gain.gain.value,now);
+        gain.gain.linearRampToValueAtTime(level,now+Math.max(.01,duration/1000));
+      }catch{gain.gain.value=level;}
+      if(onDone) laplandLater(onDone,duration);
+      return;
+    }
     cancelAnimationFrame(laplandVolumeRaf);
     const from=laplandMusic.volume;
     const started=performance.now();
     const step=now=>{
       const p=Math.min(1,(now-started)/duration);
-      laplandMusic.volume=from+(target-from)*p;
+      laplandMusic.volume=from+(level-from)*p;
       if(p<1) laplandVolumeRaf=requestAnimationFrame(step);
       else {laplandVolumeRaf=0;onDone?.();}
     };
@@ -4291,7 +4464,13 @@
     const music=getLaplandMusic();
     music.loop=true;
     if(music.ended) music.currentTime=0;
-    music.volume=Math.min(music.volume||.34,.34);
+    const gain=ensureLaplandMusicGraph();
+    if(gain&&audioCtx){
+      music.volume=1;
+      const now=audioCtx.currentTime;
+      gain.gain.cancelScheduledValues(now);
+      gain.gain.setValueAtTime(Math.min(gain.gain.value||.34,.34),now);
+    }else music.volume=Math.min(music.volume||.34,.34);
     try{
       const p=music.play();
       if(p&&typeof p.catch==='function') p.catch(()=>endMissionAudioRadioOverride('lapland'));
@@ -4303,9 +4482,12 @@
     stopStatic();
     if(laplandVoice){
       laplandVoice.onended=null;laplandVoice.onerror=null;
-      try{laplandVoice.pause();if(reset)laplandVoice.currentTime=0;laplandVoice.volume=1;}catch{}
+      try{laplandVoice.pause();if(reset)laplandVoice.currentTime=0;laplandVoice.volume=1;laplandVoice.muted=false;}catch{}
     }
-    if(laplandMusic){try{laplandMusic.pause();if(reset)laplandMusic.currentTime=0;laplandMusic.volume=.34;}catch{}}
+    if(laplandMusic){
+      try{laplandMusic.pause();if(reset)laplandMusic.currentTime=0;laplandMusic.volume=laplandMusicGain?1:.34;}catch{}
+      if(laplandMusicGain&&audioCtx){try{laplandMusicGain.gain.cancelScheduledValues(audioCtx.currentTime);laplandMusicGain.gain.setValueAtTime(.34,audioCtx.currentTime);}catch{}}
+    }
     if(restoreRadio) endMissionAudioRadioOverride('lapland');
   }
 
@@ -4334,7 +4516,7 @@
       stopStatic();
       if(!state.audio){finish();return;}
       try{
-        voice.currentTime=0;voice.volume=1;
+        voice.currentTime=0;voice.volume=1;voice.muted=false;
         const play=voice.play();
         if(play&&typeof play.catch==='function') play.catch(finish);
         voice.onended=()=>{
@@ -4348,7 +4530,7 @@
     return ()=>{
       clearTimeout(introStatic);clearTimeout(voiceDelay);clearTimeout(fallback);clearTimeout(tailTimer);clearTimeout(finishTimer);
       voice.onended=null;voice.onerror=null;
-      try{voice.pause();voice.currentTime=0;voice.volume=1;}catch{}
+      try{voice.pause();voice.currentTime=0;voice.volume=1;voice.muted=false;}catch{}
       stopStatic();
     };
   }
@@ -4359,22 +4541,72 @@
     const verificationStage=document.getElementById('laplandVerificationStage');
     const transmissionStage=document.getElementById('laplandTransmissionStage');
     const partyStage=document.getElementById('laplandPartyStage');
-    const discoVideo=document.getElementById('laplandDiscoVideo');
+    const discoVisual=document.getElementById('laplandDiscoVisual');
+    const onlineCount=document.getElementById('laplandOnlineCount');
+    const onlineSegments=[...document.querySelectorAll('[data-lapland-progress]')];
     const head=document.querySelector('.lapland-head');
     if(!btn||!panel||!verificationStage||!transmissionStage||!partyStage) return;
 
+    // Render the disco ball from the existing 8x5 sprite sheet onto a canvas.
+    // Canvas cropping is much more reliable on mobile Safari than animating a
+    // very large transparent WebP as a CSS background.
+    let discoRaf=0;
+    let discoStartedAt=0;
+    let discoLastFrame=-1;
+    const discoSprite=new Image();
+    discoSprite.decoding='async';
+    discoSprite.src='./assets/disco-ball-sprite.webp';
+    const drawDiscoFrame=frame=>{
+      if(!(discoVisual instanceof HTMLCanvasElement)||!discoSprite.complete||!discoSprite.naturalWidth)return;
+      const ctx=discoVisual.getContext('2d');
+      if(!ctx)return;
+      const cols=8,rows=5,total=40;
+      const index=((frame%total)+total)%total;
+      const sw=discoSprite.naturalWidth/cols;
+      const sh=discoSprite.naturalHeight/rows;
+      const sx=(index%cols)*sw;
+      const sy=Math.floor(index/cols)*sh;
+      ctx.clearRect(0,0,discoVisual.width,discoVisual.height);
+      ctx.drawImage(discoSprite,sx,sy,sw,sh,0,0,discoVisual.width,discoVisual.height);
+    };
+    const stopDisco=()=>{
+      cancelAnimationFrame(discoRaf);
+      discoRaf=0;
+      discoLastFrame=-1;
+    };
+    const startDisco=()=>{
+      if(!(discoVisual instanceof HTMLCanvasElement))return;
+      stopDisco();
+      discoStartedAt=performance.now();
+      const render=now=>{
+        if(state.missionOpen!=='lapland'||partyStage.hidden){stopDisco();return;}
+        const frame=Math.floor((now-discoStartedAt)/100)%40;
+        if(frame!==discoLastFrame){discoLastFrame=frame;drawDiscoFrame(frame);}
+        discoRaf=requestAnimationFrame(render);
+      };
+      drawDiscoFrame(0);
+      discoRaf=requestAnimationFrame(render);
+    };
+    discoSprite.addEventListener('load',()=>drawDiscoFrame(0),{once:true});
+
     startLaplandMusic();
-    if(discoVideo){
-      discoVideo.muted=true;
-      discoVideo.preload='auto';
-      try{discoVideo.load();}catch{}
-    }
 
     // MC01–MC10 each restore one named system. Checks run down column 1 first,
     // then column 2, matching the visible mission-order layout.
     const checks=['entry','velocity','luffield','power','spirit','escapade','jingle','comet','lando','aurora'];
     const systemKeys=['circuitry','diagnostic','comms','power','core','propulsion','guidance','control','response','navigation'];
     const setCharge=value=>panel.style.setProperty('--lapland-charge',String(Math.max(0,Math.min(1,value))));
+    const setOnlineProgress=(onlineSystems,complete=false)=>{
+      const ticks=Math.max(0,Math.min(10,onlineSystems));
+      if(onlineCount){
+        onlineCount.textContent=`${ticks} / 10`;
+        onlineCount.classList.toggle('complete',complete&&ticks===10);
+      }
+      onlineSegments.forEach((segment,i)=>{
+        segment.classList.toggle('on',i<ticks);
+        segment.classList.toggle('complete',complete&&ticks===10);
+      });
+    };
     const setRowState=(key,nextState,label)=>{
       const row=document.querySelector(`[data-verify-system="${key}"]`);
       const status=document.querySelector(`[data-verify-status="${key}"]`);
@@ -4408,25 +4640,7 @@
       haptic([20,24,62]);
     };
     let stopTransmission=()=>{};
-    let discoRevealTimer=0;
-    let discoPlayingHandler=null;
 
-    const clearDiscoReadyWait=()=>{
-      clearTimeout(discoRevealTimer);discoRevealTimer=0;
-      if(discoVideo&&discoPlayingHandler){
-        discoVideo.removeEventListener('playing',discoPlayingHandler);
-        discoPlayingHandler=null;
-      }
-    };
-    const startDiscoHidden=()=>{
-      if(!discoVideo)return;
-      discoVideo.muted=true;
-      try{
-        if(discoVideo.ended||discoVideo.currentTime>=discoVideo.duration-.15)discoVideo.currentTime=0;
-        const p=discoVideo.play();
-        if(p&&typeof p.catch==='function')p.catch(()=>{});
-      }catch{}
-    };
     const showTransmission=()=>{
       if(state.missionOpen!=='lapland') return;
       verificationStage.hidden=true;
@@ -4435,15 +4649,11 @@
       panel.classList.remove('is-verifying','is-celebrating','is-party');
       panel.classList.add('is-transmission');
       head?.classList.remove('is-celebrating');
-      if(laplandMusic&&!laplandMusic.paused) fadeLaplandMusic(.055,420);
-      // Begin decoding/playing the muted disco render behind the transmission so
-      // the party reveal never lands on a frozen first frame on mobile.
-      startDiscoHidden();
+      if(laplandMusic&&!laplandMusic.paused) fadeLaplandMusic(.018,360);
       stopTransmission=playLaplandClearance(showParty);
     };
     const revealParty=()=>{
       if(state.missionOpen!=='lapland') return;
-      clearDiscoReadyWait();
       stopTransmission();stopTransmission=()=>{};
       transmissionStage.hidden=true;
       verificationStage.hidden=true;
@@ -4451,7 +4661,7 @@
       panel.classList.remove('is-transmission');
       panel.classList.add('is-party','is-celebrating');
       head?.classList.add('is-celebrating');
-      startDiscoHidden();
+      startDisco();
       fadeLaplandMusic(.9,780);
       ping(1040,.14,.045);
       laplandLater(()=>ping(1320,.18,.045),210);
@@ -4463,57 +4673,17 @@
       },10000);
     };
     const showParty=()=>{
-      if(state.missionOpen!=='lapland') return;
-      if(!discoVideo){revealParty();return;}
-
-      // Keep the transmission visible until the hidden video confirms it is
-      // actually playing. An 850ms fallback prevents a rare decoder failure
-      // from blocking the mission flow.
-      let revealed=false;
-      const finish=()=>{
-        if(revealed)return;
-        revealed=true;
-        revealParty();
-      };
-      clearDiscoReadyWait();
-      discoPlayingHandler=finish;
-      discoVideo.addEventListener('playing',discoPlayingHandler,{once:true});
-      startDiscoHidden();
-      if(!discoVideo.paused&&discoVideo.readyState>=2&&discoVideo.currentTime>0){
-        requestAnimationFrame(finish);
-      }
-      discoRevealTimer=laplandLater(finish,850);
+      if(state.missionOpen!=='lapland')return;
+      revealParty();
     };
 
     setButtonState('idle');
+    setOnlineProgress(0,false);
 
     btn.onclick=()=>{
       if(btn.dataset.review==='true'){stopLaplandAudio();set({missionOpen:null,nav:'missions'});return;}
 
-      // Prime ELF ENGINEERING audio inside the user gesture, exactly like the
-      // reliable Santa transmission at Luffield. This unlocks later playback on mobile.
-      if(state.audio){
-        const voice=getLaplandVoice();
-        try{
-          voice.currentTime=0;voice.volume=0;
-          const prime=voice.play();
-          if(prime&&typeof prime.then==='function') prime.then(()=>{
-            try{voice.pause();voice.currentTime=0;voice.volume=1;}catch{}
-          }).catch(()=>{try{voice.volume=1;}catch{}});
-        }catch{try{voice.volume=1;}catch{}}
-      }
-      // Prime the muted alpha-video inside the same user gesture. This gives
-      // mobile Safari/Chrome permission and an early decode opportunity.
-      if(discoVideo){
-        discoVideo.muted=true;
-        try{
-          discoVideo.currentTime=0;
-          const primeVideo=discoVideo.play();
-          if(primeVideo&&typeof primeVideo.then==='function') primeVideo.then(()=>{
-            try{discoVideo.pause();discoVideo.currentTime=0;}catch{}
-          }).catch(()=>{});
-        }catch{}
-      }
+      primeLaplandVoiceSilently();
 
       setButtonState('initialising');
       clearLaplandTimers();
@@ -4525,6 +4695,8 @@
       partyStage.hidden=true;
       verificationStage.hidden=false;
       setCharge(0);
+      setOnlineProgress(0,false);
+      let onlineSystems=0;
       const missing=[];
 
       startLaplandMusic();
@@ -4540,7 +4712,9 @@
           const ready=state.completed.includes(checkpointId);
           setRowState(key,ready?'online':'offline',ready?'Online':'Offline');
           if(!ready) missing.push(checkpointId);
+          if(ready) onlineSystems++;
           setCharge((i+1)/checks.length);
+          setOnlineProgress(onlineSystems,false);
           ping(ready?540+i*38:220,.05,.016);
 
           if(i===checks.length-1){
@@ -4550,6 +4724,7 @@
               panel.classList.remove('is-verifying');
 
               if(clear){
+                setOnlineProgress(10,true);
                 setLaunchComplete();
                 // Let COMPLETE register before the narrative hand-off.
                 laplandLater(showTransmission,1550);
@@ -4568,9 +4743,8 @@
     };
 
     cleanupMission=()=>{
-      clearDiscoReadyWait();
       stopTransmission();
-      if(discoVideo){try{discoVideo.pause();discoVideo.currentTime=0;}catch{}}
+      stopDisco();
       stopLaplandAudio();
     };
   }
@@ -4621,28 +4795,29 @@
     if(northernTakeoverEl){northernTakeoverEl.remove();northernTakeoverEl=null;}
     [northernSantaAudio,northernMagicAudio].forEach(audio=>{
       if(!audio)return;
-      try{audio.pause();audio.currentTime=0;audio.onended=null;audio.onerror=null;}catch{}
+      try{audio.pause();audio.currentTime=0;audio.onended=null;audio.onerror=null;audio.muted=false;}catch{}
     });
     stopStatic();
+    endMissionAudioRadioOverride('northern-transmission');
   }
 
   function primeNorthernFinalAudio(){
     if(!state.audio)return;
     [getNorthernMagicAudio(),getNorthernSantaAudio()].forEach(audio=>{
       try{
-        audio.load();
-        audio.muted=true;
+        audio.load();audio.pause();audio.currentTime=0;audio.muted=true;
         const play=audio.play();
         if(play&&typeof play.then==='function'){
-          play.then(()=>{try{audio.pause();audio.currentTime=0;audio.muted=false;}catch{}}).catch(()=>{audio.muted=false;});
-        }else{audio.pause();audio.currentTime=0;audio.muted=false;}
-      }catch{audio.muted=false;}
+          play.then(()=>{try{audio.pause();audio.currentTime=0;}catch{}}).catch(()=>{});
+        }else{audio.pause();audio.currentTime=0;}
+      }catch{}
     });
   }
 
   function showNorthernTransmission(){
     const mc=document.getElementById('missionContent'); if(!mc)return;
-    mc.innerHTML=`<div class="mission-instrument panel incoming-transmission northern-incoming">
+    if(state.audio) beginMissionAudioRadioOverride('northern-transmission');
+    mc.innerHTML=`<div class="mission-instrument panel incoming-transmission">
       <div class="transmission-wave">${'<b></b>'.repeat(24)}</div>
       <div class="kicker">Incoming Transmission</div>
       <h2>SANTA-1</h2>
@@ -4659,6 +4834,7 @@
     const finish=()=>{
       if(finished)return;finished=true;
       clearTimeout(fallbackTimer);stopStatic();
+      endMissionAudioRadioOverride('northern-transmission');
       try{santa.onended=null;santa.onerror=null;}catch{}
       const elapsed=performance.now()-opened;
       const wait=Math.max(0,900-elapsed);
@@ -4710,15 +4886,16 @@
     playNorthernAirborneMagic();
     ping(980,.18,.05);haptic([35,30,85,35,110]);
     const el=document.createElement('div');
-    el.className='northern-airborne-takeover';
+    el.className='mc01-energy-bloom';
     el.setAttribute('role','status');
     el.setAttribute('aria-live','polite');
-    el.innerHTML=`<div class="northern-airborne-sweep" aria-hidden="true"></div><div class="northern-airborne-copy"><img class="northern-airborne-mark" src="./assets/silverstone-s-mark.webp" alt=""><div class="northern-airborne-santa">SANTA-1</div><h1>AIRBORNE</h1></div>`;
+    el.innerHTML=`<div class="mc01-bloom-field" aria-hidden="true"><i></i><i></i><i></i></div><div class="mc01-bloom-copy"><img class="mc01-bloom-mark" src="./assets/silverstone-s-mark.webp" alt=""><div class="kicker">SANTA-1</div><h1>AIRBORNE</h1></div>`;
     document.body.appendChild(el);northernTakeoverEl=el;
-    northernLater(()=>el.classList.add('is-settled'),180);
+    // Put the transmission behind the takeover before its fade begins so
+    // the authorisation screen never flashes back between states.
+    northernLater(()=>showNorthernTransmission(),3500);
     northernLater(()=>el.classList.add('is-exiting'),3820);
     northernLater(()=>{
-      showNorthernTransmission();
       if(el.isConnected)el.remove();
       if(northernTakeoverEl===el)northernTakeoverEl=null;
     },4260);
