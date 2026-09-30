@@ -10666,3 +10666,156 @@ button,[role="button"]{touch-action:manipulation;}
   min-height:30px!important;
   background-image:radial-gradient(circle at 42% 38%,#fff 0 15%,#d7fbff 24%,#78eaff 46%,#169cc5 74%,#075f7d 100%)!important;
 }
+
+
+/* === Amend pass 2026-09-30: Circuit Link hierarchy, Power Pulse glow, Jingle goals, Northern HUD === */
+/* 1. Circuit Link: status/control strip above the circuit; transfer progress anchors the bottom. */
+.mc01-readout-top{order:0;}
+.mc01-track-stage{order:1;}
+.mc01-transfer-bottom{order:2;padding:2px 2px 0;}
+.mc01-transfer-bottom .mc01-transfer-meta{margin-bottom:1px;}
+
+/* 2. Power Pulse: flatter warm signatures get a stronger luminous halo without changing size. */
+.starstream-signature.emotion-signature.energy-pink,
+.starstream-signature.emotion-signature.energy-purple,
+.starstream-signature.emotion-signature.energy-red{
+  filter:saturate(1.16) brightness(1.08)!important;
+  box-shadow:
+    0 0 12px rgba(255,255,255,.18),
+    0 0 18px rgba(var(--emotion-rgb),.54),
+    0 0 38px rgba(var(--emotion-rgb),.34),
+    0 0 66px rgba(var(--emotion-rgb),.18),
+    inset 0 0 15px rgba(var(--emotion-rgb),.17)!important;
+}
+.starstream-signature.emotion-signature.energy-pink::before,
+.starstream-signature.emotion-signature.energy-purple::before,
+.starstream-signature.emotion-signature.energy-red::before{
+  box-shadow:
+    0 0 7px rgba(255,255,255,.32),
+    0 0 17px rgba(var(--emotion-rgb),.66),
+    0 0 31px rgba(var(--emotion-rgb),.30),
+    inset 0 0 13px rgba(255,255,255,.12)!important;
+}
+.starstream-signature.emotion-signature.energy-pink .power-pulse-energy-icon,
+.starstream-signature.emotion-signature.energy-purple .power-pulse-energy-icon,
+.starstream-signature.emotion-signature.energy-red .power-pulse-energy-icon{
+  filter:
+    drop-shadow(0 0 2px rgba(255,255,255,1))
+    drop-shadow(0 0 7px rgba(255,255,255,.42))
+    drop-shadow(0 0 14px rgba(var(--emotion-rgb),.78))
+    drop-shadow(0 0 25px rgba(var(--emotion-rgb),.42))!important;
+}
+
+/* 3. Jingle Beams: playable targets, still progressively tighter. The white mouth line spans the usable goal opening. */
+.jingle-receiver[data-beam="1"]{width:clamp(184px,62%,232px)!important;}
+.jingle-receiver[data-beam="2"]{width:clamp(158px,53%,202px)!important;}
+.jingle-receiver[data-beam="3"]{width:clamp(136px,45%,174px)!important;}
+.jingle-receiver>span{
+  width:calc(100% - 38px)!important;
+  max-width:none!important;
+}
+@media(max-width:390px){
+  .jingle-receiver[data-beam="1"]{width:62%!important;min-width:174px!important;max-width:222px!important;}
+  .jingle-receiver[data-beam="2"]{width:53%!important;min-width:150px!important;max-width:194px!important;}
+  .jingle-receiver[data-beam="3"]{width:45%!important;min-width:130px!important;max-width:166px!important;}
+}
+
+/* 4. Northern Flight: richer cyan flight-HUD / target-lock display inspired by the supplied reference. */
+.northern-panel{
+  background:
+    radial-gradient(circle at 50% 42%,rgba(38,189,233,.12),transparent 38%),
+    linear-gradient(180deg,rgba(5,31,47,.98),rgba(2,19,31,.99))!important;
+}
+.northern-vector{
+  height:clamp(240px,38dvh,330px)!important;
+  margin:8px 0 11px!important;
+  border:1px solid rgba(77,199,235,.22)!important;
+  border-radius:14px!important;
+  overflow:hidden!important;
+  background:
+    radial-gradient(circle at 12% 18%,rgba(132,242,255,.72) 0 1px,transparent 1.8px),
+    radial-gradient(circle at 78% 14%,rgba(105,228,255,.58) 0 1px,transparent 1.7px),
+    radial-gradient(circle at 64% 28%,rgba(137,242,255,.52) 0 1px,transparent 1.6px),
+    radial-gradient(circle at 31% 35%,rgba(94,219,250,.56) 0 1px,transparent 1.7px),
+    radial-gradient(circle at 87% 47%,rgba(137,242,255,.45) 0 1px,transparent 1.5px),
+    radial-gradient(circle at 18% 58%,rgba(117,233,255,.50) 0 1px,transparent 1.6px),
+    radial-gradient(circle at 72% 67%,rgba(116,231,255,.52) 0 1px,transparent 1.6px),
+    radial-gradient(circle at 42% 82%,rgba(124,238,255,.46) 0 1px,transparent 1.6px),
+    radial-gradient(circle at 91% 86%,rgba(91,213,246,.44) 0 1px,transparent 1.5px),
+    radial-gradient(circle at 50% 49%,rgba(16,126,165,.13),transparent 48%),
+    linear-gradient(180deg,#031321 0%,#041927 50%,#02111d 100%)!important;
+  box-shadow:inset 0 0 44px rgba(40,167,209,.08),0 0 22px rgba(15,101,135,.05)!important;
+}
+.northern-vector::before,
+.northern-vector::after{
+  content:""!important;
+  position:absolute!important;
+  z-index:1!important;
+  top:50%!important;
+  width:31%!important;
+  height:78%!important;
+  transform:translateY(-50%)!important;
+  background:transparent!important;
+  border:3px solid rgba(54,225,247,.76)!important;
+  filter:drop-shadow(0 0 7px rgba(44,215,243,.38))!important;
+  opacity:.9!important;
+}
+.northern-vector::before{left:-24%!important;border-right:0!important;border-radius:55% 0 0 55%!important;}
+.northern-vector::after{right:-24%!important;border-left:0!important;border-radius:0 55% 55% 0!important;}
+.northern-hud-stars{position:absolute;z-index:0;inset:0;pointer-events:none;opacity:.66;}
+.northern-hud-stars::before,
+.northern-hud-stars::after{
+  content:"";position:absolute;width:2px;height:2px;border-radius:50%;background:#8cefff;
+  box-shadow:36px 22px 0 rgba(118,236,255,.45),78px 48px 0 rgba(99,223,251,.7),126px 17px 0 rgba(116,232,255,.4),168px 66px 0 rgba(125,237,255,.62),221px 28px 0 rgba(102,221,250,.6),262px 78px 0 rgba(115,232,255,.38),305px 38px 0 rgba(132,242,255,.62),342px 96px 0 rgba(89,210,243,.48),18px 116px 0 rgba(111,230,255,.42),62px 154px 0 rgba(129,240,255,.64),115px 132px 0 rgba(92,215,247,.42),151px 181px 0 rgba(124,238,255,.52),205px 145px 0 rgba(126,239,255,.42),249px 196px 0 rgba(105,224,252,.62),294px 158px 0 rgba(121,235,255,.44),332px 212px 0 rgba(96,217,247,.58);
+  filter:drop-shadow(0 0 3px rgba(82,218,249,.65));
+}
+.northern-hud-stars::before{left:4px;top:7px;}
+.northern-hud-stars::after{right:14px;bottom:18px;transform:rotate(176deg) scale(.82);opacity:.62;}
+.northern-hud-ring{
+  position:absolute;z-index:2;left:50%;top:47%;aspect-ratio:1;border-radius:50%;transform:translate(-50%,-50%);
+  background:conic-gradient(from -8deg,transparent 0 24deg,rgba(42,226,248,.95) 25deg 76deg,transparent 77deg 103deg,rgba(42,226,248,.68) 104deg 145deg,transparent 146deg 214deg,rgba(42,226,248,.86) 215deg 257deg,transparent 258deg 283deg,rgba(42,226,248,.68) 284deg 336deg,transparent 337deg 360deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 5px),#000 calc(100% - 4px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 5px),#000 calc(100% - 4px));
+  filter:drop-shadow(0 0 6px rgba(44,220,245,.46));opacity:.9;pointer-events:none;
+}
+.northern-hud-ring-outer{width:min(78%,270px);animation:northernHudSpin 18s linear infinite;}
+.northern-hud-ring-mid{width:min(55%,190px);transform:translate(-50%,-50%) rotate(24deg);opacity:.72;animation:northernHudSpinReverse 14s linear infinite;}
+.northern-hud-ring-inner{width:min(34%,116px);transform:translate(-50%,-50%) rotate(-18deg);opacity:.84;animation:northernHudSpin 10s linear infinite;}
+.northern-hud-crosshair{position:absolute;z-index:4;left:50%;top:47%;width:80px;height:80px;transform:translate(-50%,-50%);pointer-events:none;}
+.northern-hud-crosshair::before,
+.northern-hud-crosshair::after{content:"";position:absolute;left:50%;top:50%;background:rgba(111,230,255,.74);box-shadow:0 0 6px rgba(81,220,250,.28);transform:translate(-50%,-50%);}
+.northern-hud-crosshair::before{width:78px;height:1px;}
+.northern-hud-crosshair::after{width:1px;height:78px;}
+.northern-hud-crosshair i{position:absolute;left:50%;top:50%;width:27px;height:27px;border:2px solid rgba(96,229,249,.88);border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 10px rgba(68,220,244,.32);}
+.northern-hud-crosshair b{position:absolute;left:50%;top:50%;width:7px;height:7px;border-radius:50%;transform:translate(-50%,-50%);background:#bdf7ff;box-shadow:0 0 9px #56e3f8;}
+.northern-hud-bracket{position:absolute;z-index:3;left:50%;width:128px;height:24px;transform:translateX(-50%);border-left:1px solid rgba(69,220,245,.72);border-right:1px solid rgba(69,220,245,.72);pointer-events:none;}
+.northern-hud-bracket::before{content:"";position:absolute;left:12px;right:12px;height:1px;background:linear-gradient(90deg,rgba(69,220,245,.7),transparent 16%,transparent 84%,rgba(69,220,245,.7));}
+.northern-hud-bracket-top{top:13px;border-top:1px solid rgba(69,220,245,.55);clip-path:polygon(10% 0,90% 0,100% 100%,0 100%);}
+.northern-hud-bracket-top::before{top:8px;}
+.northern-hud-bracket-bottom{bottom:26px;border-bottom:1px solid rgba(69,220,245,.55);clip-path:polygon(0 0,100% 0,90% 100%,10% 100%);}
+.northern-hud-bracket-bottom::before{bottom:8px;}
+.northern-hud-bracket i{position:relative;display:inline-block;width:8px;height:4px;margin:9px 2px 0;background:rgba(44,224,246,.8);box-shadow:0 0 5px rgba(44,224,246,.35);}
+.northern-vector-axis,.northern-vector-tick{display:none!important;}
+.northern-vector-node{left:50%!important;top:47%!important;width:36px!important;height:36px!important;z-index:5!important;border-color:rgba(93,230,250,.58)!important;box-shadow:0 0 0 8px rgba(52,204,235,.045),0 0 18px rgba(66,219,244,.15)!important;}
+.northern-vector-node b{inset:12px!important;background:#dffbff!important;box-shadow:0 0 11px rgba(109,232,252,.72)!important;}
+.northern-vector-readout{z-index:6!important;left:50%!important;top:auto!important;bottom:8px!important;transform:translateX(-50%)!important;text-align:center!important;gap:1px!important;}
+.northern-vector-readout span{font-size:6.5px!important;letter-spacing:.18em!important;color:#69cce5!important;}
+.northern-vector-readout strong{font-size:12px!important;letter-spacing:.08em!important;color:#a9eefa!important;}
+.northern-panel.is-ready .northern-vector-node,
+.northern-panel.is-authorising .northern-vector-node,
+.northern-panel.is-authorised .northern-vector-node{top:47%!important;}
+.northern-panel.is-ready .northern-vector-readout,
+.northern-panel.is-authorising .northern-vector-readout,
+.northern-panel.is-authorised .northern-vector-readout{top:auto!important;}
+.northern-panel.is-ready .northern-hud-ring{filter:drop-shadow(0 0 8px rgba(65,232,248,.58)) brightness(1.14);}
+.northern-panel.is-authorising .northern-hud-ring{animation-duration:3.5s;filter:drop-shadow(0 0 10px rgba(83,230,250,.7)) brightness(1.24);}
+.northern-panel.is-authorised .northern-hud-ring{background:conic-gradient(from -8deg,transparent 0 24deg,rgba(87,239,145,.98) 25deg 76deg,transparent 77deg 103deg,rgba(87,239,145,.72) 104deg 145deg,transparent 146deg 214deg,rgba(87,239,145,.9) 215deg 257deg,transparent 258deg 283deg,rgba(87,239,145,.72) 284deg 336deg,transparent 337deg 360deg);filter:drop-shadow(0 0 9px rgba(87,239,145,.48));}
+@keyframes northernHudSpin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes northernHudSpinReverse{to{transform:translate(-50%,-50%) rotate(-336deg)}}
+@media(max-width:390px){
+  .northern-vector{height:clamp(220px,35dvh,292px)!important;}
+  .northern-hud-ring-outer{width:min(82%,244px);}
+  .northern-hud-ring-mid{width:min(58%,174px);}
+  .northern-hud-ring-inner{width:min(36%,108px);}
+}
+@media(prefers-reduced-motion:reduce){.northern-hud-ring{animation:none!important;}}

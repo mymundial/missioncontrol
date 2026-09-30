@@ -884,9 +884,10 @@
     const node=geoToCircuitPoint(cp?.lat,cp?.lng)||{x:88.88,y:31.11};
     const nodeX=node.x.toFixed(2),nodeY=node.y.toFixed(2);
     return `<div class="mission-instrument panel mc01-panel" id="mc01Activation" data-stage="detected">
-      <div class="mc01-transfer" aria-label="Circuit Link energy transfer progress">
-        <div class="mc01-transfer-meta"><span>Energy Transfer</span><strong id="mc01TransferValue">0%</strong></div>
-        <div class="mc01-transfer-track"><i id="mc01TransferFill"></i></div>
+      <div class="mc01-readout mc01-readout-top">
+        <span class="mc01-bolt" aria-hidden="true"><img src="./assets/system-power.svg" alt=""></span>
+        <div class="mc01-readout-copy"><span id="mc01StateLabel">Circuit Link</span><strong id="mc01State">Signal Detected</strong></div>
+        <div class="mc01-signal-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
       </div>
       <div class="mc01-track-stage" aria-hidden="true">
         <div class="mc01-track-shadow"></div>
@@ -898,10 +899,9 @@
           <circle class="mc01-energy-node" cx="${nodeX}" cy="${nodeY}" r="3.5"></circle>
         </svg>
       </div>
-      <div class="mc01-readout">
-        <span class="mc01-bolt" aria-hidden="true"><img src="./assets/system-power.svg" alt=""></span>
-        <div class="mc01-readout-copy"><span id="mc01StateLabel">Circuit Link</span><strong id="mc01State">Signal Detected</strong></div>
-        <div class="mc01-signal-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <div class="mc01-transfer mc01-transfer-bottom" aria-label="Circuit Link energy transfer progress">
+        <div class="mc01-transfer-meta"><span>Energy Transfer</span><strong id="mc01TransferValue">0%</strong></div>
+        <div class="mc01-transfer-track"><i id="mc01TransferFill"></i></div>
       </div>
     </div>`;
   }
@@ -1147,6 +1147,13 @@
         <div class="northern-condition" data-flight-check="2"><span>Launch Window</span><strong>Checking</strong></div>
       </div>
       <div class="northern-vector" aria-hidden="true">
+        <div class="northern-hud-stars"></div>
+        <i class="northern-hud-ring northern-hud-ring-outer"></i>
+        <i class="northern-hud-ring northern-hud-ring-mid"></i>
+        <i class="northern-hud-ring northern-hud-ring-inner"></i>
+        <div class="northern-hud-bracket northern-hud-bracket-top"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="northern-hud-bracket northern-hud-bracket-bottom"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="northern-hud-crosshair"><i></i><b></b></div>
         <i class="northern-vector-axis"></i>
         <i class="northern-vector-tick tick-a"></i><i class="northern-vector-tick tick-b"></i><i class="northern-vector-tick tick-c"></i>
         <span class="northern-vector-node"><b></b></span>
