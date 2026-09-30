@@ -10819,3 +10819,55 @@ button,[role="button"]{touch-action:manipulation;}
   .northern-hud-ring-inner{width:min(36%,108px);}
 }
 @media(prefers-reduced-motion:reduce){.northern-hud-ring{animation:none!important;}}
+
+/* Pass 7.39.04 — Northern Flight hierarchy test: HUD first, flight checks below. */
+.northern-panel{
+  display:flex;
+  flex-direction:column;
+}
+.northern-vector{order:1;}
+.northern-conditions{
+  order:2;
+  margin:0 0 10px!important;
+  gap:6px!important;
+}
+.northern-authorise-btn{order:3;}
+.northern-panel > .visually-hidden{order:4;}
+
+/* Keep pre-flight status in the cyan/navy system language; green is a small confirmation accent only. */
+.northern-condition{
+  border-color:rgba(86,211,244,.24)!important;
+  background:rgba(3,23,35,.66)!important;
+  box-shadow:inset 0 0 0 1px rgba(65,171,207,.025)!important;
+}
+.northern-condition span{
+  color:#78aebe!important;
+}
+.northern-condition strong{
+  color:#8daebb!important;
+}
+.northern-condition.ready{
+  border-color:rgba(83,213,246,.48)!important;
+  background:linear-gradient(180deg,rgba(8,48,66,.78),rgba(4,31,46,.76))!important;
+  box-shadow:inset 0 0 18px rgba(41,179,220,.045),0 0 10px rgba(54,194,230,.035)!important;
+  transform:none!important;
+}
+.northern-condition.ready strong{
+  color:#9eeaff!important;
+  text-shadow:0 0 9px rgba(85,220,249,.18);
+}
+.northern-condition.ready::after{
+  content:"";
+  position:absolute;
+  top:8px;
+  right:8px;
+  width:5px;
+  height:5px;
+  border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 7px rgba(87,239,145,.48);
+}
+@media(max-width:390px){
+  .northern-conditions{margin:0 0 9px!important;gap:5px!important;}
+  .northern-condition.ready::after{top:6px;right:6px;width:4px;height:4px;}
+}
